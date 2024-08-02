@@ -4,11 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Organization;
+use App\Models\OrganizationTask;
 use Illuminate\Support\Facades\Auth;
 
 class OrganizationController extends Controller
 {
+    public function getAssignedOrganizations(Request $request)
+    {
+        $documentId = $request->query('documentId');
+        $taskCode = $request->query('taskCode');
+        $taskId = $request->query('taskId');
     
+        // Tìm các cơ quan/tổ chức đã gán với task cụ thể
+        $organizations = OrganizationTask::where('document_id', $documentId)
+                                          ->where('tasks_document_id', $taskId)
+                                          ->with('organization')
+                                          ->get();
+    
+        return response()->json([
+            'organizations' => $organizations->map(function($orgTask) {
+                return [
+                    'code' => $orgTask->organization->code,
+                    'name' => $orgTask->organization->name,
+                    'creator' => $orgTask->creator,
+                    'email' => $orgTask->organization->email,
+                    'phone' => $orgTask->organization->phone
+                ];
+            }),
+        ]);
+    }
     public function searchOrganizationByType(Request $request)
     {
         $query = $request->input('query');
@@ -132,10 +156,13 @@ class OrganizationController extends Controller
 
     public function show($id)
     {
-        $organization = Organization::find($id);
+        $organization = Organization::with('users')->find($id);
 
         if ($organization) {
-            return response()->json($organization);
+
+            return response()->json([
+                'organization' => $organization
+            ]);
         }
 
         return response()->json(['error' => 'Organization not found'], 404);

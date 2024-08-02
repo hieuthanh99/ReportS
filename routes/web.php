@@ -9,6 +9,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CriteriaController;
+use App\Http\Controllers\FileController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,6 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks/search', [TaskController::class, 'searchTasks'])->name('tasks.search');
     Route::get('/criteria/search', [CriteriaController::class, 'searchCriteria'])->name('criteria.search');
 
+    Route::get('/user/search', [UserController::class, 'searchUser'])->name('users.search');
+
+    Route::get('/get-assigned-organizations', [OrganizationController::class, 'getAssignedOrganizations']);
+    Route::delete('/delete-file/{id}', [FileController::class, 'destroy']);
 
 
     Route::get('/organization/search-type', [OrganizationController::class, 'searchOrganizationByType'])->name('organization.search.type');
@@ -43,17 +48,23 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/organization/search-parent', [OrganizationController::class, 'searchOrganizationByParentID'])->name('organization.search.parent');
     
-    
+    Route::resource('users', UserController::class);
     // Route để kiểm tra mã công việc
     Route::get('/api/check-task-code/{taskCode}', [TaskController::class, 'checkTaskCode']);
     Route::get('/api/check-document-code/{documentCode}', [DocumentController::class, 'checkDocumentCode'])->name('check.document.code');
+    Route::post('/save-assign-organizations', [DocumentController::class, 'assignOrganizations']);
+
+    Route::post('/save-assigned-users', [UserController::class, 'saveAssignedUsers'])->name('saveAssignedUsers');
+    Route::post('/assign-users', [UserController::class, 'assignUsers'])->name('users.assign');
 
     Route::get('/tasks/assign', [TaskController::class, 'getAllByAjax'])->name('task.list.assign');
     Route::get('/categories-list', [CategoryController::class, 'listCategories'])->name('categories.list.document');
+    Route::delete('/users/{user}/destroyOrganization', [UserController::class, 'destroyOrganization'])->name('users.destroyOrganization');
 
     Route::resource('criterias_task', CriteriasTaskController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('documents', DocumentController::class);
+
     Route::resource('tasks', TaskController::class);
     Route::resource('metrics', MetricController::class);
     Route::resource('organizations', OrganizationController::class);

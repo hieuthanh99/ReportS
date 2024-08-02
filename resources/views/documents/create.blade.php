@@ -1354,10 +1354,10 @@
                         var taskCode = cells[0].textContent.trim(); // Dữ liệu từ cột đầu tiên
                         var taskName = cells[1].textContent.trim(); // Dữ liệu từ cột thứ hai
                         taskCodeRow = taskCode;
-                        if (criteriaMap.size === 0) {
-                            alert("Vui lòng chọn tiêu chí cho đầu công việc!");
-                            return;
-                        }
+                        // if (criteriaMap.size === 0) {
+                        //     alert("Vui lòng chọn tiêu chí cho đầu công việc!");
+                        //     return;
+                        // }
                         document.getElementById('check-all-organizations').checked = false;
                         document.querySelectorAll('#existing-organizations input.organization-checkbox').forEach(
                         checkbox => {

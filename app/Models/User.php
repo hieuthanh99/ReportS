@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'organization_id',
+        'code',
+        'phone',
+        'address',
     ];
 
     /**
@@ -43,8 +47,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function organization(): BelongsTo
+    public function organization()
     {
-        return $this->belongsTo(Organization::class);
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 }

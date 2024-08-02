@@ -13,12 +13,16 @@ class Document extends Model
         'document_name',
         'issuing_department',
         'creator',
-        'release_date'
+        'release_date',
+        'status'
     ];
 
     // Nếu bạn sử dụng timestamps (created_at, updated_at)
     public $timestamps = true;
-
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
     // Định nghĩa mối quan hệ với TaskDocument nếu cần
     public function taskDocuments()
     {

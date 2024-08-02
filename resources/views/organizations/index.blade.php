@@ -160,23 +160,77 @@
                 </div>
                 <!-- User List -->
                 <div class="mt-6">
-                    <h3 class="text-xl font-semibold mb-2">Danh sách người dùng</h3>
-                    <ul id="user-list" class="list-disc pl-5 text-gray-700">
-                        <!-- User items will be populated here -->
-                    </ul>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Danh sách nhân viên</label>
+                    <div class="overflow-x-auto">
+                        <table id="task-table" class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
+                            <thead>
+                                <tr class="bg-gray-100 border-b">
+                                    <th class="py-2 px-4 text-left text-gray-600">Mã nhân viên</th>
+                                    <th class="py-2 px-4 text-left text-gray-600">Họ và tên</th>
+                                    <th class="py-2 px-4 text-left text-gray-600">Email</th>
+                                    <th class="py-2 px-4 text-left text-gray-600">Số điện thoại</th>
+                                    <th class="py-2 px-4 text-left text-gray-600">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assign-user-list">
+                                <!-- Danh sách đầu việc sẽ được chèn vào đây -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" id="assign-user-button"
+                        class="hidden bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mt-2">Gán
+                        nhân viên</button>
                 </div>
 
-                <!-- Assign User Button -->
+                {{-- <!-- Assign User Button -->
                 <div class="mt-6 flex items-center">
                     <button id="assign-user-button"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"
+                        class="hidden bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"
                         onclick="showAssignUserModal()">
                         Gán Người Dùng
                     </button>
-                </div>
+                </div> --}}
             </div>
         </div>
+        <div id="assign-user-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
+                <h2 class="text-xl font-bold mb-4">Danh sách nhân viên</h2>
+                <div class="mb-4">
+                    <label for="search-user" class="block text-gray-700 text-sm font-medium mb-2">Tìm kiếm</label>
+                    <input type="text" id="search-user" class="form-input w-full border border-gray-300 rounded-lg p-2"
+                        placeholder="Tìm kiếm tên">
+                </div>
+                <div class="mb-4 overflow-x-auto">
+                    <table id="existing-user-table" class="w-full border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b checkbox-column">
+                                    <input type="checkbox" id="check-all-user">
+                                    <label for="check-all-user" class="text-gray-700 text-sm font-medium"></label>
+                                </th>
+                                <th class="py-2 px-4 border-b">Mã nhân viên</th>
+                                <th class="py-2 px-4 border-b">Tên nhân viên</th>
+                                <th class="py-2 px-4 border-b">Email nhân viên</th>
+                                <th class="py-2 px-4 border-b">Số điện thoại</th>
+                            </tr>
+                        </thead>
+                        <form id="assign-user-form" method="POST" action="{{ route('saveAssignedUsers') }}">
+                            @csrf
+                            <tbody id="existing-user" style="text-align: center">
+                                <!-- Danh sách đầu việc sẽ được chèn vào đây -->
+                            </tbody>
+                        </form>
 
+                    </table>
+                </div>
+                <button type="button" id="assign-user"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán
+                </button>
+                <button type="button" id="cancel-assign-user"
+                    class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy
+                </button>
+            </div>
+        </div>
         <!-- Modal for Assigning User -->
         <div id="assignUserModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
             <div class="bg-white rounded-lg p-6 w-1/3">
@@ -271,33 +325,74 @@
         });
 
         function loadDetails(organizationId) {
-            fetch(`/organizations/${organizationId}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('organization-details').innerHTML = `
-                    <h3 class="text-2xl font-bold">${data.name}</h3>
-                    <p><strong>Code:</strong> ${data.code}</p>
-                    <p><strong>Type:</strong> ${data.type}</p>
-                    <p><strong>Email:</strong> ${data.email}</p>
-                    <p><strong>Phone:</strong> ${data.phone}</p>
-                    
+    // Clear the user list before fetching new data
+    document.getElementById('assign-user-list').innerHTML = "";
+
+    console.log("organizationId");
+    console.log(organizationId);
+    fetch(`/organizations/${organizationId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Clear the user list again before inserting new data (just in case)
+            document.getElementById('assign-user-list').innerHTML = "";
+            
+            const organization = data.organization;
+            const users = data.organization.users;
+            document.getElementById('organization-details').innerHTML = `
+                <h3 class="text-2xl font-bold">${organization.name}</h3>
+                <p><strong>Mã phòng ban:</strong> ${organization.code}</p>
+                <p><strong>Loại phòng ban:</strong> ${organization.type}</p>
+                <p><strong>Email:</strong> ${organization.email}</p>
+                <p><strong>Số điện thoại:</strong> ${organization.phone}</p>
+            `;
+            document.getElementById('organization_id').value = organization.id;
+
+            users.forEach(user => {
+                console.log(user);
+                const taskHTML = `
+                    <tr>
+                        <td class="py-2 px-4 border-b">${user.code}</td>
+                        <td class="py-2 px-4 border-b">${user.name}</td>
+                        <td class="py-2 px-4 border-b">${user.email}</td>
+                        <td class="py-2 px-4 border-b">${user.phone}</td>
+                        <td class="py-2 px-4 border-b" style="display: none">${user.id}</td>
+                        <td class="py-2 px-4 border-b">
+                            <form action="/users/${user.id}/destroyOrganization" method="POST"
+                                style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300"
+                                    onclick="return confirm('Bạn có chắc chắn rằng muốn xóa nhân viên khỏi tổ chức này?');">
+                                    Xóa
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                 `;
-                });
-        }
+                document.getElementById('assign-user-list').insertAdjacentHTML('beforeend', taskHTML);
+            });
+            document.getElementById('assign-user-button').classList.remove('hidden');
+        });
+}
+
 
         function toggleChildren(button) {
-            const nextElement = button.parentElement.nextElementSibling;
-            const icon = button.querySelector('i');
+            if (button != null) {
+                const nextElement = button.parentElement.nextElementSibling;
+                const icon = button.querySelector('i');
 
-            if (nextElement.classList.contains('hidden')) {
-                nextElement.classList.remove('hidden');
-                icon.classList.remove('fa-plus');
-                icon.classList.add('fa-minus'); // Thay đổi icon thành dấu trừ
-            } else {
-                nextElement.classList.add('hidden');
-                icon.classList.remove('fa-minus');
-                icon.classList.add('fa-plus'); // Thay đổi icon thành dấu cộng
+                if (nextElement.classList.contains('hidden')) {
+                    nextElement.classList.remove('hidden');
+                    icon.classList.remove('fa-plus');
+                    icon.classList.add('fa-minus'); // Thay đổi icon thành dấu trừ
+                } else {
+                    nextElement.classList.add('hidden');
+                    icon.classList.remove('fa-minus');
+                    icon.classList.add('fa-plus'); // Thay đổi icon thành dấu cộng
+                }
             }
+
         }
 
         function showAssignUserModal() {
@@ -312,6 +407,7 @@
         document.getElementById('assignUserForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
+            console.log(this);
             fetch('{{ route('users.assign') }}', {
                     method: 'POST',
                     headers: {
@@ -335,12 +431,194 @@
                 .then(response => response.json())
                 .then(data => {
                     const userSelect = document.getElementById('user_id');
-                    userSelect.innerHTML = '<option value="">Chọn người dùng</option>';
+
                     data.users.forEach(user => {
                         userSelect.innerHTML += `<option value="${user.id}">${user.name}</option>`;
                     });
                 });
         }
+
+
+        let existingUserCodes = [];
+        document.addEventListener('DOMContentLoaded', function() {
+            function fetchUser(query = '') {
+                fetch(`{{ route('users.search') }}?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const userTableBody = document.getElementById('existing-user');
+                        userTableBody.innerHTML = ''; // Xóa nội dung hiện tại
+
+                        // Kiểm tra xem có dữ liệu không
+                        if (!data.user || data.user.length === 0) {
+                            const row = document.createElement('tr');
+                            const cell = document.createElement('td');
+                            cell.colSpan = 4; // Chiếm toàn bộ số cột
+                            cell.textContent = 'Không có nhân viên nào phù hợp với từ tìm kiếm';
+                            row.appendChild(cell);
+                            userTableBody.appendChild(row);
+                            return;
+                        }
+
+                        data.user.forEach(task => {
+                            // Kiểm tra xem taskCode đã tồn tại trong existingTaskCodes chưa
+                            if (existingUserCodes.includes(task.code)) {
+                                return; // Bỏ qua nếu taskCode đã tồn tại
+                            }
+
+                            const row = document.createElement('tr');
+
+                            // Checkbox
+                            const checkboxCell = document.createElement('td');
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.id = `user-${task.code}`;
+                            checkbox.value = task.code;
+                            checkbox.classList.add('user-checkbox');
+                            checkboxCell.appendChild(checkbox);
+
+                            const idCell = document.createElement('td');
+                            idCell.textContent = task.id;
+                            idCell.classList.add('user-id-assign');
+                            idCell.style.display = 'none';
+                            // Mã công việc
+                            const codeCell = document.createElement('td');
+                            codeCell.textContent = task.code;
+                            codeCell.classList.add('user-code-assign');
+
+                            // Tên công việc
+                            const nameCell = document.createElement('td');
+                            nameCell.textContent = task.name;
+                            nameCell.classList.add('user-name-assign');
+
+                            // Kế hoạch
+                            const emailCell = document.createElement('td');
+                            emailCell.textContent = task.email;
+                            emailCell.classList.add('user-email-assign');
+
+                            const phoneCell = document.createElement('td');
+                            phoneCell.textContent = task.phone;
+                            phoneCell.classList.add('user-phone-assign');
+
+                            const inputField = document.createElement('input');
+                            inputField.textContent = task.id;
+                            inputField.classList.add('user-list-id');
+                            inputField.name = 'user[]';
+                            inputField.value = task.id;
+                            inputField.style.display = 'none';
+
+                            const inputOrganizationField = document.createElement('input');
+                            inputOrganizationField.textContent = document.getElementById(
+                                'organization_id').value;
+                            inputOrganizationField.classList.add('organization_id_assign');
+                            inputOrganizationField.name = 'organization_id_assign';
+                            inputOrganizationField.value = document.getElementById('organization_id')
+                                .value;
+                            inputOrganizationField.style.display = 'none';
+
+
+
+                            row.appendChild(checkboxCell);
+                            row.appendChild(idCell);
+                            row.appendChild(codeCell);
+                            row.appendChild(nameCell);
+                            row.appendChild(emailCell);
+                            row.appendChild(phoneCell);
+
+                            row.appendChild(inputOrganizationField);
+                            row.appendChild(inputField);
+                            userTableBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching user:', error));
+            }
+
+            // Khi nhấn nút Gán, xử lý các đầu việc được chọn
+            document.getElementById('assign-user').addEventListener('click', function() {
+                const selectedCheckboxes = document.querySelectorAll(
+                    '#existing-user input[type="checkbox"]:checked');
+                const assignedUsers = [];
+                selectedCheckboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr'); // Lấy hàng chứa checkbox
+
+                    const userId = row.querySelector('.user-id-assign').textContent;
+                    const userCode = row.querySelector('.user-code-assign').textContent;
+                    const userName = row.querySelector('.user-name-assign').textContent;
+                    const userEmail = row.querySelector('.user-email-assign').textContent;
+                    const userPhone = row.querySelector('.user-phone-assign').textContent;
+                    const userOrganization = row.querySelector('.organization_id_assign')
+                        .textContent;
+                    assignedUsers.push({
+                        userId: userId.trim(),
+                        userCode: userCode.trim(),
+                        userName: userName.trim(),
+                        userEmail: userEmail.trim(),
+                        userPhone: userPhone.trim(),
+                        userOrganization: userOrganization.trim()
+                    });
+                });
+
+                fetch('/assign-users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content') // CSRF token
+                        },
+                        body: JSON.stringify(assignedUsers)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // Xử lý phản hồi từ server
+                        loadDetails(data.organization_id);
+                        // Đóng modal
+                        document.getElementById('assign-user-modal').classList.add('hidden');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                // Đóng modal
+                document.getElementById('assign-user-modal').classList.add('hidden');
+            });
+
+            // Khi người dùng gõ vào ô tìm kiếm
+            document.getElementById('search-user').addEventListener('input', function(event) {
+                const query = event.target.value;
+                fetchUser(query);
+            });
+
+            // Khi checkbox "Chọn tất cả" thay đổi trạng thái
+            document.getElementById('check-all-user').addEventListener('change', function(event) {
+                const checked = event.target.checked;
+                document.querySelectorAll('#existing-user input.user-checkbox').forEach(checkbox => {
+                    checkbox.checked = checked;
+                });
+            });
+
+            document.getElementById('cancel-assign-user').addEventListener('click', function(event) {
+                event.preventDefault();
+                document.getElementById('assign-user-modal').classList.add('hidden');
+            });
+            document.getElementById('assign-user-list').addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-user')) {
+                    const row = e.target.closest('tr');
+                    const userCode = row.cells[1].innerText.trim();
+
+                    // Xóa mã công việc khỏi mảng
+                    existingUserCodes = existingUserCodes.filter(code => code !== userCode);
+
+                    // Xóa hàng công việc khỏi bảng
+                    row.remove();
+                }
+            });
+            // Hiển thị popup chọn đầu việc có sẵn
+            document.getElementById('assign-user-button').addEventListener('click', function() {
+                document.getElementById('check-all-user').checked = false;
+                fetchUser();
+                document.getElementById('assign-user-modal').classList.remove('hidden');
+            });
+
+        });
     </script>
 
 

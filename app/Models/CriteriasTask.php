@@ -20,6 +20,14 @@ class CriteriasTask extends Model
         'UpdatedBy',
         'DocumentID',
         'TaskCode',
-        'RequestResult'
+        'RequestResult',
+        'progress',               // Added field
+        'progress_evaluation',    // Added field
     ];
+
+    // Trong model Criteria
+    public function taskDocument()
+    {
+        return $this->belongsTo(TaskDocument::class);
+    }
 }

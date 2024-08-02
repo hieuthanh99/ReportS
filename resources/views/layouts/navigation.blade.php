@@ -31,6 +31,9 @@
                     <x-nav-link :href="route('organizations.index')" :active="request()->routeIs('organizations.index')">
                         {{ __('Cơ quan tổ chức') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                        {{ __('Nhân sự') }}
+                    </x-nav-link>
                 </div>
             </div>
 

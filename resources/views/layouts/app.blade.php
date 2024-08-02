@@ -62,6 +62,8 @@
 
             <!-- Page Content -->
             <main>
+                @yield('breadcrumbs')
+
                 @yield('content')
             </main>
             <script>

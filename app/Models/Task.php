@@ -17,6 +17,7 @@ class Task extends Model
         'category',
         'required_result',
         'start_date',
-        'end_date'
+        'end_date',
+        'creator'
     ];
 }

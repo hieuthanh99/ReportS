@@ -3,11 +3,11 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
-    {{-- <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Danh sách nhân sự</h1>
-        <a href="{{ route('users.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Tạo mới</a>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
+        <a href="{{ route('users.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
     </div>
-   --}}
+  
     @if(session('success'))
         <div id="success-message" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
             {{ session('success') }}
@@ -27,6 +27,7 @@
                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Tổ chức</th>
                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Email</th>
                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Số điện thọai</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Role</th>
                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Thao tác</th>
                 </tr>
             </thead>
@@ -39,6 +40,15 @@
                         <td class="py-3 border border-gray-300 px-6">{{ optional($category->organization)->name ?: 'No Organization' }}</td>
                         <td class="py-3 border border-gray-300 px-6">{{ $category->email }}</td>
                         <td class="py-3 border border-gray-300 px-6">{{ $category->phone }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> 
+                        @if($category->role === 'staff')
+                            Nhân viên
+                        @elseif($category->role === 'admin')
+                            Admin
+                        @else
+                            Không xác định
+                        @endif
+                        </td>
                         <td class="py-3 border border-gray-300 px-6 flex items-center space-x-2">
                           <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                     onclick="window.location.href='{{ route('users.edit', $category->id) }}'">

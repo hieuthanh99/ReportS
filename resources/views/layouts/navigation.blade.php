@@ -19,21 +19,32 @@
                     <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')">
                         {{ __('Danh mục văn bản') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
-                        {{ __('Danh mục phân loại') }}
-                    </x-nav-link>
+                    @if(Auth::user()->role === 'admin')
+                        <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
+                            {{ __('Danh mục phân loại') }}
+                        </x-nav-link>
+                    @endif
                     {{-- <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.index')">
                         {{ __('Tasks') }}
                     </x-nav-link>
                     <x-nav-link :href="route('metrics.index')" :active="request()->routeIs('metrics.index')">
                         {{ __('Metrics') }}
                     </x-nav-link> --}}
+                    @if(Auth::user()->role === 'admin')
                     <x-nav-link :href="route('organizations.index')" :active="request()->routeIs('organizations.index')">
                         {{ __('Cơ quan tổ chức') }}
                     </x-nav-link>
+                    @endif
+                    @if(Auth::user()->role === 'admin')
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                            {{ __('Nhân sự') }}
+                        </x-nav-link>
+                    @endif
+                    @if(Auth::user()->role === 'admin')
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                        {{ __('Nhân sự') }}
+                        {{ __('Góp ý văn bản') }}
                     </x-nav-link>
+                @endif
                 </div>
             </div>
 

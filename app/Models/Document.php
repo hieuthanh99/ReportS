@@ -21,7 +21,7 @@ class Document extends Model
     public $timestamps = true;
     public function files()
     {
-        return $this->hasMany(File::class);
+        return $this->hasMany(File::class)->type(3);;
     }
     // Định nghĩa mối quan hệ với TaskDocument nếu cần
     public function taskDocuments()

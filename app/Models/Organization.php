@@ -11,6 +11,11 @@ class Organization extends Model
 
     protected $fillable = ['code', 'name', 'type', 'email', 'phone', 'parent_id', 'creator'];
 
+    public function taskDocument()
+    {
+        return $this->hasOne(TaskDocument::class, 'organization_id');
+    }
+    
     public function children()
     {
         return $this->hasMany(Organization::class, 'parent_id');

@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/get-assigned-organizations', [OrganizationController::class, 'getAssignedOrganizations']);
     Route::delete('/delete-file/{id}', [FileController::class, 'destroy']);
+    Route::post('/upload', [FileController::class, 'upload'])->name('upload');
+    Route::get('/download/{id}/{type}', [FileController::class, 'download'])->name('file.download');
 
 
     Route::get('/organization/search-type', [OrganizationController::class, 'searchOrganizationByType'])->name('organization.search.type');
@@ -52,6 +54,7 @@ Route::middleware('auth')->group(function () {
     // Route để kiểm tra mã công việc
     Route::get('/api/check-task-code/{taskCode}', [TaskController::class, 'checkTaskCode']);
     Route::get('/api/check-document-code/{documentCode}', [DocumentController::class, 'checkDocumentCode'])->name('check.document.code');
+    Route::get('/api/get-history/{id}/{type}/{cycle}/{typeCycle}', [DocumentController::class, 'getHistory'])->name('document.history');
     Route::post('/save-assign-organizations', [DocumentController::class, 'assignOrganizations']);
 
     Route::post('/save-assigned-users', [UserController::class, 'saveAssignedUsers'])->name('saveAssignedUsers');

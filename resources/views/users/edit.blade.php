@@ -32,7 +32,16 @@
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
         </div>
-
+        <div class="mb-4">
+            <label for="role" class="block text-gray-700">Vai trò:</label>
+            <select id="role" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Nhân viên</option>
+            </select>
+            @error('role')
+                <p class="text-red-500 text-sm">{{ $message }}</p>
+            @enderror
+        </div>
         <div class="mb-4">
             <label for="password" class="block text-gray-700">Mật khẩu:</label>
             <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg">

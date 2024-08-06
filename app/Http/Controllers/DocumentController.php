@@ -15,59 +15,120 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrganizationTask;
 use App\Models\TaskResult;
+use App\Models\HistoryChangeDocument;
 
 class DocumentController extends Controller
 {
 
     public function assignOrganizations(Request $request)
     {
-        $documentId = $request->input('documentId');
-        $taskCode = $request->input('taskCode');
-        $organizations = $request->input('organizations');
-        $userId = Auth::id();
-        $user = User::find($userId);
-
-        // Lưu các mã tổ chức vào cơ sở dữ liệu
-        foreach ($organizations as $organizationCode) {
-
-            $document = Document::where('id', $documentId)->first();
-            dd($document);
-            $dataTaskDocument = TaskDocument::where('Task_code', $taskCode)
-            ->where('document_id', $documentId)
-            ->first();
-
-            $dataOrganization = Organization::where('code', $organizations)->first();
-            if ($dataOrganization != null && $dataTaskDocument != null) {
-                $hasRecord = OrganizationTask::create([
-                    'tasks_document_id' => $dataTaskDocument->id,
-                    'document_id' => $document->id,
-                    'organization_id' => $dataOrganization->id,
-                    'creator' => $user->name,
-                    'users_id' => $user->id
-                ]);
-                if ($hasRecord != null) {
-                    $document->status = "assign";
-                    $document->save();
+        DB::beginTransaction();
+    
+        try {
+            $organizations = $request->input('organizations');
+            $userId = Auth::id();
+            $processedOrganizations = []; // Tạo tập hợp để lưu mã organization đã xử lý
+    
+            if (!empty($organizations)) {
+                $first = true; // Đánh dấu tổ chức đầu tiên
+                foreach ($organizations as $data) {
+                    $organizationCode = $data['code'];
+                    $organizationName = $data['name'];
+                    $organizationEmail = $data['email'];
+                    $organizationPhone = $data['phone'];
+                    $taskCodeOrganization = $data['task_code'];
+                    $taskId = $data['task_id'];
+    
+                    // Kiểm tra nếu mã organization đã tồn tại trong tập hợp, bỏ qua vòng lặp
+                    if (in_array($organizationCode, $processedOrganizations)) {
+                        continue;
+                    }
+    
+                    \Log::error('organizations giao việc: ' . $organizationName);
+                    \Log::error('biến check giao việc: ' . $first);
+    
+                    $organization = Organization::where('code', $organizationCode)->where('name', $organizationName)->first();
+                    if ($organization) {
+                        // Kiểm tra nếu đây là tổ chức đầu tiên, gán vào task gốc
+                        $taskDocument = TaskDocument::find($taskId);
+    
+                        if ($first) {
+                            $taskDocument->organization_id = $organization->id;
+                            $taskDocument->status = "assign";
+                            $taskDocument->progress = "Đang thực hiện";
+                            $taskDocument->save();
+                            $first = false;
+                            \Log::error('biến check giao việc: ' . $taskDocument->name);
+                        } else {
+                            // Tạo TaskDocument mới cho tổ chức khác
+                            $taskDocumentClone = TaskDocument::create([
+                                'document_id' => $taskDocument->document_id,
+                                'task_code' => $taskDocument->task_code,
+                                'task_name' => $taskDocument->task_name,
+                                'reporting_cycle' => $taskDocument->reporting_cycle,
+                                'category' => $taskDocument->category,
+                                'required_result' => $taskDocument->required_result,
+                                'start_date' => $taskDocument->start_date,
+                                'end_date' => $taskDocument->end_date,
+                                'status' => 'assign',
+                                'creator' => $userId,
+                                'organization_id' => $organization->id,
+                                'progress' => "Đang thực hiện"
+                            ]);
+    
+                            // Lấy các tiêu chí liên quan đến task gốc
+                            $criterias = CriteriasTask::where('TaskID', $taskDocument->id)->get();
+                            // Lưu các tiêu chí liên quan đến tổ chức
+                            foreach ($criterias as $criteria) {
+                                CriteriasTask::create([
+                                    'TaskID' => $taskDocumentClone->id,
+                                    'CriteriaID' => $criteria->CriteriaID,
+                                    'CriteriaCode' => $criteria->CriteriaCode,
+                                    'CriteriaName' => $criteria->CriteriaName,
+                                    'DocumentID' => $criteria->DocumentID,
+                                    'TaskCode' => $criteria->TaskCode,
+                                    'RequestResult' => $criteria->RequestResult,
+                                    'progress' => "Đang thực hiện"
+                                ]);
+                            }
+                        }
+    
+                        // Thêm mã organization vào tập hợp đã xử lý
+                        $processedOrganizations[] = $organizationCode;
+                    }
                 }
             }
+    
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Organizations assigned successfully.'
+            ]);
+        } catch (\Exception $e) {
+            // Rollback transaction nếu có lỗi xảy ra
+            DB::rollBack();
+    
+            // Ghi lỗi vào log (tùy chọn)
+            \Log::error('Error creating document: ' . $e->getMessage());
+            return response()->json([
+                'error' => true,
+                'message' => 'Đã xảy ra lỗi, vui lòng thử lại.'
+            ]);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Organizations assigned successfully.'
-        ]);
     }
-
+    
 
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $userId = Auth::id();
+        $user = User::find($userId);
         // $documents = Document::with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
         // return view('documents.index', compact('documents'));
         $query = Document::query();
-
+        $taskDocumentsQuery = TaskDocument::query();
         if ($request->filled('document_name')) {
             $query->where('document_name', 'like', '%' . $request->document_name . '%');
         }
@@ -80,9 +141,25 @@ class DocumentController extends Controller
             $query->whereDate('release_date', $request->execution_time);
         }
     
-        $documents = $query->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+        // $documents = $query->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+        $documents = $query->where('creator', $userId)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+
+        if ($documents->isEmpty()) {
+            $documents = Document::whereHas('taskDocuments', function ($query) use ($user) {
+                $query->where('organization_id', $user->organization_id);
+            })->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+
+            $taskDocuments = TaskDocument::whereIn('document_id', $documents->pluck('id'))
+            ->where('organization_id', $user->organization->id)
+            ->get();
+        }
+        else {
+            // Nếu người dùng là người tạo Document, lấy tất cả TaskDocuments liên quan đến Document
+            $taskDocuments = TaskDocument::whereIn('document_id', $documents->pluck('id'))->get();
+        }
+        //dd($taskDocuments);
         $organizations = Organization::all();
-        return view('documents.index', compact('documents', 'organizations'));
+        return view('documents.index', compact('documents', 'organizations', 'taskDocuments'));
 
     }
 
@@ -95,11 +172,32 @@ class DocumentController extends Controller
         // Truyền dữ liệu tổ chức vào view
         return view('documents.create', compact('organizations'));
     }
+
     public function checkDocumentCode($documentCode)
     {
         // Kiểm tra xem mã công việc có tồn tại trong cơ sở dữ liệu không
         $exists = Document::where('document_code',$documentCode)->exists();
         return response()->json(['exists' => $exists]);
+    }
+
+    public function getHistory($id, $type, $cycle, $typeCycle)
+    {
+
+        $id = (int) $id;
+        $type = (int) $type;
+        $typeCycle = (int) $typeCycle;
+        $cycle = (int) $cycle;
+        
+        // dd($id, $type, $typeCycle, $cycle);
+        
+        $lstHistory = HistoryChangeDocument::where('mapping_id', $id)
+        ->where('type_save', $type)
+        ->where('type_cycle', $typeCycle)
+        ->where('number_cycle', $cycle)->get();
+    
+        //dd($lstHistory->toSql(), $lstHistory->getBindings());
+    
+        return response()->json(['histories' => $lstHistory]);
     }
     
     /**
@@ -109,12 +207,12 @@ class DocumentController extends Controller
     {
         // Bắt đầu transaction
         DB::beginTransaction();
-    
+      
         try {
             $userId = Auth::id();
             $user = User::find($userId);
     
-            // Xác thực dữ liệu (nếu cần)
+            // Xác thực dữ liệu
             $request->validate([
                 'document_code' => 'required|string|max:255',
                 'document_name' => 'required|string|max:255',
@@ -123,6 +221,7 @@ class DocumentController extends Controller
                 'files.*' => 'nullable|file|max:2048',
                 'tasks.*' => 'required|string',
                 'criterias.*' => 'required|string',
+                'organizations.*' => 'nullable|string',
             ]);
     
             // Lưu tài liệu
@@ -131,44 +230,117 @@ class DocumentController extends Controller
                 'document_name' => $request->input('document_name'),
                 'issuing_department' => $request->input('issuing_department'),
                 'release_date' => $request->input('release_date'),
-                'creator' => $user->name
+                'creator' => $userId
             ]);
-      
+    
             // Xử lý file upload
             if ($request->hasFile('files')) {
-
                 foreach ($request->file('files') as $file) {
                     $fileName = time() . '_' . $file->getClientOriginalName();
                     $filePath = $file->storeAs('documents', $fileName, 'public');
-    
-                    // Lưu thông tin file vào cơ sở dữ liệu
                     File::create([
                         'document_id' => $document->id,
                         'file_name' => $fileName,
                         'file_path' => $filePath,
+                        'type' => '3'
                     ]);
                 }
             }
+    
+            // Lưu và gán task
             $tasks = $request->input('tasks');
-            // Lưu các đầu việc
-            if (is_array($tasks) && !empty($tasks)) {
-                foreach ($tasks as $taskData) {
-                    // Phân tách dữ liệu đầu việc
-                    list($taskCode, $taskName, $reportingCycle, $category, $requiredResult, $startDate, $endDate) = explode('|', $taskData);
-                    $existingTask = Task::where('task_code', $taskCode)->first();
-                    if (!$existingTask) {
-                        Task::create([
-                            'task_code' => $taskCode,
-                            'task_name' => $taskName,
-                            'reporting_cycle' => $reportingCycle,
-                            'category' => $category,
-                            'required_result' => $requiredResult,
-                            'start_date' => $startDate,
-                            'end_date' => $endDate,
-                            'creator' => $user->name
-                        ]);
+            $organizations = $request->input('organizations', []);
+            $createdTaskDocuments = array();
+           // dd($request);
+            foreach ($tasks as $taskData) {
+                list($taskCode, $taskName, $reportingCycle, $category, $requiredResult, $startDate, $endDate) = explode('|', $taskData);
+                $existingTask = Task::where('task_code', $taskCode)->first();
+                $task = $existingTask ?: Task::create([
+                    'task_code' => $taskCode,
+                    'task_name' => $taskName,
+                    'reporting_cycle' => $reportingCycle,
+                    'category' => $category,
+                    'required_result' => $requiredResult,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'creator' => $user->name,
+                ]);
+                \Log::error('Task: ' . $taskData);
+                // Xử lý organizations
+                if (!empty($organizations)) {
+                    foreach ($organizations as $data) {
+                        list($taskCodeOrganization, $organizationCode, $organizationName, $organizationEmail, $organizationPhone) = explode('|', $data);
+                        if ($taskCodeOrganization == $taskCode) {
+                            $organization = Organization::where('code', $organizationCode)->where('name', $organizationName)->first();
+                            if ($organization) {
+                               
+                                $taskDocument = TaskDocument::create([
+                                    'document_id' => $document->id,
+                                    'task_code' => $taskCode,
+                                    'task_name' => $taskName,
+                                    'reporting_cycle' => $reportingCycle,
+                                    'category' => $category,
+                                    'required_result' => $requiredResult,
+                                    'start_date' => $startDate,
+                                    'end_date' => $endDate,
+                                    'status' => 'assign',
+                                    'creator' => $userId,
+                                    'organization_id' => $organization->id,
+                                    'progress' => "Đang thực hiện"
+                                ]);
+                        
+                                array_push($createdTaskDocuments, $taskCode);
+                                // Lưu các tiêu chí liên quan đến tổ chức
+                                $criterias = $request->input('criterias');
+                                foreach ($criterias as $criteria) {
+                                    list($taskCodeCriteria, $criteriaCode, $criteriaName, $result) = explode('|', $criteria);
+                                    if ($taskCodeCriteria == $taskCode) {
+                                        $existingCriteria = Criteria::where('code', $criteriaCode)->first();
+                                        $existingCriteria = $existingCriteria ?: Criteria::create([
+                                            'code' => $criteriaCode,
+                                            'name' => $criteriaName,
+                                        ]);
+    
+                                        CriteriasTask::create([
+                                            'TaskID' => $taskDocument->id,
+                                            'CriteriaID' => $existingCriteria->id,
+                                            'CriteriaCode' => $criteriaCode,
+                                            'CriteriaName' => $criteriaName,
+                                            'DocumentID' => $document->id,
+                                            'TaskCode' => $taskCode,
+                                            'RequestResult' => $result,
+                                            'progress' => "Đang thực hiện"
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
                     }
-                    TaskDocument::create([
+                }
+  
+            }
+            $uniqueArray = array_unique($createdTaskDocuments);
+       
+            foreach ($tasks as $taskData) {
+                list($taskCode, $taskName, $reportingCycle, $category, $requiredResult, $startDate, $endDate) = explode('|', $taskData);
+                $index = in_array($taskCode, $uniqueArray);
+                #dd($taskCode);
+                if ($index) continue;
+                #dd($index);
+                array_push($createdTaskDocuments, $taskCode);
+                $existingTask = Task::where('task_code', $taskCode)->first();
+                    $task = $existingTask ?: Task::create([
+                        'task_code' => $taskCode,
+                        'task_name' => $taskName,
+                        'reporting_cycle' => $reportingCycle,
+                        'category' => $category,
+                        'required_result' => $requiredResult,
+                        'start_date' => $startDate,
+                        'end_date' => $endDate,
+                        'creator' => $userId,
+                        
+                    ]);
+                    $taskDocument = TaskDocument::create([
                         'document_id' => $document->id,
                         'task_code' => $taskCode,
                         'task_name' => $taskName,
@@ -178,92 +350,76 @@ class DocumentController extends Controller
                         'start_date' => $startDate,
                         'end_date' => $endDate,
                         'status' => 'draft',
-                        'creator' => $user->name
+                        'creator' => $userId,
+                        'organization_id' => 0,
+                        'progress' => "Chưa giao việc"
                     ]);
-                }
-                $criterias = $request->input('criterias');
-                // Lưu các đầu việc
-                if (is_array($criterias) && !empty($criterias)) {
-                    // Lưu các tiêu chí
-                    foreach ($criterias as $criteriaData) {
-                        // Phân tách dữ liệu tiêu chí
-                        list($taskCode, $criteriaCode, $criteriaName, $result) = explode('|', $criteriaData);
-                        $existingCriteria = Criteria::where('code', $criteriaCode)->first();
-                        $existingTask = Task::where('task_code', $taskCode)->first();
-                        if (!$existingCriteria) {
-                            Criteria::create([
+    
+                    // Lưu các tiêu chí cho các tasks không có organizations
+                    $criterias = $request->input('criterias');
+                    foreach ($criterias as $criteria) {
+                        list($taskCodeCriteria, $criteriaCode, $criteriaName, $result) = explode('|', $criteria);
+                        if ($taskCodeCriteria == $taskCode) {
+                            $existingCriteria = Criteria::where('code', $criteriaCode)->first();
+                            $existingCriteria = $existingCriteria ?: Criteria::create([
                                 'code' => $criteriaCode,
                                 'name' => $criteriaName,
                             ]);
-                        }
-                        if ($existingTask && $existingCriteria) {
+    
                             CriteriasTask::create([
-                                'TaskID' => $existingTask->id,
+                                'TaskID' => $taskDocument->id,
                                 'CriteriaID' => $existingCriteria->id,
                                 'CriteriaCode' => $criteriaCode,
                                 'CriteriaName' => $criteriaName,
                                 'DocumentID' => $document->id,
                                 'TaskCode' => $taskCode,
                                 'RequestResult' => $result,
+                                'progress' => "Chưa giao việc"
                             ]);
                         }
                     }
-                }
-                if ($request->has('organizations')) {
-                    foreach ($request->input('organizations') as $data) {
-                        // Phân tách dữ liệu tiêu chí
-                        list($taskCode, $organizationCode, $organizationName, $organizationEmail, $organizationPhone) = explode('|', $data);
-    
-                        $dataTaskDocument = TaskDocument::where('Task_code', $taskCode)
-                        ->where('document_id', $document->id)
-                        ->first();
-    
-                        $dataOrganization = Organization::where('code', $organizationCode)
-                        ->where('name', $organizationName)
-                        ->first();
-                        if ($dataOrganization != null && $dataTaskDocument != null) {
-                            $hasRecord = OrganizationTask::create([
-                                'tasks_document_id' => $dataTaskDocument->id,
-                                'document_id' => $document->id,
-                                'organization_id' => $dataOrganization->id,
-                                'creator' => $user->name,
-                                'users_id' => $user->id
-                            ]);
-                            if ($hasRecord != null) {
-                                $dataTaskDocument->status = "assign";
-                                $dataTaskDocument->save();
-                            }
-          
-                        }
-                    }
-                }
+                    $uniqueArray = array_unique($createdTaskDocuments);
             }
            
-            
             // Commit transaction nếu tất cả các bước trên thành công
             DB::commit();
     
             return redirect()->route('documents.index')->with('success', 'Danh mục tạo thành công!');
-            
+    
         } catch (\Exception $e) {
             // Rollback transaction nếu có lỗi xảy ra
             DB::rollBack();
-            
+    
             // Ghi lỗi vào log (tùy chọn)
             \Log::error('Error creating document: ' . $e->getMessage());
     
             return redirect()->back()->with('error', 'Đã xảy ra lỗi, vui lòng thử lại.');
         }
     }
-
+    
     /**
      * Display the specified resource.
      */
     public function show($id)
     {
+              
         $document = Document::findOrFail($id);
-        $taskDocuments = $document->taskDocuments;
-
+        $userId = Auth::id();
+        $user = User::find($userId);
+        
+        // Kiểm tra xem người dùng có phải là người tạo tài liệu không
+        //dd($userId);
+        if ($document->creator == $userId) {
+            // Nếu người dùng là người tạo, lấy tất cả TaskDocument liên quan
+            $taskDocuments = $document->taskDocuments;
+        } else {
+            // Nếu không phải người tạo, lấy TaskDocument theo organization_id của người dùng
+            $taskDocuments = $document->taskDocuments->filter(function ($task) use ($user) {
+                return $task->organization_id === $user->organization_id;
+            });
+        }
+        
+        // Lấy criterias cho mỗi task
         $criterias = [];
         foreach ($taskDocuments as $task) {
             $criterias[$task->task_code] = CriteriasTask::where('DocumentID', $document->id)
@@ -271,23 +427,12 @@ class DocumentController extends Controller
                                                         ->get();
         }
     
-        return view('documents.show', compact('document', 'taskDocuments', 'criterias'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        
-        $document = Document::findOrFail($id);
-        $taskDocuments = $document->taskDocuments;
     
         $weekTask = $taskDocuments->where('reporting_cycle' , 1);
         $monthTask = $taskDocuments->where('reporting_cycle' , 2);
         $quarterTask = $taskDocuments->where('reporting_cycle' , 3);
         $yearTask = $taskDocuments->where('reporting_cycle' , 4);
-
+        
         $timeParamsWeek = $this->getTimeParameters(1);
         //dd($timeParamsWeek);
         // $currentWeek = $timeParamsWeek['current_week'];
@@ -308,14 +453,48 @@ class DocumentController extends Controller
         // $currentYear = $timeParamsYear['current_year'] ?? null;
         // $previousYear = $timeParamsYear['previous_year'] ?? null;
         // $twoYearsAgo = $timeParamsYear['two_years_ago'] ?? null;
+        $organizations = Organization::all();
+        return view('documents.show', compact('document', 'taskDocuments', 'criterias', 'organizations', 'weekTask', 'monthTask', 'quarterTask', 'yearTask'
+        , 'timeParamsWeek', 'timeParamsMonth', 'timeParamsQuarter', 'timeParamsYear'));
+    }
+    
 
-
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        
+        $document = Document::findOrFail($id);
+        $userId = Auth::id();
+        $user = User::find($userId);
+        
+        if ($document->creator == $userId) {
+            $taskDocuments = $document->taskDocuments;
+        } else {
+            $taskDocuments = $document->taskDocuments->filter(function ($task) use ($user) {
+                return $task->organization_id === $user->organization_id;
+            });
+        }
+        
         $criterias = [];
         foreach ($taskDocuments as $task) {
             $criterias[$task->task_code] = CriteriasTask::where('DocumentID', $document->id)
                                                         ->where('TaskCode', $task->task_code)
                                                         ->get();
         }
+    
+    
+        $weekTask = $taskDocuments->where('reporting_cycle' , 1);
+        $monthTask = $taskDocuments->where('reporting_cycle' , 2);
+        $quarterTask = $taskDocuments->where('reporting_cycle' , 3);
+        $yearTask = $taskDocuments->where('reporting_cycle' , 4);
+        
+        $timeParamsWeek = $this->getTimeParameters(1);
+        $timeParamsMonth = $this->getTimeParameters(2);
+        $timeParamsQuarter = $this->getTimeParameters(3);
+        $timeParamsYear = $this->getTimeParameters(4);
+
         $organizations = Organization::all();
         return view('documents.edit', compact('document', 'taskDocuments', 'criterias', 'organizations', 'weekTask', 'monthTask', 'quarterTask', 'yearTask'
         , 'timeParamsWeek', 'timeParamsMonth', 'timeParamsQuarter', 'timeParamsYear'));
@@ -326,25 +505,14 @@ class DocumentController extends Controller
      */
     public function update(Request $request)
     {
+        $userId = Auth::id();
+        $user = User::find($userId);
         DB::beginTransaction();
-    //dd($request);
+       // dd($request);
         try {
             // Validate request data
             $validatedData = $request->validate([
-                'document_name' => 'required|string',
-                'issuing_department' => 'required|integer',
-                'release_date' => 'required|date',
-                'document_id.*' => 'required|integer',
-                'task_code.*' => 'required|string',
-                'task_id.*' => 'required|integer',
-                'required_result.*' => 'required|string',
-                'task_progress.*' => 'required|string',
-                'progress_evaluation.*' => 'required|string',
-                'current_result.*' => 'required|string',
-                'current_note.*' => 'required|string',
-                'task_name.*' => 'required|string',
-                'typeCurrent.*' => 'required|string',
-                'numberCurrent.*' => 'required|string',
+
             ]);
     
             // Lấy dữ liệu từ request
@@ -357,72 +525,144 @@ class DocumentController extends Controller
             $requiredResults = $request->input('required_result', []);
             $taskProgress = $request->input('task_progress', []);
             $progressEvaluations = $request->input('progress_evaluation', []);
-            $currentResults = $request->input('current_result', []);
-            $currentNotes = $request->input('current_note', []);
+            $taskCurrentResults = $request->input('task_current_result', []);
+            $taskCurrentNotes = $request->input('task_current_note', []);
             $taskNames = $request->input('task_name', []);
             $typeCurrent = $request->input('typeCurrent', []);
             $numberCurrent = $request->input('numberCurrent', []);
-    
+
+            $criteriaTypeCurrent = $request->input('criteriaTypeCurrent', []);
+            $criteriaNumberCurrent = $request->input('criteriaNumberCurrent', []);
+            $criteriaCode = $request->input('criteria_code', []);
+            $criteriaIds = $request->input('criteria_id', []);
+            $criteriaName = $request->input('criteria_name', []);
+            $criteriaResult = $request->input('criteria_required_result', []);
+            $criteriaProgress = $request->input('criterion_progress', []);
+            $criteriaProgressEvaluation = $request->input('criteria_progress_evaluation', []);
+            $criteriaCurrentResult = $request->input('criteria_current_result', []);
+            $criteriaCurrentNote = $request->input('criteria_current_note', []);
             // Kiểm tra nếu $documentIds không rỗng và lấy phần tử đầu tiên
             if (!empty($documentIds) && is_array($documentIds)) {
                 $document = Document::findOrFail($documentIds[0]);
-    
+                
                 if ($document) {
-                    if ($request->hasFile('files')) {
+                    if($document->creator == $userId){
+                        if ($request->hasFile('files')) {
 
-                        foreach ($request->file('files') as $file) {
-                            $fileName = time() . '_' . $file->getClientOriginalName();
-                            $filePath = $file->storeAs('documents', $fileName, 'public');
-            
-                            // Lưu thông tin file vào cơ sở dữ liệu
-                            File::create([
-                                'document_id' => $document->id,
-                                'file_name' => $fileName,
-                                'file_path' => $filePath,
-                            ]);
+                            foreach ($request->file('files') as $file) {
+                                $fileName = time() . '_' . $file->getClientOriginalName();
+                                $filePath = $file->storeAs('documents', $fileName, 'public');
+                
+                                // Lưu thông tin file vào cơ sở dữ liệu
+                                File::create([
+                                    'document_id' => $document->id,
+                                    'file_name' => $fileName,
+                                    'file_path' => $filePath,
+                                ]);
+                            }
                         }
+    
+                        // Cập nhật thông tin tài liệu
+                        $document->document_name = $documentName;
+                        $document->issuing_department = $issuingDepartment;
+                        $document->release_date = $releaseDate;
+                        $document->save();
                     }
-
-                    // Cập nhật thông tin tài liệu
-                    $document->document_name = $documentName;
-                    $document->issuing_department = $issuingDepartment;
-                    $document->release_date = $releaseDate;
-                    $document->save();
                     
+
                     if (!empty($taskIds) && is_array($taskIds)) {
                          // Cập nhật các tác vụ
                         foreach ($taskIds as $index => $taskId) {
                             $task = TaskDocument::find($taskId);
-        
                             if ($task) {
                               
                                 $task->task_name = $taskNames[$index] ?? '';
                                 $task->required_result = $requiredResults[$index] ?? '';
-                                $task->progress = $taskProgress[$index] ?? '';
+                                $task->progress = "Hoàn Thành" ?? '';
                                 $task->progress_evaluation = $progressEvaluations[$index] ?? '';
                                 $task->save();
-                                
-                                $record = TaskResult::where('tasks_document_id' , $task->id)->where("document_id", $document->id)->first();
+                                $record = TaskResult::where('id_task_criteria' , $task->id)->where("document_id", $document->id)->where("type_save", 1)->first();
                                 
                                 if($record){
-                                    $record->result =  $currentResults[$index] ?? '';
-                                    $record->description =  $currentNotes[$index] ?? '';
+                                    $record->result =  $taskCurrentResults[$index] ?? '';
+                                    $record->description =  $taskCurrentNotes[$index] ?? '';
                                     $record->number_type =  $numberCurrent[$index] ?? '';
-                                    $record->type =  $typeCurrent[$index] ?? '';
-
+                                    $record->type =  $task->reporting_cycle ?? '';
+                                    $record->save();
+                                    HistoryChangeDocument::create([
+                                        'mapping_id' => $task->id,
+                                        'type_save' => 1,
+                                        'result' => $record->result,
+                                        'description' => $record->description,
+                                        'number_cycle' => $record->number_type,
+                                        'type_cycle' => $record->type,
+                                        'update_date' => Carbon::now(),
+                                        'update_user'=> $userId
+                                    ]);
                                 }else{
                                     $hasRecord = TaskResult::create([
-                                        'tasks_document_id' => $task->id,
+                                        'id_task_criteria' => $task->id,
                                         'document_id' => $document->id,
-                                        'result' => $currentResults[$index] ?? '',
-                                        'description' => $currentNotes[$index] ?? '',
+                                        'result' => $taskCurrentResults[$index] ?? '',
+                                        'description' => $taskCurrentNotes[$index] ?? '',
                                         'number_type' => $numberCurrent[$index] ?? '',
-                                        'type' => $typeCurrent[$index] ?? ''
+                                        'type' => $task->reporting_cycle ?? '',
+                                        'type_save' => 1
+                                    ]);
+
+
+                                }
+                            }
+                        }
+                    }
+
+
+                    if (!empty($criteriaIds) && is_array($criteriaIds)) {
+                         // Cập nhật các tác vụ
+                        foreach ($criteriaIds as $index => $taskId) {
+                            $criteria = CriteriasTask::find($taskId);
+                            if ($criteria) {
+                                //dd($criteria);
+                                $criteria->CriteriaName = $criteriaName[$index] ?? '';
+                                $criteria->RequestResult = $criteriaResult[$index] ?? '';
+                                $criteria->progress = "Hoàn Thành" ?? '';
+                                $criteria->progress_evaluation = $criteriaProgressEvaluation[$index] ?? '';
+                                $criteria->save();
+                                
+                                $record = TaskResult::where('id_task_criteria' , $criteria->id)->where("document_id", $document->id)
+                                ->where("type_save", 2)->first();
+                                
+                                if($record){
+                                    $record->result =  $criteriaCurrentResult[$index] ?? '';
+                                    $record->description =  $criteriaCurrentNote[$index] ?? '';
+                                    $record->number_type =  $criteriaNumberCurrent[$index] ?? '';
+                                    $record->type =  $criteriaTypeCurrent[$index] ?? '';
+                                    $record->save();
+                                    HistoryChangeDocument::create([
+                                        'mapping_id' => $criteria->id,
+                                        'type_save' => 2,
+                                        'result' => $record->result,
+                                        'description' => $record->description,
+                                        'number_cycle' => $record->number_type,
+                                        'type_cycle' => $record->type,
+                                        'update_date' => Carbon::now(),
+                                        'update_user'=> $userId
+                                    ]);
+                                }else{
+                                    $hasRecord = TaskResult::create([
+                                        'id_task_criteria' => $criteria->id,
+                                        'document_id' => $document->id,
+                                        'result' => $criteriaCurrentResult[$index] ?? '',
+                                        'description' => $criteriaCurrentNote[$index] ?? '',
+                                        'number_type' => $criteriaNumberCurrent[$index] ?? '',
+                                        'type' => $criteriaTypeCurrent[$index] ?? '',
+                                        'type_save' => 2
                                     ]);
                                 }
                             }
                         }
                     }
+
                 }
     
                 DB::commit();

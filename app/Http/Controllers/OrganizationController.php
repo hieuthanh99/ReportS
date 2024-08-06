@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Organization;
 use App\Models\OrganizationTask;
+use App\Models\TaskDocument;
 use Illuminate\Support\Facades\Auth;
 
 class OrganizationController extends Controller
@@ -16,8 +17,8 @@ class OrganizationController extends Controller
         $taskId = $request->query('taskId');
     
         // Tìm các cơ quan/tổ chức đã gán với task cụ thể
-        $organizations = OrganizationTask::where('document_id', $documentId)
-                                          ->where('tasks_document_id', $taskId)
+        $organizations = TaskDocument::where('document_id', $documentId)
+                                          ->where('id', $taskId)
                                           ->with('organization')
                                           ->get();
     

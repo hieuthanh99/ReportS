@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
-    {{-- <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Danh mục phân loại</h1>
-        <a href="{{ route('categories.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Tạo mới</a>
-    </div> --}}
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
+        <a href="{{ route('categories.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
+    </div>
   
     @if(session('success'))
         <div id="success-message" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">

@@ -10,7 +10,7 @@ class TaskResult extends Model
     use HasFactory;
     protected $table = 'task_result';
     protected $fillable = [
-        'tasks_document_id',
+        'id_task_criteria',
         'document_id',
         'result',
         'description',
@@ -19,9 +19,17 @@ class TaskResult extends Model
         'type_save'
     ];
 
-    public function tasksDocument()
+    public function taskDocument()
     {
-        return $this->belongsTo(TasksDocument::class, 'tasks_document_id');
+        return $this->belongsTo(TaskDocument::class, 'id_task_criteria')->where('type', 1);
+    }
+
+    /**
+     * Get the criteria task that owns the task result.
+     */
+    public function criteriaTask()
+    {
+        return $this->belongsTo(CriteriasTask::class, 'id_task_criteria')->where('type', 2);
     }
 
     public function document()

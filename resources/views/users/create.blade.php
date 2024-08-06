@@ -40,6 +40,19 @@
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
+          
+        <div>
+            <label for="role" class="block text-gray-700 font-medium mb-2">Role</label>
+            <select id="role" name="role"
+            class="form-select w-full border border-gray-300 rounded-lg p-2">
+            <option value="admin">Admin</option>
+            <option value="staff">Nhân viên</option>
+        </select>
+            @error('password')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+       
             <div>
                 <label for="password" class="block text-gray-700 font-medium mb-2">Mật khẩu</label>
                 <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-lg p-2" required>
@@ -47,6 +60,7 @@
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
+           
             <div>
                 <label for="password_confirmation" class="block text-gray-700 font-medium mb-2">Xác nhận mật khẩu</label>
                 <input type="password" id="password_confirmation" name="password_confirmation" class="w-full border border-gray-300 rounded-lg p-2" required>

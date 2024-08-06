@@ -138,6 +138,7 @@ class UserController extends Controller
         $user->organization_id = $request->input('organization_id');
         $user->phone = $request->input('phone');
         $user->address = $request->input('address');
+        $user->role = $request->input('role');
         $user->save();
     
         return redirect()->route('users.index')->with('success', 'Người dùng đã được tạo thành công!');
@@ -165,7 +166,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
-
+        $user->role = $request->input('role');
         // Cập nhật mật khẩu nếu có thay đổi
         if ($request->filled('password')) {
             $user->password = Hash::make($validatedData['password']);

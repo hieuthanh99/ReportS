@@ -2,6 +2,75 @@
 
 @section('content')
     <style>
+    /* Đảm bảo rằng các cột của bảng không bị lệch khi bật cuộn */
+    #existing-organizations-table {
+        width: 100%;
+        border-collapse: collapse; /* Đảm bảo các cột không bị lệch */
+        
+    }
+    #existing-tasks-table {
+        width: 100%;
+        border-collapse: collapse; /* Đảm bảo các cột không bị lệch */
+        
+    }
+    #existing-criteria-table {
+        width: 100%;
+        border-collapse: collapse; /* Đảm bảo các cột không bị lệch */
+        
+    }
+
+    #existing-organizations-table thead th {
+        position: sticky;
+        top: 0; /* Đặt vị trí sticky ở trên cùng */
+        background-color: white; /* Đảm bảo tiêu đề có nền màu trắng để không bị ẩn khi cuộn */
+        z-index: 1; /* Đảm bảo tiêu đề ở trên cùng */
+    }
+     #existing-tasks-table thead th {
+        position: sticky;
+        top: 0; /* Đặt vị trí sticky ở trên cùng */
+        background-color: white; /* Đảm bảo tiêu đề có nền màu trắng để không bị ẩn khi cuộn */
+        z-index: 1; /* Đảm bảo tiêu đề ở trên cùng */
+    }
+    #existing-criteria-table thead th {
+        position: sticky;
+        top: 0; /* Đặt vị trí sticky ở trên cùng */
+        background-color: white; /* Đảm bảo tiêu đề có nền màu trắng để không bị ẩn khi cuộn */
+        z-index: 1; /* Đảm bảo tiêu đề ở trên cùng */
+    }
+
+    /* Đảm bảo các cột có chiều rộng đúng khi cuộn */
+    #existing-organizations-table table {
+        width: 100%;
+        border-collapse: collapse; /* Đảm bảo các cột không bị lệch */
+    }
+
+      /* Đảm bảo các cột có chiều rộng đúng khi cuộn */
+    #existing-tasks-table table {
+        width: 100%;
+        border-collapse: collapse; /* Đảm bảo các cột không bị lệch */
+    }
+
+      /* Đảm bảo các cột có chiều rộng đúng khi cuộn */
+    #existing-criteria-table table {
+        width: 100%;
+        border-collapse: collapse; /* Đảm bảo các cột không bị lệch */
+    }
+
+    #existing-organizations-table th, td {
+        padding: 8px;
+        text-align: center; /* Giữ căn giữa nội dung */
+        border: 1px solid #ddd;
+    }
+    #existing-tasks-table th, td {
+        padding: 8px;
+        text-align: center; /* Giữ căn giữa nội dung */
+        border: 1px solid #ddd;
+    }
+    #existing-criteria-table th, td {
+        padding: 8px;
+        text-align: center; /* Giữ căn giữa nội dung */
+        border: 1px solid #ddd;
+    } 
         .file-item {
             position: relative;
             display: flex;
@@ -106,7 +175,7 @@
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Danh sách các đầu việc</label>
                 <div class="overflow-x-auto">
-                    <table id="task-table" class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
+                    <table id="task-table" class="min-w-full divide-y divide-gray-200 border border-gray-300 table-container">
                         <thead>
                             <tr class="bg-gray-100 border-b">
                                 <th class="py-2 px-4 text-left text-gray-600">Mã đầu việc</th>
@@ -298,7 +367,11 @@
                         class="form-input w-full border border-gray-300 rounded-lg p-2"
                         placeholder="Tìm kiếm theo mã hoặc tên">
                 </div>
-                <div class="mb-4 overflow-x-auto">
+                <div class="mb-4 overflow-x-auto" style="
+                max-height: 400px;
+                overflow-y: auto;
+                overflow-x: auto;
+                text-align: center;">
                     <table id="existing-tasks-table" class="w-full border border-gray-300 rounded-lg">
                         <thead>
                             <tr>
@@ -378,7 +451,11 @@
                         class="form-input w-full border border-gray-300 rounded-lg p-2"
                         placeholder="Tìm kiếm theo mã hoặc tên">
                 </div>
-                <div class="mb-4 overflow-x-auto">
+                <div class="mb-4 overflow-x-auto" style="
+                max-height: 400px;
+                overflow-y: auto;
+                overflow-x: auto;
+                text-align: center;">
                     <table id="existing-criteria-table" class="w-full border border-gray-300 rounded-lg">
                         <thead>
                             <tr>
@@ -439,7 +516,11 @@
                 </div>
         
                 <!-- Bảng danh sách chỉ tiêu -->
-                <div class="mb-4 overflow-x-auto">
+                <div class="mb-4 overflow-x-auto" style="
+                max-height: 400px;
+                overflow-y: auto;
+                overflow-x: auto;
+                text-align: center;">
                     <table id="existing-organizations-table" class="w-full border border-gray-300 rounded-lg">
                         <thead>
                             <tr>
@@ -454,7 +535,7 @@
                                 <th class="py-2 px-4 border-b">Số điện thoại</th>
                             </tr>
                         </thead>
-                        <tbody id="existing-organizations" style="text-align: center">
+                        <tbody id="existing-organizations" style="">
                             <!-- Danh sách chỉ tiêu sẽ được chèn vào đây bằng JavaScript -->
                         </tbody>
                     </table>
@@ -617,10 +698,10 @@
                 checkTasksAndToggleButtons();
 
                 const reportingCycleMap = {
-                    1: 'Hàng Ngày',
-                    2: 'Hàng Tuần',
-                    3: 'Hàng Tháng',
-                    3: 'Hàng Năm',
+                    1: 'Hàng Tuần',
+                    2: 'Hàng Tháng',
+                    3: 'Hàng Quý',
+                    4: 'Hàng Năm',
                     // Thêm các giá trị khác nếu cần
                 };
                 // Hiển thị popup tạo đầu việc mới
@@ -684,8 +765,8 @@
                         <td class="py-2 px-4 border-b">${startDate}</td>
                         <td class="py-2 px-4 border-b">${endDate}</td>
                         <td class="py-2 px-4 border-b">
-                            <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations">Giao việc</button>
-                            <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-task">Xóa</button>
+                            <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations"><i class="fa fa-tasks"></i></button>
+                            <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-task"><i class="fas fa-trash"></i></button>
                             <input type="hidden" name="tasks[]" value="${taskCode}|${taskName}|${reportingCycle}|${category}|${requiredResult}|${startDate}|${endDate}">
                         </td>
                     </tr>
@@ -925,8 +1006,8 @@
                                     <td class="py-2 px-4 border-b">${startDate}</td>
                                     <td class="py-2 px-4 border-b">${endDate}</td>
                                     <td class="py-2 px-4 border-b">
-                                        <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations">Giao việc</button>
-                                        <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-task">Xóa</button>
+                                        <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations"><i class="fa fa-tasks"></i></button>
+                                        <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-task"><i class="fas fa-trash"></i></button>
                                         <input type="hidden" name="tasks[]" value="${taskCode}|${taskName}|${reportingCycle}|${category}|${requiredResult}|${startDate}|${endDate}">
                                     </td>
                                 </tr>
@@ -1268,7 +1349,7 @@
                                         <td class="py-2 px-4 border-b">${criteriaName}</td>
                                         <td class="py-2 px-4 border-b">${requiredResult}</td>
                                         <td class="py-2 px-4 border-b">
-                                            <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-criteria">Xóa</button>
+                                            <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-criteria"><i class="fas fa-trash"></i></button>
                                             <input type="hidden" name="criterias[]" value="${taskCode}|${criteriaCode}|${criteriaName}|${requiredResult}">
                                         </td>
                                     </tr>
@@ -1354,15 +1435,19 @@
                         var taskCode = cells[0].textContent.trim(); // Dữ liệu từ cột đầu tiên
                         var taskName = cells[1].textContent.trim(); // Dữ liệu từ cột thứ hai
                         taskCodeRow = taskCode;
-                        // if (criteriaMap.size === 0) {
-                        //     alert("Vui lòng chọn tiêu chí cho đầu công việc!");
-                        //     return;
-                        // }
+                        console.log(taskCodeRow);
+                        // Lấy tất cả các input radio với tên 'filter'
+                        const radios = document.querySelectorAll('input[name="filter"]');
+                        radios.forEach(radio => {
+                        radio.checked = false; // Đặt thuộc tính checked thành false
+                        });
                         document.getElementById('check-all-organizations').checked = false;
                         document.querySelectorAll('#existing-organizations input.organization-checkbox').forEach(
                         checkbox => {
                             checkbox.checked = false;
                         });
+                        const tasksTableBody = document.getElementById('existing-organizations');
+                        tasksTableBody.innerHTML = ''; 
                         document.getElementById('assign-organizations-modal').classList.remove('hidden');
                     }
                 });
@@ -1592,6 +1677,42 @@
                         .catch(error => console.error('Error fetching tasks:', error));
                 }
 
+
+                const organizationsCheckMap = new Map();
+
+                // Hàm để thêm hoặc cập nhật tiêu chí cho một mã công việc
+                function addCheckOrganizations(taskCode, criteriaCode) {
+                    if (!organizationsCheckMap.has(taskCode)) {
+                        organizationsCheckMap.set(taskCode, new Set());
+                    }
+                    organizationsCheckMap.get(taskCode).add(criteriaCode);
+                }
+
+                // Hàm để xóa tiêu chí cho một mã công việc
+                function removeCheckOrganizations(taskCode, criteriaCode) {
+                    if (organizationsCheckMap.has(taskCode)) {
+                        organizationsCheckMap.get(taskCode).delete(criteriaCode);
+                        if (organizationsCheckMap.get(taskCode).size === 0) {
+                            organizationsCheckMap.delete(taskCode);
+                        }
+                    }
+                }
+
+                // Hàm để lấy danh sách tiêu chí cho một mã công việc
+                function getCheckOrganizationsForTask(taskCode) {
+                    return organizationsCheckMap.has(taskCode) ? Array.from(organizationsCheckMap.get(taskCode)) : [];
+                }
+
+                function hasCheckOrganizations(taskCode, criteriaCode) {
+                    console.log("organizationsCheckMap");
+                    console.log(organizationsCheckMap);
+                    if (!organizationsCheckMap.has(taskCode)) {
+                        return false; // Mã công việc không tồn tại trong criteriaMap
+                    }
+
+                    const criteriaSet = organizationsCheckMap.get(taskCode);
+                    return organizationsCheckMap.has(criteriaCode); // Kiểm tra xem tiêu chí có trong Set không
+                }
                 document.getElementById('assign-organizations-save').addEventListener('click', function() {
                     const selectedCheckboxes = document.querySelectorAll(
                         '#existing-organizations input[type="checkbox"]:checked');
@@ -1604,6 +1725,16 @@
                         const organizationEmail = row.querySelector('.organization-email').textContent;
                         const organizationPhone = row.querySelector('.organization-phone').textContent;
                         const taskCode = row.querySelector('.task-code').textContent;
+
+
+                        var hasCri = hasOrganizations(taskCode, organizationCode);
+                        if (hasCri) {
+                            alert("Đã tồn tại mã tổ chức trong giao việc!")
+                            return;
+                        }else{
+                            addCheckOrganizations(taskCode, organizationCode);
+                        }
+
                         const organizationHTML = `
                             <tr>
                                 <td class="py-2 px-4 border-b">

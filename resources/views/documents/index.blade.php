@@ -41,10 +41,12 @@
 
         <div class="flex justify-end gap-4 mb-6">
             <button type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+            class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
         </button>
-            <a href="{{ route('documents.create') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Tạo mới</a>
+        @if(Auth::user()->role === 'admin')
+            <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
+        @endif
         </div>
     </form>
         @if (session('success'))
@@ -86,15 +88,17 @@
                                     onclick="window.location.href='{{ route('documents.edit', $document) }}'">
                                     <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                 </button>
-                                <form action="{{ route('documents.destroy', $document) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
-                                        <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
-                                    </button>
-                                </form>
+                                @if(Auth::user()->role === 'admin')
+                                    <form action="{{ route('documents.destroy', $document) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                            onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
+                                            <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                             
                         </tr>

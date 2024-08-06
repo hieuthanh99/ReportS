@@ -2,6 +2,17 @@
 
 @section('content')
     <style>
+/* .table-container {
+    table-layout: fixed;
+    width: 100%; 
+} */
+    .table-container th, .table-container td {
+        width: 250px;
+        text-align: center;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
         #assigned-organizations-modal {
             z-index: 99999999;
         }
@@ -26,10 +37,20 @@
             left: 0;
             background-color: #f9f9f9;
             /* Background color to cover any gaps */
-            z-index: 1;
+            z-index: 10;
             /* Ensure it is on top of other cells */
         }
-
+/* 
+        th:nth-child(2),
+th:nth-child(3),
+td:nth-child(2),
+td:nth-child(3) {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    background-color: #f9f9f9;
+    z-index: 100;
+} */
         .table-container {
             overflow-x: auto;
         }
@@ -93,40 +114,58 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->
                 <div class="mb-4">
-                    <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Mã văn bản</label>
-                    <input disabled readonly type="text" id="document_code" name="document_code"
-                        value="{{ $document->document_code }}"
-                        class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                    @error('document_code')
-                        <div class="text-red-500 text-sm">{{ $message }}</div>
-                    @enderror
+                    <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Mã văn bản:</label>
+                    @if ($document->creator != auth()->user()->id)
+                        <span class="rounded-lg">{{ $document->document_code }}</span>
+                    @else
+                        <input disabled readonly type="text" id="document_code" name="document_code"
+                            value="{{ $document->document_code }}"
+                            class="form-input w-full border border-gray-300 rounded-lg p-2" required>
+                        @error('document_code')
+                            <div class="text-red-500 text-sm">{{ $message }}</div>
+                        @enderror
+                    @endif
                 </div>
                 <div class="mb-4">
-                    <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Tên văn bản</label>
-                    <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
-                        @if ($document->creator != auth()->user()->id) readonly @endif
+                    <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Tên văn bản:</label>
+                    @if ($document->creator != auth()->user()->id)
+                        <span class="rounded-lg">{{ $document->document_name }}</span>
+                    @else
+                        <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
                         class="form-input w-full border border-gray-300 rounded-lg p-2" required>
+                    @endif
+                   
                 </div>
                 <div class="mb-4">
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị phát
-                        hành</label>
-                    <select name="issuing_department" id="issuing_department" required
-                        @if ($document->creator != auth()->user()->id) disabled @endif
-                        class="form-input w-full border border-gray-300 rounded-lg p-2">
-                        @foreach ($organizations as $organization)
-                            <option value="{{ $organization->id }}"
-                                {{ $document->issuing_department == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                        hành:</label>
+                        @if ($document->creator != auth()->user()->id)
+                            <span class="rounded-lg">{{ $document->issuingDepartment->name ?? "" }}</span>
+                        @else
+                            <select name="issuing_department" id="issuing_department" required
+                            @if ($document->creator != auth()->user()->id) disabled @endif
+                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                            @foreach ($organizations as $organization)
+                                <option value="{{ $organization->id }}"
+                                    {{ $document->issuing_department == $organization->id ? 'selected' : '' }}>
+                                    {{ $organization->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
+                  
                 </div>
                 <div class="mb-4">
-                    <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát hành</label>
+                    <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát hành:</label>
+                    @if ($document->creator != auth()->user()->id)
+                    <span class="rounded-lg">{{ $document->getReleaseDateFormattedAttribute() }}</span>
+                @else
                     <input type="date" id="release_date" name="release_date"
-                        @if ($document->creator != auth()->user()->id) readonly @endif
-                        value="{{ $document->getReleaseDateFormattedAttribute() }}"
-                        class="form-input w-full border border-gray-300 rounded-lg p-2">
+                    @if ($document->creator != auth()->user()->id) readonly @endif
+                    value="{{ $document->getReleaseDateFormattedAttribute() }}"
+                    class="form-input w-full border border-gray-300 rounded-lg p-2">
+                @endif
+
                 </div>
             </div>
 
@@ -267,39 +306,62 @@
                                             </button>
                                         </td>
                                         
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                                                
-                                                                
+                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">            
                                             <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
-
                                         </td>
                                         <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <input required type="hidden" id="task_code"
-                                                @if ($isDisabled) readonly @endif
+                                                
                                                 value="{{ $task->task_code }}" class="task-input required"
                                                 data-id="{{ $task->id }}">
-                                            <input required type="text" name="task_name[]"
-                                                @if ($isDisabled) readonly @endif
+                                                
+                                            @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $task->task_name }}</span>
+                                            @else
+                                                <input required type="text" name="task_name[]"
+                                                
                                                 value="{{ $task->task_name }}" class="task-input required">
-                                        </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
-                                                type="text" name="required_result[]" id="required_result"
-                                                value="{{ $task->required_result }}"
-                                                @if ($isDisabled) readonly @endif
-                                                placeholder="Nhập đánh giá"></td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
-                                                type="text" name="task_progress[]" id="task_progress"
-                                                value="{{ $task->progress }}" readonly></td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
-                                                type="text" name="progress_evaluation[]" id="progress_evaluation"
-                                                value="{{ $task->getStatus() }}" readonly>
+                                            @endif
+                                           
                                         </td>
                                         <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                            {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->result ?? '' }}
+                                            @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $task->required_result }}</span>
+                                            @else
+                                                <input required
+                                                type="text" name="required_result[]" id="required_result"
+                                                value="{{ $task->required_result }}"
+                                                
+                                                placeholder="Nhập đánh giá">
+                                            @endif
+                                        </td>
+                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            @if ($isDisabled)
+                                            <span class="rounded-lg">{{ $task->progress }}</span>
+                                            @else
+                                            <input required
+                                            type="text" name="task_progress[]" id="task_progress"
+                                            value="{{ $task->progress }}" readonly>
+                                            @endif
+                                        </td>
+                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $task->getStatus() }}</span>
+                                            @else
+                                                <input
+                                                type="text" name="progress_evaluation[]" id="progress_evaluation"
+                                                value="{{ $task->getStatus() }}" readonly>
+                                            @endif
+                                        </td>
+                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                            
+                                        <span class="rounded-lg"> {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->result ?? '' }}</span>
+                                           
                                         </td>
 
                                         <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                            {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->description ?? '' }}
+                                            <span class="rounded-lg"> {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->description ?? '' }}</span>
+                                           
                                         </td>
 
                                         <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
@@ -448,30 +510,52 @@
             
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                    
                                                     <input required type="hidden" id="criteria_code"
-                                                        @if ($isDisabled) readonly @endif
+                                                        
                                                         value="{{ $criterion->CriteriaCode }}"
                                                         class="criteria-input required" data-id="{{ $criterion->id }}">
-                                                    <input required type="text" name="criteria_name[]"
-                                                        @if ($isDisabled) readonly @endif
+
+                                                        @if ($isDisabled)
+                                                         <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
+                                                        @else
+                                                        <input required type="text" name="criteria_name[]"
+                                                        
                                                         value="{{ $criterion->CriteriaName }}"
                                                         class="criteria-input required">
+                                                        @endif
+                                                   
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    <input required type="text" name="criteria_required_result[]"
+                                                    @if ($isDisabled)
+                                                    <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
+                                                   @else
+                                                        <input required type="text" name="criteria_required_result[]"
                                                         id="required_result" value="{{ $criterion->RequestResult }}"
-                                                        @if ($isDisabled) readonly @endif
+                                                        
                                                         placeholder="Nhập đánh giá">
+                                                   @endif
+                                                   
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    <input required type="text" name="criterion_progress[]"
-                                                        id="criterion_progress" value="{{ $criterion->progress }}"
-                                                        readonly>
+                                                    @if ($isDisabled)
+                                                    <span class="rounded-lg">{{ $criterion->progress }}</span>
+                                                   @else
+                                                   <input required type="text" name="criterion_progress[]"
+                                                   id="criterion_progress" value="{{ $criterion->progress }}"
+                                                   readonly>
+                                                   @endif
+                                                  
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                    @if ($isDisabled)
+                                                    <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
+                                                   @else
                                                     <input type="text" name="criteria_progress_evaluation[]"
-                                                        id="progress_evaluation" value="{{ $criterion->getStatus() }}"
-                                                        readonly>
+                                                    id="progress_evaluation" value="{{ $criterion->getStatus() }}"
+                                                    readonly>
+                                                   @endif   
+                                                    
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->result ?? '' }}
@@ -703,32 +787,53 @@
                                             {{ $task->task_code }}
                                         </button>
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        
-                        
+                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"> 
                                         <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
-
-                          </td>
+                                    </td>
                                     <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <input required type="hidden" id="task_code"
-                                            @if ($isDisabled) readonly @endif
+                                            
                                             value="{{ $task->task_code }}" class="task-input required"
                                             data-id="{{ $task->id }}">
-                                        <input required type="text" name="task_name[]"
-                                            @if ($isDisabled) readonly @endif
+                                            @if ($isDisabled)
+                                            <span class="rounded-lg">{{ $task->task_name }}</span>
+                                           @else
+                                           <input required type="text" name="task_name[]"
+                                            
                                             value="{{ $task->task_name }}" class="task-input required">
+                                           @endif   
+                                       
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                       
+                                        @if ($isDisabled)
+                                        <span class="rounded-lg">{{ $task->required_result }}</span>
+                                       @else
+                                            <input required
                                             type="text" name="required_result[]" id="required_result"
                                             value="{{ $task->required_result }}"
-                                            @if ($isDisabled) readonly @endif
-                                            placeholder="Nhập đánh giá"></td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
-                                            type="text" name="task_progress[]" id="task_progress"
-                                            value="{{ $task->progress }}" readonly></td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                            
+                                            placeholder="Nhập đánh giá">
+                                       @endif  
+                                       </td>
+                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        @if ($isDisabled)
+                                        <span class="rounded-lg">{{ $task->progress }}</span>
+                                       @else
+                                       <input required
+                                       type="text" name="task_progress[]" id="task_progress"
+                                       value="{{ $task->progress }}" readonly>
+                                       @endif  
+                                      
+                                        </td>
+                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        @if ($isDisabled)
+                                        <span class="rounded-lg">{{ $task->getStatus() }}</span>
+                                       @else
+                                       <input
                                             type="text" name="progress_evaluation[]" id="progress_evaluation"
                                             value="{{ $task->getStatus() }}" readonly>
+                                       @endif  
                                     </td>
                                     <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->result ?? '' }}
@@ -881,36 +986,53 @@
                                                 </button>
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        
-                        
                                                 <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
-
-                                  </td>
+                                            </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <input required type="hidden" id="criteria_code"
-                                                    @if ($isDisabled) readonly @endif
+                                                    
                                                     value="{{ $criterion->CriteriaCode }}"
                                                     class="criteria-input required" data-id="{{ $criterion->id }}">
-                                                <input required type="text" name="criteria_name[]"
-                                                    @if ($isDisabled) readonly @endif
-                                                    value="{{ $criterion->CriteriaName }}"
-                                                    class="criteria-input required">
+                                                    @if ($isDisabled)
+                                                        <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
+                                                   @else
+                                                        <input required type="text" name="criteria_name[]"
+                                                        
+                                                        value="{{ $criterion->CriteriaName }}"
+                                                        class="criteria-input required">
+                                                   @endif  
+                        
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                <input required type="text" name="criteria_required_result[]"
+                                                @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
+                                               @else
+                                               <input required type="text" name="criteria_required_result[]"
                                                     id="required_result" value="{{ $criterion->RequestResult }}"
-                                                    @if ($isDisabled) readonly @endif
+                                                    
                                                     placeholder="Nhập đánh giá">
+                                               @endif  
+                                              
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                <input required type="text" name="criterion_progress[]"
-                                                    id="criterion_progress" value="{{ $criterion->progress }}"
-                                                    readonly>
+                                                @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $criterion->progress }}</span>
+                                               @else
+                                               <input required type="text" name="criterion_progress[]"
+                                               id="criterion_progress" value="{{ $criterion->progress }}"
+                                               readonly>
+                                               @endif  
+                                              
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                <input type="text" name="criteria_progress_evaluation[]"
-                                                    id="progress_evaluation" value="{{ $criterion->getStatus() }}"
-                                                    readonly>
+                                                @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
+                                               @else
+                                               <input type="text" name="criteria_progress_evaluation[]"
+                                               id="progress_evaluation" value="{{ $criterion->getStatus() }}"
+                                               readonly>
+                                               @endif 
+                                   
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->result ?? '' }}
@@ -1150,17 +1272,17 @@
                               </td>
                                         <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <input required type="hidden" id="task_code"
-                                                @if ($isDisabled) readonly @endif
+                                                
                                                 value="{{ $task->task_code }}" class="task-input required"
                                                 data-id="{{ $task->id }}">
                                             <input required type="text" name="task_name[]"
-                                                @if ($isDisabled) readonly @endif
+                                                
                                                 value="{{ $task->task_name }}" class="task-input required">
                                         </td>
                                         <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
                                                 type="text" name="required_result[]" id="required_result"
                                                 value="{{ $task->required_result }}"
-                                                @if ($isDisabled) readonly @endif
+                                                
                                                 placeholder="Nhập đánh giá"></td>
                                         <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
                                                 type="text" name="task_progress[]" id="task_progress"
@@ -1326,29 +1448,52 @@
                                       </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <input required type="hidden" id="criteria_code"
-                                                        @if ($isDisabled) readonly @endif
+                                                        
                                                         value="{{ $criterion->CriteriaCode }}"
                                                         class="criteria-input required" data-id="{{ $criterion->id }}">
-                                                    <input required type="text" name="criteria_name[]"
-                                                        @if ($isDisabled) readonly @endif
-                                                        value="{{ $criterion->CriteriaName }}"
-                                                        class="criteria-input required">
+                                                        
+                                                        value="{{ $criterion->CriteriaCode }}"
+                                                        class="criteria-input required" data-id="{{ $criterion->id }}">
+                                                        @if ($isDisabled)
+                                                            <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
+                                                       @else
+                                                            <input required type="text" name="criteria_name[]"
+                                                            
+                                                            value="{{ $criterion->CriteriaName }}"
+                                                            class="criteria-input required">
+                                                       @endif  
+                                            
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    <input required type="text" name="criteria_required_result[]"
-                                                        id="required_result" value="{{ $criterion->RequestResult }}"
-                                                        @if ($isDisabled) readonly @endif
-                                                        placeholder="Nhập đánh giá">
+                                                    @if ($isDisabled)
+                                                        <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
+                                                    @else
+                                                            <input required type="text" name="criteria_required_result[]"
+                                                            id="required_result" value="{{ $criterion->RequestResult }}"
+                                                            
+                                                            placeholder="Nhập đánh giá">
+                                                    @endif  
+                                                    
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    <input required type="text" name="criterion_progress[]"
+                                                    @if ($isDisabled)
+                                                        <span class="rounded-lg">{{ $criterion->progress }}</span>
+                                                    @else
+                                                        <input required type="text" name="criterion_progress[]"
                                                         id="criterion_progress" value="{{ $criterion->progress }}"
                                                         readonly>
+                                                    @endif  
+                                                   
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    <input type="text" name="criteria_progress_evaluation[]"
+                                                    @if ($isDisabled)
+                                                        <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
+                                                    @else
+                                                        <input type="text" name="criteria_progress_evaluation[]"
                                                         id="progress_evaluation" value="{{ $criterion->getStatus() }}"
                                                         readonly>
+                                                    @endif  
+                                                    
                                                 </td>
                                                 <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->result ?? '' }}
@@ -1581,31 +1726,51 @@
                                         </button>
                                     </td>
                                     <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        
-                        
                                         <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
-
-                          </td>
+                                    </td>
                                     <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <input required type="hidden" id="task_code"
-                                            @if ($isDisabled) readonly @endif
+                                            
                                             value="{{ $task->task_code }}" class="task-input required"
                                             data-id="{{ $task->id }}">
+                                        @if ($isDisabled)
+                                            <span class="rounded-lg">{{ $task->task_name }}</span>
+                                        @else
                                         <input required type="text" name="task_name[]"
-                                            @if ($isDisabled) readonly @endif
-                                            value="{{ $task->task_name }}" class="task-input required">
+                                        
+                                        value="{{ $task->task_name }}" class="task-input required">
+                                        @endif  
+                                       
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
-                                            type="text" name="required_result[]" id="required_result"
-                                            value="{{ $task->required_result }}"
-                                            @if ($isDisabled) readonly @endif
-                                            placeholder="Nhập đánh giá"></td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
-                                            type="text" name="task_progress[]" id="task_progress"
-                                            value="{{ $task->progress }}" readonly></td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        @if ($isDisabled)
+                                        <span class="rounded-lg">{{ $task->required_result }}</span>
+                                        @else
+                                            <input required
+                                                type="text" name="required_result[]" id="required_result"
+                                                value="{{ $task->required_result }}"
+                                                
+                                                placeholder="Nhập đánh giá">
+                                        @endif  
+                                    </td>
+                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        @if ($isDisabled)
+                                        <span class="rounded-lg">{{ $task->progress }}</span>
+                                        @else
+                                        <input required
+                                        type="text" name="task_progress[]" id="task_progress"
+                                        value="{{ $task->progress }}" readonly>
+                                        @endif  
+                                    </td>
+                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        @if ($isDisabled)
+                                        <span class="rounded-lg">{{ $task->getStatus() }}</span>
+                                        @else
+                                            <input
                                             type="text" name="progress_evaluation[]" id="progress_evaluation"
                                             value="{{ $task->getStatus() }}" readonly>
+                                        @endif  
+                                       
                                     </td>
                                     <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->result ?? '' }}
@@ -1757,36 +1922,54 @@
                                                 </button>
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        
-                        
                                                 <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
-
-                                  </td>
+                                            </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <input required type="hidden" id="criteria_code"
-                                                    @if ($isDisabled) readonly @endif
+                                                    
                                                     value="{{ $criterion->CriteriaCode }}"
                                                     class="criteria-input required" data-id="{{ $criterion->id }}">
-                                                <input required type="text" name="criteria_name[]"
-                                                    @if ($isDisabled) readonly @endif
+
+                                                    @if ($isDisabled)
+                                                    <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
+                                                    @else
+                                                    <input required type="text" name="criteria_name[]"
+                                                    
                                                     value="{{ $criterion->CriteriaName }}"
                                                     class="criteria-input required">
+                                                    @endif  
+                                               
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
+                                                @else
                                                 <input required type="text" name="criteria_required_result[]"
-                                                    id="required_result" value="{{ $criterion->RequestResult }}"
-                                                    @if ($isDisabled) readonly @endif
-                                                    placeholder="Nhập đánh giá">
+                                                id="required_result" value="{{ $criterion->RequestResult }}"
+                                                
+                                                placeholder="Nhập đánh giá">
+                                                @endif  
+                                                
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                @if ($isDisabled)
+                                                <span class="rounded-lg">{{ $criterion->progress }}</span>
+                                                @else
                                                 <input required type="text" name="criterion_progress[]"
                                                     id="criterion_progress" value="{{ $criterion->progress }}"
                                                     readonly>
+                                                @endif  
+                                              
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                <input type="text" name="criteria_progress_evaluation[]"
+                                                @if ($isDisabled)
+                                                    <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
+                                                @else
+                                                    <input type="text" name="criteria_progress_evaluation[]"
                                                     id="progress_evaluation" value="{{ $criterion->getStatus() }}"
                                                     readonly>
+                                                @endif 
+                                              
                                             </td>
                                             <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->result ?? '' }}

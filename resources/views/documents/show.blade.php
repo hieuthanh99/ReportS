@@ -1,7 +1,57 @@
 @extends('layouts.app')
 
 @section('content')
-    <style> #existing-organizations-table {
+    <style> 
+    .history-task{
+        margin: 10px 0;
+    }
+    .col-110 {
+    width: 110px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+    .col-130 {
+    width: 150px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+    .col-320 {
+    width: 350px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+    .col-250 {
+    width: 250px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+
+    .col-100 {
+    width: 120px;
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+    .col-400 {
+    width: 400px;
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+    .col-600 {
+    width: 600px;
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+    .col-90 {
+    /* width: 90px; */
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+        .table-container {
+            /* table-layout: fixed; */
+            
+            width: 2100px; 
+        }
+    #existing-organizations-table {
         width: 100%;
         border-collapse: collapse; /* Đảm bảo các cột không bị lệch */
         
@@ -9,7 +59,7 @@
     #existing-organizations-table thead th {
         position: sticky;
         top: 0; /* Đặt vị trí sticky ở trên cùng */
-        background-color: white; /* Đảm bảo tiêu đề có nền màu trắng để không bị ẩn khi cuộn */
+        background-color: white;
         z-index: 1; /* Đảm bảo tiêu đề ở trên cùng */
     }
 
@@ -154,35 +204,35 @@
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Mã đầu việc</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-130 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tổ chức</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-320 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tên đầu việc</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Kết quả</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tiến độ</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Đánh giá tiến độ</th>
 
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tuần {{ $timeParamsWeek['two_previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tuần {{ $timeParamsWeek['previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tuần {{ $timeParamsWeek['current'] }}</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Thao tác</th>
                                 </tr>
                                 <tr>
@@ -232,7 +282,7 @@
                                         $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                     @endphp
                                     <tr>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-110 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                                 value="1">
 
@@ -255,39 +305,39 @@
                                                 {{ $task->task_code }}
                                             </button>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-130 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                                   <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
 
                                     </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-320 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                                 <span class="text-gray-900 w-2/3">{{ $task->task_name }}</span>
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $task->required_result }}</span>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                            
                                                 <span class="text-gray-900 w-2/3">{{ $task->progress }}</span>
                                             </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             
                                                 <span class="text-gray-900 w-2/3">{{  $task->getStatus() }}</span>
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -311,15 +361,15 @@
                                             </button> --}}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -339,17 +389,17 @@
                                             @endif
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{  $task->taskResultsById($task->id, $timeParamsWeek['current'], $task->reporting_cycle)->result ?? '' }}</span>
 
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{  $task->taskResultsById($task->id, $timeParamsWeek['current'], $task->reporting_cycle)->description ?? '' }}</span>
 
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                 
                                             @php
                                                 $file = $task->getFilePath($task->id) ?? null;
@@ -366,7 +416,7 @@
 
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                     
                                             @if ($document->creator == auth()->user()->id)
                                                 @if ($task->status == 'Đã giao việc')
@@ -401,7 +451,7 @@
                                     @if ($task->criteriasTask->count() > 0)
                                         @forelse ($task->criteriasTask as $index => $criterion)
                                             <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                                <td class=" px-6 py-4 whitespace-nowrap">
+                                                <td class="col-110 px-6 py-4 whitespace-nowrap">
                                                     <input required type="hidden" id="typeCurrent"
                                                         name="criteriaTypeCurrent[]" value="1">
 
@@ -428,40 +478,40 @@
                                                         {{-- {{ $criterion->CriteriaCode }} --}}
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-130 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                                           <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
         
                                             </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-320 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{  $criterion->CriteriaName}}</span>
 
                                             
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{  $criterion->RequestResult}}</span>
 
                                                 
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{  $criterion->progress}}</span>
 
                                              
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{  $criterion->getStatus() }}</span>
 
                                                   
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -480,14 +530,14 @@
                                                         <span class="text-red-500"></span>
                                                     @endif
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -507,16 +557,16 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsWeek['current'], $task->reporting_cycle)->result ?? '' }}</span>
 
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsWeek['current'], $task->reporting_cycle)->description ?? '' }}</span>
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                         name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                         onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -535,7 +585,7 @@
                                                     @endif
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <button data-document-id="{{ $document->id }}"
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
@@ -574,35 +624,35 @@
                         <thead class="bg-gray-100">
                             <tr>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mã đầu việc</th>
                                     <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-130 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tổ chức</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-320 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tên đầu việc</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Kết quả</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tiến độ</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Đánh giá tiến độ</th>
 
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tháng {{ $timeParamsMonth['two_previous'] }}</th>
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tháng {{ $timeParamsMonth['previous'] }}</th>
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tháng {{ $timeParamsMonth['current'] }}</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Thao tác</th>
                             </tr>
                             <tr>
@@ -652,7 +702,7 @@
                                     $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                 @endphp
                                 <tr>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-110 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                             value="2">
 
@@ -675,37 +725,37 @@
                                             {{ $task->task_code }}
                                         </button>
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-130 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                               <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
 
                                 </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-320 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <span class="text-gray-900 w-2/3">{{ $task->task_name }}</span>
 
                             
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <span class="text-gray-900 w-2/3">{{ $task->required_result }}</span>
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <span class="text-gray-900 w-2/3">{{ $task->progress }}</span>
 
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <span class="text-gray-900 w-2/3">{{ $task->getStatus() }}</span>
                                       
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         @php
                                             $file =
                                                 $task->getFilePathByType(
@@ -729,15 +779,15 @@
                                         </button> --}}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->result ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->description ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         @php
                                             $file =
                                                 $task->getFilePathByType(
@@ -756,17 +806,17 @@
                                             <span class="text-red-500"></span>
                                         @endif
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                                         <span class="text-gray-900 w-2/3">{{ $task->taskResultsById($task->id, $timeParamsMonth['current'], $task->reporting_cycle)->result ?? '' }}</span>
                                        </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <span class="text-gray-900 w-2/3">{{ $task->taskResultsById($task->id, $timeParamsMonth['current'], $task->reporting_cycle)->description ?? '' }}</span>
 
                                         </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         <input type="file" id="fileInput-{{ $task->id }}"
                                             name="file_{{ $task->id }}" style="display: none;"
                                             onchange="uploadFile('{{ $task->id }}', 1)">
@@ -785,7 +835,7 @@
 
 
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         @if ($document->creator == auth()->user()->id)
                                             @if ($task->status == 'Đã giao việc')
                                                 <button data-document-id="{{ $document->id }}"
@@ -819,7 +869,7 @@
                                 @if ($task->criteriasTask->count() > 0)
                                     @forelse ($task->criteriasTask as $index => $criterion)
                                         <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                            <td class=" px-6 py-4 whitespace-nowrap">
+                                            <td class="col-110 px-6 py-4 whitespace-nowrap">
                                                 <input required type="hidden" id="typeCurrent"
                                                     name="criteriaTypeCurrent[]" value="2">
 
@@ -845,36 +895,36 @@
                                                     {{-- {{ $criterion->CriteriaCode }} --}}
                                                 </button>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-130 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                                 <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
     
                                         </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-320 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $criterion->CriteriaName }}</span>
 
                                         
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $criterion->RequestResult }}</span>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $criterion->progress }}</span>
 
                 
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $criterion->getStatus() }}</span>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                             </td>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 @php
                                                     $file =
                                                         $criterion->getFilePathByType(
@@ -893,14 +943,14 @@
                                                     <span class="text-red-500"></span>
                                                 @endif
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->result ?? '' }}
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->description ?? '' }}
                                             </td>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 @php
                                                     $file =
                                                         $criterion->getFilePathByType(
@@ -920,16 +970,16 @@
                                                 @endif
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsMonth['current'], $task->reporting_cycle)->result ?? '' }}</span>
                                             
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsMonth['current'], $task->reporting_cycle)->description ?? '' }}</span>
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                     name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                     onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -948,7 +998,7 @@
                                                 @endif
                                                 </button>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                 <button data-document-id="{{ $document->id }}"
                                                     data-status = "{{ $task->status }}"
                                                     data-task-code="{{ $task->task_code }}"
@@ -988,35 +1038,35 @@
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Mã đầu việc</th>
                                         <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-130 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tổ chức</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-320 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tên đầu việc</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Kết quả</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tiến độ</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Đánh giá tiến độ</th>
 
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quý {{ $timeParamsQuarter['two_previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quý {{ $timeParamsQuarter['previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quý {{ $timeParamsQuarter['current'] }}</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Thao tác</th>
                                 </tr>
                                 <tr>
@@ -1066,7 +1116,7 @@
                                         $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                     @endphp
                                     <tr>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-110 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                                 value="4">
 
@@ -1089,38 +1139,38 @@
                                                 {{ $task->task_code }}
                                             </button>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-130 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                             <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
 
                                     </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-320 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->task_name }}</span>
 
                                 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->required_result }}</span>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->progress }}</span>
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->getStatus() }}</span>
                                         
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -1144,15 +1194,15 @@
                                             </button> --}}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -1172,16 +1222,16 @@
                                             @endif
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             
                                             <span class="text-gray-900 w-2/3">{{ $task->taskResultsById($task->id, $timeParamsQuarter['current'], $task->reporting_cycle)->result ?? '' }}</span>
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->taskResultsById($task->id, $timeParamsQuarter['current'], $task->reporting_cycle)->description ?? '' }}</span>
 
                                             </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <input type="file" id="fileInput-{{ $task->id }}"
                                                 name="file_{{ $task->id }}" style="display: none;"
                                                 onchange="uploadFile('{{ $task->id }}', 1)">
@@ -1198,7 +1248,7 @@
                                         
                                             @endif
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @if ($document->creator == auth()->user()->id)
                                                 @if ($task->status == 'Đã giao việc')
                                                     <button data-document-id="{{ $document->id }}"
@@ -1232,7 +1282,7 @@
                                     @if ($task->criteriasTask->count() > 0)
                                         @forelse ($task->criteriasTask as $index => $criterion)
                                             <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                                <td class=" px-6 py-4 whitespace-nowrap">
+                                                <td class="col-110 px-6 py-4 whitespace-nowrap">
                                                     <input required type="hidden" id="typeCurrent"
                                                         name="criteriaTypeCurrent[]" value="4">
 
@@ -1258,37 +1308,37 @@
                                                         {{-- {{ $criterion->CriteriaCode }} --}}
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-130 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                                           <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
         
                                             </td>
         
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-320  border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->CriteriaName }}</span>
 
                                             
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->RequestResult }}</span>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->progress }}</span>
 
                     
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->getStatus() }}</span>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -1307,14 +1357,14 @@
                                                         <span class="text-red-500"></span>
                                                     @endif
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -1334,15 +1384,15 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsQuarter['current'], $task->reporting_cycle)->result ?? '' }}</span>
                                                 
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsQuarter['current'], $task->reporting_cycle)->description ?? '' }}</span>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                         name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                         onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -1361,7 +1411,7 @@
                                                     @endif
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <button data-document-id="{{ $document->id }}"
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
@@ -1401,37 +1451,37 @@
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Mã đầu việc</th>
                                         
 
- <th rowspan="2"
- class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
- Tổ chức</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-130  border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Tổ chức</th>
+                                    <th rowspan="2"
+                                        class="col-320  border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tên đầu việc</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Kết quả</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tiến độ</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Đánh giá tiến độ</th>
 
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Năm {{ $timeParamsYear['two_previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Năm {{ $timeParamsYear['previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Năm {{ $timeParamsYear['current'] }}</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Thao tác</th>
                                 </tr>
                                 <tr>
@@ -1481,7 +1531,7 @@
                                         $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                     @endphp
                                     <tr>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-110 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                                 value="4">
 
@@ -1504,38 +1554,38 @@
                                                 {{ $task->task_code }}
                                             </button>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-130 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                                   <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
 
                                     </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-320 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->task_name }}</span>
 
                                 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->required_result }}</span>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->progress }}</span>
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->getStatus() }}</span>
                                         
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -1559,15 +1609,15 @@
                                             </button> --}}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -1587,16 +1637,16 @@
                                             @endif
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             
                                             <span class="text-gray-900 w-2/3">{{ $task->taskResultsById($task->id, $timeParamsYear['current'], $task->reporting_cycle)->result ?? '' }}</span>
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <span class="text-gray-900 w-2/3">{{ $task->taskResultsById($task->id, $timeParamsYear['current'], $task->reporting_cycle)->description ?? '' }}</span>
 
                                             </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             <input type="file" id="fileInput-{{ $task->id }}"
                                                 name="file_{{ $task->id }}" style="display: none;"
                                                 onchange="uploadFile('{{ $task->id }}', 1)">
@@ -1615,7 +1665,7 @@
 
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                             @if ($document->creator == auth()->user()->id)
                                                 @if ($task->status == 'Đã giao việc')
                                                     <button data-document-id="{{ $document->id }}"
@@ -1649,7 +1699,7 @@
                                     @if ($task->criteriasTask->count() > 0)
                                         @forelse ($task->criteriasTask as $index => $criterion)
                                             <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                                <td class=" px-6 py-4 whitespace-nowrap">
+                                                <td class="col-110 px-6 py-4 whitespace-nowrap">
                                                     <input required type="hidden" id="typeCurrent"
                                                         name="criteriaTypeCurrent[]" value="4">
 
@@ -1675,37 +1725,37 @@
                                                         {{-- {{ $criterion->CriteriaCode }} --}}
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-130  border border-gray-300 px-6 py-4 whitespace-nowrap">
                                         
                         
                                                           <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
         
                                             </td>
         
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-320 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->CriteriaName }}</span>
 
                                             
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->RequestResult }}</span>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->progress }}</span>
 
                     
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->getStatus() }}</span>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -1724,14 +1774,14 @@
                                                         <span class="text-red-500"></span>
                                                     @endif
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 order border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -1751,15 +1801,15 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class=" col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsYear['current'], $task->reporting_cycle)->result ?? '' }}</span>
                                                 
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <span class="text-gray-900 w-2/3">{{ $criterion->taskResultsById($criterion->id, $timeParamsYear['current'], $task->reporting_cycle)->description ?? '' }}</span>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                         name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                         onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -1778,7 +1828,7 @@
                                                     @endif
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-100 border border-gray-300 px-6 py-4 whitespace-nowrap">
                                                     <button data-document-id="{{ $document->id }}"
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
@@ -1954,7 +2004,7 @@
  {{-- Giao việc  --}}
  <div id="assign-organizations-modal" style="z-index: 9999;" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
-        <h2 class="text-xl font-bold mb-4">Danh sách chỉ tiêu</h2>
+        <h2 class="text-xl font-bold mb-4">Danh sách Cơ quan/Tổ chức</h2>
 
         <!-- Phần chọn bộ lọc -->
         <div class="mb-4">
@@ -2388,6 +2438,7 @@
                             // Thực hiện các hành động liên quan
                             // Hiển thị ô tìm kiếm
                             searchOtherSection.classList.remove('hidden');
+                            document.getElementById('existing-organizations').innerHTML = '';
                             break;
                         default:
                             break;

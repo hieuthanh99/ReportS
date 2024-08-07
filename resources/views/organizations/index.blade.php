@@ -115,17 +115,8 @@
             /* Additional styles for details content if needed */
         }
     </style>
-    <div class="container mx-auto px-4 py-6 flex">
-        <!-- Tree View -->
-        <div class="w-1/2 pr-4">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-4xl font-bold text-gray-900">Danh sách danh mục</h1>
-                <button onclick="showAddChildModal(null)"
-                    class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300">Thêm
-                    mới</button>
-            </div>
-
-            @if (session('success'))
+ <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg flex" style="margin-top: 10px;">
+        @if (session('success'))
                 <div id="success-message"
                     class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
                     {{ session('success') }}
@@ -134,6 +125,15 @@
                     </button>
                 </div>
             @endif
+        <!-- Tree View -->
+        <div class="w-1/2 pr-4">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-4xl font-bold text-gray-900"></h1>
+                <button onclick="showAddChildModal(null)"
+                    class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"> <i class="fas fa-plus"></i></button>
+            </div>
+
+            
 
             <div class="overflow-x-auto bg-white p-6 border rounded-lg shadow-lg">
                 @if ($tree->isEmpty())

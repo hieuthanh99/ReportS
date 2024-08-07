@@ -5,7 +5,15 @@
         use Carbon\Carbon;
     @endphp
     <script></script>
-    <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+        @if (session('success'))
+        <div id="success-message" class="fixed top-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
+            {{ session('success') }}
+            <button id="close-message" class="absolute top-2 right-2 text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        @endif
         {{-- <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold mb-6 text-gray-800">Danh sách văn bản</h1>
         </div> --}}
@@ -39,7 +47,7 @@
        
         </div>
 
-        <div class="flex justify-end gap-4 mb-6">
+        <div class="flex justify-end gap-4">
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
@@ -49,14 +57,7 @@
         @endif
         </div>
     </form>
-        @if (session('success'))
-            <div id="success-message" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
-                {{ session('success') }}
-                <button id="close-message" class="absolute top-2 right-2 text-white">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        @endif
+      
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">

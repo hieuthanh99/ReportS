@@ -568,105 +568,124 @@ class DocumentController extends Controller
                         $document->release_date = $releaseDate;
                         $document->save();
                     }
+                    \Log::error('taskCurrentResults: ' . json_encode($taskCurrentResults));
+                    \Log::error('criteriaCurrentResult: ' . json_encode($criteriaCurrentResult));
+                    \Log::error('taskCurrentNotes: ' . json_encode($taskCurrentNotes));
+                    \Log::error('criteriaCurrentNote: ' . json_encode($criteriaCurrentNote));
                     
-
-                    if (!empty($taskIds) && is_array($taskIds)) {
-                         // Cập nhật các tác vụ
-                        foreach ($taskIds as $index => $taskId) {
-                            $task = TaskDocument::find($taskId);
-                            if ($task) {
-                              
-                                $task->task_name = $taskNames[$index] ?? '';
-                                $task->required_result = $requiredResults[$index] ?? '';
-                                $task->progress = "Hoàn Thành" ?? '';
-                                $task->progress_evaluation = $progressEvaluations[$index] ?? '';
-                                $task->save();
-                                $record = TaskResult::where('id_task_criteria' , $task->id)->where("document_id", $document->id)->where("type_save", 1)->first();
-                                
-                                if($record){
-                                    $record->result =  $taskCurrentResults[$index] ?? '';
-                                    $record->description =  $taskCurrentNotes[$index] ?? '';
-                                    $record->number_type =  $numberCurrent[$index] ?? '';
-                                    $record->type =  $task->reporting_cycle ?? '';
-                                    $record->save();
-                                    HistoryChangeDocument::create([
-                                        'mapping_id' => $task->id,
-                                        'type_save' => 1,
-                                        'result' => $record->result,
-                                        'description' => $record->description,
-                                        'number_cycle' => $record->number_type,
-                                        'type_cycle' => $record->type,
-                                        'update_date' => Carbon::now(),
-                                        'update_user'=> $userId
-                                    ]);
-                                }else{
-                                    $hasRecord = TaskResult::create([
-                                        'id_task_criteria' => $task->id,
-                                        'document_id' => $document->id,
-                                        'result' => $taskCurrentResults[$index] ?? '',
-                                        'description' => $taskCurrentNotes[$index] ?? '',
-                                        'number_type' => $numberCurrent[$index] ?? '',
-                                        'type' => $task->reporting_cycle ?? '',
-                                        'type_save' => 1
-                                    ]);
-
-
-                                }
-                            }
-                        }
+                    if (  !empty($taskCurrentResults) && 
+                    !empty($taskCurrentNotes) && 
+                    !empty($criteriaCurrentResult) && 
+                    !empty($criteriaCurrentNote) &&
+                    !$this->containsNull($taskCurrentResults) &&
+                    !$this->containsNull($taskCurrentNotes) &&
+                    !$this->containsNull($criteriaCurrentResult) &&
+                    !$this->containsNull($criteriaCurrentNote)) {
+                        if (!empty($taskIds) && is_array($taskIds)) {
+                            \Log::error('INSITE SAVE');
+                            // Cập nhật các tác vụ
+                           foreach ($taskIds as $index => $taskId) {
+                               $task = TaskDocument::find($taskId);
+                               if ($task) {
+                                 
+                                   // $task->task_name = $taskNames[$index] ?? '';
+                                   // $task->required_result = $requiredResults[$index] ?? '';
+                                   $task->progress = "Hoàn Thành" ?? '';
+                                   $task->progress_evaluation = $progressEvaluations[$index] ?? '';
+                                   $task->save();
+                                   $record = TaskResult::where('id_task_criteria' , $task->id)->where("document_id", $document->id)->where("type_save", 1)->first();
+                                   
+                                   if($record){
+                                       $record->result =  $taskCurrentResults[$index] ?? '';
+                                       $record->description =  $taskCurrentNotes[$index] ?? '';
+                                       $record->number_type =  $numberCurrent[$index] ?? '';
+                                       $record->type =  $task->reporting_cycle ?? '';
+                                       $record->save();
+   
+                                       HistoryChangeDocument::create([
+                                           'mapping_id' => $task->id,
+                                           'type_save' => 1,
+                                           'result' => $record->result,
+                                           'description' => $record->description,
+                                           'number_cycle' => $record->number_type,
+                                           'type_cycle' => $record->type,
+                                           'update_date' => Carbon::now(),
+                                           'update_user'=> $userId
+                                       ]);
+                                   }else{
+                                       $hasRecord = TaskResult::create([
+                                           'id_task_criteria' => $task->id,
+                                           'document_id' => $document->id,
+                                           'result' => $taskCurrentResults[$index] ?? '',
+                                           'description' => $taskCurrentNotes[$index] ?? '',
+                                           'number_type' => $numberCurrent[$index] ?? '',
+                                           'type' => $task->reporting_cycle ?? '',
+                                           'type_save' => 1
+                                       ]);
+   
+   
+                                   }
+                               }
+                           }
+                       }
+   
+   
+                       if (!empty($criteriaIds) && is_array($criteriaIds)) {
+                            // Cập nhật các tác vụ
+                           foreach ($criteriaIds as $index => $taskId) {
+                               $criteria = CriteriasTask::find($taskId);
+                               if ($criteria) {
+                                   //dd($criteria);
+                                   // $criteria->CriteriaName = $criteriaName[$index] ?? '';
+                                   // $criteria->RequestResult = $criteriaResult[$index] ?? '';
+                                   $criteria->progress = "Hoàn Thành" ?? '';
+                                   $criteria->progress_evaluation = $criteriaProgressEvaluation[$index] ?? '';
+                                   $criteria->save();
+                                   
+                                   $record = TaskResult::where('id_task_criteria' , $criteria->id)->where("document_id", $document->id)
+                                   ->where("type_save", 2)->first();
+                                   
+                                   if($record){
+                                       $record->result =  $criteriaCurrentResult[$index] ?? '';
+                                       $record->description =  $criteriaCurrentNote[$index] ?? '';
+                                       $record->number_type =  $criteriaNumberCurrent[$index] ?? '';
+                                       $record->type =  $criteriaTypeCurrent[$index] ?? '';
+                                       $record->save();
+                                       HistoryChangeDocument::create([
+                                           'mapping_id' => $criteria->id,
+                                           'type_save' => 2,
+                                           'result' => $record->result,
+                                           'description' => $record->description,
+                                           'number_cycle' => $record->number_type,
+                                           'type_cycle' => $record->type,
+                                           'update_date' => Carbon::now(),
+                                           'update_user'=> $userId
+                                       ]);
+                                   }else{
+                                       $hasRecord = TaskResult::create([
+                                           'id_task_criteria' => $criteria->id,
+                                           'document_id' => $document->id,
+                                           'result' => $criteriaCurrentResult[$index] ?? '',
+                                           'description' => $criteriaCurrentNote[$index] ?? '',
+                                           'number_type' => $criteriaNumberCurrent[$index] ?? '',
+                                           'type' => $criteriaTypeCurrent[$index] ?? '',
+                                           'type_save' => 2
+                                       ]);
+                                   }
+                               }
+                           }
+                       }
+                       DB::commit();
+                       return redirect()->route('documents.index')->with('success', 'Cập nhật thành công!');
+                    }else{
+                        return redirect()->back()->with('warning', 'Vui lòng nhập đủ các trường cập nhật!');
+                        //return redirect()->route('documents.index')->with('success', '');
                     }
-
-
-                    if (!empty($criteriaIds) && is_array($criteriaIds)) {
-                         // Cập nhật các tác vụ
-                        foreach ($criteriaIds as $index => $taskId) {
-                            $criteria = CriteriasTask::find($taskId);
-                            if ($criteria) {
-                                //dd($criteria);
-                                $criteria->CriteriaName = $criteriaName[$index] ?? '';
-                                $criteria->RequestResult = $criteriaResult[$index] ?? '';
-                                $criteria->progress = "Hoàn Thành" ?? '';
-                                $criteria->progress_evaluation = $criteriaProgressEvaluation[$index] ?? '';
-                                $criteria->save();
-                                
-                                $record = TaskResult::where('id_task_criteria' , $criteria->id)->where("document_id", $document->id)
-                                ->where("type_save", 2)->first();
-                                
-                                if($record){
-                                    $record->result =  $criteriaCurrentResult[$index] ?? '';
-                                    $record->description =  $criteriaCurrentNote[$index] ?? '';
-                                    $record->number_type =  $criteriaNumberCurrent[$index] ?? '';
-                                    $record->type =  $criteriaTypeCurrent[$index] ?? '';
-                                    $record->save();
-                                    HistoryChangeDocument::create([
-                                        'mapping_id' => $criteria->id,
-                                        'type_save' => 2,
-                                        'result' => $record->result,
-                                        'description' => $record->description,
-                                        'number_cycle' => $record->number_type,
-                                        'type_cycle' => $record->type,
-                                        'update_date' => Carbon::now(),
-                                        'update_user'=> $userId
-                                    ]);
-                                }else{
-                                    $hasRecord = TaskResult::create([
-                                        'id_task_criteria' => $criteria->id,
-                                        'document_id' => $document->id,
-                                        'result' => $criteriaCurrentResult[$index] ?? '',
-                                        'description' => $criteriaCurrentNote[$index] ?? '',
-                                        'number_type' => $criteriaNumberCurrent[$index] ?? '',
-                                        'type' => $criteriaTypeCurrent[$index] ?? '',
-                                        'type_save' => 2
-                                    ]);
-                                }
-                            }
-                        }
-                    }
-
+                   
+                    // warning
                 }
     
-                DB::commit();
-                return redirect()->route('documents.index')->with('success', 'Cập nhật thành công!');
+             
             } else {
                 return redirect()->back()->with('error', 'No document IDs found.');
             }
@@ -680,23 +699,31 @@ class DocumentController extends Controller
             return redirect()->back()->with('error', 'Đã xảy ra lỗi, vui lòng thử lại.');
         }
     }
-
+    function containsNull($array) {
+        foreach ($array as $value) {
+            if ($value === null) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         // Xóa các bản ghi trong bảng CriteriasTask theo điều kiện document_id
-        CriteriasTask::where('DocumentID', $documentId)->delete();
+        CriteriasTask::where('DocumentID', $id)->delete();
 
         // Xóa các bản ghi trong bảng OrganizationTask theo điều kiện document_id
-        OrganizationTask::where('document_id', $documentId)->delete();
+        OrganizationTask::where('document_id', $id)->delete();
 
         // Xóa các bản ghi trong bảng TaskDocument theo điều kiện document_id
-        TaskDocument::where('document_id', $documentId)->delete();
+        TaskDocument::where('document_id', $id)->delete();
+        TaskResult::where('document_id', $id)->delete();
 
         // Tìm và xóa tài liệu trong bảng Document
-        $document = Document::findOrFail($documentId);
+        $document = Document::findOrFail($id);
         $document->delete();
     
         // Chuyển hướng về trang danh sách tài liệu

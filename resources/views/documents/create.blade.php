@@ -178,13 +178,13 @@
                     <table id="task-table" class="min-w-full divide-y divide-gray-200 border border-gray-300 table-container">
                         <thead>
                             <tr class="bg-gray-100 border-b">
-                                <th class="py-2 px-4 text-left text-gray-600">Mã đầu việc</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Tên đầu việc</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Chu kỳ báo cáo</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Kết quả yêu cầu</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Ngày bắt đầu</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Ngày kết thúc</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Hành động</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center ">Mã đầu việc</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Tên đầu việc</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Chu kỳ báo cáo</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Kết quả yêu cầu</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Ngày bắt đầu</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Ngày kết thúc</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="task-list">
@@ -207,11 +207,11 @@
                     <table id="criteria-table" class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
                         <thead>
                             <tr class="bg-gray-100 border-b">
-                                <th class="py-2 px-4 text-left text-gray-600">Mã công việc</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Mã tiêu chí</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Tên tiêu chí</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Kết quả yêu cầu</th>
-                                <th class="py-2 px-4 text-left text-gray-600">Hành động</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Mã công việc</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Mã tiêu chí</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Tên tiêu chí</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Kết quả yêu cầu</th>
+                                <th class="py-2 px-4 text-left text-gray-600 text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="criteria-list">
@@ -758,14 +758,14 @@
                     <tr>
                         <td class="py-2 px-4 border-b">${taskCode}</td>
                         <td class="py-2 px-4 border-b">${taskName}</td>
-                        <td class="py-2 px-4 border-b">${reportingCycleName}</td>
+                        <td class="py-2 px-4 border-b ">${reportingCycleName}</td>
                         <td class="py-2 px-4 border-b" style="display: none">${reportingCycle}</td>
                         <td class="py-2 px-4 border-b">${requiredResult}</td>
                         <td class="py-2 px-4 border-b" style="display: none">${category}</td>
                         <td class="py-2 px-4 border-b">${startDate}</td>
                         <td class="py-2 px-4 border-b">${endDate}</td>
                         <td class="py-2 px-4 border-b">
-                            <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations"><i class="fa fa-tasks"></i></button>
+                            <button type="button" class=" bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations"><i class="fa fa-tasks"></i></button>
                             <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-task"><i class="fas fa-trash"></i></button>
                             <input type="hidden" name="tasks[]" value="${taskCode}|${taskName}|${reportingCycle}|${category}|${requiredResult}|${startDate}|${endDate}">
                         </td>
@@ -998,15 +998,15 @@
                             const taskHTML = `
                                 <tr>
                                     <td class="py-2 px-4 border-b">${taskCode}</td>
-                                    <td class="py-2 px-4 border-b">${taskName}</td>
+                                    <td class="py-2 px-4 border-b text-left">${taskName}</td>
                                     <td class="py-2 px-4 border-b">${reportingCycleName}</td>
                                     <td class="py-2 px-4 border-b" style="display: none">${reportingCycle}</td>
-                                    <td class="py-2 px-4 border-b">${requiredResult}</td>
+                                    <td class="py-2 px-4 border-b text-left">${requiredResult}</td>
                                     <td class="py-2 px-4 border-b" style="display: none">${category}</td>
-                                    <td class="py-2 px-4 border-b">${startDate}</td>
-                                    <td class="py-2 px-4 border-b">${endDate}</td>
+                                    <td class="py-2 px-4 border-b text-left">${startDate}</td>
+                                    <td class="py-2 px-4 border-b text-left">${endDate}</td>
                                     <td class="py-2 px-4 border-b">
-                                        <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations"><i class="fa fa-tasks"></i></button>
+                                        <button type="button" class="mb-2 bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  assign-task-organizations"><i class="fa fa-tasks"></i></button>
                                         <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-task"><i class="fas fa-trash"></i></button>
                                         <input type="hidden" name="tasks[]" value="${taskCode}|${taskName}|${reportingCycle}|${category}|${requiredResult}|${startDate}|${endDate}">
                                     </td>
@@ -1179,7 +1179,7 @@
                         <tr>
                             <td class="py-2 px-4 border-b">${taskCode.value}</td>
                             <td class="py-2 px-4 border-b">${criteriaCode}</td>
-                            <td class="py-2 px-4 border-b">${criteriaName}</td>
+                            <td class="py-2 px-4 border-b ">${criteriaName}</td>
                             <td class="py-2 px-4 border-b">${selectedDataResult}</td>
                             <td class="py-2 px-4 border-b">
                                 <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-criteria">Xóa</button>
@@ -1345,9 +1345,9 @@
                         const criteriaHTML = `
                                 <tr>
                                         <td class="py-2 px-4 border-b">${taskCode}</td>
-                                        <td class="py-2 px-4 border-b">${criteriaCode}</td>
-                                        <td class="py-2 px-4 border-b">${criteriaName}</td>
-                                        <td class="py-2 px-4 border-b">${requiredResult}</td>
+                                        <td class="py-2 px-4 border-b ">${criteriaCode}</td>
+                                        <td class="py-2 px-4 border-b text-left">${criteriaName}</td>
+                                        <td class="py-2 px-4 border-b text-left">${requiredResult}</td>
                                         <td class="py-2 px-4 border-b">
                                             <button type="button" class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300  remove-criteria"><i class="fas fa-trash"></i></button>
                                             <input type="hidden" name="criterias[]" value="${taskCode}|${criteriaCode}|${criteriaName}|${requiredResult}">

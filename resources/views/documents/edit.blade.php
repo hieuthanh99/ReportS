@@ -2,19 +2,62 @@
 
 @section('content')
     <style>
-/* .table-container {
-    table-layout: fixed;
-    width: 100%; 
-} */
-    .table-container th, .table-container td {
+        
+    .col-110 {
+    width: 110px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+    .col-130 {
+    width: 150px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+    .col-320 {
+    width: 350px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+    .col-250 {
+    width: 250px;
+    word-wrap: break-word;
+    white-space: normal;
+    } 
+
+    .col-100 {
+    width: 120px;
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+    .col-400 {
+    width: 400px;
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+    .col-600 {
+    width: 600px;
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+    .col-90 {
+    /* width: 90px; */
+    word-wrap: break-word;
+    white-space: normal;"
+    } 
+        .table-container {
+            /* table-layout: fixed; */
+            
+            width: 2100px; 
+        }
+    /* .table-container th, .table-container td {
         width: 250px;
         text-align: center;
         word-wrap: break-word;
         white-space: normal;
-    }
+    } */
 
         #assigned-organizations-modal {
-            z-index: 99999999;
+            z-index: 999;
         }
 
         table {
@@ -32,14 +75,11 @@
         th:first-child,
         td:first-child {
             position: -webkit-sticky;
-            /* for Safari */
             position: sticky;
             left: 0;
             background-color: #f9f9f9;
-            /* Background color to cover any gaps */
             z-index: 10;
-            /* Ensure it is on top of other cells */
-        }
+        } 
 /* 
         th:nth-child(2),
 th:nth-child(3),
@@ -53,7 +93,7 @@ td:nth-child(3) {
 } */
         .table-container {
             overflow-x: auto;
-        }
+        } 
 
         input[readonly] {
             background-color: #f0f0f0;
@@ -104,7 +144,15 @@ td:nth-child(3) {
 
     <div class="container mx-auto px-4 py-6">
 
-
+    @if (session('warning'))
+        <div id="warning-message" class="fixed top-4 bg-red-500 text-white p-4 rounded-lg shadow-lg relative">
+            {{ session('warning') }}
+            <button id="close-warning" class="absolute top-2 right-2 text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    @endif
+    
      <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="p-6">
         <form action="{{ route('documents.update', $document->id) }}" method="POST" enctype="multipart/form-data"
@@ -203,36 +251,36 @@ td:nth-child(3) {
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Mã đầu việc</th>
                                         
                                     <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-130 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tổ chức</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-320  border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tên đầu việc</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Kết quả</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tiến độ</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Đánh giá tiến độ</th>
 
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tuần {{ $timeParamsWeek['two_previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tuần {{ $timeParamsWeek['previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tuần {{ $timeParamsWeek['current'] }}</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Thao tác</th>
                                 </tr>
                                 <tr>
@@ -282,7 +330,7 @@ td:nth-child(3) {
                                         $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                     @endphp
                                     <tr>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                                 value="1">
 
@@ -306,65 +354,59 @@ td:nth-child(3) {
                                             </button>
                                         </td>
                                         
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">            
+                                        <td class="col-130  border border-gray-300 px-4 py-2 whitespace-nowrap">            
                                             <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-320  border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             <input required type="hidden" id="task_code"
                                                 
                                                 value="{{ $task->task_code }}" class="task-input required"
                                                 data-id="{{ $task->id }}">
                                                 
-                                            @if ($isDisabled)
+                                            {{-- @if ($isDisabled) --}}
                                                 <span class="rounded-lg">{{ $task->task_name }}</span>
-                                            @else
-                                                <input required type="text" name="task_name[]"
+                                            {{-- @else
+
+                                                <input required type="text" name=""
                                                 
                                                 value="{{ $task->task_name }}" class="task-input required">
-                                            @endif
+                                            @endif --}}
                                            
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                            @if ($isDisabled)
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            {{-- @if ($isDisabled) --}}
                                                 <span class="rounded-lg">{{ $task->required_result }}</span>
-                                            @else
+                                            {{-- @else
                                                 <input required
                                                 type="text" name="required_result[]" id="required_result"
                                                 value="{{ $task->required_result }}"
                                                 
                                                 placeholder="Nhập đánh giá">
-                                            @endif
+
+                                            @endif --}}
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                            @if ($isDisabled)
+                                        <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+
                                             <span class="rounded-lg">{{ $task->progress }}</span>
-                                            @else
-                                            <input required
-                                            type="text" name="task_progress[]" id="task_progress"
-                                            value="{{ $task->progress }}" readonly>
-                                            @endif
+
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                            @if ($isDisabled)
+                                        <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+          
                                                 <span class="rounded-lg">{{ $task->getStatus() }}</span>
-                                            @else
-                                                <input
-                                                type="text" name="progress_evaluation[]" id="progress_evaluation"
-                                                value="{{ $task->getStatus() }}" readonly>
-                                            @endif
+                                            
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                             
                                         <span class="rounded-lg"> {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->result ?? '' }}</span>
                                            
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             <span class="rounded-lg"> {{ $task->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->description ?? '' }}</span>
                                            
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -388,15 +430,15 @@ td:nth-child(3) {
                                             </button> --}}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap " style="text-align: center">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -416,18 +458,26 @@ td:nth-child(3) {
                                             @endif
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            <input required style="width: 90px;"
                                                 type="text" name="task_current_result[]" id="current_result"   @if ($document->creator == auth()->user()->id) readonly @endif
                                                 value="{{ $task->taskResultsById($task->id, $timeParamsWeek['current'], $task->reporting_cycle)->result ?? '' }}"
-                                                placeholder="Nhập kết quả"></td>
+                                                placeholder="Nhập kết quả">
+                                                {{-- <textarea @if ($document->creator == auth()->user()->id) readonly @endif required id="task_current_result" name="task_current_result[]" rows="6" cols="50">{{ $task->taskResultsById($task->id, $timeParamsWeek['current'], $task->reporting_cycle)->result ?? '' }}</textarea> --}}
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                            </td>
+
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            <input required
                                                 @if ($document->creator == auth()->user()->id) readonly @endif
                                                 type="text" name="task_current_note[]" id="current_note"
                                                 value="{{ $task->taskResultsById($task->id, $timeParamsWeek['current'], $task->reporting_cycle)->description ?? '' }}"
-                                                placeholder="Nhập mô tả"></td>
+                                                placeholder="Nhập mô tả">
+                                                {{-- <textarea @if ($document->creator == auth()->user()->id) readonly @endif required id="task_current_note" name="task_current_note[]" rows="6" cols="50">{{ $task->taskResultsById($task->id, $timeParamsWeek['current'], $task->reporting_cycle)->description ?? '' }}</textarea> --}}
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            </td>
+
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                             <input type="file" id="fileInput-{{ $task->id }}"
                                                 name="file_{{ $task->id }}" style="display: none;"
                                                 onchange="uploadFile('{{ $task->id }}', 1)">
@@ -453,16 +503,16 @@ td:nth-child(3) {
 
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             @if ($document->creator == auth()->user()->id)
                                                 @if ($task->status == 'Đã giao việc')
-                                                    <button data-document-id="{{ $document->id }}"
+                                                    {{-- <button data-document-id="{{ $document->id }}"
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
                                                         class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
-                                                    </button>
+                                                    </button> --}}
                                                 @else
                                                     <button data-document-id="{{ $document->id }}"
                                                         data-status = "{{ $task->status }}"
@@ -478,7 +528,7 @@ td:nth-child(3) {
                                     @if ($task->criteriasTask->count() > 0)
                                         @forelse ($task->criteriasTask as $index => $criterion)
                                             <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                                <td class=" px-6 py-4 whitespace-nowrap">
+                                                <td class="col-110 px-4 py-2 whitespace-nowrap">
                                                     <input required type="hidden" id="typeCurrent"
                                                         name="criteriaTypeCurrent[]" value="1">
 
@@ -504,67 +554,63 @@ td:nth-child(3) {
                                                         {{-- {{ $criterion->CriteriaCode }} --}}
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-130  border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                                                       
                                                             <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
             
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     
                                                     <input required type="hidden" id="criteria_code"
                                                         
                                                         value="{{ $criterion->CriteriaCode }}"
                                                         class="criteria-input required" data-id="{{ $criterion->id }}">
 
-                                                        @if ($isDisabled)
+                                                        {{-- @if ($isDisabled) --}}
                                                          <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
-                                                        @else
+                                                        {{-- @else
                                                         <input required type="text" name="criteria_name[]"
                                                         
                                                         value="{{ $criterion->CriteriaName }}"
-                                                        class="criteria-input required">
-                                                        @endif
+                                                        class="criteria-input required"> --}}
+                                                        {{-- <textarea required id="criteria_name" name="criteria_name[]" rows="6" cols="50">{{ $criterion->CriteriaName }}</textarea> --}}
+
+                                                        {{-- @endif --}}
                                                    
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    @if ($isDisabled)
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                    {{-- @if ($isDisabled) --}}
                                                     <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
-                                                   @else
+                                                   {{-- @else
                                                         <input required type="text" name="criteria_required_result[]"
                                                         id="required_result" value="{{ $criterion->RequestResult }}"
                                                         
-                                                        placeholder="Nhập đánh giá">
-                                                   @endif
+                                                        placeholder="Nhập đánh giá"> --}}
+                                                        {{-- <textarea required id="criteria_required_result" name="criteria_required_result[]" rows="6" cols="50">{{ $criterion->RequestResult }}</textarea> --}}
+
+                                                   {{-- @endif --}}
                                                    
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    @if ($isDisabled)
+                                                <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                      
                                                     <span class="rounded-lg">{{ $criterion->progress }}</span>
-                                                   @else
-                                                   <input required type="text" name="criterion_progress[]"
-                                                   id="criterion_progress" value="{{ $criterion->progress }}"
-                                                   readonly>
-                                                   @endif
+                                               
                                                   
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    @if ($isDisabled)
+                                                <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                  
                                                     <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
-                                                   @else
-                                                    <input type="text" name="criteria_progress_evaluation[]"
-                                                    id="progress_evaluation" value="{{ $criterion->getStatus() }}"
-                                                    readonly>
-                                                   @endif   
+                                               
                                                     
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -583,14 +629,14 @@ td:nth-child(3) {
                                                         <span class="text-red-500"></span>
                                                     @endif
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsWeek['previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -610,25 +656,30 @@ td:nth-child(3) {
                                                     @endif
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                    <input style="width: 90px;"
                                                     @if ($document->creator == auth()->user()->id) readonly @endif
                                                         required type="text" name="criteria_current_result[]"
                                                         id="current_result"
                                                         value="{{ $criterion->taskResultsById($criterion->id, $timeParamsWeek['current'], $task->reporting_cycle)->result ?? '' }}
 "
                                                         placeholder="Nhập kết quả">
+
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                    <input
                                                     @if ($document->creator == auth()->user()->id) readonly @endif
                                                         required type="text" name="criteria_current_note[]"
                                                         id="current_note"
                                                         value="{{ $criterion->taskResultsById($criterion->id, $timeParamsWeek['current'], $task->reporting_cycle)->description ?? '' }}
 "
                                                         placeholder="Nhập mô tả">
+                                                    {{-- <textarea @if ($document->creator == auth()->user()->id) readonly @endif required id="criteria_current_note" name="criteria_current_note[]" rows="6" cols="50">{{ $criterion->taskResultsById($criterion->id, $timeParamsWeek['current'], $task->reporting_cycle)->description ?? '' }}</textarea> --}}
+
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                     <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                         name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                         onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -654,14 +705,14 @@ td:nth-child(3) {
                                                     @endif
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
 
 
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="2" class="px-6 py-4 text-gray-500">Không
+                                                <td colspan="2" class="px-4 py-2 text-gray-500">Không
                                                     có
                                                     chỉ tiêu nào.
                                                 </td>
@@ -670,7 +721,7 @@ td:nth-child(3) {
                                     @endif
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-4 text-gray-500">Không có đầu công việc nào.
+                                        <td colspan="6" class="px-4 py-2 text-gray-500">Không có đầu công việc nào.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -686,40 +737,40 @@ td:nth-child(3) {
                         <thead class="bg-gray-100">
                             <tr>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mã đầu việc</th>
-                                    <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Tổ chức</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-130 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tổ chức</th>
+                                <th rowspan="2" 
+                                    class="col-320 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tên đầu việc</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Kết quả</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tiến độ</th>
-                                <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th rowspan="2" 
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Đánh giá tiến độ</th>
 
-                                <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th colspan="3" 
+                                    class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tháng {{ $timeParamsMonth['two_previous'] }}</th>
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tháng {{ $timeParamsMonth['previous'] }}</th>
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tháng {{ $timeParamsMonth['current'] }}</th>
-                                <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th rowspan="2" 
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Thao tác</th>
                             </tr>
                             <tr>
 
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Kết quả
                                 </th>
@@ -727,31 +778,31 @@ td:nth-child(3) {
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mô tả
                                 </th>
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tài liệu
                                 </th>
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Kết quả
                                 </th>
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mô tả
                                 </th>
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tài liệu
                                 </th>
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Kết quả
                                 </th>
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mô tả
                                 </th>
-                                <th
+                                <th 
                                     class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tài liệu
                                 </th>
@@ -764,7 +815,7 @@ td:nth-child(3) {
                                     $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                 @endphp
                                 <tr>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                             value="2">
 
@@ -787,63 +838,57 @@ td:nth-child(3) {
                                             {{ $task->task_code }}
                                         </button>
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"> 
+                                    <td class="col-130  border border-gray-300 px-4 py-2 whitespace-nowrap"> 
                                         <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         <input required type="hidden" id="task_code"
                                             
                                             value="{{ $task->task_code }}" class="task-input required"
                                             data-id="{{ $task->id }}">
-                                            @if ($isDisabled)
+                                            {{-- @if ($isDisabled) --}}
                                             <span class="rounded-lg">{{ $task->task_name }}</span>
-                                           @else
-                                           <input required type="text" name="task_name[]"
+                                           {{-- @else --}}
+                                           {{-- <input required type="text" name="task_name[]"
                                             
-                                            value="{{ $task->task_name }}" class="task-input required">
-                                           @endif   
+                                            value="{{ $task->task_name }}" class="task-input required"> --}}
+                                            {{-- <textarea required id="task_name" name="task_name[]" rows="4" cols="40">{{ $task->task_name }}</textarea> --}}
+
+                                           {{-- @endif    --}}
                                        
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                        
-                                        @if ($isDisabled)
+                                        {{-- @if ($isDisabled) --}}
                                         <span class="rounded-lg">{{ $task->required_result }}</span>
-                                       @else
+                                       {{-- @else
                                             <input required
                                             type="text" name="required_result[]" id="required_result"
                                             value="{{ $task->required_result }}"
                                             
-                                            placeholder="Nhập đánh giá">
-                                       @endif  
+                                            placeholder="Nhập đánh giá"> --}}
+                                            {{-- <textarea required id="required_result[]" name="required_result[]" rows="4" cols="40">{{ $task->required_result }}</textarea> --}}
+                                       {{-- @endif   --}}
                                        </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        @if ($isDisabled)
+                                    <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         <span class="rounded-lg">{{ $task->progress }}</span>
-                                       @else
-                                       <input required
-                                       type="text" name="task_progress[]" id="task_progress"
-                                       value="{{ $task->progress }}" readonly>
-                                       @endif  
-                                      
-                                        </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        @if ($isDisabled)
-                                        <span class="rounded-lg">{{ $task->getStatus() }}</span>
-                                       @else
-                                       <input
-                                            type="text" name="progress_evaluation[]" id="progress_evaluation"
-                                            value="{{ $task->getStatus() }}" readonly>
-                                       @endif  
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                        <span class="rounded-lg">{{ $task->getStatus() }}</span>
+                                    </td>
+                                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap" style="
+                                    word-wrap: break-word;
+                                    white-space: normal;">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"  style="
+                                    word-wrap: break-word;
+                                    white-space: normal;">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                         @php
                                             $file =
                                                 $task->getFilePathByType(
@@ -861,21 +906,17 @@ td:nth-child(3) {
                                         @else
                                             <span class="text-red-500"></span>
                                         @endif
-                                        {{-- <button type="button" onclick="downloadFile('{{ $file->file_name }}')"
-                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
-                                            <i class="fas fa-download"></i>
-                                        </button> --}}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->result ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->description ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                         @php
                                             $file =
                                                 $task->getFilePathByType(
@@ -894,19 +935,23 @@ td:nth-child(3) {
                                             <span class="text-red-500"></span>
                                         @endif
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" > 
+                                        <input required style="width: 90px;"
                                         @if ($document->creator == auth()->user()->id) readonly @endif
                                             type="text" name="task_current_result[]" id="current_result"
                                             value="{{ $task->taskResultsById($task->id, $timeParamsMonth['current'], $task->reporting_cycle)->result ?? '' }}"
                                             placeholder="Nhập kết quả"></td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                    <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap" >
+                                        <input required
                                         @if ($document->creator == auth()->user()->id) readonly @endif
                                             type="text" name="task_current_note[]" id="current_note"
                                             value="{{ $task->taskResultsById($task->id, $timeParamsMonth['current'], $task->reporting_cycle)->description ?? '' }}"
-                                            placeholder="Nhập mô tả"></td>
+                                            placeholder="Nhập mô tả">
+                                            {{-- <textarea  @if ($document->creator == auth()->user()->id) readonly @endif required id="task_current_note[]" name="task_current_note[]" rows="4" cols="40">{{ $task->taskResultsById($task->id, $timeParamsMonth['current'], $task->reporting_cycle)->description ?? '' }}</textarea> --}}
+                                        </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                         <input type="file" id="fileInput-{{ $task->id }}"
                                             name="file_{{ $task->id }}" style="display: none;"
                                             onchange="uploadFile('{{ $task->id }}', 1)">
@@ -932,23 +977,23 @@ td:nth-child(3) {
 
 
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         @if ($document->creator == auth()->user()->id)
                                             @if ($task->status == 'Đã giao việc')
-                                                <button data-document-id="{{ $document->id }}"
+                                                {{-- <button data-document-id="{{ $document->id }}"
                                                     data-status = "{{ $task->status }}"
                                                     data-task-code="{{ $task->task_code }}"
                                                     data-task-id="{{ $task->id }}"
-                                                    @if ($document->creator == auth()->user()->id) readonly @endif
+                                           
                                                     class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                     <i class="fa fa-tasks"></i>
-                                                </button>
+                                                </button> --}}
                                             @else
                                                 <button data-document-id="{{ $document->id }}"
                                                     data-status = "{{ $task->status }}"
                                                     data-task-code="{{ $task->task_code }}"
                                                     data-task-id="{{ $task->id }}"
-                                                    @if ($document->creator == auth()->user()->id) readonly @endif
+                                        
                                                     class="open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                     <i class="fa fa-tasks"></i>
                                                 </button>
@@ -959,7 +1004,7 @@ td:nth-child(3) {
                                 @if ($task->criteriasTask->count() > 0)
                                     @forelse ($task->criteriasTask as $index => $criterion)
                                         <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                            <td class=" px-6 py-4 whitespace-nowrap">
+                                            <td class="col-110 px-4 py-2 whitespace-nowrap">
                                                 <input required type="hidden" id="typeCurrent"
                                                     name="criteriaTypeCurrent[]" value="2">
 
@@ -985,63 +1030,58 @@ td:nth-child(3) {
                                                     {{-- {{ $criterion->CriteriaCode }} --}}
                                                 </button>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 <input required type="hidden" id="criteria_code"
                                                     
                                                     value="{{ $criterion->CriteriaCode }}"
                                                     class="criteria-input required" data-id="{{ $criterion->id }}">
-                                                    @if ($isDisabled)
+                                                    {{-- @if ($isDisabled) --}}
                                                         <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
-                                                   @else
+                                                   {{-- @else
                                                         <input required type="text" name="criteria_name[]"
                                                         
                                                         value="{{ $criterion->CriteriaName }}"
-                                                        class="criteria-input required">
-                                                   @endif  
+                                                        class="criteria-input required"> --}}
+                                                        {{-- <textarea required id="criteria_name[]" name="criteria_name[]" rows="4" cols="40">{{ $criterion->CriteriaName }}</textarea> --}}
+
+                                                   {{-- @endif   --}}
                         
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                @if ($isDisabled)
+                                            <td class="col-250  border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                {{-- @if ($isDisabled) --}}
                                                 <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
-                                               @else
+                                               {{-- @else
                                                <input required type="text" name="criteria_required_result[]"
                                                     id="required_result" value="{{ $criterion->RequestResult }}"
                                                     
-                                                    placeholder="Nhập đánh giá">
-                                               @endif  
+                                                    placeholder="Nhập đánh giá"> --}}
+                                                    {{-- <textarea required id="criteria_name[]" name="criteria_required_result[]" rows="4" cols="40">{{ $criterion->RequestResult }}</textarea> --}}
+                                               {{-- @endif   --}}
                                               
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                @if ($isDisabled)
+                                            <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                   
                                                 <span class="rounded-lg">{{ $criterion->progress }}</span>
-                                               @else
-                                               <input required type="text" name="criterion_progress[]"
-                                               id="criterion_progress" value="{{ $criterion->progress }}"
-                                               readonly>
-                                               @endif  
+                               
                                               
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                @if ($isDisabled)
+                                            <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                              
                                                 <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
-                                               @else
-                                               <input type="text" name="criteria_progress_evaluation[]"
-                                               id="progress_evaluation" value="{{ $criterion->getStatus() }}"
-                                               readonly>
-                                               @endif 
+                                              
                                    
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                             </td>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                 @php
                                                     $file =
                                                         $criterion->getFilePathByType(
@@ -1060,14 +1100,14 @@ td:nth-child(3) {
                                                     <span class="text-red-500"></span>
                                                 @endif
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->result ?? '' }}
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsMonth['previous'], $task->reporting_cycle)->description ?? '' }}
                                             </td>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                 @php
                                                     $file =
                                                         $criterion->getFilePathByType(
@@ -1087,25 +1127,28 @@ td:nth-child(3) {
                                                 @endif
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap"><input
                                                 @if ($document->creator == auth()->user()->id) readonly @endif
                                                     required type="text" name="criteria_current_result[]"
-                                                    id="current_result"
+                                                    id="current_result" style="width: 90px;"
                                                     value="{{ $criterion->taskResultsById($criterion->id, $timeParamsMonth['current'], $task->reporting_cycle)->result ?? '' }}
 "
                                                     placeholder="Nhập kết quả">
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                            <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                <input
                                                 @if ($document->creator == auth()->user()->id) readonly @endif
                                                     required type="text" name="criteria_current_note[]"
                                                     id="current_note"
                                                     value="{{ $criterion->taskResultsById($criterion->id, $timeParamsMonth['current'], $task->reporting_cycle)->description ?? '' }}
 "
                                                     placeholder="Nhập mô tả">
+
+                                                    {{-- <textarea @if ($document->creator == auth()->user()->id) readonly @endif required id="criteria_current_note[]" name="criteria_current_note[]" rows="4" cols="40">{{ $criterion->taskResultsById($criterion->id, $timeParamsMonth['current'], $task->reporting_cycle)->description ?? '' }}</textarea> --}}
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                 <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                     name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                     onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -1131,14 +1174,14 @@ td:nth-child(3) {
                                                 @endif
                                                 </button>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
 
 
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="2" class="px-6 py-4 text-gray-500">Không
+                                            <td colspan="2" class="px-4 py-2 text-gray-500">Không
                                                 có
                                                 chỉ tiêu nào.
                                             </td>
@@ -1147,7 +1190,7 @@ td:nth-child(3) {
                                 @endif
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-gray-500">Không có đầu công việc nào.
+                                    <td colspan="6" class="px-4 py-2 text-gray-500">Không có đầu công việc nào.
                                     </td>
                                 </tr>
                             @endforelse
@@ -1162,36 +1205,36 @@ td:nth-child(3) {
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Mã đầu việc</th>
                                         
                                     <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-130 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tổ chức</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-320  border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tên đầu việc</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Kết quả</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tiến độ</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Đánh giá tiến độ</th>
 
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quý {{ $timeParamsQuarter['two_previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quý {{ $timeParamsQuarter['previous'] }}</th>
                                     <th colspan="3"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quý {{ $timeParamsQuarter['current'] }}</th>
                                     <th rowspan="2"
-                                        class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Thao tác</th>
                                 </tr>
                                 <tr>
@@ -1241,7 +1284,7 @@ td:nth-child(3) {
                                         $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                     @endphp
                                     <tr>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                                 value="3">
 
@@ -1264,42 +1307,58 @@ td:nth-child(3) {
                                                 {{ $task->task_code }}
                                             </button>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-130  border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         
                         
                                             <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
 
                               </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-320  border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             <input required type="hidden" id="task_code"
                                                 
                                                 value="{{ $task->task_code }}" class="task-input required"
                                                 data-id="{{ $task->id }}">
+                                            {{-- @if ($isDisabled) --}}
+                                                <span class="rounded-lg">{{ $task->task_name }}</span>
+                                            {{-- @else
+
                                             <input required type="text" name="task_name[]"
-                                                
-                                                value="{{ $task->task_name }}" class="task-input required">
+                                            
+                                            value="{{ $task->task_name }}" class="task-input required"> --}}
+                                            {{-- @endif   --}}
+                              
+
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            {{-- @if ($isDisabled) --}}
+                                                <span class="rounded-lg">{{ $task->required_result }}</span>
+                                            {{-- @else
+                                                <input required
                                                 type="text" name="required_result[]" id="required_result"
                                                 value="{{ $task->required_result }}"
                                                 
-                                                placeholder="Nhập đánh giá"></td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
-                                                type="text" name="task_progress[]" id="task_progress"
-                                                value="{{ $task->progress }}" readonly></td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
-                                                type="text" name="progress_evaluation[]" id="progress_evaluation"
-                                                value="{{ $task->getStatus() }}" readonly>
+                                                placeholder="Nhập đánh giá">
+                                            @endif   --}}
+                                        
+                                            </td>
+                                        <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            <span class="rounded-lg">{{ $task->progress }}</span>
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            <span class="rounded-lg">{{ $task->getStatus() }}</span>
+                                            {{-- <input
+                                                type="text" name="progress_evaluation[]" id="progress_evaluation"
+                                                value="{{ $task->getStatus() }}" readonly> --}}
+                                        </td>
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -1323,15 +1382,15 @@ td:nth-child(3) {
                                             </button> --}}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->result ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             {{ $task->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->description ?? '' }}
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                             @php
                                                 $file =
                                                     $task->getFilePathByType(
@@ -1351,19 +1410,22 @@ td:nth-child(3) {
                                             @endif
                                         </td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
+                                            <input required style="width: 90px;"
                                             @if ($document->creator == auth()->user()->id) readonly @endif
                                                 type="text" name="task_current_result[]" id="current_result"
                                                 value="{{ $task->taskResultsById($task->id, $timeParamsQuarter['current'], $task->reporting_cycle)->result ?? '' }}"
                                                 placeholder="Nhập kết quả"></td>
 
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                        <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            {{-- <textarea @if ($document->creator == auth()->user()->id) readonly @endif required id="task_current_note[]" name="task_current_note[]" rows="4" cols="40">{{ $task->taskResultsById($task->id, $timeParamsQuarter['current'], $task->reporting_cycle)->description ?? '' }}</textarea> --}}
+                                            <input required 
                                             @if ($document->creator == auth()->user()->id) readonly @endif
                                                 type="text" name="task_current_note[]" id="current_note"
                                                 value="{{ $task->taskResultsById($task->id, $timeParamsQuarter['current'], $task->reporting_cycle)->description ?? '' }}"
                                                 placeholder="Nhập mô tả"></td>
-
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        </td>
+                                        <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             <input type="file" id="fileInput-{{ $task->id }}"
                                                 name="file_{{ $task->id }}" style="display: none;"
                                                 onchange="uploadFile('{{ $task->id }}', 1)">
@@ -1389,16 +1451,16 @@ td:nth-child(3) {
 
 
                                         </td>
-                                        <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                        <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                             @if ($document->creator == auth()->user()->id)
                                                 @if ($task->status == 'Đã giao việc')
-                                                    <button data-document-id="{{ $document->id }}"
+                                                    {{-- <button data-document-id="{{ $document->id }}"
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
                                                         class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
-                                                    </button>
+                                                    </button> --}}
                                                 @else
                                                     <button data-document-id="{{ $document->id }}"
                                                         data-status = "{{ $task->status }}"
@@ -1414,7 +1476,7 @@ td:nth-child(3) {
                                     @if ($task->criteriasTask->count() > 0)
                                         @forelse ($task->criteriasTask as $index => $criterion)
                                             <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                                <td class=" px-6 py-4 whitespace-nowrap">
+                                                <td class="col-110 px-4 py-2 whitespace-nowrap">
                                                     <input required type="hidden" id="typeCurrent"
                                                         name="criteriaTypeCurrent[]" value="3">
 
@@ -1440,69 +1502,61 @@ td:nth-child(3) {
                                                         {{-- {{ $criterion->CriteriaCode }} --}}
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         
                         
                                                     <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
   
                                       </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     <input required type="hidden" id="criteria_code"
                                                         
                                                         value="{{ $criterion->CriteriaCode }}"
                                                         class="criteria-input required" data-id="{{ $criterion->id }}">
-                                                        
-                                                        value="{{ $criterion->CriteriaCode }}"
-                                                        class="criteria-input required" data-id="{{ $criterion->id }}">
-                                                        @if ($isDisabled)
+                                            
+                                                        {{-- @if ($isDisabled) --}}
                                                             <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
-                                                       @else
+                                                       {{-- @else
                                                             <input required type="text" name="criteria_name[]"
                                                             
                                                             value="{{ $criterion->CriteriaName }}"
                                                             class="criteria-input required">
-                                                       @endif  
+
+                                                            @endif   --}}
                                             
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    @if ($isDisabled)
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                    {{-- @if ($isDisabled) --}}
                                                         <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
-                                                    @else
+                                                    {{-- @else
                                                             <input required type="text" name="criteria_required_result[]"
                                                             id="required_result" value="{{ $criterion->RequestResult }}"
                                                             
                                                             placeholder="Nhập đánh giá">
-                                                    @endif  
+                                                            
+                                                    @endif   --}}
                                                     
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    @if ($isDisabled)
+                                                <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                
                                                         <span class="rounded-lg">{{ $criterion->progress }}</span>
-                                                    @else
-                                                        <input required type="text" name="criterion_progress[]"
-                                                        id="criterion_progress" value="{{ $criterion->progress }}"
-                                                        readonly>
-                                                    @endif  
+                                                  
                                                    
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                    @if ($isDisabled)
-                                                        <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
-                                                    @else
-                                                        <input type="text" name="criteria_progress_evaluation[]"
-                                                        id="progress_evaluation" value="{{ $criterion->getStatus() }}"
-                                                        readonly>
-                                                    @endif  
+                                                <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                    <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
+                                                
+                                              
                                                     
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center" >
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -1521,14 +1575,14 @@ td:nth-child(3) {
                                                         <span class="text-red-500"></span>
                                                     @endif
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->result ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     {{ $criterion->taskResultsByNumber($timeParamsQuarter['previous'], $task->reporting_cycle)->description ?? '' }}
                                                 </td>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90  border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                     @php
                                                         $file =
                                                             $criterion->getFilePathByType(
@@ -1548,7 +1602,7 @@ td:nth-child(3) {
                                                     @endif
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                                <td class="col-90  border border-gray-300 px-4 py-2 whitespace-nowrap"><input style="width: 90px;"
                                                     @if ($document->creator == auth()->user()->id) readonly @endif
                                                         required type="text" name="criteria_current_result[]"
                                                         id="current_result"
@@ -1557,7 +1611,7 @@ td:nth-child(3) {
                                                         placeholder="Nhập kết quả">
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap"><input
                                                     @if ($document->creator == auth()->user()->id) readonly @endif
                                                         required type="text" name="criteria_current_note[]"
                                                         id="current_note"
@@ -1566,7 +1620,7 @@ td:nth-child(3) {
                                                         placeholder="Nhập mô tả">
                                                 </td>
 
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="col-90  border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                     <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                         name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                         onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -1592,14 +1646,14 @@ td:nth-child(3) {
                                                     @endif
                                                     </button>
                                                 </td>
-                                                <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
 
 
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="2" class="px-6 py-4 text-gray-500">Không
+                                                <td colspan="2" class="px-4 py-2 text-gray-500">Không
                                                     có
                                                     chỉ tiêu nào.
                                                 </td>
@@ -1608,7 +1662,7 @@ td:nth-child(3) {
                                     @endif
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-4 text-gray-500">Không có đầu công việc nào.
+                                        <td colspan="6" class="px-4 py-2 text-gray-500">Không có đầu công việc nào.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -1623,36 +1677,35 @@ td:nth-child(3) {
                         <thead class="bg-gray-100">
                             <tr>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-110 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mã đầu việc</th>
-                                    
- <th rowspan="2"
- class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
- Tổ chức</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="col-130  border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Tổ chức</th>
+                                <th rowspan="2"
+                                    class="col-320  border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tên đầu việc</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-250 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Kết quả</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Tiến độ</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Đánh giá tiến độ</th>
 
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Năm {{ $timeParamsYear['two_previous'] }}</th>
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-400 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Năm {{ $timeParamsYear['previous'] }}</th>
                                 <th colspan="3"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-600 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Năm {{ $timeParamsYear['current'] }}</th>
                                 <th rowspan="2"
-                                    class="border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    class="col-100 border border-gray-300 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Thao tác</th>
                             </tr>
                             <tr>
@@ -1702,7 +1755,7 @@ td:nth-child(3) {
                                     $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
                                 @endphp
                                 <tr>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         <input required type="hidden" id="typeCurrent" name="typeCurrent[]"
                                             value="4">
 
@@ -1725,62 +1778,54 @@ td:nth-child(3) {
                                             {{ $task->task_code }}
                                         </button>
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         <input required type="hidden" id="task_code"
                                             
                                             value="{{ $task->task_code }}" class="task-input required"
                                             data-id="{{ $task->id }}">
-                                        @if ($isDisabled)
+                                        {{-- @if ($isDisabled) --}}
                                             <span class="rounded-lg">{{ $task->task_name }}</span>
-                                        @else
+                                        {{-- @else
                                         <input required type="text" name="task_name[]"
                                         
                                         value="{{ $task->task_name }}" class="task-input required">
                                         @endif  
-                                       
+                                        --}}
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        @if ($isDisabled)
+                                    <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                        {{-- @if ($isDisabled) --}}
                                         <span class="rounded-lg">{{ $task->required_result }}</span>
-                                        @else
+                                        {{-- @else
                                             <input required
                                                 type="text" name="required_result[]" id="required_result"
                                                 value="{{ $task->required_result }}"
                                                 
                                                 placeholder="Nhập đánh giá">
-                                        @endif  
+                                        @endif   --}}
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        @if ($isDisabled)
+                                    <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                      
                                         <span class="rounded-lg">{{ $task->progress }}</span>
-                                        @else
-                                        <input required
-                                        type="text" name="task_progress[]" id="task_progress"
-                                        value="{{ $task->progress }}" readonly>
-                                        @endif  
+            
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                        @if ($isDisabled)
+                                    <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                  
                                         <span class="rounded-lg">{{ $task->getStatus() }}</span>
-                                        @else
-                                            <input
-                                            type="text" name="progress_evaluation[]" id="progress_evaluation"
-                                            value="{{ $task->getStatus() }}" readonly>
-                                        @endif  
+                                       
                                        
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                         @php
                                             $file =
                                                 $task->getFilePathByType(
@@ -1804,15 +1849,15 @@ td:nth-child(3) {
                                         </button> --}}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->result ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         {{ $task->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->description ?? '' }}
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                         @php
                                             $file =
                                                 $task->getFilePathByType(
@@ -1832,19 +1877,19 @@ td:nth-child(3) {
                                         @endif
                                     </td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap"><input required style="width: 90px;"
                                         @if ($document->creator == auth()->user()->id) readonly @endif
                                             type="text" name="task_current_result[]" id="current_result"
                                             value="{{ $task->taskResultsById($task->id, $timeParamsYear['current'], $task->reporting_cycle)->result ?? '' }}"
                                             placeholder="Nhập kết quả"></td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input required
+                                    <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap"><input required
                                         @if ($document->creator == auth()->user()->id) readonly @endif
                                             type="text" name="task_current_note[]" id="current_note"
                                             value="{{ $task->taskResultsById($task->id, $timeParamsYear['current'], $task->reporting_cycle)->description ?? '' }}"
                                             placeholder="Nhập mô tả"></td>
 
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                         <input type="file" id="fileInput-{{ $task->id }}"
                                             name="file_{{ $task->id }}" style="display: none;"
                                             onchange="uploadFile('{{ $task->id }}', 1)">
@@ -1870,16 +1915,16 @@ td:nth-child(3) {
 
 
                                     </td>
-                                    <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                    <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                         @if ($document->creator == auth()->user()->id)
                                             @if ($task->status == 'Đã giao việc')
-                                                <button data-document-id="{{ $document->id }}"
+                                                {{-- <button data-document-id="{{ $document->id }}"
                                                     data-status = "{{ $task->status }}"
                                                     data-task-code="{{ $task->task_code }}"
                                                     data-task-id="{{ $task->id }}"
                                                     class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                     <i class="fa fa-tasks"></i>
-                                                </button>
+                                                </button> --}}
                                             @else
                                                 <button data-document-id="{{ $document->id }}"
                                                     data-status = "{{ $task->status }}"
@@ -1895,7 +1940,7 @@ td:nth-child(3) {
                                 @if ($task->criteriasTask->count() > 0)
                                     @forelse ($task->criteriasTask as $index => $criterion)
                                         <tr id="criteria-row-{{ $task->id }}" class="hidden">
-                                            <td class=" px-6 py-4 whitespace-nowrap">
+                                            <td class="col-110 px-4 py-2 whitespace-nowrap">
                                                 <input required type="hidden" id="typeCurrent"
                                                     name="criteriaTypeCurrent[]" value="4">
 
@@ -1921,64 +1966,55 @@ td:nth-child(3) {
                                                     {{-- {{ $criterion->CriteriaCode }} --}}
                                                 </button>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 <span class="text-gray-900 w-2/3">{{ $task->organization->name??'Chưa giao việc' }}</span>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 <input required type="hidden" id="criteria_code"
                                                     
                                                     value="{{ $criterion->CriteriaCode }}"
                                                     class="criteria-input required" data-id="{{ $criterion->id }}">
 
-                                                    @if ($isDisabled)
+                                                    {{-- @if ($isDisabled) --}}
                                                     <span class="rounded-lg">{{ $criterion->CriteriaName }}</span>
-                                                    @else
+                                                    {{-- @else
                                                     <input required type="text" name="criteria_name[]"
                                                     
                                                     value="{{ $criterion->CriteriaName }}"
                                                     class="criteria-input required">
-                                                    @endif  
+                                                    @endif   --}}
                                                
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                @if ($isDisabled)
+                                            <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                {{-- @if ($isDisabled) --}}
                                                 <span class="rounded-lg">{{ $criterion->RequestResult }}</span>
-                                                @else
+                                                {{-- @else
                                                 <input required type="text" name="criteria_required_result[]"
                                                 id="required_result" value="{{ $criterion->RequestResult }}"
                                                 
                                                 placeholder="Nhập đánh giá">
                                                 @endif  
-                                                
+                                                 --}}
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                @if ($isDisabled)
+                                            <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                            
                                                 <span class="rounded-lg">{{ $criterion->progress }}</span>
-                                                @else
-                                                <input required type="text" name="criterion_progress[]"
-                                                    id="criterion_progress" value="{{ $criterion->progress }}"
-                                                    readonly>
-                                                @endif  
-                                              
+                            
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
-                                                @if ($isDisabled)
+                                            <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                        
                                                     <span class="rounded-lg">{{ $criterion->getStatus() }}</span>
-                                                @else
-                                                    <input type="text" name="criteria_progress_evaluation[]"
-                                                    id="progress_evaluation" value="{{ $criterion->getStatus() }}"
-                                                    readonly>
-                                                @endif 
+                
                                               
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->result ?? '' }}
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsYear['two_previous'], $task->reporting_cycle)->description ?? '' }}
                                             </td>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                 @php
                                                     $file =
                                                         $criterion->getFilePathByType(
@@ -1997,14 +2033,14 @@ td:nth-child(3) {
                                                     <span class="text-red-500"></span>
                                                 @endif
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->result ?? '' }}
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                 {{ $criterion->taskResultsByNumber($timeParamsYear['previous'], $task->reporting_cycle)->description ?? '' }}
                                             </td>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                 @php
                                                     $file =
                                                         $criterion->getFilePathByType(
@@ -2024,8 +2060,8 @@ td:nth-child(3) {
                                                 @endif
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
-                                                @if ($document->creator == auth()->user()->id) readonly @endif
+                                            <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap"><input
+                                                @if ($document->creator == auth()->user()->id) readonly @endif style="width: 90px;"
                                                     required type="text" name="criteria_current_result[]"
                                                     id="current_result"
                                                     value="{{ $criterion->taskResultsById($criterion->id, $timeParamsYear['current'], $task->reporting_cycle)->result ?? '' }}
@@ -2033,7 +2069,7 @@ td:nth-child(3) {
                                                     placeholder="Nhập kết quả">
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap"><input
+                                            <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap"><input
                                                 @if ($document->creator == auth()->user()->id) readonly @endif
                                                     required type="text" name="criteria_current_note[]"
                                                     id="current_note"
@@ -2042,7 +2078,7 @@ td:nth-child(3) {
                                                     placeholder="Nhập mô tả">
                                             </td>
 
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap" style="text-align: center">
                                                 <input type="file" id="criteria-fileInput-{{ $criterion->id }}"
                                                     name="criteria_file_{{ $criterion->id }}" style="display: none;"
                                                     onchange="uploadFile('{{ $criterion->id }}', 2)">
@@ -2066,14 +2102,14 @@ td:nth-child(3) {
                                                 @endif
                                                 </button>
                                             </td>
-                                            <td class="border border-gray-300 px-6 py-4 whitespace-nowrap">
+                                            <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
 
 
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="2" class="px-6 py-4 text-gray-500">Không
+                                            <td colspan="2" class="px-4 py-2 text-gray-500">Không
                                                 có
                                                 chỉ tiêu nào.
                                             </td>
@@ -2082,7 +2118,7 @@ td:nth-child(3) {
                                 @endif
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-gray-500">Không có đầu công việc nào.
+                                    <td colspan="6" class="px-4 py-2 text-gray-500">Không có đầu công việc nào.
                                     </td>
                                 </tr>
                             @endforelse
@@ -2106,7 +2142,7 @@ td:nth-child(3) {
      {{-- Giao việc  --}}
  <div id="assign-organizations-modal" style="z-index: 9999;" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
-        <h2 class="text-xl font-bold mb-4">Danh sách chỉ tiêu</h2>
+        <h2 class="text-xl font-bold mb-4">Danh sách Cơ quan/Tổ chức</h2>
 
         <!-- Phần chọn bộ lọc -->
         <div class="mb-4">
@@ -2165,7 +2201,7 @@ td:nth-child(3) {
         <button type="button" id="assign-organizations-save" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán</button>
         <button type="button" id="cancel-organizations-criteria" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy</button>
     </div>
-    <div id="assigned-organizations-modal"
+    <div id="assigned-organizations-modal" style="z-index: 999"
         class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
             <h2 class="text-xl font-bold mb-4">Danh sách Cơ Quan/Tổ Chức đã giao việc</h2>
@@ -2407,6 +2443,7 @@ td:nth-child(3) {
             let taskId;
             document.querySelectorAll('.open-popup-button').forEach(button => {
                 button.addEventListener('click', function(event) {
+                
                     event.preventDefault();
                     const documentIdRow = this.getAttribute('data-document-id');
                     const taskCodeRow = this.getAttribute('data-task-code');
@@ -2438,10 +2475,9 @@ td:nth-child(3) {
                                     tbody.appendChild(row);
                                 });
 
+                                console.log(tbody);
                                 // Hiển thị popup
-                                document.getElementById('assigned-organizations-modal')
-                                    .classList
-                                    .remove('hidden');
+                                document.getElementById('assigned-organizations-modal').classList.remove('hidden');
 
                             });
 
@@ -2560,6 +2596,7 @@ td:nth-child(3) {
                             // Thực hiện các hành động liên quan
                             // Hiển thị ô tìm kiếm
                             searchOtherSection.classList.remove('hidden');
+                            document.getElementById('existing-organizations').innerHTML = '';
                             break;
                         default:
                             break;

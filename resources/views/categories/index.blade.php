@@ -2,14 +2,27 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
-    @if(session('success'))
-    <div id="success-message" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
-        {{ session('success') }}
-        <button id="close-message" class="absolute top-2 right-2 text-white">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-    @endif
+    @if ($errors->any())
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="success-message bg-green-500 text-white p-4 rounded-lg mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
     <div class="flex justify-between items-center ">
         <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
         <a href="{{ route('categories.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>

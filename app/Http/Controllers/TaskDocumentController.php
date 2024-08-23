@@ -12,6 +12,7 @@ class TaskDocumentController extends Controller
     // Hiển thị form tạo mới hoặc danh sách các task
     public function index()
     {
+        dd("dsadasda");
         // Truy xuất tất cả task documents (hoặc chỉ những cái cần thiết)
         $tasks = TaskDocument::all();
         return view('tasks.index', compact('tasks'));

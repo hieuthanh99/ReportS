@@ -1,12 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Tạo mới người dùng</h1>
-        <a href="{{ route('users.index') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Danh sách người dùng</a>
-    </div>
+<div class="container mx-auto px-4 py-6 bg-white shadow-md rounded-lg overflow-hidden">
+    @if ($errors->any())
+        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
+    @if (session('error'))
+        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="success-message bg-green-500 text-white p-4 rounded-lg mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
     @if(session('success'))
         <div id="success-message" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
             {{ session('success') }}
@@ -16,7 +32,7 @@
         </div>
     @endif
 
-    <form action="{{ route('users.store') }}" method="POST" class="bg-white border border-gray-300 rounded-lg shadow-lg p-6">
+    <form action="{{ route('users.store') }}" method="POST" >
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -45,7 +61,9 @@
             <label for="role" class="block text-gray-700 font-medium mb-2">Role</label>
             <select id="role" name="role"
             class="form-select w-full border border-gray-300 rounded-lg p-2">
+            <option value="supper_admin">Supper Admin</option>
             <option value="admin">Admin</option>
+            <option value="sub_admin">Sub-Admin</option>
             <option value="staff">Nhân viên</option>
         </select>
             @error('password')
@@ -81,6 +99,18 @@
                 @enderror
             </div>
             <div>
+                <label for="position_id" class="block text-gray-700 font-medium mb-2">Chức vụ</label>
+                <select id="position_id" name="position_id" class="w-full border border-gray-300 rounded-lg p-2">
+                    <option value="">Không có chức vụ</option>
+                    @foreach($positions as $position)
+                        <option value="{{ $position->id }}">{{ $position->name }}</option>
+                    @endforeach
+                </select>
+                @error('position_id')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
                 <label for="phone" class="block text-gray-700 font-medium mb-2">Số điện thoại</label>
                 <input type="text" id="phone" name="phone" value="{{ old('phone') }}" class="w-full border border-gray-300 rounded-lg p-2">
                 @error('phone')
@@ -95,7 +125,9 @@
                 @enderror
             </div>
         </div>
-        <div class="mt-6">
+        <div class="mt-6 flex" style="justify-content: space-between">
+            <a href="{{route('users.index')}}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
+
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Tạo người dùng</button>
         </div>
     </form>

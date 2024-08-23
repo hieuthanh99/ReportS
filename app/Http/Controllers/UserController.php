@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Organization;
+use App\Models\Position;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator; // Import Validator
 class UserController extends Controller
@@ -102,14 +103,16 @@ class UserController extends Controller
 
     public function index()
     {
+
         $users = User::with('organization')->orderBy('created_at', 'desc')->paginate(10);
         return view('users.index', compact('users'));
     }
 
     public function create()
     {
+        $positions = Position::all();
         $organizations = Organization::all();
-     return view('users.create', compact('organizations'));
+        return view('users.create', compact('organizations', 'positions'));
        // return view('users.create');
     }
 
@@ -120,7 +123,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
             'password' => 'required|string|min:8|confirmed', // Xác thực mật khẩu
-            'organization_id' => 'nullable|exists:organizations,id',
+           
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
         ]);
@@ -137,6 +140,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->input('password'));
         $user->organization_id = $request->input('organization_id');
         $user->phone = $request->input('phone');
+        $user->position_id = $request->input('position_id');
         $user->address = $request->input('address');
         $user->role = $request->input('role');
         $user->save();
@@ -145,10 +149,11 @@ class UserController extends Controller
     }
     public function edit($id)
     {
-    
+        $positions = Position::all();
+
         $user = User::findOrFail($id);
         $organizations = Organization::all(); // Lấy danh sách tổ chức để hiển thị trong dropdown
-        return view('users.edit', compact('user', 'organizations'));
+        return view('users.edit', compact('user', 'organizations', 'positions'));
     }
 
     public function update(Request $request, $id)
@@ -157,7 +162,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
-            'organization_id' => 'nullable|exists:organizations,id',
+   
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
         ]);
@@ -167,12 +172,14 @@ class UserController extends Controller
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
         $user->role = $request->input('role');
+        $user->position_id = $request->input('position_id');
+        $user->organization_id = $request->input('organization_id');
         // Cập nhật mật khẩu nếu có thay đổi
         if ($request->filled('password')) {
             $user->password = Hash::make($validatedData['password']);
         }
 
-        $user->organization_id = $validatedData['organization_id'];
+        // $user->organization_id = $validatedData['organization_id'];
         $user->phone = $validatedData['phone'];
         $user->address = $validatedData['address'];
         $user->save();

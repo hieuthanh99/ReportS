@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Organization;
+use App\Models\OrganizationType;
 use App\Models\OrganizationTask;
 use App\Models\TaskDocument;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Validation\Rule; 
+use Illuminate\Support\Facades\DB;
 class OrganizationController extends Controller
 {
+
+
+
     public function getAssignedOrganizations(Request $request)
     {
         $documentId = $request->query('documentId');
@@ -94,36 +99,95 @@ class OrganizationController extends Controller
             'organizations' => $organizations
         ]);
     }
+    public function getOrganizationsByType($organization_type_id)
+    {
+        $organizations = Organization::where('organization_type_id', $organization_type_id)->get();
+        return response()->json($organizations);
+    }
+
     public function index()
     {
         // Lấy tất cả các tổ chức từ cơ sở dữ liệu và chuyển đổi thành Collection
         $organizations = Organization::all();
+        $oranizationType = OrganizationType::all();
     
         // Tạo cây tổ chức từ các tổ chức đã lấy
-        $tree = $this->buildTree($organizations);
+        $tree = $this->buildTree($oranizationType, $organizations);
     
         // Chuyển đổi mảng cây thành Collection
         $tree = collect($tree);
     
-        return view('organizations.index', compact('tree'));
+        return view('organizations.index', compact('tree', 'oranizationType', 'organizations'));
     }
+    // private function buildTree($elements, $parentId = null)
+    // {
+    //     $branch = [];
     
-    private function buildTree($elements, $parentId = null)
+    //     foreach ($elements as $element) {
+    //         if ($element['parent_id'] == $parentId) {
+    //             $children = $this->buildTree($elements, $element['id']);
+    //             if ($children) {
+    //                 $element['children'] = $children;
+    //             }
+    //             $branch[] = $element;
+    //         }
+    //     }
+    
+    //     return $branch;
+    // }
+    private function buildTree($organizationTypes, $organizations)
     {
         $branch = [];
-    
-        foreach ($elements as $element) {
-            if ($element['parent_id'] == $parentId) {
-                $children = $this->buildTree($elements, $element['id']);
-                if ($children) {
-                    $element['children'] = $children;
-                }
-                $branch[] = $element;
-            }
+
+        // Lặp qua tất cả các loại tổ chức
+        foreach ($organizationTypes as $organizationType) {
+            // Tạo một nhánh cho loại tổ chức
+            $typeNode = [
+                'id' => $organizationType->id,
+                'name' => $organizationType->type_name,
+                'type' => 'organization_type',
+                'children' => []
+            ];
+
+            // Tìm tất cả các tổ chức có cùng `organization_type_id`
+            $relatedOrganizations = $organizations->where('organization_type_id', $organizationType->id);
+
+            // Sử dụng hàm buildTree để đệ quy qua các tổ chức này
+            $typeNode['children'] = $this->buildOrganizationTree($relatedOrganizations, $organizations);
+
+            // Thêm loại tổ chức vào cây
+            $branch[] = $typeNode;
         }
-    
+
         return $branch;
     }
+
+    private function buildOrganizationTree($relatedOrganizations, $organizations,  $parentId = null)
+    {
+        $branch = [];
+
+        foreach ($relatedOrganizations as $organization) {
+            if ($organization->parent_id == $parentId) {
+                $organizationNode = [
+                    'id' => $organization->id,
+                    'name' => $organization->name,
+                    'type' => 'organization'
+                ];
+                \Log::error('children===========: ' . $organization->id);
+                $children = $this->buildOrganizationTree($organizations, $organizations, $organization->id);
+
+                if($children){
+
+                    $organizationNode['children'] = $children;
+                } 
+
+                $branch[] = $organizationNode;
+            }
+        }
+
+        return $branch;
+    }
+
     public function create($parentId = null)
     {
         return view('organizations.create', ['parentId' => $parentId]);
@@ -131,28 +195,51 @@ class OrganizationController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:organizations,code',
-            'type' => 'required|in:tỉnh,bộ',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:15',
-            'parent_id' => 'nullable|exists:organizations,id',
-        ]);
+        DB::beginTransaction();
+        try {
 
-        $organization = Organization::create([
-            'name' => $request->name,
-            'code' => $request->code,
-            'type' => $request->type,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'parent_id' => $request->parent_id,
-            'creator' => auth()->id(),
-        ]);
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|string|max:255|unique:organizations,code',
+             ], [
+                 'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
+                 'code.unique' => 'Mã cơ quan, tổ chức đã tồn tại.',
+                 'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
+             ]);
+    
+            $organization = Organization::create([
+                'name' => $request->name,
+                'code' => $request->code,
+                'type' => $request->type,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'website' => $request->website,
+                'parent_id' => $request->parent_id,
+                'creator' => auth()->id(),
+            ]);
+            DB::commit();
+            session()->flash('success', 'Tổ chức mới đã được thêm thành công!');
+    
+            return response()->json(['success' => true, 'organization' => $organization]);
+  
+            // session(['success' =>  $typeRecord.' '. 'đã giao cho các tổ chức']);
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => $typeRecord.' '. 'đã giao cho các tổ chức'
+            // ]);
+        } catch (\Exception $e) {
+            // Rollback transaction nếu có lỗi xảy ra
+            DB::rollBack();
 
-        session()->flash('success', 'Tổ chức mới đã được thêm thành công!');
-
-        return response()->json(['success' => true, 'organization' => $organization]);
+            // Ghi lỗi vào log (tùy chọn)
+            \Log::error('Error creating document: ' . $e->getMessage());
+            return response()->json([
+                'error' => true,
+                'message' => 'Đã xảy ra lỗi, vui lòng thử lại.'
+            ]);
+        }
+        
     }
 
     public function show($id)
@@ -171,13 +258,46 @@ class OrganizationController extends Controller
 
     public function edit(Organization $organization)
     {
-        return view('organizations.edit', compact('organization'));
+        $organizationType = OrganizationType::all();
+        $organizations = Organization::all();
+        return view('organizations.edit', compact('organization', 'organizationType', 'organizations'));
     }
 
-    public function update(Request $request, Organization $organization)
+    public function update(Request $request, $id)
     {
-        $organization->update($request->all());
-        return redirect()->route('organizations.index');
+        DB::beginTransaction();
+        $organization = Organization::find($id);
+        try {
+            $request->validate([
+                'code' => [
+                 'required',
+                     Rule::unique('organizations', 'code')->ignore($id)
+                 ],
+                 'name' => 'required', // Validation rule for textarea
+             ], [
+                 'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
+                 'code.unique' => 'Mã cơ quan, tổ chức đã tồn tại.',
+                 'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
+             ]);
+    
+            $organization->update($request->all());
+            DB::commit();
+            session()->flash('success', 'Cơ quan, tổ chức đã được cập nhật thành công!');
+        
+            return redirect()->route('organizations.index');
+        } catch (\Exception $e) {
+            // Rollback transaction nếu có lỗi xảy ra
+            DB::rollBack();
+
+            // Ghi lỗi vào log (tùy chọn)
+            \Log::error('Error creating document: ' . $e->getMessage());
+            return response()->json([
+                'error' => true,
+                'message' => 'Đã xảy ra lỗi, vui lòng thử lại.'
+            ]);
+        }
+        
+      
     }
 
     public function destroy(Organization $organization)

@@ -65,9 +65,9 @@ class TaskDocument extends Model
         }
         return null;
     }
-    public function getFilePath($id)
+    public function getFile()
     {
-        return File::where('document_id', $id)->where('type', 1)->first();
+        return File::where('document_id', $this->id)->where('type', 3)->get();
     }
     public function taskResultsById($id, $numberType, $type)
     {

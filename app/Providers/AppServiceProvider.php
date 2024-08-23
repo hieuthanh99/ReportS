@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Providers;
-
+use App\Repositories\Interfaces\DocumentCategoryRepositoryInterface;
+use App\Repositories\DocumentCategoryRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(DocumentCategoryRepositoryInterface::class, DocumentCategoryRepository::class);
     }
 
     /**

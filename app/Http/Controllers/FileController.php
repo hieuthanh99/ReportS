@@ -6,16 +6,31 @@ use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class FileController extends Controller
 {
-    public function download($id, $type)
+    public function view($id)
     {
-        $file = File::where('id', $id)->first();
-        //dd($file);
-        // Lấy đường dẫn file
-        $filePath = storage_path('app/public/' . $file->file_path);
+        $file = File::findOrFail($id);
 
+        // Đảm bảo file tồn tại
+        if (!file_exists(storage_path('app/public/' . $file->file_path))) {
+            abort(404, 'File not found.');
+        }
+
+        $path = storage_path('app/public/' . $file->file_path);
+
+        // Trả về file PDF để mở trên tab mới
+        return response()->file($path);
+    }
+
+    public function download($id, $type, $cycleType, $numberType)
+    {
+        $currentYear = Carbon::now()->year;
+        $file = File::where('cycle_type', $cycleType)->where('number_type', $numberType)->whereYear('created_at', $currentYear)->first();
+        $filePath = storage_path('app/public/' . $file->file_path);
         if (file_exists($filePath)) {
             return response()->download($filePath, $file->file_name);
         } else {
@@ -27,6 +42,8 @@ class FileController extends Controller
       
         $type = $request->input('type');
         $id = $request->input('file_id');
+        $numberType = $request->input('numberType');
+        $cycleType = $request->input('cycleType');
 
         $filePath = null; // Khởi tạo biến filePath với giá trị mặc định
         $fileName = null; // Khởi tạo biến fileName với giá trị mặc định
@@ -34,31 +51,23 @@ class FileController extends Controller
         if ($request->hasFile('files')) {
             $file = $request->file('files');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            //dd($fileName);
-            if ($type == '1') {
-                $filePath = $file->storeAs('tasks', $fileName, 'public');
-            } else if ($type == '2') {
-                $filePath = $file->storeAs('criterias', $fileName, 'public');
-            } else {
-                // Xử lý trường hợp type không phải 1 hoặc 2
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid file type'
-                ], 400);
-            }
-
+           
+            $filePath = $file->storeAs('tasks', $fileName, 'public');
             // Tạo mới bản ghi file
             File::create([
                 'document_id' => $id, // Cập nhật lại document_id cho đúng
                 'file_name' => $fileName,
                 'file_path' => $filePath,
-                'type' => $type
+                'type' => 1,
+                'cycle_type' => $cycleType,
+                'number_type' => $numberType
             ]);
             return response()->json([
                 'success' => true,
                 'file_path' => $filePath,
                 'file_name' => $fileName,
-                'type' => $type
+                'type' => $type,
+                'id' =>$id
             ]);
         }
     

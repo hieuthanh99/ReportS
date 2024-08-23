@@ -115,22 +115,40 @@
             /* Additional styles for details content if needed */
         }
     </style>
- <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg flex" style="margin-top: 10px;">
+
+        @if ($errors->any())
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
+
         @if (session('success'))
-                <div id="success-message"
-                    class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
-                    {{ session('success') }}
-                    <button id="close-message" class="absolute top-2 right-2 text-white">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            @endif
+            <div class="success-message bg-green-500 text-white p-4 rounded-lg mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+
+ <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg flex" style="margin-top: 10px;">
+   
         <!-- Tree View -->
-        <div class="w-1/2 pr-4">
+        <div class="pr-4" style="width: 40%">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-4xl font-bold text-gray-900"></h1>
-                <button onclick="showAddChildModal(null)"
-                    class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"> <i class="fas fa-plus"></i></button>
+                {{-- <a href="{{ route('indicator_groups.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới loại cơ quan, tổ chức</i></a> --}}
+
+                <button onclick="showAddChildModal(null)" 
+         
+                    class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"> Thêm cơ quan, tổ chức</i></button>
             </div>
 
             
@@ -139,19 +157,35 @@
                 @if ($tree->isEmpty())
                     <p class="text-gray-500">Chưa có danh mục nào. Hãy thêm danh mục mới.</p>
                 @else
-                    <ul class="space-y-2">
-                        @foreach ($tree as $node)
-                            @include('organizations.partials.node', ['node' => $node])
-                        @endforeach
-                    </ul>
+                <ul>
+                    @foreach ($tree as $node)
+                        <li class="mb-2">
+                            <!-- Level 1: Organization Type -->
+                            <div class="flex items-center">
+                                <button onclick="toggleChildren(this)" class="toggle-children text-gray-600 hover:text-gray-800 mr-2">
+                                    <i class="fas fa-plus"></i> <!-- Icon + -->
+                                </button>
+                                <strong class="text-blue-600 ml-2">{{ $node['name'] }}</strong>
+                            </div>
+                         
+                            @if (!empty($node['children']))
+                                <ul class="ml-4 space-y-2 hidden">
+                                    @foreach ($node['children'] as $organization)
+                                        @include('organizations.partials.node', ['node' => $organization])
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
                 @endif
             </div>
         </div>
 
         <!-- Details View -->
         <!-- Details View -->
-        <div class="w-1/2 pl-4">
-            <div class="bg-white p-6 border rounded-lg shadow-lg">
+        <div class="pl-4 " style="width: 60%">
+            <div class="bg-white p-6 border rounded-lg shadow-lg max-h-[70vh] overflow-y-auto sticky top-0 bg-white p-6 border rounded-lg shadow-lg h-screen overflow-y-auto">
                 <h2 class="text-2xl font-bold mb-4">Thông Tin Danh Mục</h2>
                 <div id="organization-details">
                     <div id="details-content">
@@ -180,18 +214,39 @@
                     <button type="button" id="assign-user-button"
                         class="hidden bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mt-2">Gán
                         nhân viên</button>
+                    <button type="button" id="update-button"
+                        class="hidden bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mt-2">Cập nhật</button>
                 </div>
-
-                {{-- <!-- Assign User Button -->
-                <div class="mt-6 flex items-center">
-                    <button id="assign-user-button"
-                        class="hidden bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"
-                        onclick="showAssignUserModal()">
-                        Gán Người Dùng
-                    </button>
-                </div> --}}
             </div>
         </div>
+
+        <!-- Modal hoặc Form để chỉnh sửa thông tin -->
+        <div id="edit-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 border rounded-lg shadow-lg w-1/2">
+                <h3 class="text-2xl font-bold mb-4">Chỉnh sửa thông tin</h3>
+                <form id="edit-form">
+                    <input type="hidden" id="organization_id" name="organization_id">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="name">Tên tổ chức</label>
+                        <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-input mt-1 block w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="phone">Số điện thoại</label>
+                        <input type="text" id="phone" name="phone" class="form-input mt-1 block w-full">
+                    </div>
+                    <!-- Thêm các trường khác nếu cần -->
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Lưu</button>
+                        <button type="button" id="close-edit-modal" class="ml-4 bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div id="assign-user-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
                 <h2 class="text-xl font-bold mb-4">Danh sách nhân viên</h2>
@@ -256,47 +311,113 @@
     </div>
 
     <!-- Modal for Adding Child Node -->
-    <div id="addChildModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg p-6 w-1/3">
-            <h2 class="text-xl font-bold mb-4">Add Node</h2>
+    <div id="addChildModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden" >
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4" style="margin: 50px 100px">
+            <h2 class="text-xl font-bold mb-4">Thêm mới cơ quan, tổ chức</h2>
             <form id="addChildForm">
                 @csrf
-                <input type="hidden" name="parent_id" id="parent_id" value="">
-                <div class="mb-4">
-                    <label for="name" class="block text-gray-700">Name</label>
-                    <input type="text" name="name" id="name" class="w-full border rounded-lg px-3 py-2 mt-1">
+    
+                <!-- Chia thành 2 item trên mỗi hàng bằng grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label for="code" class="block text-gray-700">Mã cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                        <input type="text" name="code" id="code" class="w-full border rounded-lg px-3 py-2 mt-1">
+                    </div>
+                    <div class="mb-4">
+                        <label for="name" class="block text-gray-700">Tên cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" id="name" class="w-full border rounded-lg px-3 py-2 mt-1">
+                    </div>
+                    <div class="mb-4">
+                        <label for="organization_type_id" class="block text-gray-700">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                        <select name="organization_type_id" id="organization_type_id" class="w-full border rounded-lg px-3 py-2 mt-1">
+                            <option value="" {{ old('organization_type_id') ? '' : 'selected' }}>Chọn loại cơ quan</option>
+                            @foreach ($oranizationType as $category)
+                                <option value="{{ $category->id }}" {{ old('organization_type_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->type_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="parent_id" class="block text-gray-700">Chọn Cơ quan, tổ chức cấp trên <span class="text-red-500">*</span></label>
+                        <select name="parent_id" id="parent_id" class="w-full border rounded-lg px-3 py-2 mt-1">
+                            <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="type" class="block text-gray-700">Loại <span class="text-red-500">*</span></label>
+                        <select name="type" id="type" class="w-full border rounded-lg px-3 py-2 mt-1">
+                            <option value="tỉnh">Tỉnh</option>
+                            <option value="bộ">Bộ</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700">Email</label>
+                        <input type="email" name="email" id="email" class="w-full border rounded-lg px-3 py-2 mt-1">
+                    </div>
+                    <div class="mb-4">
+                        <label for="phone" class="block text-gray-700">Số điện thoại</label>
+                        <input type="text" name="phone" id="phone" class="w-full border rounded-lg px-3 py-2 mt-1">
+                    </div>
+                    <div class="mb-4">
+                        <label for="address" class="block text-gray-700">Địa chỉ</label>
+                        <input type="text" name="address" id="address" class="w-full border rounded-lg px-3 py-2 mt-1">
+                    </div>
+                    <div class="mb-4">
+                        <label for="website" class="block text-gray-700">Địa chỉ website</label>
+                        <input type="text" name="website" id="website" class="w-full border rounded-lg px-3 py-2 mt-1">
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="code" class="block text-gray-700">Code</label>
-                    <input type="text" name="code" id="code" class="w-full border rounded-lg px-3 py-2 mt-1">
-                </div>
-                <div class="mb-4">
-                    <label for="type" class="block text-gray-700">Type</label>
-                    <select name="type" id="type" class="w-full border rounded-lg px-3 py-2 mt-1">
-                        <option value="tỉnh">Tỉnh</option>
-                        <option value="bộ">Bộ</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700">Email</label>
-                    <input type="email" name="email" id="email" class="w-full border rounded-lg px-3 py-2 mt-1">
-                </div>
-                <div class="mb-4">
-                    <label for="phone" class="block text-gray-700">Phone</label>
-                    <input type="text" name="phone" id="phone" class="w-full border rounded-lg px-3 py-2 mt-1">
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeAddChildModal()"
-                        class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2">Cancel</button>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Add</button>
+    
+                <div class="flex justify-end mt-4">
+                    <button type="button" onclick="closeAddChildModal()" class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2">Hủy</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Lưu</button>
                 </div>
             </form>
         </div>
     </div>
+    
+    
+    
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Khi nút Cập nhật được nhấn
+            document.getElementById('update-button').addEventListener('click', function() {
+                const organizationId = document.getElementById('organization_id').value;
+                if (organizationId) {
+                    // Tạo URL chuyển hướng đến route 'organization.edit' với ID tổ chức
+                    const editUrl = `/organizations/${organizationId}/edit`; // Điều chỉnh đường dẫn nếu cần
+                    window.location.href = editUrl;
+                } else {
+                    alert('Không tìm thấy mã tổ chức.');
+                }
+            });
+        });
+          document.getElementById('organization_type_id').addEventListener('change', function () {
+                var organizationTypeId = this.value;
+                
+                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+                fetch(`/get-organizations/${organizationTypeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Làm rỗng danh sách `parent_id`
+                        var parentSelect = document.getElementById('parent_id');
+                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+
+                        // Thêm các tùy chọn mới
+                        data.forEach(function (organization) {
+                            var option = document.createElement('option');
+                            option.value = organization.id;
+                            option.text = organization.name;
+                            parentSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+            
         function showAddChildModal(parentId) {
-            document.getElementById('parent_id').value = parentId;
+            // document.getElementById('parent_id').value = parentId;
             document.getElementById('addChildModal').classList.remove('hidden');
         }
 
@@ -344,6 +465,8 @@
                 <p><strong>Loại phòng ban:</strong> ${organization.type}</p>
                 <p><strong>Email:</strong> ${organization.email}</p>
                 <p><strong>Số điện thoại:</strong> ${organization.phone}</p>
+                <p><strong>Địa chỉ:</strong> ${organization.address}</p>
+                <p><strong>Website:</strong> ${organization.website}</p>
             `;
             document.getElementById('organization_id').value = organization.id;
 
@@ -373,6 +496,8 @@
                 document.getElementById('assign-user-list').insertAdjacentHTML('beforeend', taskHTML);
             });
             document.getElementById('assign-user-button').classList.remove('hidden');
+            document.getElementById('update-button').classList.remove('hidden');
+            
         });
 }
 

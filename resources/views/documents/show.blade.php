@@ -187,15 +187,18 @@
                             data-file-type="{{ mime_content_type(storage_path('app/public/' . $file->file_path)) }}">
                             <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
                             
-                            <a href="{{ route('file.download', ['id' => $file->id, 'type' => 3]) }}" class="text-blue-500 hover:underline"
-                                download>{{ $file->file_name }}</a>
+                            {{-- <a href="{{ route('file.download', ['id' => $file->id, 'type' => 3]) }}" class="text-blue-500 hover:underline"
+                                download>{{ $file->file_name }}</a> --}}
+                                <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
                         </li>
                     @endforeach
                 </ul>
             </div>
+            <div class="mt-4 flex" style="justify-content: space-between">
+                <a href="{{ route('documents.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>            </div>
             {{-- Danh sách công việc --}}
             <div class="mt-6">
-                <h5 class="text-xl font-semibold mb-4">Danh sách đầu công việc:</h5>
+                {{-- <h5 class="text-xl font-semibold mb-4">Danh sách đầu công việc:</h5> --}}
                 <div class="overflow-x-auto">
 
                     {{-- Tuần --}}
@@ -2670,27 +2673,27 @@
                     return organizationsCheckMap.has(criteriaCode); // Kiểm tra xem tiêu chí có trong Set không
                 }
                 document.getElementById('assign-organizations-save').addEventListener('click', function() {
-    const organizations = [];
-    const selectedCheckboxes = document.querySelectorAll('#existing-organizations input[type="checkbox"]:checked');
+                const organizations = [];
+                const selectedCheckboxes = document.querySelectorAll('#existing-organizations input[type="checkbox"]:checked');
 
-    selectedCheckboxes.forEach(checkbox => {
-        const row = checkbox.closest('tr'); // Lấy hàng chứa checkbox
-        const organizationCode = row.querySelector('.organization-code').textContent;
-        const organizationName = row.querySelector('.organization-name').textContent;
-        const taskId = row.querySelector('.task-id').textContent;
-        const organizationEmail = row.querySelector('.organization-email').textContent;
-        const organizationPhone = row.querySelector('.organization-phone').textContent;
-        const taskCode = row.querySelector('.task-code').textContent;
+                selectedCheckboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr'); // Lấy hàng chứa checkbox
+                    const organizationCode = row.querySelector('.organization-code').textContent;
+                    const organizationName = row.querySelector('.organization-name').textContent;
+                    const taskId = row.querySelector('.task-id').textContent;
+                    const organizationEmail = row.querySelector('.organization-email').textContent;
+                    const organizationPhone = row.querySelector('.organization-phone').textContent;
+                    const taskCode = row.querySelector('.task-code').textContent;
 
-        organizations.push({
-            code: organizationCode,
-            name: organizationName,
-            email: organizationEmail,
-            phone: organizationPhone,
-            task_code: taskCode,
-            task_id: taskId
-        });
-    });
+                    organizations.push({
+                        code: organizationCode,
+                        name: organizationName,
+                        email: organizationEmail,
+                        phone: organizationPhone,
+                        task_code: taskCode,
+                        task_id: taskId
+                    });
+                });
 
                 // Gọi API một lần sau khi thu thập tất cả dữ liệu
                 fetch('/save-assign-organizations', {
@@ -2785,60 +2788,7 @@
                         });
                     });
                 });
-                function populateTable(histories, tableBody) {
-                    
-                    // Xóa các hàng cũ nếu có
-                    tableBody.innerHTML = '';
 
-                    // Tạo và chèn các hàng mới từ dữ liệu
-                    histories.forEach((history, index) => {
-                        const row = document.createElement('tr');
-
-                        // Cột STT
-                        const sttCell = document.createElement('td');
-                        sttCell.classList.add('py-2', 'px-4', 'border-b');
-                        sttCell.textContent = index + 1;
-                        row.appendChild(sttCell);
-
-                                
-                        let cycle_text;
-                        if(history.type_cycle == 1){
-                            cycle_text = 'Tuần';
-                        }else if(history.type_cycle == 2){
-                            cycle_text = 'Tháng';
-                        }else if(history.type_cycle == 3){
-                            cycle_text = 'Quý';
-                        }else if(history.type_cycle == 4){
-                            cycle_text = 'Năm';
-                        }
-                        const text_result_cycle = cycle_text + ' ' + history.number_cycle;
-                        // Các cột khác
-                        const mappingIdCell = document.createElement('td');
-                        mappingIdCell.classList.add('py-2', 'px-4', 'border-b');
-                        mappingIdCell.textContent = history.result;
-                        row.appendChild(mappingIdCell);
-
-                        const typeSaveCell = document.createElement('td');
-                        typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
-                        typeSaveCell.textContent = history.description;
-                        row.appendChild(typeSaveCell);
-
-                        
-                        const descriptionCell = document.createElement('td');
-                        descriptionCell.classList.add('py-2', 'px-4', 'border-b');
-                        descriptionCell.textContent = history.update_date;
-                        row.appendChild(descriptionCell);
-
-                        const resultCell = document.createElement('td');
-                        resultCell.classList.add('py-2', 'px-4', 'border-b');
-                        resultCell.textContent =  text_result_cycle;
-                        row.appendChild(resultCell);
-
-
-                        // Thêm hàng vào bảng
-                        tableBody.appendChild(row);
-                    });
-                }
                // history-change-cri-modal
                 const cancelHistoryBtn = document.getElementById('cancel-history-changes');
                 const assignHistoryModal = document.getElementById('history-change-modal');

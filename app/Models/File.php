@@ -11,7 +11,9 @@ class File extends Model
         'document_id',
         'file_name',
         'file_path',
-        'type'
+        'type',
+        'cycle_type',
+        'number_type'
     ];
     public function scopeType($query, $type)
     {

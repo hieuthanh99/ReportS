@@ -15,9 +15,135 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- Thêm vào phần cuối của <body> hoặc trước thẻ </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
+            
+        input[readonly] {
+            background-color: #f0f0f0;
+            /* Màu nền nhạt hơn để hiển thị trạng thái readonly */
+            cursor: not-allowed;
+            /* Con trỏ chuột hiển thị "không được phép" khi di chuột qua trường nhập liệu */
+        }
+            nav{
+                /* canh giữa cách lề mỗi bên 10% */
+                margin: 5px 10px;
+            }
+            nav{
+                /* background: #484848; */
+                border-radius: 5px;
+            }
+            nav ul{
+                display: flex;
+            }
+            nav> ul li{
+                list-style: none; /* bỏ dấu chấm mặc định của li */
+                /* kẻ đường bên trái và bên phải của li */
+                /* border-right: 1px solid #ccc;
+                border-left:1px solid #333; */
+            }
+            nav> ul li a{
+                display: block;
+                padding: 0 25px;
+                line-height: 50px;
+                color: #222;
+                text-decoration: none;
+            }
+            nav ul li:first-child {
+                border-left: none; /* bỏ đường kè trái của phần tử đầu tiên */
+            }
+            nav> ul li:first-child a{
+                border-bottom-left-radius: 5px;
+                border-top-left-radius: 5px;
+            }
+            /* Khi hover đến li, tô màu cho thẻ a */
+            nav ul li:hover>a{
+                /* background: red; */
+                opacity: .7;
+                color: #2c2929;
+            }
+            /*menu con*/
+            /*Ẩn các menu con cấp 1,2,3*/
+            nav li ul{
+                display: none;
+                min-width: 350px;
+                position: absolute;
+            }
+            nav li>ul li{
+                width: 100%;
+                border: none;
+                border-bottom: 1px solid #ccc;
+                background: #dfdcdc;
+                text-align: left;
+            }
+            nav li>ul li:first-child a{
+                border-bottom-left-radius: 0px;
+                border-top-left-radius: 0px;
+            }
+            nav li>ul li:last-child {
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+            nav li>ul li:last-child a{
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+            /*khi hover thì hiện menu con*/
+            nav  li:hover > ul{
+                display:  block;
+            }
+            /*Hiển thị menu con cấp 2,3,4 bên cạnh phải*/
+            nav > ul li > ul li >ul{
+                margin-left: 352px;
+                margin-top: -50px;
+            }
+            .hover\:text-gray-700:hover {
+                width: 100%;
+            }
+                        /* CSS cho dropdown */
+            .group:hover .dropdown-menu,
+            .dropdown-menu:hover {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            .dropdown-menu {
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+
+            input:disabled {
+                background-color: #f0f0f0;
+                cursor: not-allowed;
+            }
+            input:readonly {
+                background-color: #f9f9f9;
+                cursor: default;
+            }
+           #loading {
+                display: none !important; /* Đảm bảo rằng phần tử này không hiển thị khi trang tải */
+                position: fixed;
+                inset: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            }
+
+            #loading .fa-spinner {
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
             #success-message {
                 position: fixed;
                 top: 1rem; /* Khoảng cách từ cạnh trên */
@@ -73,12 +199,21 @@
 
             #success-message button i {
                 font-size: 1.25rem;
+            }
+            .ease-in-out {
+width: 100%;
             }
 
         </style>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
+            <div id="loading" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-spinner fa-spin text-white text-2xl"></i>
+                    <div class="text-white">Đang xử lý...</div>
+                </div>
+            </div>
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -148,6 +283,24 @@
                             });
                         }
                     }
+                });
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Chọn tất cả các thông báo
+                    const messages = document.querySelectorAll('.error-message, .success-message');
+                    
+                    messages.forEach(message => {
+                        // Kiểm tra xem thông báo có hiển thị không
+                        if (message.style.display !== 'none') {
+                            // Đặt timeout để ẩn thông báo sau 5 giây
+                            setTimeout(() => {
+                                message.style.opacity = '0';
+                                message.style.transition = 'opacity 0.5s ease-out';
+                                setTimeout(() => {
+                                    message.style.display = 'none';
+                                }, 500); // Thời gian trễ cho hiệu ứng chuyển tiếp
+                            }, 5000); // 5 giây
+                        }
+                    });
                 });
 
             </script>

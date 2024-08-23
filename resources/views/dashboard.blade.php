@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
-    @if(Auth::user()->role === 'admin')
+    @if(Auth::user()->role !== 'staff')
     <div class="flex -mx-2">
         <div class="w-1/3 px-2">
             <!-- Nội dung của cột 1 chia làm 2 row -->

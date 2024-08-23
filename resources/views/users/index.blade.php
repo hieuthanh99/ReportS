@@ -3,33 +3,53 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
-    @if(session('success'))
-    <div id="success-message" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
-        {{ session('success') }}
-        <button id="close-message" class="absolute top-2 right-2 text-white">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-@endif
+    @if ($errors->any())
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="success-message bg-green-500 text-white p-4 rounded-lg mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
     <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
-        <a href="{{ route('users.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
+        <div class="mb-6 flex justify-end gap-4 mb-4">
+            <a href="{{ route('users.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                    Tạo người dùng
+            </a>
+        </div>
     </div>
-  
-   
-
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg" >
             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                 <tr>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Mã danh mục</th>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tên danh mục</th>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tổ chức</th>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Email</th>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Số điện thọai</th>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Role</th>
-                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Thao tác</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Mã danh mục</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên danh mục</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tổ chức</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Chức vụ</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Email</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số điện thọai</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Role</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                        Cập nhật
+                    </th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                        Xóa
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -39,37 +59,39 @@
                         <td class="py-3 border border-gray-300 px-6">{{ $category->code }}</td>
                         <td class="py-3 border border-gray-300 px-6">{{ $category->name }}</td>
                         <td class="py-3 border border-gray-300 px-6">{{ optional($category->organization)->name ?: 'No Organization' }}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ optional($category->position)->name ?: 'No Position' }}</td>
                         <td class="py-3 border border-gray-300 px-6">{{ $category->email }}</td>
                         <td class="py-3 border border-gray-300 px-6">{{ $category->phone }}</td>
                         <td class="py-3 border border-gray-300 px-6"> 
-                        @if($category->role === 'staff')
+                            @if($category->role === 'supper_admin')
+                            Supper Admin
+                            @elseif($category->role === 'admin')
+                                Admin
+                            @elseif($category->role === 'sub_admin')
+                                Sub-Admin
+                            @elseif($category->role === 'staff')
                             Nhân viên
-                        @elseif($category->role === 'admin')
-                            Admin
-                        @else
-                            Không xác định
-                        @endif
+                            @else
+                                Không xác định
+                            @endif
                         </td>
-                        <td class="py-3 border border-gray-300 px-6 flex items-center space-x-2">
-                          <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                                    onclick="window.location.href='{{ route('users.edit', $category->id) }}'">
-                                    <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
-                                </button>
-                                <form action="{{ route('users.destroy', $category->id) }}" method="POST"
-                                    style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
+                        <td class="py-3 border border-gray-300 px-6 text-center">   
+                            <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                            onclick="window.location.href='{{ route('users.edit', $category->id) }}'">
+                            <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                        <td class="py-3 border border-gray-300 px-6 text-center">  
+                            <form id="delete-form" action="{{ route('users.destroy', $category->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
                                     class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-
-                                        onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
-                                        <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
-
-                                    </button>
-                                </form>
-                           
+                                    onclick="confirmDelete()">
+                                    <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
+                                </button>
+                            </form>
                         </td>
-                        
                     </tr>
                 @endforeach
             </tbody>
@@ -80,6 +102,22 @@
     </div>
 </div>
 <script>
+      function confirmDelete() {
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: 'Xác nhận xóa!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Có, xóa!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form').submit();
+                }
+            });
+        }
     document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.toggle-children').forEach(function(button) {
         button.addEventListener('click', function() {
@@ -91,6 +129,25 @@
         });
     });
 });
+// <td class="py-3 border border-gray-300 px-6 flex items-center text-center">
+//                             <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+//                                 onclick="window.location.href='{{ route('users.edit', $category->id) }}'">
+//                                 <i class="fas fa-edit"></i>
+//                             </button>
+//                         </td>
+//                         <td class="py-3 border border-gray-300 px-6 flex items-center text-center">
+//                             <form action="{{ route('users.destroy', $category->id) }}" method="POST"
+//                                 style="display:inline;">
+//                                 @csrf
+//                                 @method('DELETE')
+//                                 <button type="submit"
+//                                 class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
 
+//                                     onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
+//                                     <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
+
+//                                 </button>
+//                             </form>
+//                         </td>
 </script>
 @endsection

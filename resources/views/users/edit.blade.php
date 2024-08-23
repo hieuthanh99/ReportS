@@ -1,18 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6 bg-white shadow-md rounded-lg overflow-hidden">
     <h1 class="text-3xl font-bold mb-6 text-gray-800">Cập nhật người dùng</h1>
-
-    @if(session('success'))
-        <div id="success-message" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg relative">
-            {{ session('success') }}
-            <button id="close-message" class="absolute top-2 right-2 text-white">
-                <i class="fas fa-times"></i>
-            </button>
+    @if ($errors->any())
+        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="success-message bg-green-500 text-white p-4 rounded-lg mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
     <form action="{{ route('users.update', $user->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -32,11 +43,18 @@
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
         </div>
+        {{-- <option value="supper_admin">Supper Admin</option>
+        <option value="admin">Admin</option>
+        <option value="sub_admin">Sub-Admin</option>
+        <option value="staff">Nhân viên</option> --}}
         <div class="mb-4">
             <label for="role" class="block text-gray-700">Vai trò:</label>
             <select id="role" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <option value="supper_admin" {{ old('role', $user->role) == 'supper_admin' ? 'selected' : '' }}>Supper Admin</option>
                 <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="sub_admin" {{ old('role', $user->role) == 'sub_admin' ? 'selected' : '' }}>Sub-Admin</option>
                 <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Nhân viên</option>
+
             </select>
             @error('role')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -75,6 +93,21 @@
         </div>
 
         <div class="mb-4">
+            <label for="position_id" class="block text-gray-700">Tổ chức:</label>
+            <select id="position_id" name="position_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <option value="">Không có tổ chức</option>
+                @foreach($positions as $position)
+                    <option value="{{ $position->id }}" {{ $user->position_id == $position->id ? 'selected' : '' }}>
+                        {{ $position->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('position_id')
+                <p class="text-red-500 text-sm">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="mb-4">
             <label for="phone" class="block text-gray-700">Số điện thoại:</label>
             <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
             @error('phone')
@@ -89,9 +122,9 @@
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
         </div>
-
-        <div>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Cập nhật</button>
+        <div class="mt-4 flex" style="justify-content: space-between">
+            <a href="{{route('users.index')}}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
+            <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Cập nhật</button>
         </div>
     </form>
 </div>

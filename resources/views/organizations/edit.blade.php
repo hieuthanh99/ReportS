@@ -24,8 +24,6 @@
                 {{ session('success') }}
             </div>
         @endif
-
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Cập nhật cơ quan, tổ chức</h1>
         <form action="{{ route('organizations.update', $organization->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" id="document-form">
             @csrf
             @method('PUT')
@@ -43,13 +41,13 @@
                     <input type="text" id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('name', $organization->name) }}" required>
 
                 </div>
-                <div class="mb-4">
+             {{--    <div class="mb-4">
                     <label for="type" class="block text-gray-700 text-sm font-medium mb-2">Loại <span class="text-red-500">*</span></label>
                         <select class="form-input w-full border border-gray-300 rounded-lg p-2" id="type" name="type" required>
                             <option value="tỉnh" {{ $organization->type == 'tỉnh' ? 'selected' : '' }}>Tỉnh</option>
                             <option value="bộ" {{ $organization->type == 'bộ' ? 'selected' : '' }}>Bộ</option>
                         </select>
-                </div>
+                </div> --}}
                 <div class="mb-4">
                     <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
                         <select name="organization_type_id" id="organization_type_id"

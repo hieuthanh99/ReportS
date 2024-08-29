@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrganizationType extends Model
 {
     protected $table = 'organization_types';
-    protected $fillable = ['type_name', 'code', 'description'];
+    protected $fillable = ['type_name', 'code', 'description', 'isDelete'];
 
     public function organizations()
     {

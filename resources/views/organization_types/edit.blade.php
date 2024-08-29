@@ -30,7 +30,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->
                 <div class="mb-4">
-                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
                     <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code', $organizationType->code) }}" required>
                     @error('code')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="mb-4"></div>
                 <div class="mb-4">
-                    <label for="type_name" class="block text-gray-700 text-sm font-medium mb-2">Tên cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                    <label for="type_name" class="block text-gray-700 text-sm font-medium mb-2">Tên loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
                     <textarea id="type_name" name="type_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('type_name', $organizationType->type_name) }}</textarea>
                     @error('type_name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>

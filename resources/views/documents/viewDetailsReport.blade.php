@@ -285,12 +285,12 @@
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                Hoàn thành
                                             </th>
-                                            @if($hasCompletedWeekTask)
+                   
                                             <th rowspan="2"
                                                 class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Nhận xét báo cáo
                                             </th>
-                                            @endif
+                                    
                                             <th rowspan="2"
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Thao tác
@@ -372,7 +372,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['current']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['current']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -395,7 +395,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -419,7 +419,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['two_previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['two_previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -454,17 +454,22 @@
                                                         placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
                                  
                                                     </td>
+                                                @else
+                                                    <td
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    </td>
                                                 @endif
                                                 <td
                                                     class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
                                                     @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            <i class="fas fa-check-circle"></i> Duyệt
+                                                            Duyệt
                                                         </button>
                                                         
                                                         <!-- Nút Reject -->
                                                         <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            <i class="fas fa-times-circle"></i> Reject
+                                                            Từ chối
                                                         </button>
                                                     @elseif($taskApproval != null)
                                                         <span>@if($taskApproval->status === 'approved') 
@@ -518,7 +523,7 @@
                                                 Kết quả
                                             </th>
                                             <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xsng font-medium text-gray-500 uppercase tracking-wider">
                                                 Tiến độ
                                             </th>
                                             <th rowspan="2"
@@ -543,12 +548,12 @@
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                Hoàn thành
                                             </th>
-                                            @if($hasCompletedMonthTask)
+                            
                                             <th rowspan="2"
                                                 class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Nhận xét báo cáo
                                             </th>
-                                            @endif
+                                    
                                             <th rowspan="2"
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Thao tác
@@ -579,7 +584,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
-                                        @forelse ($weekTask as $task)
+                                        @forelse ($monthTask as $task)
                                             @php
                                                 $isDisabled = $task->status == 'Đã giao việc';
                                                 $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
@@ -631,7 +636,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['current']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['current']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -654,7 +659,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -677,7 +682,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['two_previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['two_previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -712,6 +717,11 @@
                                                         placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
                                                       
                                                     </td>
+                                                    @else
+                                                    <td
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    </td>
                                                 @endif
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
@@ -721,12 +731,12 @@
                                                     @endphp --}}
                                                     @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            <i class="fas fa-check-circle"></i> Duyệt
+                                                            Duyệt
                                                         </button>
                                                         
                                                         <!-- Nút Reject -->
                                                         <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            <i class="fas fa-times-circle"></i> Reject
+                                                            Từ chối
                                                         </button>
                                                     @elseif($taskApproval != null)
                                                         <span>@if($taskApproval->status === 'approved') 
@@ -805,12 +815,12 @@
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Hoàn thành
                                             </th>
-                                            @if($hasCompletedQuarterTask)
+                                          
                                             <th rowspan="2"
                                                 class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Nhận xét báo cáo
                                             </th>
-                                            @endif
+                                    
                                             <th rowspan="2"
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Thao tác
@@ -893,7 +903,7 @@
                                                         ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['current']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['current']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -916,7 +926,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -939,7 +949,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['two_previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['two_previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -973,6 +983,11 @@
                                                             id="remarks-{{$task->id}}"
                                                             placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
                                                     </td>
+                                                    @else
+                                                    <td
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    </td>
                                                 @endif
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
@@ -982,12 +997,12 @@
                                                     @endphp --}}
                                                     @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            <i class="fas fa-check-circle"></i> Duyệt
+                                                            Duyệt
                                                         </button>
                                                         
                                                         <!-- Nút Reject -->
                                                         <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            <i class="fas fa-times-circle"></i> Reject
+                                                            Từ chối
                                                         </button>
                                                     @elseif($taskApproval != null)
                                                         <span>@if($taskApproval->status === 'approved') 
@@ -1066,12 +1081,12 @@
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Hoàn thành
                                             </th>
-                                            @if($hasCompletedYearTask)
+                                       
                                             <th rowspan="2"
                                                 class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Nhận xét báo cáo
                                             </th>
-                                            @endif
+                                    
                                             <th rowspan="2"
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Thao tác
@@ -1152,7 +1167,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['current']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['current']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -1176,7 +1191,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -1199,7 +1214,7 @@
                                                             ) ?? null;
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
-                                                        <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['two_previous']]) }}"
+                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['two_previous']]) }}"
                                                             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
                                                             download>
                                                             <i class="fas fa-download"></i>
@@ -1232,21 +1247,22 @@
                                                             id="remarks-{{$task->id}}"
                                                             placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
                                                     </td>
+                                                    @else
+                                                    <td
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    </td>
                                                 @endif
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    {{-- @php
-                                                    $hasOrganization = $task->hasOrganizationAppro();
-                                                    // dd($hasOrganization)
-                                                    @endphp --}}
                                                     @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            <i class="fas fa-check-circle"></i> Duyệt
+                                                            Duyệt
                                                         </button>
                                                         
                                                         <!-- Nút Reject -->
                                                         <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            <i class="fas fa-times-circle"></i> Reject
+                                                            Từ chối
                                                         </button>
                                                     @elseif($taskApproval != null)
                                                         <span>@if($taskApproval->status === 'approved') 

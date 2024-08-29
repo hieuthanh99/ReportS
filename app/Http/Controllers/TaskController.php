@@ -31,7 +31,7 @@ class TaskController extends Controller
                         ->get();
         } else {
             // Nếu query rỗng, lấy tất cả các nhiệm vụ
-            $tasks = Task::all();
+            $tasks = Task::where('isDelete', 0)->get();;
         }
         
         return response()->json([
@@ -43,7 +43,7 @@ class TaskController extends Controller
     public function getAllByAjax()
     {
         // Lấy tất cả các đầu việc từ cơ sở dữ liệu
-        $tasks = Task::all();
+        $tasks = Task::where('isDelete', 0)->get();;
 
         // Trả về dữ liệu dưới dạng JSON
         return response()->json($tasks);

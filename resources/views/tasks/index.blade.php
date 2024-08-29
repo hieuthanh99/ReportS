@@ -60,17 +60,20 @@
                         <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
                     </select>
                 </div>
+    
                 <div class="flex-1 min-w-[200px]">
-                    <label for="cycle_type" class="block text-gray-700 font-medium mb-2">Chu kỳ báo cáo:</label>
-                    <select id="cycle_type" name="cycle_type"
-                            class="form-select w-full border border-gray-300 rounded-lg p-2">
-                            <option value="">Lựa chọn chu kỳ</option>
-                            <option value="1">Tuần</option>
-                            <option value="2">Tháng</option>
-                            <option value="3">Quý</option>
-                            <option value="4">Năm</option>
-                        </select>
+                    <label for="execution_time_from" class="block text-gray-700 font-medium mb-2">Từ ngày</label>
+                    <input type="date" id="execution_time_from" placeholder="dd-mm-yyyy"
+                            min="1997-01-01" max="2100-12-31" name="execution_time_from" value="{{ request('execution_time_from') }}"
+                            class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
                 </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="execution_time_to" class="block text-gray-700 font-medium mb-2">Đến ngày</label>
+                    <input type="date" id="execution_time_to" placeholder="dd-mm-yyyy"
+                            min="1997-01-01" max="2100-12-31" name="execution_time_to" value="{{ request('execution_time_to') }}"
+                            class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
+                </div>
+
             </div>
 
         <div class="flex justify-end gap-4">
@@ -87,7 +90,7 @@
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                     <tr>
-      
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Mã</th>
                         <th style="width: 450px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
@@ -110,7 +113,8 @@
                 <tbody>
                     @foreach ($taskTargets as $index => $item)
                         <tr class="border-b border-gray-200">
-                       
+                            <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
+
                             <td class="py-3 border border-gray-300 px-6">{{ $item->code }}</td>
                             <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
                             <td class="py-3 border border-gray-300 px-6">

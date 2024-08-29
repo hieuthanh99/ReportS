@@ -1,9 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\DocumentCategory;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\DocumentCategoryRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use App\Models\TaskTarget;
+use App\Models\Document;
+use App\Models\TaskResult;
+
 
 class DocumentCategoryController extends Controller
 {
@@ -16,7 +21,7 @@ class DocumentCategoryController extends Controller
 
     public function index()
     {
-        $categories = $this->documentCategoryRepository->paginate(10);
+        $categories = DocumentCategory::where('isDelete', 0)->paginate(10);
         return view('document_categories.index', compact('categories'));
     }
 
@@ -92,10 +97,41 @@ class DocumentCategoryController extends Controller
         DB::beginTransaction();
 
         try {
-            $this->documentCategoryRepository->delete($id);
+            // $this->documentCategoryRepository->delete($id);
+            $item = DocumentCategory::findOrFail($id);
+            $item->isDelete = 1;
+            $item->save();
             DB::commit();
 
-            return redirect()->route('document_categories.index')->with('success', 'Loại Văn bản đã được xóa thành công!');
+
+            $documents = Document::where('category_id', $id)->get();
+
+            foreach ($documents as $document) {
+
+                $taskTargets = TaskTarget::where('document_id', $document->id)->get();
+
+                foreach ($taskTargets as $taskTarget) {
+                    $taskTarget->isDelete = 1;
+                    $taskTarget->save();
+                }
+        
+                $taskReults = TaskResult::where('document_id', $document->id)->get();
+        
+                foreach ($taskReults as $taskReult) {
+                    $taskReult->isDelete = 1;
+                    $taskReult->save();
+                }
+
+                $document->isDelete = 1;
+                $document->save();
+            }
+
+           
+            $item = DocumentCategory::findOrFail($id);
+            $item->isDelete = 1;
+            $item->save();
+            DB::commit();
+            return redirect()->route('document_categories.index')->with('success', 'Loại Văn bản, các văn bản, các nhiệm vụ/chỉ tiêu đã được xóa thành công!');
 
         } catch (\Exception $e) {
             DB::rollBack();

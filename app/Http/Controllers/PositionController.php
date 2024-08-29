@@ -8,7 +8,7 @@ class PositionController extends Controller
 {
     public function index()
     {
-        $types = Position::orderBy('created_at', 'desc')->paginate(10);
+        $types = Position::orderBy('created_at', 'desc')->where('isDelete', 0)->paginate(10);
         return view('positions.index', compact('types'));
     }
 

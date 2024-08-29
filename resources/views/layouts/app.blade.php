@@ -22,13 +22,6 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
-            
-        input[readonly] {
-            background-color: #f0f0f0;
-            /* Màu nền nhạt hơn để hiển thị trạng thái readonly */
-            cursor: not-allowed;
-            /* Con trỏ chuột hiển thị "không được phép" khi di chuột qua trường nhập liệu */
-        }
             nav{
                 /* canh giữa cách lề mỗi bên 10% */
                 margin: 5px 10px;

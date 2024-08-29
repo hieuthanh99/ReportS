@@ -16,7 +16,7 @@ class TaskResult extends Model
         'description',
         'number_type',
         'type',
-        'type_save'
+        'type_save', 'isDelete'
     ];
 
     public function taskDocument()

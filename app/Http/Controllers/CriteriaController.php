@@ -19,7 +19,7 @@ class CriteriaController extends Controller
                         ->get();
         } else {
             // Nếu query rỗng, lấy tất cả các nhiệm vụ
-            $tasks = Criteria::all();
+            $tasks = Criteria::where('isDelete', 0)->get();;
         }
         
         return response()->json([
@@ -40,7 +40,7 @@ class CriteriaController extends Controller
     public function index()
     {
         // Lấy tất cả các tiêu chí
-        $criteria = Criteria::all();
+        $criteria = Criteria::where('isDelete', 0)->get();;
         return view('criteria.index', compact('criteria'));
     }
 

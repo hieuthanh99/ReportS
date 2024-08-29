@@ -47,6 +47,8 @@
                         <th class="border border-gray-300 py-3 px-6 text-left font-medium">Mã cơ quan, tổ chức</th>
                         <th class="border border-gray-300 py-3 px-6 text-left font-medium">Tên cơ quan, tổ chức</th>
                         <th class="border border-gray-300 py-3 px-6 text-left font-medium">Loại cơ quan, tổ chức</th>
+                        <th class="border border-gray-300 py-3 px-6 text-left font-medium">Tiến độ</th>
+                        <th class="border border-gray-300 py-3 px-6 text-left font-medium">Đánh giá tiến độ</th>
                         <th class="border border-gray-300 py-3 px-6 text-left font-medium">Chu kỳ</th>
                         <th class="border border-gray-300 py-3 px-6 text-left font-medium">Kết quả</th>
                      
@@ -60,6 +62,12 @@
                             <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item['organization']->name }}</td>
                             <td class="py-3 border border-gray-300 px-6">
                                 {{ $item['organization']->organizationType->type_name ?? "" }}
+                            </td>
+                            <td class="py-3 border border-gray-300 px-6">
+                                {{ $item['task']->results ?? "" }}
+                            </td>
+                            <td class="py-3 border border-gray-300 px-6">
+                                {{ $item['task']->getStatusLabelAttribute() ?? "" }}
                             </td>
                             <td class="py-3 border border-gray-300 px-6"> 
                                 @php

@@ -12,7 +12,7 @@ class Position extends Model
     protected $fillable = [
         'code',
         'name',
-        'description',
+        'description','isDelete'
     ];
 
     public function users()

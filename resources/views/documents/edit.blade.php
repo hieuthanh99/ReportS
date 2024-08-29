@@ -31,6 +31,30 @@
         line-height: 20px;
         cursor: pointer;
     }
+    .remove-button {
+        background-color: #f44336; /* Màu đỏ */
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .remove-button:hover {
+        background-color: #d32f2f;
+        transform: scale(1.1);
+    }
+
+    .remove-button:focus {
+        outline: none;
+    }
 </style>
 <div class="container mx-auto px-4 py-6">
     @if ($errors->any())
@@ -66,7 +90,7 @@
                     <input type="hidden" id="document_id" name="document_id"
                     value="{{ $document->id }}"
                     class="form-input w-full border border-gray-300 rounded-lg p-2" >
-                    <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Mã văn bản:</label>
+                    <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Số hiệu văn bản:</label>
                   
                         <input type="text" id="document_code" name="document_code"
                             value="{{ $document->document_code }}"
@@ -77,22 +101,35 @@
            
                 </div>
                 <div class="mb-4">
-                    <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Tên văn bản:</label>
-                    @if ($document->creator != auth()->user()->id)
-                        <span class="rounded-lg">{{ $document->document_name }}</span>
-                    @else
-                        <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
-                        class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                    @endif
+                    <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Trích yếu văn bản:</label>
+                   
+                  {{--       <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
+                        class="form-input w-full border border-gray-300 rounded-lg p-2" required> --}}
+                    <textarea id="document_name" name="document_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ $document->document_name }}</textarea>
+
                    
                 </div>
                 <div class="mb-4">
-                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị phát
-                        hành:</label>
-                        @if ($document->creator != auth()->user()->id)
-                            <span class="rounded-lg">{{ $document->issuingDepartment->name ?? "" }}</span>
-                        @else
-                            <select name="issuing_department" id="issuing_department" required
+                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan:</label>
+                      
+                            <select name="organization_type_id" id="organization_type_id" required
+                            @if ($document->creator != auth()->user()->id) disabled @endif
+                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                         
+                            @foreach ($organizationsType as $organization)
+                                <option value="{{ $organization->id }}"
+                                    {{ $document->issuingDepartment->organization_type_id == $organization->id ? 'selected' : '' }}>
+                                    {{ $organization->type_name }}
+                                </option>
+                            @endforeach
+                        </select>
+               
+                  
+                </div>
+
+                <div class="mb-4">
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan:</label>
+                            <select id="parent_id" name="issuing_department" required
                             @if ($document->creator != auth()->user()->id) disabled @endif
                             class="form-input w-full border border-gray-300 rounded-lg p-2">
                             @foreach ($organizations as $organization)
@@ -102,8 +139,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    @endif
-                  
+                
                 </div>
 
                 <div class="mb-4">
@@ -159,7 +195,7 @@
                             {{-- <span class="text-gray-700">{{ $file->file_name }}</span> --}}
                             <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
                             <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                class="remove-button ml-2 bg-red-500 text-white px-2 py-1 rounded remove-file-button">×</button>
+                                class="remove-button  remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded remove-file-button">×</button>
                         </div>
                     @endforeach
                 </div>
@@ -179,6 +215,27 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('organization_type_id').addEventListener('change', function () {
+                var organizationTypeId = this.value;
+                
+                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+                fetch(`/get-organizations/${organizationTypeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Làm rỗng danh sách `parent_id`
+                        var parentSelect = document.getElementById('parent_id');
+                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+
+                        // Thêm các tùy chọn mới
+                        data.forEach(function (organization) {
+                            var option = document.createElement('option');
+                            option.value = organization.id;
+                            option.text = organization.name;
+                            parentSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
             const fileInput = document.getElementById('files');
             const fileList = document.getElementById('file-list');
             const fileListData = document.querySelectorAll('.file-item');
@@ -232,10 +289,9 @@
                     fileName.className = 'text-gray-700';
                     fileName.textContent = file.name;
                     fileItem.appendChild(fileName);
-
-                    const removeButton = document.createElement('button');
+    const removeButton = document.createElement('button');
                     removeButton.type = 'button';
-                    removeButton.className = 'remove-button ml-2 bg-red-500 text-white px-2 py-1 rounded';
+                    removeButton.className = 'remove-button ml-2 bg-red-500 text-white px-2 py-1 rounded remove-file-button';
                     removeButton.textContent = '×';
                     removeButton.addEventListener('click', () => removeFile(index));
                     fileItem.appendChild(removeButton);

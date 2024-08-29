@@ -14,6 +14,7 @@ class IndicatorGroup extends Model
         'name',
         'description',
         'creator_id',
+        'isDelete'
     ];
 
     // Quan hệ với bảng 'users' (người tạo)

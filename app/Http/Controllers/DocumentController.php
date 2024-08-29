@@ -20,6 +20,8 @@ use App\Models\TaskResult;
 use App\Models\HistoryChangeDocument;
 use App\Models\DocumentCategory;
 use App\Helpers\TimeHelper;
+use App\Models\OrganizationType;
+use App\Enums\TaskStatus;
 
 class DocumentController extends Controller
 {
@@ -54,12 +56,14 @@ class DocumentController extends Controller
                         //    dd($task);
                            if ($task) {
                                 $checkbox = isset($taskStatus[$task->id]) ? $taskStatus[$task->id] : '';
-                           
-                                $task->results =  $checkbox == 1?"Hoàn Thành": $task->results;
+                                // $taskResult = $task->getTaskApprovalHistory();
+                                // dd($taskResult);
+                               
                                 $task->description = $task->getStatus();
                                 $task->is_completed = $checkbox;
                                 $task->status = $checkbox == 1?"complete": "assign";
-                                $task->save();
+                              
+                              
                                 $record = TaskResult::where('id_task_criteria' , $task->id)->where("document_id", $document->id)->where("type_save", $task->getType())->first();
                                 if($record){
                                     $record->result =  isset($cycleResult[$task->id]) ? $cycleResult[$task->id] : '';
@@ -88,6 +92,25 @@ class DocumentController extends Controller
                                     'update_date' => Carbon::now(),
                                     'update_user'=> Auth::id()
                                 ]);
+                                //dd($record);
+                                $now = now();
+                                if ($task->is_completed) {
+                                    if ($task->end_date >= $now) {
+                                        $task->status_code = TaskStatus::COMPLETED_IN_TIME->value;
+                                    } else {
+                                        $task->status_code = TaskStatus::COMPLETED_OVERDUE->value;
+                                    }
+                                } else {
+                                    if ($task->end_date >= $now) {
+                                        $task->status_code = TaskStatus::IN_PROGRESS_IN_TIME->value;
+                                    } else {
+                                        $task->status_code = TaskStatus::IN_PROGRESS_OVERDUE->value;
+                                    }
+                                }
+                                $task->results =  "Đang thực hiện";
+                                //dd($task);
+                             
+                                $task->save();
                             }
                         
                        }
@@ -117,8 +140,7 @@ class DocumentController extends Controller
                 foreach ($organizations as $data) {
                     $organizationCode = $data['code'];
                     $organizationName = $data['name'];
-                    $organizationEmail = $data['email'];
-                    $organizationPhone = $data['phone'];
+          
                     $taskCodeOrganization = $data['task_code'];
                     $taskId = $data['task_id'];
     
@@ -134,6 +156,7 @@ class DocumentController extends Controller
                     if ($organization) {
                         // Kiểm tra nếu đây là tổ chức đầu tiên, gán vào task gốc
                         $taskTarget = TaskTarget::find($taskId);
+                        if($taskTarget->rganization_id != null) $first = false;
                         $type = $taskTarget->type;
                         if ($first) {
                             $taskTarget->organization_id = $organization->id;
@@ -188,11 +211,11 @@ class DocumentController extends Controller
 
         $taskTargetQuery = TaskTarget::query();
         if ($request->filled('document_name')) {
-            $query->where('document_name', 'like', '%' . $request->document_name . '%');
+            $query->where('document_name', 'like', '%' . $request->document_name . '%')->where('isDelete', 0);
         }
     
         if ($request->filled('organization_id')) {
-            $query->where('issuing_department', $request->organization_id);
+            $query->where('issuing_department', $request->organization_id)->where('isDelete', 0);
         }
     
         if ($request->filled('execution_time')) {
@@ -200,22 +223,22 @@ class DocumentController extends Controller
         }
         if($user->role=='staff' || $user->role=='sub_admin'){
             $documents = Document::whereHas('taskTarget', function ($query) use ($user) {
-                $query->where('organization_id', $user->organization_id);
+                $query->where('organization_id', $user->organization_id)->where('isDelete', 0);
             })->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
 
             $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))
-            ->where('organization_id', $user->organization->id)
+            ->where('organization_id', $user->organization->id)->where('isDelete', 0)
             ->get();
         }
        
         else if($user->role=='admin' || $user->role=='supper_admin'){
             $documents = $query->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
 
-            $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->get();
+            $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->get();
 
         }
        
-        $organizations = Organization::all();
+        $organizations = Organization::where('isDelete', 0)->get();
         return view('documents.report', compact('documents', 'organizations', 'taskDocuments'));
     }
     public function index(Request $request)
@@ -224,7 +247,27 @@ class DocumentController extends Controller
         $user = User::find($userId);
         $query = Document::query();
         $taskDocumentsQuery = TaskDocument::query();
+        $executionTimeFrom = $request->input('execution_time_from');
+        $executionTimeTo = $request->input('execution_time_to');
+
+        // Kiểm tra nếu cả hai thời gian đều có giá trị
+        if ($executionTimeFrom && $executionTimeTo) {
+            try {
+                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
+                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
+                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
         
+                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
+                if ($executionTimeFrom->gt($executionTimeTo)) {
+                    return redirect()->back()->withErrors([
+                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
+                    ]);
+                }
+            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
+            }
+        }
+
         if ($request->filled('document_code')) {
             $query->where('document_code', 'like', '%' . $request->document_code . '%');
         }
@@ -236,13 +279,19 @@ class DocumentController extends Controller
         if ($request->filled('organization_id')) {
             $query->where('issuing_department', $request->organization_id);
         }
-    
-        if ($request->filled('execution_time')) {
-            $query->whereDate('release_date', $request->execution_time);
+        if ($executionTimeFrom) {
+            $query->whereDate('release_date', '>=', $executionTimeFrom);
         }
-        $documents = $query->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
-        $organizations = Organization::all();
-        return view('documents.index', compact('documents', 'organizations'));
+
+        if ($executionTimeTo) {
+            $query->whereDate('release_date', '<=', $executionTimeTo);
+        }
+    
+        $documents = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+        $organizations = Organization::where('isDelete', 0)->get();
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
+
+        return view('documents.index', compact('documents', 'organizations', 'organizationsType'));
     }
 
     /**
@@ -250,23 +299,25 @@ class DocumentController extends Controller
      */
     public function create()
     {
-        $organizations = Organization::all();
-        $documentCategory = DocumentCategory::all();
+        $organizations = Organization::where('isDelete', 0)->get();
+        $documentCategory = DocumentCategory::where('isDelete', 0)->get();
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
+
         // Truyền dữ liệu tổ chức vào view
-        return view('documents.create', compact('organizations', 'documentCategory'));
+        return view('documents.create', compact('organizations', 'documentCategory', 'organizationsType'));
     }
 
     public function checkDocumentCode($documentCode)
     {
         // Kiểm tra xem mã công việc có tồn tại trong cơ sở dữ liệu không
-        $exists = Document::where('document_code',$documentCode)->exists();
+        $exists = Document::where('document_code',$documentCode)->where('isDelete', 0)->exists();
         return response()->json(['exists' => $exists]);
     }
 
     public function getHistory($code)
     {
         
-        $taskTargetIds = TaskTarget::where('code', $code)
+        $taskTargetIds = TaskTarget::where('code', $code)->where('isDelete', 0)
         ->pluck('id'); // Lấy danh sách các ID dưới dạng mảng
     
         // Kiểm tra nếu không có ID nào được tìm thấy
@@ -309,9 +360,11 @@ class DocumentController extends Controller
                 'release_date.date' => 'Ngày phát hành không hợp lệ.',
             ]);
 
+            $documentCode = str_replace(['/', ' '], '-', $request->input('document_code'));
+
             // Lưu tài liệu
             $document = Document::create([
-                'document_code' => $request->input('document_code'),
+                'document_code' => $documentCode,
                 'document_name' => $request->input('document_name'), // Lưu giá trị textarea
                 'issuing_department' => $request->input('issuing_department'),
                 'release_date' => $request->input('release_date'),
@@ -369,6 +422,7 @@ class DocumentController extends Controller
         foreach ($taskDocuments as $task) {
             $criterias[$task->task_code] = CriteriasTask::where('DocumentID', $document->id)
                                                         ->where('TaskCode', $task->task_code)
+                                                        ->where('isDelete', 0)
                                                         ->get();
         }
     
@@ -383,7 +437,7 @@ class DocumentController extends Controller
         $timeParamsQuarter = TimeHelper::getTimeParameters(3);
         $timeParamsYear = TimeHelper::getTimeParameters(4);
 
-        $organizations = Organization::all();
+        $organizations = Organization::where('isDelete', 0)->get();
         return view('documents.show', compact('document', 'taskDocuments', 'criterias', 'organizations', 'weekTask', 'monthTask', 'quarterTask', 'yearTask'
         , 'timeParamsWeek', 'timeParamsMonth', 'timeParamsQuarter', 'timeParamsYear'));
     }
@@ -396,13 +450,14 @@ class DocumentController extends Controller
         $userId = Auth::id();
         $user = User::find($userId);
         
-        if ($user->role=='admin' || $user->role=='supper_staff'){
-            $taskDocuments = $document->taskTarget;
+        if ($user->role=='admin' || $user->role=='supper_admin'){
+            $taskDocuments = $document->taskTarget->where('isDelete', 0);
         } else {
             $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
-                return $task->organization_id === $user->organization_id;
-            });
+                return $task->organization_id == $user->organization_id;
+            })->where('isDelete', 0);
         }
+     
         $weekTask = $taskDocuments->where('cycle_type', 1)->values();
         $monthTask = $taskDocuments->where('cycle_type', 2)->values();
         $quarterTask = $taskDocuments->where('cycle_type', 3)->values();
@@ -411,15 +466,13 @@ class DocumentController extends Controller
         $timeParamsMonth = TimeHelper::getTimeParameters(2);
         $timeParamsQuarter = TimeHelper::getTimeParameters(3);
         $timeParamsYear = TimeHelper::getTimeParameters(4);
-
-
         $hasCompletedWeekTask = $weekTask->contains('is_completed', true);
         $hasCompletedMonthTask = $monthTask->contains('is_completed', true);
         $hasCompletedQuarterTask = $quarterTask->contains('is_completed', true);
         $hasCompletedYearTask = $yearTask->contains('is_completed', true);
 
        // dd($weekTask);
-        $organizations = Organization::all();
+        $organizations = Organization::where('isDelete', 0)->get();
         return view('documents.reportUpdate', compact('document', 'taskDocuments', 'organizations', 'weekTask', 'monthTask', 'quarterTask', 'yearTask'
         , 'timeParamsWeek', 'timeParamsMonth', 'timeParamsQuarter', 'timeParamsYear', 'hasCompletedWeekTask', 'hasCompletedMonthTask', 'hasCompletedQuarterTask', 'hasCompletedYearTask'));
     }
@@ -431,12 +484,12 @@ class DocumentController extends Controller
         $userId = Auth::id();
         $user = User::find($userId);
         
-        if ($user->role=='admin' || $user->role=='supper_staff'){
-            $taskDocuments = $document->taskTarget;
+        if ($user->role=='admin' || $user->role=='supper_admin'){
+            $taskDocuments = $document->taskTarget->where('isDelete', 0);
         } else {
             $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
                 return $task->organization_id === $user->organization_id;
-            });
+            })->where('isDelete', 0);
         }
         //dd( $taskDocuments);
         $weekTask = $taskDocuments->where('cycle_type', 1)->values();
@@ -455,7 +508,7 @@ class DocumentController extends Controller
         $hasCompletedYearTask = $yearTask->contains('is_completed', true);
 
        // dd($weekTask);
-        $organizations = Organization::all();
+        $organizations = Organization::where('isDelete', 0)->get();
         return view('documents.viewDetailsReport', compact('document', 'taskDocuments', 'organizations', 'weekTask', 'monthTask', 'quarterTask', 'yearTask'
         , 'timeParamsWeek', 'timeParamsMonth', 'timeParamsQuarter', 'timeParamsYear', 'hasCompletedWeekTask', 'hasCompletedMonthTask', 'hasCompletedQuarterTask', 'hasCompletedYearTask'));
     }
@@ -470,17 +523,18 @@ class DocumentController extends Controller
         $user = User::find($userId);
         
         if ($document->creator == $userId) {
-            $taskDocuments = $document->taskDocuments;
+            $taskDocuments = $document->taskDocuments->where('isDelete', 0);
         } else {
             $taskDocuments = $document->taskDocuments->filter(function ($task) use ($user) {
                 return $task->organization_id === $user->organization_id;
-            });
+            })->where('isDelete', 0);
         }
         
         $criterias = [];
         foreach ($taskDocuments as $task) {
             $criterias[$task->task_code] = CriteriasTask::where('DocumentID', $document->id)
                                                         ->where('TaskCode', $task->task_code)
+                                                        ->where('isDelete', 0)
                                                         ->get();
         }
     
@@ -495,10 +549,12 @@ class DocumentController extends Controller
         $timeParamsQuarter = TimeHelper::getTimeParameters(3);
         $timeParamsYear = TimeHelper::getTimeParameters(4);
 
-        $organizations = Organization::all();
-        $documentCategory = DocumentCategory::all();
+        $organizations = Organization::where('isDelete', 0)->get();
+        $documentCategory = DocumentCategory::where('isDelete', 0)->get();
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
+
         return view('documents.edit', compact('document', 'taskDocuments', 'criterias', 'organizations', 'weekTask', 'monthTask', 'quarterTask', 'yearTask'
-        , 'timeParamsWeek', 'timeParamsMonth', 'timeParamsQuarter', 'timeParamsYear', 'documentCategory'));
+        , 'timeParamsWeek', 'timeParamsMonth', 'timeParamsQuarter', 'timeParamsYear', 'documentCategory', 'organizationsType'));
     }
 
     /**
@@ -530,9 +586,11 @@ class DocumentController extends Controller
                 'release_date.date' => 'Ngày phát hành không hợp lệ.',
             ]);
 
-    
+            $documentCode = str_replace(['/', ' '], '-', $request->input('document_code'));
+
             // Lấy dữ liệu từ request
             $documentId = $request->input('document_id');
+            
 
             $documentName = $request->input('document_name');
             $issuingDepartment = $request->input('issuing_department');
@@ -563,6 +621,7 @@ class DocumentController extends Controller
                         $document->document_name = $documentName;
                         $document->issuing_department = $issuingDepartment;
                         $document->release_date = $releaseDate;
+                        $document->document_code = $documentCode;
                         $document->save();
                         DB::commit();
     
@@ -595,15 +654,25 @@ class DocumentController extends Controller
      */
     public function destroy(string $id)
     {
-        CriteriasTask::where('DocumentID', $id)->delete();
-        TaskTarget::where('document_id', $id)->delete();
-        TaskResult::where('document_id', $id)->delete();
-        File::where('document_id', $id)->delete();
+        
+        $item = Document::findOrFail($id);
+        $item->isDelete = 1;
+        $item->save();
 
-        // Tìm và xóa tài liệu trong bảng Document
-        $document = Document::findOrFail($id);
-        $document->delete();
-    
+        $taskTargets = TaskTarget::where('document_id', $id)->get();
+
+        foreach ($taskTargets as $taskTarget) {
+            $taskTarget->isDelete = 1;
+            $taskTarget->save();
+        }
+
+        $taskReults = TaskResult::where('document_id', $id)->get();
+
+        foreach ($taskReults as $taskReult) {
+            $taskReult->isDelete = 1;
+            $taskReult->save();
+        }
+
         // Chuyển hướng về trang danh sách tài liệu
         return redirect()->route('documents.index')->with('success', 'Xóa thành công văn bản.');
     }

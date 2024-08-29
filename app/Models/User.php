@@ -27,7 +27,8 @@ class User extends Authenticatable
         'address',
         'role',
         'unit_id',
-        'position_id'
+        'position_id',
+        'isDelete'
     ];
 
     /**

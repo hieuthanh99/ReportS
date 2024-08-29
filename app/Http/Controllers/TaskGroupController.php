@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\TaskGroup;
+use App\Models\TaskTarget;
+use App\Models\TaskResult;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +15,7 @@ class TaskGroupController extends Controller
     // Hiển thị danh sách các nhóm công việc
     public function index()
     {
-        $taskGroups = TaskGroup::orderBy('created_at', 'desc')->paginate(10);
+        $taskGroups = TaskGroup::orderBy('created_at', 'desc')->where('isDelete', 0)->paginate(10);
         return view('task_groups.index', compact('taskGroups'));
     }
 
@@ -95,7 +98,22 @@ class TaskGroupController extends Controller
     // Xóa nhóm công việc
     public function destroy(TaskGroup $taskGroup)
     {
-        $taskGroup->delete();
+        $taskTargets = TaskTarget::where('type_id', $taskGroup->id)->get();
+
+        foreach ($taskTargets as $taskTarget) {
+            $taskTarget->isDelete = 1;
+            $taskTarget->save();
+        }
+
+        $taskReults = TaskResult::where('type_id', $taskGroup->id)->get();
+
+        foreach ($taskReults as $taskReult) {
+            $taskReult->isDelete = 1;
+            $taskReult->save();
+        }
+
+        $taskGroup->isDelete = 1;
+        $taskGroup->save();
         return redirect()->route('task_groups.index')->with('success', 'Nhóm công việc đã được xóa thành công.');
     }
 }

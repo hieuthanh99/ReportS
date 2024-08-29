@@ -10,7 +10,7 @@ class CriteriasTaskController extends Controller
     // Display a listing of the resource
     public function index()
     {
-        $criteriasTasks = CriteriasTask::all();
+        $criteriasTasks = CriteriasTask::where('isDelete', 0)->get();;
         return view('criterias_task.index', compact('criteriasTasks'));
     }
 

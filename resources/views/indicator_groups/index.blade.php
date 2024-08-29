@@ -85,8 +85,8 @@
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                     <tr>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
-                        <th style="width: 450px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Mã nhóm chỉ tiêu</th>
-                        <th style="width: 450px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên nhóm chỉ tiêu</th>
+                        <th style="width: 450px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Mã loại chỉ tiêu</th>
+                        <th style="width: 450px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên loại chỉ tiêu</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Cập nhật
                         </th>

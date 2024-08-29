@@ -19,7 +19,8 @@ class Organization extends Model
         'phone',
         'parent_id',
         'creator',
-        'organization_type_id'
+        'organization_type_id',
+        'isDelete'
     ];
     public function organizationType()
     {

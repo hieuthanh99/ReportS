@@ -114,7 +114,6 @@
                 </div>
             </div>
              
-           
             <div class="mt-4 flex" style="justify-content: space-between">
                 <button type="button"  id="back"  class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Quay lại</button>
                 <div>

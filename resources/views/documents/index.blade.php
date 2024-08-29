@@ -27,48 +27,71 @@
                 {{ session('success') }}
             </div>
         @endif
+        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
+            Lọc/Filter
+        </button>
+        @if(Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+        <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới văn bản</a>
+        @endif
         <!-- Search Form -->
-        <form method="GET" action="{{ route('documents.index') }}" class="">
+        <form method="GET" action="{{ route('documents.index') }}" class="hidden" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
+                <!-- Các trường khác -->
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_code" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản</label>
-                    <input type="text" id="document_code" name="document_code" value="{{ request('document_code') }}"  placeholder="Số hiệu văn bản"
+                    <input type="text" id="document_code" name="document_code" value="{{ request('document_code') }}" placeholder="Số hiệu văn bản"
                            class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
                 </div>
+                <!-- Các trường khác -->
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_name" class="block text-gray-700 font-medium mb-2">Trích yếu văn bản</label>
-                    <input type="text" id="document_name" name="document_name" value="{{ request('document_name') }}"  placeholder="Tên văn bản"
+                    <input type="text" id="document_name" name="document_name" value="{{ request('document_name') }}" placeholder="Tên văn bản"
                            class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
                 </div>
-            
+                <!-- Các trường khác -->
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan phát hành</label>
-                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="">Chọn đơn vị thực hiện</option>
-                        @foreach($organizations as $organization)
-                            <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->name }}
+                    <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
+                    <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                        <option value="">Chọn loại cơ quan thực hiện</option>
+                        @foreach($organizationsType as $organization)
+                            <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->type_name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
                 
-                <div class="flex-1 min-w-[200px]">
-                    <label for="execution_time" class="block text-gray-700 font-medium mb-2">Thời gian thực hiện</label>
-                    <input type="date" placeholder="dd-mm-yyyy"
-                    min="1997-01-01" max="2100-12-31" name="execution_time" value="{{ request('execution_time') }}"
-                    class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Thời gian thực hiện">
+        
+                <!-- Đoạn code này bao quanh hai trường Ngày phát hành -->
+                <div class="flex gap-4 w-full">
+                    <div class="flex-1 min-w-[200px]">
+                        <label for="execution_time_from" class="block text-gray-700 font-medium mb-2">Từ ngày</label>
+                        <input type="date" id="execution_time_from" placeholder="dd-mm-yyyy"
+                               min="1997-01-01" max="2100-12-31" name="execution_time_from" value="{{ request('execution_time_from') }}"
+                               class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
+                    </div>
+                    <div class="flex-1 min-w-[200px]">
+                        <label for="execution_time_to" class="block text-gray-700 font-medium mb-2">Đến ngày</label>
+                        <input type="date" id="execution_time_to" placeholder="dd-mm-yyyy"
+                               min="1997-01-01" max="2100-12-31" name="execution_time_to" value="{{ request('execution_time_to') }}"
+                               class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
+                    </div>
+                    <!-- Các trường khác -->
+                    <div class="flex-1 min-w-[200px]">
+                        <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan</label>
+                        <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                            <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
+                        </select>
+                    </div>
                 </div>
-        </div>
+            </div>
 
         <div class="flex justify-end gap-4">
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
             </button>
-            @if(Auth::user()->role === 'admin' || Auth::user()->role === 'supper_staff')
-            <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới văn bản</a>
-            @endif
+       
         </div>
     </form>
       
@@ -139,6 +162,31 @@
         </div>
     </div>
     <script>
+          document.getElementById('filterToggle').addEventListener('click', function() {
+            const filterForm = document.getElementById('filterForm');
+            filterForm.classList.toggle('hidden');
+        });
+        document.getElementById('organization_type_id').addEventListener('change', function () {
+            var organizationTypeId = this.value;
+            
+            // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+            fetch(`/get-organizations/${organizationTypeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Làm rỗng danh sách `parent_id`
+                    var parentSelect = document.getElementById('parent_id');
+                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+
+                    // Thêm các tùy chọn mới
+                    data.forEach(function (organization) {
+                        var option = document.createElement('option');
+                        option.value = organization.id;
+                        option.text = organization.name;
+                        parentSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
         function confirmDelete() {
     Swal.fire({
         title: 'Bạn có chắc chắn?',

@@ -21,6 +21,7 @@ class Category extends Model
         'CreatedDTG',
         'UpdatedBy',
         'UpdatedDTG',
+        'isDelete'
     ];
 
     protected $dates = [

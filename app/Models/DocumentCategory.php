@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DocumentCategory extends Model
 {
-    protected $fillable = ['code', 'name', 'description'];
+    protected $fillable = ['code', 'name', 'description', 'isDelete'];
 
     public function documents()
     {

@@ -7,7 +7,6 @@ use Carbon\Carbon;
 
 class Document extends Model
 {
-    // Các thuộc tính có thể được gán đại trà
     protected $fillable = [
         'document_code',
         'document_name',
@@ -15,7 +14,8 @@ class Document extends Model
         'creator',
         'release_date',
         'status',
-        'category_id'
+        'category_id',
+        'isDelete'
     ];
     public function category()
     {

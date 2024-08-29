@@ -172,28 +172,34 @@
                         <span class="text-gray-900 w-2/3">{{ $document->getReleaseDateFormattedAttribute() }}</span>
                     </div>
                     <div class="flex items-center mb-4">
-                        <span class="text-gray-700 font-medium w-1/3">Đơn vị phát hành:</span>
+                        <span class="text-gray-700 font-medium w-1/3">Cơ quan:</span>
                         <span class="text-gray-900 w-2/3">{{ $document->issuingDepartment->name }}</span>
                     </div>
                 </div>
                 
-
+            
             <!-- Hàng upload file -->
             <div class="mb-4" style="margin: 20px 0">
                 <h5 class="text-xl font-semibold mb-4">Tệp đính kèm:</h5>
                 <ul>
-                    @foreach ($document->files as $file)
-                        <li class="file-item flex items-center mb-2"
-                            data-file-type="{{ mime_content_type(storage_path('app/public/' . $file->file_path)) }}">
-                            <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                            
-                            {{-- <a href="{{ route('file.download', ['id' => $file->id, 'type' => 3]) }}" class="text-blue-500 hover:underline"
-                                download>{{ $file->file_name }}</a> --}}
-                                <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
-                        </li>
-                    @endforeach
+                    @if (!$document->files->isEmpty())
+                        @foreach ($document->files as $file)
+                            <li class="file-item flex items-center mb-2"
+                                data-file-type="{{ mime_content_type(storage_path('app/public/' . $file->file_path)) }}">
+                                <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
+                                
+                                {{-- <a href="{{ route('file.download', ['id' => $file->id, 'type' => 3]) }}" class="text-blue-500 hover:underline"
+                                    download>{{ $file->file_name }}</a> --}}
+                                    <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
+                            </li>
+                        @endforeach
+                    @else
+                        <span>Không có tệp nào</span>
+                    @endif
                 </ul>
             </div>
+            
+           
             <div class="mt-4 flex" style="justify-content: space-between">
                 <a href="{{ route('documents.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>            </div>
             {{-- Danh sách công việc --}}

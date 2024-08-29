@@ -8,6 +8,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\TimeHelper;
+use App\Enums\TaskStatus;
+
+
 
 class TaskTarget extends Model
 {
@@ -31,8 +34,14 @@ class TaskTarget extends Model
         'organization_id',
         'type',
         'is_completed',
-        'type_id'
+        'type_id',
+        'status_code',
+        'isDelete'
     ];
+    public function getStatusLabelAttribute()
+    {
+        return TaskStatus::tryFrom($this->status_code)?->label() ?? '';
+    }
     public function getType()
     {
         if ($this->type == 'task') {
@@ -76,9 +85,10 @@ class TaskTarget extends Model
     {
         $timeParams = TimeHelper::getTimeParameters($this->cycle_type);
         $taskResult = TaskResult::where('id_task_criteria', $this->id)->where('type', $this->cycle_type)->where('number_type', $timeParams['current'])->first();
-        // dd($taskResult);
         if($taskResult){
+
             $data = TaskApprovalHistory::where('task_target_id', $this->id)->where('task_result_id', $taskResult->id)->orderBy('created_at', 'desc')->first();
+            // dd($data);
         }
         return $data ?? null;
     }

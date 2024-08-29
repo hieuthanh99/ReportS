@@ -91,7 +91,7 @@
                         <input type="hidden" id="request_results" name="request_results" value="">
                         @if($type == 'task')
                         <div id="text_area_div">
-                            <label for="request_results_area" class="block text-gray-700 text-sm font-medium mb-2">Kết quả văn bản</label>
+                            <label for="request_results_area" class="block text-gray-700 text-sm font-medium mb-2">Kết quả</label>
                             <textarea id="request_results_area" name="request_results_area" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ old('required_result') }}</textarea>
                         </div>
                         @else

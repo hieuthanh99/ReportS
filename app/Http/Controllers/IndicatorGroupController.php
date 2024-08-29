@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\IndicatorGroup;
+use App\Models\TaskTarget;
+use App\Models\TaskResult;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +15,7 @@ class IndicatorGroupController extends Controller
     // Hiển thị danh sách các nhóm công việc
     public function index()
     {
-        $taskGroups = IndicatorGroup::orderBy('created_at', 'desc')->paginate(10);
+        $taskGroups = IndicatorGroup::where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
         return view('indicator_groups.index', compact('taskGroups'));
     }
 
@@ -95,7 +98,22 @@ class IndicatorGroupController extends Controller
     // Xóa nhóm công việc
     public function destroy(IndicatorGroup $indicatorGroup)
     {
-        $indicatorGroup->delete();
+        $taskTargets = TaskTarget::where('type_id', $indicatorGroup->id)->get();
+
+        foreach ($taskTargets as $taskTarget) {
+            $taskTarget->isDelete = 1;
+            $taskTarget->save();
+        }
+
+        $taskReults = TaskResult::where('type_id', $indicatorGroup->id)->get();
+
+        foreach ($taskReults as $taskReult) {
+            $taskReult->isDelete = 1;
+            $taskReult->save();
+        }
+
+        $indicatorGroup->isDelete = 1;
+        $indicatorGroup->save();
         return redirect()->route('indicator_groups.index')->with('success', 'Nhóm công việc đã được xóa thành công.');
     }
     }

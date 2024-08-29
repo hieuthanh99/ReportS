@@ -13,7 +13,7 @@ class TaskGroup extends Model
         'code',
         'name',
         'description',
-        'creator_id'
+        'creator_id','isDelete'
     ];
 
     // Định nghĩa quan hệ với User

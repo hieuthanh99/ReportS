@@ -7,12 +7,15 @@ use App\Models\OrganizationType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule; 
+use App\Models\TaskTarget;
+use App\Models\TaskResult;
+use App\Models\User;
 
 class OrganizationTypeController extends Controller
 {
     public function index()
     {
-        $types = OrganizationType::orderBy('created_at', 'desc')->paginate(10);
+        $types = OrganizationType::orderBy('created_at', 'desc')->where('isDelete', 0)->paginate(10);
         return view('organization_types.index', compact('types'));
     }
 
@@ -94,7 +97,37 @@ class OrganizationTypeController extends Controller
     // Xử lý xóa loại cơ quan
     public function destroy(OrganizationType $organizationType)
     {
-        $organizationType->delete();
+        $organizations = TaskTarget::where('organization_type_id', $organizationType->id)->get();
+
+        foreach ($organizations as $organization) {
+
+            $taskTargets = TaskTarget::where('organization_id', $organization->id)->get();
+
+            foreach ($taskTargets as $taskTarget) {
+                $taskTarget->isDelete = 1;
+                $taskTarget->save();
+            }
+
+            $taskReults = TaskResult::where('organization_id', $organization->id)->get();
+
+            foreach ($taskReults as $taskReult) {
+                $taskReult->isDelete = 1;
+                $taskReult->save();
+            }
+
+            $users = User::where('organization_id', $organization->id)->get();
+
+            foreach ($users as $user) {
+                $user->isDelete = 1;
+                $user->save();
+            }
+            
+            $organization->isDelete = 1;
+            $organization->save();
+        }
+
+
+        
         return redirect()->route('organization_types.index')->with('success', 'Loại cơ quan đã được xóa thành công!');
     }
 }

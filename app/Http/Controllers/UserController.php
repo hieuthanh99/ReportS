@@ -41,10 +41,11 @@ class UserController extends Controller
         if (!empty($query)) {
             $tasks = User::where('code', 'like', "%{$query}%")
                         ->orWhere('name', 'like', "%{$query}%")
+                        ->where('isDelete', 0)
                         ->get();
         } else {
             // Nếu query rỗng, lấy tất cả các nhiệm vụ
-            $tasks = User::all();
+            $tasks = User::where('isDelete', 0)->get();;
         }
         
         return response()->json([
@@ -61,7 +62,7 @@ class UserController extends Controller
      // Lấy danh sách người dùng
     public function listUsersAll()
     {
-        $users = User::all();
+        $users = User::where('isDelete', 0)->get();;
         return response()->json(['users' => $users]);
     }
 
@@ -104,14 +105,14 @@ class UserController extends Controller
     public function index()
     {
 
-        $users = User::with('organization')->orderBy('created_at', 'desc')->paginate(10);
+        $users = User::with('organization')->orderBy('created_at', 'desc')->where('isDelete', 0)->paginate(10);
         return view('users.index', compact('users'));
     }
 
     public function create()
     {
-        $positions = Position::all();
-        $organizations = Organization::all();
+        $positions = Position::where('isDelete', 0)->get();
+        $organizations = Organization::where('isDelete', 0)->get();
         return view('users.create', compact('organizations', 'positions'));
        // return view('users.create');
     }
@@ -149,10 +150,10 @@ class UserController extends Controller
     }
     public function edit($id)
     {
-        $positions = Position::all();
+        $positions = Position::where('isDelete', 0)->get();
 
         $user = User::findOrFail($id);
-        $organizations = Organization::all(); // Lấy danh sách tổ chức để hiển thị trong dropdown
+        $organizations = Organization::where('isDelete', 0)->get();
         return view('users.edit', compact('user', 'organizations', 'positions'));
     }
 

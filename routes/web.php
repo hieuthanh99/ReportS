@@ -83,7 +83,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/organization/search-name', [OrganizationController::class, 'searchOrganizationByNameOrCode'])->name('organization.search.name');
 
     Route::get('/organization/search-parent', [OrganizationController::class, 'searchOrganizationByParentID'])->name('organization.search.parent');
-    
+    Route::delete('/organizations/{organization}', [OrganizationController::class, 'destroyOrganizationr'])->name('organization.destroyOrganizationr');
+
     Route::resource('users', UserController::class);
     // Route để kiểm tra mã công việc
     Route::get('/api/check-task-code/{taskCode}', [TaskController::class, 'checkTaskCode']);

@@ -115,7 +115,7 @@
             /* Additional styles for details content if needed */
         }
     </style>
-
+    <div class="container mx-auto">
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -137,18 +137,13 @@
                 {{ session('success') }}
             </div>
         @endif
-
+    </div>
  <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg flex" style="margin-top: 10px;">
    
         <!-- Tree View -->
         <div class="pr-4" style="width: 40%">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-4xl font-bold text-gray-900"></h1>
-                {{-- <a href="{{ route('indicator_groups.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới loại cơ quan, tổ chức</i></a> --}}
-
-                <button onclick="showAddChildModal(null)" 
-         
-                    class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300"> Thêm cơ quan, tổ chức</i></button>
+                <a href="{{ route('organizations.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới cơ quan</a>
             </div>
 
             
@@ -216,6 +211,12 @@
                         nhân viên</button>
                     <button type="button" id="update-button"
                         class="hidden bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mt-2">Cập nhật</button>
+                    <form id="delete-form" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                    <button type="button" id="delete-button"
+                    class="hidden bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
                 </div>
             </div>
         </div>
@@ -345,13 +346,6 @@
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="type" class="block text-gray-700">Loại <span class="text-red-500">*</span></label>
-                        <select name="type" id="type" class="w-full border rounded-lg px-3 py-2 mt-1">
-                            <option value="tỉnh">Tỉnh</option>
-                            <option value="bộ">Bộ</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
                         <label for="email" class="block text-gray-700">Email</label>
                         <input type="email" name="email" id="email" class="w-full border rounded-lg px-3 py-2 mt-1">
                     </div>
@@ -382,6 +376,35 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('delete-button').addEventListener('click', function() {
+                const organizationId = document.getElementById('organization_id').value;
+                if (organizationId) {
+                    confirmDelete(organizationId);
+                } else {
+                    alert('Không tìm thấy mã tổ chức.');
+                }
+            });
+
+            function confirmDelete(organizationId) {
+                Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: 'Xóa tổ chức này?. Khi đã xóa sẽ không lấy lại thông tin được!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Có, xóa!',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Tạo URL chuyển hướng đến route xóa với ID tổ chức
+                        const deleteUrl = `/organizations/${organizationId}`; // Điều chỉnh đường dẫn nếu cần
+                        const deleteForm = document.getElementById('delete-form');
+                        deleteForm.action = deleteUrl;
+                        deleteForm.submit();
+                    }
+                });
+            }
             // Khi nút Cập nhật được nhấn
             document.getElementById('update-button').addEventListener('click', function() {
                 const organizationId = document.getElementById('organization_id').value;
@@ -462,7 +485,7 @@
             document.getElementById('organization-details').innerHTML = `
                 <h3 class="text-2xl font-bold">${organization.name}</h3>
                 <p><strong>Mã phòng ban:</strong> ${organization.code}</p>
-                <p><strong>Loại phòng ban:</strong> ${organization.type}</p>
+          
                 <p><strong>Email:</strong> ${organization.email}</p>
                 <p><strong>Số điện thoại:</strong> ${organization.phone}</p>
                 <p><strong>Địa chỉ:</strong> ${organization.address}</p>
@@ -497,6 +520,9 @@
             });
             document.getElementById('assign-user-button').classList.remove('hidden');
             document.getElementById('update-button').classList.remove('hidden');
+            document.getElementById('delete-button').classList.remove('hidden');
+
+            
             
         });
 }

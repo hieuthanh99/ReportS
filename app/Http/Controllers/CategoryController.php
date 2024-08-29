@@ -10,12 +10,12 @@ class CategoryController extends Controller
     // Phương thức để lấy danh sách danh mục
     public function listCategories()
     {
-        $categories = Category::all();
+        $categories = Category::where('isDelete', 0)->get();
         return response()->json(['categories' => $categories]);
     }
     public function index()
     {
-        $categories = Category::paginate(10);
+        $categories = Category::where('isDelete', 0)->paginate(10);
         return view('categories.index', compact('categories'));
     }
 
@@ -74,7 +74,8 @@ class CategoryController extends Controller
     {
         // Find and delete the category
         $category = Category::findOrFail($id);
-        $category->delete();
+        $category->isDelete = 1;
+        $category->save();
 
         // Flash a success message to the session
         return redirect()->route('categories.index')->with('success', 'Danh mục đã được xóa thành công!');

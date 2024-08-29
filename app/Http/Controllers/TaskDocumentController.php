@@ -14,7 +14,7 @@ class TaskDocumentController extends Controller
     {
         dd("dsadasda");
         // Truy xuất tất cả task documents (hoặc chỉ những cái cần thiết)
-        $tasks = TaskDocument::all();
+        $tasks = TaskDocument::where('isDelete', 0)->get();;
         return view('tasks.index', compact('tasks'));
     }
 
@@ -22,7 +22,7 @@ class TaskDocumentController extends Controller
     public function create()
     {
         // Truy xuất tất cả các document để chọn cho task
-        $documents = Document::all();
+        $documents = Document::where('isDelete', 0)->get();;
         return view('tasks.create', compact('documents'));
     }
 
@@ -53,7 +53,7 @@ class TaskDocumentController extends Controller
     public function edit($id)
     {
         $task = TaskDocument::findOrFail($id);
-        $documents = Document::all();
+        $documents = Document::where('isDelete', 0)->get();;
         return view('tasks.edit', compact('task', 'documents'));
     }
 

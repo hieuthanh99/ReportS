@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Organization;
 use App\Models\OrganizationType;
 use App\Models\OrganizationTask;
+use App\Models\TaskTarget;
+use App\Models\TaskResult;
+use App\Models\User;
+
 use App\Models\TaskDocument;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule; 
@@ -24,6 +28,7 @@ class OrganizationController extends Controller
         // Tìm các cơ quan/tổ chức đã gán với task cụ thể
         $organizations = TaskDocument::where('document_id', $documentId)
                                           ->where('id', $taskId)
+                                          ->where('isDelete', 0)
                                           ->with('organization')
                                           ->get();
     
@@ -45,7 +50,7 @@ class OrganizationController extends Controller
         \Log::info('Search Query: ' . $query);
         
         if (!empty($query)) {
-            $organizations = Organization::where('type', 'like', '%' . $query . '%')->get();
+            $organizations = Organization::where('type', 'like', '%' . $query . '%')->where('isDelete', 0)->get();
         } else {
             $organizations =[];
         }
@@ -63,9 +68,9 @@ class OrganizationController extends Controller
         
         // Nếu query không rỗng, lọc theo query
         if (!empty($query)) {
-            $organizations = Organization::where('code', 'like', '%' . $query . '%')->orWhere('name', 'like', '%' . $query . '%')->get();
+            $organizations = Organization::where('code', 'like', '%' . $query . '%')->orWhere('name', 'like', '%' . $query . '%')->where('isDelete', 0)->get();
         } else {
-            $organizations = Organization::all();
+            $organizations = Organization::where('isDelete', 0)->get();
         }
         
         return response()->json([
@@ -80,7 +85,7 @@ class OrganizationController extends Controller
         // Hàm đệ quy để lấy các cấp dưới của một tổ chức
         function getChildren($parentId) {
             // Lấy các tổ chức con trực tiếp
-            $children = Organization::where('parent_id', $parentId)->get();
+            $children = Organization::where('parent_id', $parentId)->where('isDelete', 0)->get();
             
             // Khởi tạo mảng để lưu các tổ chức con và tổ chức con của chúng
             $allChildren = $children;
@@ -101,15 +106,15 @@ class OrganizationController extends Controller
     }
     public function getOrganizationsByType($organization_type_id)
     {
-        $organizations = Organization::where('organization_type_id', $organization_type_id)->get();
+        $organizations = Organization::where('organization_type_id', $organization_type_id)->where('isDelete', 0)->get();
         return response()->json($organizations);
     }
 
     public function index()
     {
         // Lấy tất cả các tổ chức từ cơ sở dữ liệu và chuyển đổi thành Collection
-        $organizations = Organization::all();
-        $oranizationType = OrganizationType::all();
+        $organizations = Organization::where('isDelete', 0)->get();
+        $oranizationType = OrganizationType::where('isDelete', 0)->get();
     
         // Tạo cây tổ chức từ các tổ chức đã lấy
         $tree = $this->buildTree($oranizationType, $organizations);
@@ -150,7 +155,7 @@ class OrganizationController extends Controller
             ];
 
             // Tìm tất cả các tổ chức có cùng `organization_type_id`
-            $relatedOrganizations = $organizations->where('organization_type_id', $organizationType->id);
+            $relatedOrganizations = $organizations->where('organization_type_id', $organizationType->id)->where('isDelete', 0);
 
             // Sử dụng hàm buildTree để đệ quy qua các tổ chức này
             $typeNode['children'] = $this->buildOrganizationTree($relatedOrganizations, $organizations);
@@ -190,7 +195,9 @@ class OrganizationController extends Controller
 
     public function create($parentId = null)
     {
-        return view('organizations.create', ['parentId' => $parentId]);
+        $organizations = Organization::where('isDelete', 0)->get();
+        $oranizationType = OrganizationType::where('isDelete', 0)->get();
+        return view('organizations.create', compact('oranizationType', 'organizations'));
     }
 
     public function store(Request $request)
@@ -200,17 +207,18 @@ class OrganizationController extends Controller
 
             $request->validate([
                 'name' => 'required|string|max:255',
-                'code' => 'required|string|max:255|unique:organizations,code',
+                'code' => 'required|string|max:255|unique:organizations,code|max:5',
              ], [
                  'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
                  'code.unique' => 'Mã cơ quan, tổ chức đã tồn tại.',
+                 'code.max' => 'Mã loại nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
                  'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
              ]);
     
             $organization = Organization::create([
                 'name' => $request->name,
                 'code' => $request->code,
-                'type' => $request->type,
+                'type' => 'bộ',
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'address' => $request->address,
@@ -221,8 +229,10 @@ class OrganizationController extends Controller
             DB::commit();
             session()->flash('success', 'Tổ chức mới đã được thêm thành công!');
     
-            return response()->json(['success' => true, 'organization' => $organization]);
-  
+            return redirect()->route('organizations.index')->with('success', 'Danh mục tạo thành công!');
+
+/*             return response()->json(['success' => true, 'organization' => $organization]);
+ */  
             // session(['success' =>  $typeRecord.' '. 'đã giao cho các tổ chức']);
             // return response()->json([
             //     'success' => true,
@@ -234,10 +244,8 @@ class OrganizationController extends Controller
 
             // Ghi lỗi vào log (tùy chọn)
             \Log::error('Error creating document: ' . $e->getMessage());
-            return response()->json([
-                'error' => true,
-                'message' => 'Đã xảy ra lỗi, vui lòng thử lại.'
-            ]);
+            return redirect()->back()->withErrors($e->getMessage())->withInput();
+
         }
         
     }
@@ -258,8 +266,8 @@ class OrganizationController extends Controller
 
     public function edit(Organization $organization)
     {
-        $organizationType = OrganizationType::all();
-        $organizations = Organization::all();
+        $organizationType = OrganizationType::where('isDelete', 0)->get();;
+        $organizations = Organization::where('isDelete', 0)->get();;
         return view('organizations.edit', compact('organization', 'organizationType', 'organizations'));
     }
 
@@ -269,10 +277,7 @@ class OrganizationController extends Controller
         $organization = Organization::find($id);
         try {
             $request->validate([
-                'code' => [
-                 'required',
-                     Rule::unique('organizations', 'code')->ignore($id)
-                 ],
+                'code' => 'required|unique:organizations,code|max:5'. $id,
                  'name' => 'required', // Validation rule for textarea
              ], [
                  'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
@@ -299,10 +304,41 @@ class OrganizationController extends Controller
         
       
     }
+    
+    public function destroyOrganizationr(Organization $organization)
+    {
+        // $organization->delete();
+        $taskTargets = TaskTarget::where('organization_id', $organization->id)->get();
 
+        foreach ($taskTargets as $taskTarget) {
+            $taskTarget->isDelete = 1;
+            $taskTarget->save();
+        }
+
+        $taskReults = TaskResult::where('organization_id', $organization->id)->get();
+
+        foreach ($taskReults as $taskReult) {
+            $taskReult->isDelete = 1;
+            $taskReult->save();
+        }
+
+        $users = User::where('organization_id', $organization->id)->get();
+
+        foreach ($users as $user) {
+            $user->isDelete = 1;
+            $user->save();
+        }
+
+        $organization->isDelete = 1;
+        $organization->save();
+
+        session()->flash('success', 'Xóa thành công cơ quan!');
+        return redirect()->route('organizations.index');
+    }
     public function destroy(Organization $organization)
     {
-        $organization->delete();
+        $organization->isDelete = 1;
+        $organization->save();
         return redirect()->route('organizations.index');
     }
 }

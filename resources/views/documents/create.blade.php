@@ -54,7 +54,6 @@
                 {{ session('success') }}
             </div>
         @endif
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Thêm văn bản mới</h1>
         <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" id="document-form">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -66,22 +65,21 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
-        
                 <div class="mb-4">
-                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban hành <span class="text-red-500">*</span></label>
-                    <select name="issuing_department" id="issuing_department" class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                        <option value="" disabled {{ old('issuing_department') ? '' : 'selected' }}>Chọn Cơ quan ban hành</option>
-                        @foreach ($organizations as $organization)
-                            <option value="{{ $organization->id }}" {{ old('issuing_department') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->name }}
+                    <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản <span class="text-red-500">*</span></label>
+                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required>
+                        <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Chọn văn bản</option>
+                        @foreach ($documentCategory as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
                             </option>
                         @endforeach
                     </select>
-                    @error('issuing_department')
+                    @error('category_id')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
-
+               
                 <div class="mb-4">
                     <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Trích yếu văn bản <span class="text-red-500">*</span></label>
                     <textarea id="document_name" name="document_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('document_name') }}</textarea>
@@ -102,19 +100,25 @@
                 </div>
                 
                 <div class="mb-4">
-                    <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản <span class="text-red-500">*</span></label>
-                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                        <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Chọn văn bản</option>
-                        @foreach ($documentCategory as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
+                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan<span class="text-red-500">*</span></label>
+                    <select id="organization_type_id" name="organization_type_id" class="form-input w-full border border-gray-300 rounded-lg p-2">
+                        <option value="">Chọn loại cơ quan thực hiện</option>
+                        @foreach($organizationsType as $organization)
+                            <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->type_name }}
                             </option>
                         @endforeach
                     </select>
-                    @error('category_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
                 </div>
+                <div class="mb-4">
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban hành <span class="text-red-500">*</span></label>
+                    <select name="issuing_department" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                        <option value="" {{ old('issuing_department') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
+                    </select>
+
+                
+                </div>
+                
 
                 <!-- Hàng upload file -->
                 <div class="col-span-2 mb-4">
@@ -137,6 +141,29 @@
         
     
         <script>
+             document.getElementById('organization_type_id').addEventListener('change', function () {
+                var organizationTypeId = this.value;
+                
+                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+                fetch(`/get-organizations/${organizationTypeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Làm rỗng danh sách `parent_id`
+                        var parentSelect = document.getElementById('parent_id');
+                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+
+                        // Thêm các tùy chọn mới
+                        data.forEach(function (organization) {
+                            var option = document.createElement('option');
+                            option.value = organization.id;
+                            option.text = organization.name;
+                            parentSelect.appendChild(option);
+                        });
+
+       
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
              document.getElementById('document-form').addEventListener('submit', function() {
                 // Hiển thị loader khi form được gửi
                 document.getElementById('loading').classList.remove('hidden');

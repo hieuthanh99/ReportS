@@ -143,6 +143,11 @@
 
         <div class="bg-white  overflow-hidden">
             <div class="p-6">
+            <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        {!! Breadcrumbs::render('CTBC', $document) !!}
+                    </ol>
+                </nav> 
                 <form action="{{ route('documents.task.update.cycle', $document->id) }}" method="POST" enctype="multipart/form-data"
                     class="bg-white p-6 ">
                     @csrf

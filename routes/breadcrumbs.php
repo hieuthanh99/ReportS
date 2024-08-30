@@ -49,6 +49,16 @@ Breadcrumbs::for('ND', function ($trail) {
     $trail->parent('QLDM');
     $trail->push('Người dùng',null);
 });
+
+Breadcrumbs::for('DMCN', function ($trail) {
+    $trail->parent('ND');
+    $trail->push('Danh mục chức năng',null);
+});
+
+Breadcrumbs::for('THTK', function ($trail) {
+    $trail->parent('THBC');
+    $trail->push('Tổng hợp, thống kê',null);
+});
 /// Loại văn bản
 Breadcrumbs::for('LVB', function ($trail) {
     $trail->parent('VB');
@@ -128,4 +138,79 @@ Breadcrumbs::for('ULO', function ($trail, $document) {
 Breadcrumbs::for('CTLO', function ($trail, $document) {
     $trail->parent('QLDM');
     $trail->push('Chi tiết loại tổ chức', route('organization_types.show', $document));
+});
+
+//Nhóm nhiệm vụ
+Breadcrumbs::for('DSNV', function ($trail) {
+    $trail->parent('NNV');
+    $trail->push('Danh sách nhóm nhiệm vụ', route('task_groups.index'));
+});
+
+Breadcrumbs::for('CLNV', function ($trail) {
+    $trail->parent('NNV');
+    $trail->push('Thêm mới nhóm nhiệm vụ', route('task_groups.create'));
+});
+
+Breadcrumbs::for('ULNV', function ($trail, $document) {
+    $trail->parent('NNV');
+    $trail->push('Cập nhật nhóm nhiệm vụ', route('task_groups.update', $document));
+});
+
+//Nhóm chỉ tiêu
+Breadcrumbs::for('DSCT', function ($trail) {
+    $trail->parent('NCT');
+    $trail->push('Danh sách nhóm chỉ tiêu', route('indicator_groups.index'));
+});
+
+Breadcrumbs::for('CLCT', function ($trail) {
+    $trail->parent('NCT');
+    $trail->push('Thêm mới nhóm chỉ tiêu', route('indicator_groups.create'));
+});
+
+Breadcrumbs::for('ULCT', function ($trail, $document) {
+    $trail->parent('NCT');
+    $trail->push('Cập nhật nhóm chỉ tiêu', route('indicator_groups.update', $document));
+});
+
+//Danh mục chức vụ
+Breadcrumbs::for('DSCN', function ($trail) {
+    $trail->parent('DMCN');
+    $trail->push('Danh sách chức năng', route('positions.index'));
+});
+
+Breadcrumbs::for('CLCN', function ($trail) {
+    $trail->parent('DMCN');
+    $trail->push('Thêm mới chức năng', route('positions.create'));
+});
+
+Breadcrumbs::for('ULCN', function ($trail, $document) {
+    $trail->parent('DMCN');
+    $trail->push('Cập nhật chức năng', route('positions.update', $document));
+});
+
+//Tổng hợp, thống kê
+Breadcrumbs::for('THTVB', function ($trail) {
+    $trail->parent('THTK');
+    $trail->push('Báo cáo tổng hợp theo văn bản', route('reports.withDocument'));
+});
+
+Breadcrumbs::for('THTDV', function ($trail) {
+    $trail->parent('THTK');
+    $trail->push('Báo cáo tổng hợp theo đơn vị', route('reports.withUnit'));
+});
+
+//Tổng hợp, thống kê
+Breadcrumbs::for('DSBC', function ($trail) {
+    $trail->parent('THBC');
+    $trail->push('Danh sách báo cáo', route('documents.report'));
+});
+
+Breadcrumbs::for('CTBC', function ($trail, $document) {
+    $trail->parent('THBC');
+    $trail->push('Thêm mới báo cáo', route('documents.report.details', $document));
+});
+
+Breadcrumbs::for('UBC', function ($trail, $document) {
+    $trail->parent('THBC');
+    $trail->push('Cập nhật báo cáo', route('documents.report.update', $document));
 });

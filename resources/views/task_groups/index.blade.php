@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {!! Breadcrumbs::render('DSNV') !!}
+            </ol>
+        </nav>
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -67,18 +72,18 @@
                             <option value="target">Chỉ tiêu</option>
                         </select>
                 </div>
-        </div>
+            </div>
 
-        <div class="flex justify-end gap-4">
-            <button type="submit"
-            class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
-            Tìm kiếm
-        </button>
+            <div class="flex justify-end gap-4">
+                <button type="submit"
+                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+                    Tìm kiếm
+                </button>
+            </div>
+        </form> --}}
+        <div class="mb-6 flex justify-end gap-4 mb-4">
+            <a href="{{ route('task_groups.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
         </div>
-    </form> --}}
-    <div class="mb-6 flex justify-end gap-4 mb-4">
-        <a href="{{ route('task_groups.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
-    </div>
    
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">

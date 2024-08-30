@@ -2,8 +2,8 @@
 
 @section('content')
    
-    <div class="container mx-auto px-4 py-6">
-        @if ($errors->any())
+<div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+    @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
@@ -24,9 +24,12 @@
                 {{ session('success') }}
             </div>
         @endif
-
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Cập nhật loại văn bản</h1>
-        <form action="{{ route('document_categories.update', $documentCategory->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" id="document-form">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {!! Breadcrumbs::render('ULVB', $documentCategory) !!}
+            </ol>
+        </nav>
+        <form action="{{ route('document_categories.update', $documentCategory->id) }}" method="POST" enctype="multipart/form-data" class="p-6" id="document-form">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

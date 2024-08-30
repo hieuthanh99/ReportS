@@ -152,75 +152,29 @@
                         <div class="mb-4">
                             <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Mã văn
                                 bản:</label>
-                            @if ($document->creator != auth()->user()->id)
                                 <span class="rounded-lg">{{ $document->document_code }}</span>
-                            @else
-                                <input disabled readonly type="text" id="document_code" name="document_code"
-                                    value="{{ $document->document_code }}"
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                                @error('document_code')
-                                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                                @enderror
-                            @endif
                         </div>
                         <div class="mb-4">
                             <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Tên văn
                                 bản:</label>
-                            @if ($document->creator != auth()->user()->id)
                                 <span class="rounded-lg">{{ $document->document_name }}</span>
-                            @else
-                                <input type="text" id="document_name" name="document_name"
-                                    value="{{ $document->document_name }}"
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                            @endif
 
                         </div>
                         <div class="mb-4">
                             <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan, tổ chức phát
                                 hành:</label>
-                            @if ($document->creator != auth()->user()->id)
                                 <span class="rounded-lg">{{ $document->issuingDepartment->name ?? '' }}</span>
-                            @else
-                                <select name="issuing_department" id="issuing_department" required
-                                    @if ($document->creator != auth()->user()->id) disabled @endif
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2">
-                                    @foreach ($organizations as $organization)
-                                        <option value="{{ $organization->id }}"
-                                            {{ $document->issuing_department == $organization->id ? 'selected' : '' }}>
-                                            {{ $organization->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @endif
-
                         </div>
                         <div class="mb-4">
                             <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát
                                 hành:</label>
-                            @if ($document->creator != auth()->user()->id)
                                 <span class="rounded-lg">{{ $document->getReleaseDateFormattedAttribute() }}</span>
-                            @else
-                                <input type="date" placeholder="dd-mm-yyyy"
-                                min="1997-01-01" max="2100-12-31" id="release_date" name="release_date"
-                                    @if ($document->creator != auth()->user()->id) readonly @endif
-                                    value="{{ $document->getReleaseDateFormattedAttribute() }}"
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2">
-                            @endif
-
                         </div>
                     </div>
 
                     <!-- Hàng upload file -->
                     <div class="mb-4" style="margin: 20px 0">
-                        @if ($document->creator == auth()->user()->id)
-                            <label for="files" class="block text-gray-700 text-sm font-medium mb-2">Tải lên tài liệu
-                                (nhiều
-                                tệp)</label>
-                            <input type="file" id="files" name="files[]"
-                                class="form-input w-full border border-gray-300 rounded-lg p-2" multiple>
-                            <p class="text-gray-500 text-sm mt-1">Chọn nhiều tệp để tải lên.</p>
-                        @endif
-                        <!-- Khu vực để hiển thị danh sách tệp đã chọn -->
+                        <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Danh sách tệp tin:</label>
                         <div id="file-list-data" class="mt-2 file-list-data">
                             @foreach ($document->files as $file)
                                 <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
@@ -278,8 +232,6 @@
                                                 class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Tuần {{ $timeParamsWeek['two_previous'] }}
                                             </th>
-
-
                                             <th rowspan="2"
                                                 class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                Hoàn thành
@@ -337,6 +289,15 @@
                                                         value="{{ $document->id }}">
                                                     <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
                                                         value="{{ $task->id }}">
+                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
+                                                        value="{{ $task->taskResultsById($timeParamsWeek['current'])->id ?? ''}}">
+                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
+                                                        value="{{ $task->cycle_type ?? ''}}">
+                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
+                                                        value="{{ $timeParamsWeek['current'] ?? ''}}">
+                                                    <!-- Input để hiển thị trạng thái -->
+                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
+                                                           value="{{ $task->is_completed ? '1' : '0' }}">
                                                     {{ $task->code }}
                                                 </td>
                                                 <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
@@ -356,25 +317,36 @@
                                                     <span>{{ $task->getStatus() }}</span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    @php
+                                                        $isEditable = $task->status == 'assign' || $task->status == 'reject' || $task->status == 'staff_complete';
+                                                        $result = $task->taskResultsById($timeParamsWeek['current'])->result ?? '';
+                                                    @endphp
+
                                                     @if($task->type == 'task')
-                                                        <textarea required
-                                                        @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
-                                                        name="cycle_result[{{ $task->id }}]"
-                                                        id="current_note"
-                                                        placeholder="Nhập kết quả">{{ $task->taskResultsById($timeParamsWeek['current'])->result ?? '' }}</textarea>
+                                                        @if($isEditable && Auth::user()->role === 'staff')
+                                                            <textarea required class="styled-textarea"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                placeholder="Nhập kết quả" rows="5" cols="30">{{ $result }}</textarea>
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @else
-                                                        <input required
-                                                            @if ($document->creator == auth()->user()->id || $task->is_completed)  readonly @endif
-                                                            type="number"
-                                                            name="cycle_result[{{ $task->id }}]"
-                                                            id="current_note"
-                                                            value="{{ $task->taskResultsById($timeParamsWeek['current'])->result ?? '' }}"
-                                                            placeholder="Nhập kết quả"
-                                                            min="0"
-                                                            max="100"
-                                                            step="any">
-                                                       
+                                                        @if($isEditable && Auth::user()->role === 'staff')
+                                                            <input required
+                                                                @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
+                                                                type="number"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                value="{{ $result }}"
+                                                                placeholder="Nhập kết quả"
+                                                                min="0"
+                                                                max="100"
+                                                                step="any">
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @endif
                                                 </td>
                                               
@@ -409,7 +381,7 @@
                                                     </span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsWeek['previous'])->result ?? '' }}</span>
                                                 </td>
                                             
@@ -432,7 +404,7 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsWeek['two_previous'])->result ?? '' }}</span>
                                                 </td>
                                             
@@ -458,40 +430,32 @@
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
                                                     <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
-                                                               @if ($task->is_completed) checked readonly disabled  @endif
-                                                               value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                           
+                                                        
+                                                        @if($task->is_completed)
+                                                            Hoàn thành
+                                                        @else
+                                                            @if($task->status == 'sub_admin_complete' && (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
+                                                                <input type="checkbox" nam e="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
+                                                                value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
+                                                            @endif
+                                                        @endif
                                                     </label>
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                        value="{{ $task->taskResultsById($timeParamsWeek['current'])->id ?? ''}}">
-                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
-                                                        value="{{ $task->cycle_type ?? ''}}">
-                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
-                                                        value="{{ $timeParamsWeek['current'] ?? ''}}">
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                           value="{{ $task->is_completed ? '1' : '0' }}">
                                                 </td>
-                                                @if($hasCompletedWeekTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                        <textarea required
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    @if($hasCompletedWeekTask && $task->status=='staff_complete' && Auth::user()->role === 'sub_admin')
+                                                        <textarea required class="styled-textarea"
                                                             @if(!$hasOrganization) readonly @endif 
                                                             name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
                                                             id="remarks-{{$task->id}}"
-                                                            placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                                    </td>
-                                                @else
-                                                    <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                    </td>
-                                                @endif
+                                                            placeholder="Nhập kết quả" rows="5" cols="30">{{ $taskApproval->remarks ?? '' }}</textarea>
+                                                    @else
+                                                        <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    @endif
+                                                </td>
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
         
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
+                                                    @if($hasOrganization && $task->status=='staff_complete' && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
                                                             Duyệt
                                                         </button>
@@ -629,6 +593,16 @@
                                                         value="{{ $document->id }}">
                                                     <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
                                                         value="{{ $task->id }}">
+                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
+                                                        value="{{ $task->taskResultsById($timeParamsMonth['current'])->id ?? ''}}">
+                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
+                                                        value="{{ $task->cycle_type ?? ''}}">
+                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
+                                                        value="{{ $timeParamsMonth['current'] ?? ''}}">
+
+                                                    <!-- Input để hiển thị trạng thái -->
+                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
+                                                           value="{{ $task->is_completed ? '1' : '0' }}">
                                                     {{ $task->code }}
                                                 </td>
                                                 <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
@@ -648,25 +622,38 @@
                                                     <span>{{ $task->getStatus() }}</span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+
+                                                    @php
+                                                        $isEditable = $task->status == 'assign' || $task->status == 'reject' || $task->status == 'staff_complete';
+                                                        $result = $task->taskResultsById($timeParamsMonth['current'])->result ?? '';
+
+                                                    @endphp
+
                                                     @if($task->type == 'task')
-                                                        <textarea required
-                                                        @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
-                                                        name="cycle_result[{{ $task->id }}]"
-                                                        id="current_note"
-                                                        placeholder="Nhập kết quả">{{ $task->taskResultsById($timeParamsMonth['current'])->result ?? '' }}</textarea>
+                                                        @if($isEditable && Auth::user()->role === 'staff')
+                                                            <textarea required class="styled-textarea"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                placeholder="Nhập kết quả" rows="5" cols="30">{{ $result }}</textarea>
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @else
-                                                        <input required
-                                                            @if ($document->creator == auth()->user()->id || $task->is_completed)  readonly @endif
-                                                            type="number"
-                                                            name="cycle_result[{{ $task->id }}]"
-                                                            id="current_note"
-                                                            value="{{ $task->taskResultsById($timeParamsMonth['current'])->result ?? '' }}"
-                                                            placeholder="Nhập kết quả"
-                                                            min="0"
-                                                            max="100"
-                                                            step="any">
-                                                       
+                                                        @if($isEditable && Auth::user()->role === 'staff' )
+                                                            <input required
+                                                                @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
+                                                                type="number"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                value="{{ $result }}"
+                                                                placeholder="Nhập kết quả"
+                                                                min="0"
+                                                                max="100"
+                                                                step="any">
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @endif
                                                 </td>
                                              
@@ -700,12 +687,12 @@
                                                     </span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsMonth['previous'])->result ?? '' }}</span>
                                                 </td>
                                              
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     @php
                                                         $file =
                                                             $task->getFilePathByType(
@@ -723,12 +710,12 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsMonth['two_previous'])->result ?? '' }}</span>
                                                 </td>
                                              
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     @php
                                                         $file =
                                                             $task->getFilePathByType(
@@ -749,45 +736,29 @@
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
                                                     <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
-                                                               @if ($task->is_completed) checked readonly disabled  @endif
-                                                               value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                           
+                                                        @if($task->is_completed)
+                                                            Hoàn thành
+                                                        @else
+                                                            @if($task->status == 'sub_admin_complete' && (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
+                                                                <input type="checkbox" nam e="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
+                                                                value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
+                                                            @endif
+                                                        @endif
                                                     </label>
-                                                
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                        value="{{ $task->taskResultsById($timeParamsMonth['current'])->id ?? ''}}">
-                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
-                                                        value="{{ $task->cycle_type ?? ''}}">
-                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
-                                                        value="{{ $timeParamsMonth['current'] ?? ''}}">
-
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                           value="{{ $task->is_completed ? '1' : '0' }}">
                                                 </td>
-                                                @if($hasCompletedMonthTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                        <textarea required
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    @if($hasCompletedMonthTask && $task->status=='staff_complete' && Auth::user()->role === 'sub_admin')                                                            <textarea required class="styled-textarea"
                                                             @if(!$hasOrganization) readonly @endif 
-                                                            name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
-                                                            id="remarks-{{$task->id}}"
-                                                            placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                                    </td>
-                                                @else
-                                                    <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                    </td>
-                                                @endif
+                                                                name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
+                                                                id="remarks-{{$task->id}}"
+                                                                placeholder="Nhập kết quả" rows="5" cols="30">{{ $taskApproval->remarks ?? '' }}</textarea>
+                                                    @else
+                                                        <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    @endif
+                                                </td>
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    {{-- @php
-                                                    $hasOrganization = $task->hasOrganizationAppro();
-                                                    // dd($hasOrganization)
-                                                    @endphp --}}
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
+                                                    @if($hasOrganization && $task->status=='staff_complete' && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
                                                             Duyệt
                                                         </button>
@@ -926,6 +897,16 @@
                                                         value="{{ $document->id }}">
                                                     <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
                                                         value="{{ $task->id }}">
+                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
+                                                        value="{{ $task->taskResultsById($timeParamsQuarter['current'])->id ?? ''}}">
+                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
+                                                        value="{{ $task->cycle_type ?? ''}}">
+                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
+                                                        value="{{ $timeParamsQuarter['current'] ?? ''}}">
+
+                                                    <!-- Input để hiển thị trạng thái -->
+                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
+                                                        value="{{ $task->is_completed ? '1' : '0' }}">
                                                     {{ $task->code }}
                                                 </td>
                                                 <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
@@ -945,25 +926,36 @@
                                                     <span>{{ $task->getStatus() }}</span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    @php
+                                                        $isEditable = $task->status == 'assign' || $task->status == 'reject' || $task->status == 'staff_complete';
+                                                        $result = $task->taskResultsById($timeParamsQuarter['current'])->result ?? '';
+                                                    @endphp
+
                                                     @if($task->type == 'task')
-                                                        <textarea required
-                                                        @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
-                                                        name="cycle_result[{{ $task->id }}]"
-                                                        id="current_note"
-                                                        placeholder="Nhập kết quả">{{ $task->taskResultsById($timeParamsQuarter['current'])->result ?? '' }}</textarea>
+                                                        @if($isEditable && Auth::user()->role === 'staff')
+                                                            <textarea required class="styled-textarea"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                placeholder="Nhập kết quả" rows="5" cols="30">{{ $result }}</textarea>
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @else
-                                                        <input required
-                                                            @if ($document->creator == auth()->user()->id || $task->is_completed)  readonly @endif
-                                                            type="number"
-                                                            name="cycle_result[{{ $task->id }}]"
-                                                            id="current_note"
-                                                            value="{{ $task->taskResultsById($timeParamsQuarter['current'])->result ?? '' }}"
-                                                            placeholder="Nhập kết quả"
-                                                            min="0"
-                                                            max="100"
-                                                            step="any">
-                                                    
+                                                        @if($isEditable && Auth::user()->role === 'staff')
+                                                            <input required
+                                                                @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
+                                                                type="number"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                value="{{ $result }}"
+                                                                placeholder="Nhập kết quả"
+                                                                min="0"
+                                                                max="100"
+                                                                step="any">
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @endif
                                                 </td>
                                             
@@ -997,12 +989,12 @@
                                                     </span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsQuarter['previous'])->result ?? '' }}</span>
                                                 </td>
                                             
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     @php
                                                         $file =
                                                             $task->getFilePathByType(
@@ -1020,12 +1012,12 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsQuarter['two_previous'])->result ?? '' }}</span>
                                                 </td>
                                              
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     @php
                                                         $file =
                                                             $task->getFilePathByType(
@@ -1046,44 +1038,30 @@
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
                                                     <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
-                                                            @if ($task->is_completed) checked readonly disabled  @endif
-                                                            value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                        
+                                                        @if($task->is_completed)
+                                                            Hoàn thành
+                                                        @else
+                                                            @if($task->status == 'sub_admin_complete' && (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
+                                                                <input type="checkbox" nam e="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
+                                                                value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
+                                                            @endif
+                                                        @endif
                                                     </label>
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                        value="{{ $task->taskResultsById($timeParamsQuarter['current'])->id ?? ''}}">
-                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
-                                                        value="{{ $task->cycle_type ?? ''}}">
-                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
-                                                        value="{{ $timeParamsQuarter['current'] ?? ''}}">
-
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                        value="{{ $task->is_completed ? '1' : '0' }}">
                                                 </td>
-                                                @if($hasCompletedQuarterTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                        <textarea required
-                                                            @if(!$hasOrganization) readonly @endif 
-                                                            name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
-                                                            id="remarks-{{$task->id}}"
-                                                            placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                                    </td>
-                                                @else
-                                                    <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                    </td>
-                                                @endif
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    @if($hasCompletedQuarterTask && $task->status=='staff_complete' && Auth::user()->role === 'sub_admin')
+                                                            <textarea required class="styled-textarea"
+                                                                @if(!$hasOrganization) readonly @endif 
+                                                                name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
+                                                                id="remarks-{{$task->id}}"
+                                                                placeholder="Nhập kết quả" rows="5" cols="30">{{ $taskApproval->remarks ?? '' }}</textarea>
+                                                    @else
+                                                        <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    @endif
+                                                </td>
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    {{-- @php
-                                                    $hasOrganization = $task->hasOrganizationAppro();
-                                                    // dd($hasOrganization)
-                                                    @endphp --}}
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
+                                                    @if($hasOrganization && $task->status=='staff_complete' && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
                                                             Duyệt
                                                         </button>
@@ -1222,6 +1200,16 @@
                                                         value="{{ $document->id }}">
                                                     <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
                                                         value="{{ $task->id }}">
+                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
+                                                        value="{{ $task->taskResultsById($timeParamsYear['current'])->id ?? ''}}">
+                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
+                                                        value="{{ $task->cycle_type ?? ''}}">
+                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
+                                                        value="{{ $timeParamsYear['current'] ?? ''}}">
+
+                                                    <!-- Input để hiển thị trạng thái -->
+                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
+                                                        value="{{ $task->is_completed ? '1' : '0' }}">
                                                     {{ $task->code }}
                                                 </td>
                                                 <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
@@ -1241,25 +1229,37 @@
                                                     <span>{{ $task->getStatus() }}</span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+
+                                                    @php
+                                                        $isEditable = $task->status == 'assign' || $task->status == 'reject' || $task->status == 'staff_complete';
+                                                        $result = $task->taskResultsById($timeParamsYear['current'])->result ?? '';
+                                                    @endphp
+
                                                     @if($task->type == 'task')
-                                                        <textarea required
-                                                        @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
-                                                        name="cycle_result[{{ $task->id }}]"
-                                                        id="current_note"
-                                                        placeholder="Nhập kết quả">{{ $task->taskResultsById($timeParamsYear['current'])->result ?? '' }}</textarea>
+                                                        @if($isEditable && Auth::user()->role === 'staff')
+                                                            <textarea required class="styled-textarea"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                placeholder="Nhập kết quả" rows="5" cols="30">{{ $result }}</textarea>
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @else
-                                                        <input required
-                                                            @if ($document->creator == auth()->user()->id || $task->is_completed)  readonly @endif
-                                                            type="number"
-                                                            name="cycle_result[{{ $task->id }}]"
-                                                            id="current_note"
-                                                            value="{{ $task->taskResultsById($timeParamsYear['current'])->result ?? '' }}"
-                                                            placeholder="Nhập kết quả"
-                                                            min="0"
-                                                            max="100"
-                                                            step="any">
-                                                    
+                                                        @if($isEditable && Auth::user()->role === 'staff')
+                                                            <input required
+                                                                @if ($document->creator == auth()->user()->id || $task->is_completed) readonly @endif
+                                                                type="number"
+                                                                name="cycle_result[{{ $task->id }}]"
+                                                                id="current_note"
+                                                                value="{{ $result }}"
+                                                                placeholder="Nhập kết quả"
+                                                                min="0"
+                                                                max="100"
+                                                                step="any">
+                                                        @else
+                                                            <span>{{ $result }}</span>
+                                                        @endif
                                                     @endif
                                                 </td>
                                             
@@ -1293,12 +1293,12 @@
                                                     </span>
                                                 </td>
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsYear['previous'])->result ?? '' }}</span>
                                                 </td>
                                              
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     @php
                                                         $file =
                                                             $task->getFilePathByType(
@@ -1316,12 +1316,12 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap">
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
                                                     <span>{{ $task->taskResultsByNumber($timeParamsYear['two_previous'])->result ?? '' }}</span>
                                                 </td>
                                              
                                                 <td
-                                                    class="col-90 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
+                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     @php
                                                         $file =
                                                             $task->getFilePathByType(
@@ -1342,44 +1342,30 @@
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
                                                     <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
-                                                            @if ($task->is_completed) checked readonly disabled  @endif
-                                                            value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                        
+                                                        @if($task->is_completed)
+                                                            Hoàn thành
+                                                        @else
+                                                            @if($task->status == 'sub_admin_complete' && (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
+                                                                <input type="checkbox" nam e="task_completed[{{ $task->id }}]" id="completed-{{ $task->id }}"
+                                                                value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
+                                                            @endif
+                                                        @endif
                                                     </label>
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                        value="{{ $task->taskResultsById($timeParamsYear['current'])->id ?? ''}}">
-                                                    <input type="hidden" id="task-cycle_type-input-{{ $task->id }}" name="task_cycle_type[{{ $task->id }}]"
-                                                        value="{{ $task->cycle_type ?? ''}}">
-                                                    <input type="hidden" id="task-number-type-input-{{ $task->id }}" name="task_number_type[{{ $task->id }}]"
-                                                        value="{{ $timeParamsYear['current'] ?? ''}}">
-
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                        value="{{ $task->is_completed ? '1' : '0' }}">
                                                 </td>
-                                                @if($hasCompletedYearTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                        <textarea required
-                                                            @if(!$hasOrganization) readonly @endif 
-                                                            name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
-                                                            id="remarks-{{$task->id}}"
-                                                            placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                                    </td>
-                                                @else
-                                                <td
-                                                class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    @if($hasCompletedYearTask && $task->status=='staff_complete' && Auth::user()->role === 'sub_admin')
+                                                            <textarea required class="styled-textarea"
+                                                                @if(!$hasOrganization) readonly @endif 
+                                                                name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
+                                                                id="remarks-{{$task->id}}"
+                                                                placeholder="Nhập kết quả" rows="5" cols="30">{{ $taskApproval->remarks ?? '' }}</textarea>
+                                                    @else
+                                                        <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                    @endif
                                                 </td>
-                                                @endif
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    {{-- @php
-                                                    $hasOrganization = $task->hasOrganizationAppro();
-                                                    // dd($hasOrganization)
-                                                    @endphp --}}
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
+                                                    @if($hasOrganization && $task->status=='staff_complete' && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
                                                         <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
                                                             Duyệt
                                                         </button>
@@ -1409,7 +1395,6 @@
                                 </table>
                 
                             </div>
-                            {{-- {{ $weekTask->withPath(url()->current())->links() }} --}}
                         </div>
                     @endif
                     {{-- End Năm --}}

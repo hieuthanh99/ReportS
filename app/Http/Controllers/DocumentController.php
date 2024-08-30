@@ -53,16 +53,21 @@ class DocumentController extends Controller
                         // Cập nhật các tác vụ
                        foreach ($taskTargetId as $index => $taskTarget) {
                            $task = TaskTarget::find($taskTarget);
-                        //    dd($task);
-                           if ($task) {
+                           $hasComplete = ($task->status == 'sub_admin_complete' || $task->status == 'complete')?true:false;
+                           $user = User::find(Auth::id());
+                           if($task->status == 'sub_admin_complete' && ($user->role=='admin' || $user->role=='supper_admin')){
                                 $checkbox = isset($taskStatus[$task->id]) ? $taskStatus[$task->id] : '';
-                                // $taskResult = $task->getTaskApprovalHistory();
-                                // dd($taskResult);
-                               
+                                $task->is_completed = $checkbox;
+                                $task->status = $checkbox?'complete':$task->status;
+                                $task->save();
+                           }
+                           if ($task && !$hasComplete) {
+                                $checkbox = isset($taskStatus[$task->id]) ? $taskStatus[$task->id] : '';
                                 $task->description = $task->getStatus();
                                 $task->is_completed = $checkbox;
-                                $task->status = $checkbox == 1?"complete": "assign";
-                              
+                                $task->status = $checkbox == 1 
+                                ? "complete" 
+                                : ($task->status == "sub_admin_complete" ? $task->status : "staff_complete");                              
                               
                                 $record = TaskResult::where('id_task_criteria' , $task->id)->where("document_id", $document->id)->where("type_save", $task->getType())->first();
                                 if($record){
@@ -140,8 +145,6 @@ class DocumentController extends Controller
                 foreach ($organizations as $data) {
                     $organizationCode = $data['code'];
                     $organizationName = $data['name'];
-          
-                    $taskCodeOrganization = $data['task_code'];
                     $taskId = $data['task_id'];
     
                     // Kiểm tra nếu mã organization đã tồn tại trong tập hợp, bỏ qua vòng lặp
@@ -154,24 +157,27 @@ class DocumentController extends Controller
     
                     $organization = Organization::where('code', $organizationCode)->where('name', $organizationName)->first();
                     if ($organization) {
-                        // Kiểm tra nếu đây là tổ chức đầu tiên, gán vào task gốc
                         $taskTarget = TaskTarget::find($taskId);
-                        if($taskTarget->rganization_id != null) $first = false;
+                        $typeRecord = $taskTarget->type === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
+                        if($taskTarget->organization_id != null) $first = false;
                         $type = $taskTarget->type;
-                        if ($first) {
-                            $taskTarget->organization_id = $organization->id;
-                            $taskTarget->status = "assign";
-                            $taskTarget->results = "Đang thực hiện";
-                            $taskTarget->save();
-                            $first = false;
-                            $typeRecord = $taskTarget->type === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
-                            \Log::error('biến check giao việc: ' . $taskTarget->name);
-                        } else {
-                            $newTaskTarget = $taskTarget->replicate();
-                            $newTaskTarget->organization_id = $organization->id;
-                            $newTaskTarget->save();
+                        $hasOrganization = TaskTarget::where('organization_id', $organization->id)->where('code', $taskTarget->code)->first();
+                        if(!$hasOrganization){
+
+                            if ($first) {
+                                $taskTarget->organization_id = $organization->id;
+                                $taskTarget->status = "assign";
+                                $taskTarget->results = "Đang thực hiện";
+                                $taskTarget->save();
+                                $first = false;
+                                
+                                \Log::error('biến check giao việc: ' . $taskTarget->name);
+                            } else {
+                                $newTaskTarget = $taskTarget->replicate();
+                                $newTaskTarget->organization_id = $organization->id;
+                                $newTaskTarget->save();
+                            }
                         }
-    
                         // Thêm mã organization vào tập hợp đã xử lý
                         $processedOrganizations[] = $organizationCode;
                     }
@@ -246,24 +252,20 @@ class DocumentController extends Controller
             $query->whereDate('release_date', '<=', $executionTimeTo);
         }
     
-
         if($user->role=='staff' || $user->role=='sub_admin'){
             $documents = Document::whereHas('taskTarget', function ($query) use ($user) {
                 $query->where('organization_id', $user->organization_id)->where('isDelete', 0);
             })->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
-            
-            // Kiểm tra nếu $user có tổ chức và tổ chức không phải là null
-            if ($user->organization) {
+
+            if ($documents && method_exists($documents, 'pluck')) {
                 $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))
                     ->where('organization_id', $user->organization->id)
                     ->where('isDelete', 0)
                     ->get();
             } else {
-                // Xử lý trường hợp $user không có tổ chức
-                $taskDocuments = collect(); // Trả về một collection rỗng
+                $taskDocuments = collect();
             }
         }
-       
         else if($user->role=='admin' || $user->role=='supper_admin'){
             $documents = $query->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
 
@@ -496,14 +498,16 @@ class DocumentController extends Controller
         $monthTask = $taskDocuments->where('cycle_type', 2)->values();
         $quarterTask = $taskDocuments->where('cycle_type', 3)->values();
         $yearTask = $taskDocuments->where('cycle_type', 4)->values();
+        
         $timeParamsWeek = TimeHelper::getTimeParameters(1);
         $timeParamsMonth = TimeHelper::getTimeParameters(2);
         $timeParamsQuarter = TimeHelper::getTimeParameters(3);
         $timeParamsYear = TimeHelper::getTimeParameters(4);
-        $hasCompletedWeekTask = $weekTask->contains('is_completed', true);
-        $hasCompletedMonthTask = $monthTask->contains('is_completed', true);
-        $hasCompletedQuarterTask = $quarterTask->contains('is_completed', true);
-        $hasCompletedYearTask = $yearTask->contains('is_completed', true);
+
+        $hasCompletedWeekTask = $weekTask->contains('status', 'staff_complete');
+        $hasCompletedMonthTask = $monthTask->contains('status', 'staff_complete');
+        $hasCompletedQuarterTask = $quarterTask->contains('status', 'staff_complete');
+        $hasCompletedYearTask = $yearTask->contains('status', 'staff_complete');
 
        // dd($weekTask);
         $organizations = Organization::where('isDelete', 0)->get();

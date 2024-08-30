@@ -56,7 +56,12 @@
         outline: none;
     }
 </style>
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {!! Breadcrumbs::render('UDMVB', $document) !!}
+        </ol>
+    </nav>
     @if ($errors->any())
         <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
             <ul>
@@ -78,10 +83,10 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <div class="p-6">
+    <div class="overflow-hidden">
+        <div class="">
         <form action="{{ route('documents.update', $document->id) }}" method="POST" enctype="multipart/form-data"
-            class="bg-white p-6 rounded-lg">
+            class="p-6 ">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -113,7 +118,6 @@
                     <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan:</label>
                       
                             <select name="organization_type_id" id="organization_type_id" required
-                            @if ($document->creator != auth()->user()->id) disabled @endif
                             class="form-input w-full border border-gray-300 rounded-lg p-2">
                          
                             @foreach ($organizationsType as $organization)
@@ -130,7 +134,7 @@
                 <div class="mb-4">
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan:</label>
                             <select id="parent_id" name="issuing_department" required
-                            @if ($document->creator != auth()->user()->id) disabled @endif
+                          
                             class="form-input w-full border border-gray-300 rounded-lg p-2">
                             @foreach ($organizations as $organization)
                                 <option value="{{ $organization->id }}"
@@ -144,11 +148,8 @@
 
                 <div class="mb-4">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản:</label>
-                        @if ($document->creator != auth()->user()->id)
-                            <span class="rounded-lg">{{ $document->category->name ?? "" }}</span>
-                        @else
+                      
                             <select name="category_id" id="category_id" required
-                            @if ($document->creator != auth()->user()->id) disabled @endif
                             class="form-input w-full border border-gray-300 rounded-lg p-2">
                             @foreach ($documentCategory as $item)
                                 <option value="{{ $item->id }}"
@@ -157,34 +158,31 @@
                                 </option>
                             @endforeach
                         </select>
-                    @endif
+
                   
                 </div>
 
                 <div class="mb-4">
                     <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát hành:</label>
-                    @if ($document->creator != auth()->user()->id)
-                    <span class="rounded-lg">{{ $document->getReleaseDateFormattedAttribute() }}</span>
-                @else
+                  
                     <input type="date" placeholder="dd-mm-yyyy"
                     min="1997-01-01" max="2100-12-31" id="release_date" name="release_date"
                     @if ($document->creator != auth()->user()->id) readonly @endif
                     value="{{ $document->release_date }}"
                     class="form-input w-full border border-gray-300 rounded-lg p-2">
-                @endif
 
                 </div>
             </div>
 
             <!-- Hàng upload file -->
             <div class="mb-4" style="margin: 20px 0">
-                @if ($document->creator == auth()->user()->id)
+            
                     <label for="files" class="block text-gray-700 text-sm font-medium mb-2">Tải lên tài liệu (nhiều
                         tệp)</label>
                     <input type="file" id="files" name="files[]"
                         class="form-input w-full border border-gray-300 rounded-lg p-2" multiple>
                     <p class="text-gray-500 text-sm mt-1">Chọn nhiều tệp để tải lên.</p>
-                @endif
+             
                 <!-- Khu vực để hiển thị danh sách tệp đã chọn -->
                 <div id="file-list-data" class="mt-2 file-list-data">
                     @foreach ($document->files as $file)

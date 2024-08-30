@@ -152,75 +152,36 @@
                         <div class="mb-4">
                             <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Mã văn
                                 bản:</label>
-                            @if ($document->creator != auth()->user()->id)
+                          
                                 <span class="rounded-lg">{{ $document->document_code }}</span>
-                            @else
-                                <input disabled readonly type="text" id="document_code" name="document_code"
-                                    value="{{ $document->document_code }}"
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                                @error('document_code')
-                                    <div class="text-red-500 text-sm">{{ $message }}</div>
-                                @enderror
-                            @endif
+                       
                         </div>
                         <div class="mb-4">
                             <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Tên văn
                                 bản:</label>
-                            @if ($document->creator != auth()->user()->id)
+                          
                                 <span class="rounded-lg">{{ $document->document_name }}</span>
-                            @else
-                                <input type="text" id="document_name" name="document_name"
-                                    value="{{ $document->document_name }}"
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2" required>
-                            @endif
+                      
 
                         </div>
                         <div class="mb-4">
                             <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan, đơn vị phát
                                 hành:</label>
-                            @if ($document->creator != auth()->user()->id)
                                 <span class="rounded-lg">{{ $document->issuingDepartment->name ?? '' }}</span>
-                            @else
-                                <select name="issuing_department" id="issuing_department" required
-                                    @if ($document->creator != auth()->user()->id) disabled @endif
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2">
-                                    @foreach ($organizations as $organization)
-                                        <option value="{{ $organization->id }}"
-                                            {{ $document->issuing_department == $organization->id ? 'selected' : '' }}>
-                                            {{ $organization->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @endif
-
                         </div>
                         <div class="mb-4">
                             <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát
                                 hành:</label>
-                            @if ($document->creator != auth()->user()->id)
+                           
                                 <span class="rounded-lg">{{ $document->getReleaseDateFormattedAttribute() }}</span>
-                            @else
-                                <input type="date" placeholder="dd-mm-yyyy"
-                                min="1997-01-01" max="2100-12-31" id="release_date" name="release_date"
-                                    @if ($document->creator != auth()->user()->id) readonly @endif
-                                    value="{{ $document->getReleaseDateFormattedAttribute() }}"
-                                    class="form-input w-full border border-gray-300 rounded-lg p-2">
-                            @endif
+                         
 
                         </div>
                     </div>
 
                     <!-- Hàng upload file -->
                     <div class="mb-4" style="margin: 20px 0">
-                        @if ($document->creator == auth()->user()->id)
-                            <label for="files" class="block text-gray-700 text-sm font-medium mb-2">Tải lên tài liệu
-                                (nhiều
-                                tệp)</label>
-                            <input type="file" id="files" name="files[]"
-                                class="form-input w-full border border-gray-300 rounded-lg p-2" multiple>
-                            <p class="text-gray-500 text-sm mt-1">Chọn nhiều tệp để tải lên.</p>
-                        @endif
-                        <!-- Khu vực để hiển thị danh sách tệp đã chọn -->
+                        <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Danh sách tệp tin:</label>
                         <div id="file-list-data" class="mt-2 file-list-data">
                             @foreach ($document->files as $file)
                                 <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
@@ -360,7 +321,6 @@
                                                     class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
                                                     <span >{{ $task->taskResultsByNumber($timeParamsWeek['current'])->result ?? '' }}</span>
                                                     
-                                                   
                                                 </td>
                                               
                                                 <td
@@ -431,54 +391,23 @@
 
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" disabled id="completed-{{ $task->id }}"
-                                                               @if ($task->is_completed) checked readonly disabled  @endif
-                                                               value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                           
-                                                    </label>
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                    value="{{ $task->taskResultsById($timeParamsWeek['current'])->id ?? ''}}">
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                           value="{{ $task->is_completed ? '1' : '0' }}">
-                                                </td>
-                                                @if($hasCompletedWeekTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-
-                                                        <textarea required
-                                                        @if(!$hasOrganization) readonly @endif 
-                                                        name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
-                                                        id="remarks-{{$task->id}}"
-                                                        placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                 
-                                                    </td>
-                                                @else
-                                                    <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                    </td>
-                                                @endif
-                                                <td
-                                                    class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
-                                                        <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            Duyệt
-                                                        </button>
-                                                        
-                                                        <!-- Nút Reject -->
-                                                        <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            Từ chối
-                                                        </button>
-                                                    @elseif($taskApproval != null)
-                                                        <span>@if($taskApproval->status === 'approved') 
-                                                            Đã duyệt 
-                                                        @elseif ($taskApproval->status === 'rejected')
-                                                            Đã từ chối
-                                                        @endif
-                                                        </span>
+                                                    @if($task->is_completed)
+                                                        Hoàn thành
                                                     @endif
+                                                </td>
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                </td>
+                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>
+                                                        @if($taskApproval != null)
+                                                            @if($taskApproval->status === 'approved') 
+                                                                Đã duyệt 
+                                                            @elseif ($taskApproval->status === 'rejected')
+                                                                Đã từ chối
+                                                            @endif
+                                                        @endif
+                                                    </span>
                                                 </td>
                                             </tr>
                                         @empty
@@ -694,58 +623,23 @@
 
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" disabled id="completed-{{ $task->id }}"
-                                                               @if ($task->is_completed) checked readonly disabled  @endif
-                                                               value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                           
-                                                    </label>
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                    value="{{ $task->taskResultsById($timeParamsMonth['current'])->id ?? ''}}">
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                           value="{{ $task->is_completed ? '1' : '0' }}">
-                                                </td>
-                                                @if($hasCompletedMonthTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                        <textarea required
-                                                  
-                                                        @if(!$hasOrganization) readonly @endif 
-                                                        name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
-                                                        id="remarks-{{$task->id}}"
-                                                        placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                                      
-                                                    </td>
-                                                    @else
-                                                    <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                    </td>
-                                                @endif
-                                                <td
-                                                    class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    {{-- @php
-                                                    $hasOrganization = $task->hasOrganizationAppro();
-                                                    // dd($hasOrganization)
-                                                    @endphp --}}
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
-                                                        <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            Duyệt
-                                                        </button>
-                                                        
-                                                        <!-- Nút Reject -->
-                                                        <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            Từ chối
-                                                        </button>
-                                                    @elseif($taskApproval != null)
-                                                        <span>@if($taskApproval->status === 'approved') 
-                                                            Đã duyệt 
-                                                        @elseif ($taskApproval->status === 'rejected')
-                                                            Đã từ chối
-                                                        @endif
-                                                        </span>
+                                                    @if($task->is_completed)
+                                                        Hoàn thành
                                                     @endif
+                                                </td>
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                </td>
+                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>
+                                                        @if($taskApproval != null)
+                                                            @if($taskApproval->status === 'approved') 
+                                                                Đã duyệt 
+                                                            @elseif ($taskApproval->status === 'rejected')
+                                                                Đã từ chối
+                                                            @endif
+                                                        @endif
+                                                    </span>
                                                 </td>
                                             </tr>
                                         @empty
@@ -961,57 +855,23 @@
 
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" disabled id="completed-{{ $task->id }}"
-                                                            @if ($task->is_completed) checked readonly disabled  @endif
-                                                            value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                        
-                                                    </label>
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                    value="{{ $task->taskResultsById($timeParamsQuarter['current'])->id ?? ''}}">
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                        value="{{ $task->is_completed ? '1' : '0' }}">
-                                                </td>
-                                                @if($hasCompletedQuarterTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                             
-                                                        <textarea required
-                                                            @if(!$hasOrganization) readonly @endif 
-                                                            name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
-                                                            id="remarks-{{$task->id}}"
-                                                            placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                                    </td>
-                                                    @else
-                                                    <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                    </td>
-                                                @endif
-                                                <td
-                                                    class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    {{-- @php
-                                                    $hasOrganization = $task->hasOrganizationAppro();
-                                                    // dd($hasOrganization)
-                                                    @endphp --}}
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
-                                                        <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            Duyệt
-                                                        </button>
-                                                        
-                                                        <!-- Nút Reject -->
-                                                        <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            Từ chối
-                                                        </button>
-                                                    @elseif($taskApproval != null)
-                                                        <span>@if($taskApproval->status === 'approved') 
-                                                            Đã duyệt 
-                                                        @elseif ($taskApproval->status === 'rejected')
-                                                            Đã từ chối
-                                                        @endif
-                                                        </span>
+                                                    @if($task->is_completed)
+                                                        Hoàn thành
                                                     @endif
+                                                </td>
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                </td>
+                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>
+                                                        @if($taskApproval != null)
+                                                            @if($taskApproval->status === 'approved') 
+                                                                Đã duyệt 
+                                                            @elseif ($taskApproval->status === 'rejected')
+                                                                Đã từ chối
+                                                            @endif
+                                                        @endif
+                                                    </span>
                                                 </td>
                                             </tr>
                                         @empty
@@ -1226,52 +1086,23 @@
 
                                                 <td
                                                     class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <label for="completed-{{ $task->id }}">
-                                                        <input type="checkbox" name="task_completed[{{ $task->id }}]" disabled id="completed-{{ $task->id }}"
-                                                            @if ($task->is_completed) checked readonly disabled  @endif
-                                                            value="1" onchange="updateTaskInput('{{ $task->id }}', this.checked)">
-                                        
-                                                    </label>
-                                                    <input type="hidden" id="task-result-input-{{ $task->id }}" name="task_result[{{ $task->id }}]"
-                                                    value="{{ $task->taskResultsById($timeParamsYear['current'])->id ?? ''}}">
-                                                    <!-- Input để hiển thị trạng thái -->
-                                                    <input type="hidden" id="task-input-{{ $task->id }}" name="task_status[{{ $task->id }}]"
-                                                        value="{{ $task->is_completed ? '1' : '0' }}">
-                                                </td>
-                                                @if($hasCompletedYearTask && $task->is_completed)
-                                                    <td
-                                                        class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                        <textarea required
-                                                            @if(!$hasOrganization) readonly @endif 
-                                                            name="remarks[{{ $task->id }}]"    @if($taskApproval && $taskApproval->status === 'approved') readonly @endif 
-                                                            id="remarks-{{$task->id}}"
-                                                            placeholder="Nhập kết quả">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                                    </td>
-                                                    @else
-                                                    <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                    </td>
-                                                @endif
-                                                <td
-                                                    class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    @if($hasOrganization && $task->is_completed && ($taskApproval == null || ($taskApproval != null && $taskApproval->status === 'rejected')))
-                                                        <button data-id="{{ $task->id }}" id="button-apprrover-{{$task->id}}"  style="margin:  10px 0" type="button" class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                                                            Duyệt
-                                                        </button>
-                                                        
-                                                        <!-- Nút Reject -->
-                                                        <button data-id="{{ $task->id }}" id="button-reject-{{$task->id}}" style="margin:  10px 0" type="button" class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                                                            Từ chối
-                                                        </button>
-                                                    @elseif($taskApproval != null)
-                                                        <span>@if($taskApproval->status === 'approved') 
-                                                            Đã duyệt 
-                                                        @elseif ($taskApproval->status === 'rejected')
-                                                            Đã từ chối
-                                                        @endif
-                                                        </span>
+                                                    @if($task->is_completed)
+                                                        Hoàn thành
                                                     @endif
+                                                </td>
+                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
+                                                </td>
+                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
+                                                    <span>
+                                                        @if($taskApproval != null)
+                                                            @if($taskApproval->status === 'approved') 
+                                                                Đã duyệt 
+                                                            @elseif ($taskApproval->status === 'rejected')
+                                                                Đã từ chối
+                                                            @endif
+                                                        @endif
+                                                    </span>
                                                 </td>
                                             </tr>
                                         @empty

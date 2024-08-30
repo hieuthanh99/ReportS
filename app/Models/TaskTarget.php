@@ -38,6 +38,24 @@ class TaskTarget extends Model
         'status_code',
         'isDelete'
     ];
+
+    public function scopeSearch($query, $searchTerm = null)
+    {
+        if ($searchTerm) {
+            $query
+                  ->select('task_target.*')
+                  ->where(function($q) use ($searchTerm) {
+                      $q->where('task_target.name', 'like', '%' . $searchTerm . '%')
+                        ->where('isDelete', 0)
+                        ->orWhere('task_target.code', 'like', '%' . $searchTerm . '%');
+                        // ->orWhere('documents.name', 'like', '%' . $searchTerm . '%')
+                        // ->orWhere('organizations.name', 'like', '%' . $searchTerm . '%');
+                  });
+        }
+
+        return $query;
+    }
+
     public function getStatusLabelAttribute()
     {
         return TaskStatus::tryFrom($this->status_code)?->label() ?? '';
@@ -71,11 +89,6 @@ class TaskTarget extends Model
     {
 
         $currentYear = Carbon::now()->year;
-        // dd($id);
-        \Log::error('Target Model: ' . $this->id);
-        \Log::error('Target Model: ' . $this->type);
-        \Log::error('Target Model: ' . $numberType);
-        \Log::error('Target Model: ' . $this->cycle_type);
         return TaskResult::where('id_task_criteria', $this->id)->where('type_save', self::getType())->where('number_type', $numberType)->where('type', $this->cycle_type)->first();
     }
 

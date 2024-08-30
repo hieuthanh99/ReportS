@@ -60,15 +60,14 @@ class TaskTargetController extends Controller
                     'task_result_id' => $taskResult->id,
                 ]);
                 if($status == 'rejected'){
-                    $task->status == 'reject';
+                    $task->status = 'reject';
                     $task->is_completed = 0;
                     $task->results =  "Đang thực hiện";
           
                 }else{
-                    $task->status == 'complete';
+                    $task->status = "sub_admin_complete";
                     $task->results =  "Hoàn thành";
                 }
-               // dd($task);
                 $task->save();
                 DB::commit();
                 // Trả về phản hồi thành công

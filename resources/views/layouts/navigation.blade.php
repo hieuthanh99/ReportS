@@ -45,7 +45,7 @@
                                             <li><a href="{{route('reports.withDocument')}}" title="">Báo cáo tổng hợp theo văn bản</a></li>
                                             <li><a href="{{route('reports.withUnit')}}" title="">Báo cáo tổng hợp theo dơn vị</a></li>
                                             <li><a href="{{route('reports.withPeriod')}}" title="">Báo cáo tổng hợp theo chu kỳ</a></li>
-                                            <li><a href="{{route('reports.withDetails')}}" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>b
+                                            <li><a href="{{route('reports.withDetails')}}" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>
                                         </ul>
                                     </li>
                                     <li><a href="{{route('documents.report')}}" title="">Báo cáo</a></li>
@@ -224,7 +224,7 @@
 <div class="rounded-lg search-box hidden text-center" style="margin: 10px auto">
     <form id="searchForm" action="{{ route('search') }}" method="GET">
         <input type="hidden" name="search_in" id="searchIn" value="">
-        <input type="text" placeholder="Tìm kiếm..." id="searchInput" name="query">
+        <input type="text" placeholder="Tìm kiếm..." id="searchInput" name="query" value="{{ old('query') }}">
         <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Tìm kiếm</button>
     </form>
 </div>

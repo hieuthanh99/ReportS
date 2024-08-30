@@ -25,6 +25,41 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
+            /* public/css/app.css */
+            .breadcrumb {
+                padding: 0;
+                margin: 0 0 10px 0;
+                list-style: none;
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .breadcrumb li {
+                margin: 0;
+            }
+
+            .breadcrumb li + li::before {
+                content: ">";
+                margin: 0 0.5em;
+                color: #6c757d;
+            }
+
+            .breadcrumb a {
+                text-decoration: none;
+                color: #007bff;
+            }
+
+            .breadcrumb a:hover {
+                text-decoration: underline;
+            }
+
+            .breadcrumb li.active {
+                color: #6c757d;
+            }
+
+            .button-approved, .button-reject{
+                width: 75px;
+            }
             .header-title h3 {
                 font-family: 'Roboto', sans-serif;
             }

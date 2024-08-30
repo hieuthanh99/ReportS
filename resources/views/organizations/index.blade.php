@@ -116,6 +116,7 @@
         }
     </style>
     <div class="container mx-auto">
+        
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -139,7 +140,6 @@
         @endif
     </div>
  <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg flex" style="margin-top: 10px;">
-   
         <!-- Tree View -->
         <div class="pr-4" style="width: 40%">
             <div class="flex justify-between items-center mb-6">

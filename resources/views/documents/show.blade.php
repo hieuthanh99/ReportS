@@ -152,11 +152,15 @@
             </ul>
         </div>
     @endif
-
-    <div class="container mx-auto p-6">
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+ 
+    <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {!! Breadcrumbs::render('CTDMVB',$document) !!}
+            </ol>
+        </nav>
+        <div class="overflow-hidden">
             <div class="p-6">
-                <h1 class="text-3xl font-bold mb-6 text-gray-800">Chi tiết văn bản</h1>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
                     <!-- Cột trái -->
                     <div class="flex items-center mb-4">

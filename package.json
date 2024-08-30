@@ -17,8 +17,9 @@
     },
     "dependencies": {
         "chart.js": "^4.4.3",
+        "handsontable": "^14.5.0",
         "select2": "^4.1.0-rc.0",
-        "sweetalert2": "^11.12.4",
+        "sweetalert2": "^11.6.13",
         "toastr": "^2.1.4",
         "tom-select": "^2.3.1"
     }

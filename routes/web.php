@@ -18,7 +18,8 @@ use App\Http\Controllers\OrganizationTypeController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\TaskGroupController;
 use App\Http\Controllers\IndicatorGroupController;
-
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,12 @@ use App\Http\Controllers\IndicatorGroupController;
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/reports', [ReportController::class, 'showReportDocument'])->name('reports.withDocument');
+    Route::get('/reports-with-unit', [ReportController::class, 'showReportUnit'])->name('reports.withUnit');
+    Route::get('/reports-with-period', [ReportController::class, 'showReportPeriod'])->name('reports.withPeriod');
+    Route::get('/reports-with-details', [ReportController::class, 'showReportDetails'])->name('reports.withDetails');
+
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
     Route::delete('/tasks/{code}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget');
     Route::get('/tasks/details/{code}/{type}', [TaskTargetController::class, 'showDetails'])->name('tasks.show-details');
     Route::get('/tasks/edit/{code}/{type}', [TaskTargetController::class, 'editTaskTarget'])->name('tasks.edit.taskTarget');

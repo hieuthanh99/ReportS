@@ -122,8 +122,8 @@
                     </select>
                 </div>
             </div>
-            <div class="mt-4 text-right">
-                <button type="button"  id="back" style="padding: 10px 20px" class="bg-blue-600 text-white px-10 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Quay lại</button>
+            <div class="mt-4 text-right" style="justify-content: space-between; display: flex;">
+                <button type="button"  id="back" style="padding: 10px 20px" class="bg-gray-500 text-white px-10 py-2 rounded-lg shadow-lg hover:bg-gray-600 transition duration-300 mt-4">Quay lại</button>
                 <button  type="submit"  style="padding: 10px 20px" class="bg-blue-600 text-white px-10 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Lưu & sang giao việc</button>
             </div>
         </form>

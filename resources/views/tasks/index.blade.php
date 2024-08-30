@@ -26,8 +26,13 @@
         @php
         session(['success' => null])
         @endphp
+        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
+            Lọc/Filter
+        </button>
+        <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a>
+
         <!-- Search Form type-->
-        <form method="GET" action="{{ route('tasks.byType', $type) }}" class="">
+        <form method="GET" action="{{ route('tasks.byType', $type) }}" class="hidden" id="filterForm">
 
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
@@ -81,7 +86,6 @@
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
         </button>
-        <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a>
 
         </div>
     </form>
@@ -194,6 +198,10 @@
         </div>
     </div>
     <script>
+        document.getElementById('filterToggle').addEventListener('click', function() {
+            const filterForm = document.getElementById('filterForm');
+            filterForm.classList.toggle('hidden');
+        });
         function confirmDelete() {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',

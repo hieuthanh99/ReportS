@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\OrganizationType;
+use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule; 
@@ -97,7 +98,8 @@ class OrganizationTypeController extends Controller
     // Xử lý xóa loại cơ quan
     public function destroy(OrganizationType $organizationType)
     {
-        $organizations = TaskTarget::where('organization_type_id', $organizationType->id)->get();
+        // dd($organizationType);
+        $organizations = Organization::where('organization_type_id', $organizationType->id)->get();
 
         foreach ($organizations as $organization) {
 
@@ -125,7 +127,8 @@ class OrganizationTypeController extends Controller
             $organization->isDelete = 1;
             $organization->save();
         }
-
+        $organizationType->isDelete = 1;
+        $organizationType->save();
 
         
         return redirect()->route('organization_types.index')->with('success', 'Loại cơ quan đã được xóa thành công!');

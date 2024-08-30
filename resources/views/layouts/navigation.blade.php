@@ -1,110 +1,71 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-200" style="padding: 10px">
-    <div class="container mx-auto px-4">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-200" style="padding: 10px; margin: 0">
+    <div class="container mx-auto">
         <div class="flex items-center h-16 relative" style="z-index: 1000">
             <!-- Logo -->
-            <div class="flex-shrink-0">
+            <nav>
+                <ul>
+                    <li style="cursor: pointer"><i class="fa-solid fa-bars" style="font-size: xx-large;"></i>
+                        <ul> 
+                            @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
+                                <li><a href="#" title="">Quản lý danh mục</a>
+                                    <ul>
+                                        <li><a href="#" title="">Văn bản</a>
+                                            <ul>
+                                                <li><a href="{{route('documents.index')}}" title="">Danh mục văn bản</a></li>
+                                                <li><a href="{{route('document_categories.index')}}" title="">Phân loại văn bản</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#" title="">Cơ quan,tổ chức</a>
+                                            <ul>
+                                                <li><a href="{{route('organization_types.index')}}" title="">Phân loại cơ quan, tổ chức</a></li>
+                                                <li><a href="{{route('organizations.index')}}" title="">Danh mục cơ quan, tổ chức</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
+                                        <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
+                                        <li><a href="#" title="">Người dùng</a>
+                                            <ul>
+                                                <li><a href="{{route('positions.index')}}" title="">Danh mục Chức vụ</a></li>
+                                                <li><a href="{{route('users.index')}}" title="">Danh mục người dùng</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            <li><a href="#" title="">Quản lý công việc</a>
+                                <ul>
+                                    <li><a href="{{ route('tasks.byType', 'task') }}" title="">Nhiệm vụ</a></li>
+                                    <li><a href="{{ route('tasks.byType', 'target') }}" title="">Chỉ tiêu</a></li>
+                                </ul>
+                            </li>
+                            @endif
+                            <li><a href="#" title="">Tổng hợp, báo cáo</a>
+                                <ul>
+                                    <li><a href="#" title="">Tổng hợp, thống kê</a>
+                                        <ul>
+                                            <li><a href="{{route('reports.withDocument')}}" title="">Báo cáo tổng hợp theo văn bản</a></li>
+                                            <li><a href="{{route('reports.withUnit')}}" title="">Báo cáo tổng hợp theo dơn vị</a></li>
+                                            <li><a href="{{route('reports.withPeriod')}}" title="">Báo cáo tổng hợp theo chu kỳ</a></li>
+                                            <li><a href="{{route('reports.withDetails')}}" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>b
+                                        </ul>
+                                    </li>
+                                    <li><a href="{{route('documents.report')}}" title="">Báo cáo</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <div class="flex-shrink-0 px-4">
                 <a href="{{ route('dashboard') }}">
                     <img src="{{ asset('logo/image.png') }}" alt="Logo" class="block w-auto" style="width: 70px;">
                 </a>
             </div>
-
-            <nav>
-                <ul>
-                
-                    @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
-                    <li><a href="#" title="Khóa học chuyên đề">Quản lý danh mục</a>
-                        <!-- menu con sổ xuống cấp 1 -->
-                        <ul>
-                            <li><a href="#" title="">Văn bản</a>
-                                <ul>
-                                    <li><a href="{{route('documents.index')}}" title="">Danh mục văn bản</a></li>
-                                    <li><a href="{{route('document_categories.index')}}" title="">Phân loại văn bản</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#" title="">Cơ quan,tổ chức</a>
-                                <ul>
-                                    <li><a href="{{route('organization_types.index')}}" title="">Phân loại cơ quan, tổ chức</a></li>
-                                    <li><a href="{{route('organizations.index')}}" title="">Danh mục cơ quan, tổ chức</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
-                            <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
-                            <li><a href="#" title="">Người dùng</a>
-                                <ul>
-                                    <li><a href="{{route('positions.index')}}" title="">Danh mục Chức vụ</a></li>
-                                    <li><a href="{{route('users.index')}}" title="">Danh mục người dùng</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    
-                    <li><a href="#" title="Quản lý công việc">Quản lý công việc</a>
-                        <ul>
-                            <li><a href="{{ route('tasks.byType', 'task') }}" title="">Nhiệm vụ</a></li>
-                            <li><a href="{{ route('tasks.byType', 'target') }}" title="">Chỉ tiêu</a></li>
-                   
-                        </ul>
-                    </li>
-                    @endif
-                    <li><a href="#" title="Liện hệ">Tổng hợp, báo cáo</a>
-                        <ul>
-                            <li><a href="#" title="">Tổng hợp, thống kê</a></li>
-                            <li><a href="{{route('documents.report')}}" title="">Báo cáo</a></li>
-                        </ul>
-                    </li>
-                
-                </ul>
-            </nav>
-            <!-- Navigation Links -->
-            {{-- <div class="flex space-x-8 px-4 relative">
-                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'supper_staff')
-                    <div class="relative group">
-                        <x-nav-link href="#" class="flex items-center space-x-1 text-lg font-semibold text-black hover:text-blue-400">
-                            <span>{{ __('Quản Lý Danh Mục') }}</span>
-                            <svg class="w-4 h-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </x-nav-link>
-                        <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md">
-                            <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')" class="block px-4 py-2 text-black hover:bg-gray-200 text-lg font-semibold">
-                                {{ __('Văn Bản') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('organizations.index')" :active="request()->routeIs('organizations.index')" class="block px-4 py-2 text-black hover:bg-gray-200 text-lg font-semibold">
-                                {{ __('Cơ Quan/Tổ Chức') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')" class="block px-4 py-2 text-black hover:bg-gray-200 text-lg font-semibold">
-                                {{ __('Phân Loại Nhiệm Vụ') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" class="block px-4 py-2 text-black hover:bg-gray-200 text-lg font-semibold">
-                                {{ __('Người Dùng') }}
-                            </x-nav-link>
-                        </div>
-                    </div>
-                @endif
-                <div class="relative group">
-                    
-                    <x-nav-link href="#" class="flex items-center space-x-1 text-lg font-semibold text-black hover:text-blue-400">
-                        <span>{{ __('Quản Lý Công Việc') }}</span>
-                        <svg class="w-4 h-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </x-nav-link>
-                
-                  
-                    <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md">
-                        @if(Auth::user()->role === 'admin' || Auth::user()->role === 'supper_staff')
-                        <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.index')" class="block px-4 py-2 text-black hover:bg-gray-200 text-lg font-semibold">
-                            {{ __('Nhiệm Vụ/Chỉ Tiêu') }}
-                        </x-nav-link>
-                        @endif
-                        <x-nav-link :href="route('documents.report')" :active="request()->routeIs('users.index')" class="block px-4 py-2 text-black hover:bg-gray-200 text-lg font-semibold">
-                            {{ __('Báo cáo thống kê') }}
-                        </x-nav-link>
-                    </div>
-                </div>
-            </div> --}}
-
-            <!-- Settings Dropdown -->
+            <div class="flex-shrink-0 px-4 header-title">
+                <h3>Nền tảng quản lý nhiệm vụ Ủy ban quốc gia về chuyển đổi số</h3>
+            </div>
+            <div class="search-container px-4">
+                <i class="fa-solid fa-magnifying-glass search-icon" onclick="toggleSearch()" style="cursor: pointer"></i>
+            </div>
             <div class="hidden sm:flex sm:items-center sm:ml-auto" style="margin-left: auto;">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -124,11 +85,6 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        {{-- <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link> --}}
-
-                        <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
@@ -141,8 +97,6 @@
                     </x-slot>
                 </x-dropdown>
             </div>
-
-            <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
@@ -202,3 +156,75 @@
         </div>
     </div>
 </nav>
+<style>
+    #searchInput {
+        width: 400px;
+        padding: 10px; 
+        border: 1px solid #ddd;
+        border-radius: 5px; 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 16px;
+        transition: all 0.3s ease; 
+    }
+
+    #searchInput::placeholder {
+        color: #888; 
+        font-style: italic; 
+    }
+
+    #searchInput:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    }
+</style>
+<script>
+
+    function toggleSearch() {
+        const searchBox = document.querySelector('.search-box');
+        searchBox.classList.toggle('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.getElementById('searchForm');
+        const searchInField = document.getElementById('searchIn');
+
+        const currentUrl = window.location.pathname;
+
+        if (currentUrl.includes('documents')) {
+            searchInField.value = 'documents';
+        } else if (currentUrl.includes('document_categories')) {
+            searchInField.value = 'document_categories';
+        } else if (currentUrl.includes('tasks')) {
+            searchInField.value = 'tasks';
+        } else if (currentUrl.includes('categories')) {
+            searchInField.value = 'categories';
+        } else if (currentUrl.includes('organization_types')) {
+            searchInField.value = 'organization_types';
+        } else if (currentUrl.includes('organizations')) {
+            searchInField.value = 'organizations';
+        } else if (currentUrl.includes('task_groups')) {
+            searchInField.value = 'task_groups';
+        } else if (currentUrl.includes('indicator_groups')) {
+            searchInField.value = 'indicator_groups';
+        } else if (currentUrl.includes('positions')) {
+            searchInField.value = 'positions';
+        } else if (currentUrl.includes('positions')) {
+            searchInField.value = 'positions';
+        } else if (currentUrl.includes('users')) {
+            searchInField.value = 'users';
+        }else if (currentUrl.includes('report')) {
+            searchInField.value = 'report';
+        } else {
+            searchInField.value = 'general';
+        }
+    });
+
+</script>
+<div class="rounded-lg search-box hidden text-center" style="margin: 10px auto">
+    <form id="searchForm" action="{{ route('search') }}" method="GET">
+        <input type="hidden" name="search_in" id="searchIn" value="">
+        <input type="text" placeholder="Tìm kiếm..." id="searchInput" name="query">
+        <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Tìm kiếm</button>
+    </form>
+</div>

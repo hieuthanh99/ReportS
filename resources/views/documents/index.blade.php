@@ -188,30 +188,21 @@
                 .catch(error => console.error('Error:', error));
         });
         function confirmDelete() {
-    Swal.fire({
-        title: 'Bạn có chắc chắn?',
-        text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Có, xóa!',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById('delete-form').submit();
-        }
-    });
-}
-        document.addEventListener('DOMContentLoaded', function() {
-            new TomSelect('#organization_id', {
-                placeholder: 'Chọn đơn vị phát hành',
-                allowEmptyOption: true,
-                onInitialize: function() {
-                    console.log('Tom Select initialized!');
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Có, xóa!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form').submit();
                 }
             });
-        });
+        }
     </script>
     
 @endsection

@@ -113,12 +113,21 @@
                                 </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <form action="{{ route('document_categories.destroy', $item) }}" method="POST" style="display:inline;">
+                                {{-- <form action="{{ route('document_categories.destroy', $item) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
                                         class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                         onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
+                                        <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
+                                    </button>
+                                </form> --}}
+                                <form id="delete-form" action="{{ route('document_categories.destroy', $item) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                        onclick="confirmDelete()">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>
@@ -133,4 +142,22 @@
             </div>
         </div>
     </div>
+    <script>
+        function confirmDelete() {
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Có, xóa!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form').submit();
+                }
+            });
+        }
+    </script>
 @endsection

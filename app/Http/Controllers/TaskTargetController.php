@@ -490,12 +490,20 @@ class TaskTargetController extends Controller
     public function destroy($code)
     {
 
-        $taskTarget = TaskTarget::where('code', $code)->get();
-        $type = $taskTarget->cycle_type;
-        foreach($taskTarget as $item){
-            $item->delete();
+        $taskTargets = TaskTarget::where('code', $code)->get();
+        $type = $taskTargets->first()->cycle_type;
+
+        foreach ($taskTargets as $taskTarget) {
+
+            $taskReults = TaskResult::where('id_task_criteria', $taskTarget->id)->get();
+            foreach ($taskReults as $taskReult) {
+                $taskReult->isDelete = 1;
+                $taskReult->save();
+            }
+            $taskTarget->isDelete = 1;
+            $taskTarget->save();
         }
-      
+       
 
         return redirect()->route('tasks.index', ['type' => $type])->with('success', 'Task Target deleted successfully.');
     }

@@ -5,10 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>Nền tảng quản lý nhiệm vụ Ủy ban quốc gia về chuyển đổi số</title>
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
-        <!-- Fonts -->
+        
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -16,18 +15,39 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
 
-<!-- Thêm vào phần cuối của <body> hoặc trước thẻ </body> -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+        <!-- Thêm vào phần cuối của <body> hoặc trước thẻ </body> -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
+            .header-title h3 {
+                font-family: 'Roboto', sans-serif;
+            }
+            .header-title {
+                width: 100%;
+                text-align: center;
+                padding: 20px;
+                color: #222;
+                margin: 20px 0;
+            }
+
+            .header-title h3 {
+                font-size: 18px;
+                margin: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
             nav{
-                /* canh giữa cách lề mỗi bên 10% */
                 margin: 5px 10px;
             }
             nav{
-                /* background: #484848; */
                 border-radius: 5px;
             }
             nav ul{
@@ -35,11 +55,9 @@
             }
             nav> ul li{
                 list-style: none; /* bỏ dấu chấm mặc định của li */
-                /* kẻ đường bên trái và bên phải của li */
-                /* border-right: 1px solid #ccc;
-                border-left:1px solid #333; */
             }
             nav> ul li a{
+                cursor: pointer;
                 display: block;
                 padding: 0 25px;
                 line-height: 50px;
@@ -47,9 +65,10 @@
                 text-decoration: none;
             }
             nav ul li:first-child {
-                border-left: none; /* bỏ đường kè trái của phần tử đầu tiên */
+                border-left: none; 
             }
             nav> ul li:first-child a{
+                cursor: pointer;
                 border-bottom-left-radius: 5px;
                 border-top-left-radius: 5px;
             }
@@ -58,6 +77,7 @@
                 /* background: red; */
                 opacity: .7;
                 color: #2c2929;
+                cursor: pointer;
             }
             /*menu con*/
             /*Ẩn các menu con cấp 1,2,3*/
@@ -71,6 +91,7 @@
                 border: none;
                 border-bottom: 1px solid #ccc;
                 background: #dfdcdc;
+                cursor: pointer;
                 text-align: left;
             }
             nav li>ul li:first-child a{
@@ -194,9 +215,13 @@
                 font-size: 1.25rem;
             }
             .ease-in-out {
-width: 100%;
+                width: 100%;
             }
-
+            @media (max-width: 768px) {
+                .header-title h3 {
+                    display: none;
+                }
+            }
         </style>
     </head>
     <body class="font-sans antialiased">

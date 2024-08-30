@@ -218,28 +218,62 @@ class DocumentController extends Controller
             $query->where('issuing_department', $request->organization_id)->where('isDelete', 0);
         }
     
-        if ($request->filled('execution_time')) {
-            $query->whereDate('release_date', $request->execution_time);
+        $executionTimeFrom = $request->input('execution_time_from');
+        $executionTimeTo = $request->input('execution_time_to');
+
+        // Kiểm tra nếu cả hai thời gian đều có giá trị
+        if ($executionTimeFrom && $executionTimeTo) {
+            try {
+                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
+                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
+                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
+        
+                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
+                if ($executionTimeFrom->gt($executionTimeTo)) {
+                    return redirect()->back()->withErrors([
+                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
+                    ]);
+                }
+            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
+            }
         }
+        if ($executionTimeFrom) {
+            $query->whereDate('release_date', '>=', $executionTimeFrom);
+        }
+
+        if ($executionTimeTo) {
+            $query->whereDate('release_date', '<=', $executionTimeTo);
+        }
+    
+
         if($user->role=='staff' || $user->role=='sub_admin'){
             $documents = Document::whereHas('taskTarget', function ($query) use ($user) {
                 $query->where('organization_id', $user->organization_id)->where('isDelete', 0);
             })->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
-
-            $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))
-            ->where('organization_id', $user->organization->id)->where('isDelete', 0)
-            ->get();
+            
+            // Kiểm tra nếu $user có tổ chức và tổ chức không phải là null
+            if ($user->organization) {
+                $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))
+                    ->where('organization_id', $user->organization->id)
+                    ->where('isDelete', 0)
+                    ->get();
+            } else {
+                // Xử lý trường hợp $user không có tổ chức
+                $taskDocuments = collect(); // Trả về một collection rỗng
+            }
         }
        
         else if($user->role=='admin' || $user->role=='supper_admin'){
-            $documents = $query->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+            $documents = $query->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
 
             $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->get();
 
         }
-       
+
         $organizations = Organization::where('isDelete', 0)->get();
-        return view('documents.report', compact('documents', 'organizations', 'taskDocuments'));
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
+        return view('documents.report', compact('documents', 'organizations', 'taskDocuments', 'organizationsType'));
     }
     public function index(Request $request)
     {

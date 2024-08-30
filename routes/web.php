@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports-with-unit', [ReportController::class, 'showReportUnit'])->name('reports.withUnit');
     Route::get('/reports-with-period', [ReportController::class, 'showReportPeriod'])->name('reports.withPeriod');
     Route::get('/reports-with-details', [ReportController::class, 'showReportDetails'])->name('reports.withDetails');
+    Route::get('/export-Document', [ReportController::class, 'exportDocument']);
+    Route::get('/export-Unit', [ReportController::class, 'exportUnit']);
 
     Route::get('/search', [SearchController::class, 'search'])->name('search');
     Route::delete('/tasks/{code}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget');

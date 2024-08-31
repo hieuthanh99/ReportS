@@ -3,6 +3,7 @@
 @section('content')
    
     <div class="container mx-auto px-4 py-6">
+        
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -25,7 +26,12 @@
             </div>
         @endif
         <form action="{{ route('task_groups.update', $taskGroup->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" id="document-form">
-            @csrf
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {!! Breadcrumbs::render('ULNV', $taskGroup) !!}
+            </ol>
+        </nav>    
+        @csrf
             @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->

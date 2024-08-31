@@ -18,7 +18,10 @@ class TaskResult extends Model
         'type',
         'type_save', 'isDelete'
     ];
-
+    public function taskTarget()
+    {
+        return $this->belongsTo(TaskTarget::class, 'id_task_criteria');
+    }
     public function taskDocument()
     {
         return $this->belongsTo(TaskDocument::class, 'id_task_criteria')->where('type', 1);

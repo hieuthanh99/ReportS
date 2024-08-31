@@ -43,7 +43,7 @@
                                     <li><a href="#" title="">Tổng hợp, thống kê</a>
                                         <ul>
                                             <li><a href="{{route('reports.withDocument')}}" title="">Báo cáo tổng hợp theo văn bản</a></li>
-                                            <li><a href="{{route('reports.withUnit')}}" title="">Báo cáo tổng hợp theo dơn vị</a></li>
+                                            <li><a href="{{route('reports.withUnit')}}" title="">Báo cáo tổng hợp theo đơn vị</a></li>
                                             <li><a href="{{route('reports.withPeriod')}}" title="">Báo cáo tổng hợp theo chu kỳ</a></li>
                                             <li><a href="{{route('reports.withDetails')}}" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>
                                         </ul>

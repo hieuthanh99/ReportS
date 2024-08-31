@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\OrganizationType;
 use App\Models\Organization;
 use App\Models\TaskTarget;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -15,9 +16,43 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function showReportDocument()
+    public function showReportDocument(Request $request)
     {
-        $datas = Document::paginate(10);
+        // $datas = Document::paginate(10);
+
+        $datas = Document::query();
+        $executionTimeFrom = $request->input('execution_time_from');
+        $executionTimeTo = $request->input('execution_time_to');
+
+        // Kiểm tra nếu cả hai thời gian đều có giá trị
+        if ($executionTimeFrom && $executionTimeTo) {
+            try {
+                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
+                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
+                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
+        
+                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
+                if ($executionTimeFrom->gt($executionTimeTo)) {
+                    return redirect()->back()->withErrors([
+                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
+                    ]);
+                }
+            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
+            }
+        }
+
+        if ($request->filled('organization_id')) {
+            $datas->where('issuing_department', $request->organization_id);
+        }
+        if ($executionTimeFrom) {
+            $datas->whereDate('release_date', '>=', $executionTimeFrom);
+        }
+
+        if ($executionTimeTo) {
+            $datas->whereDate('release_date', '<=', $executionTimeTo);
+        }
+        $datas = $datas->paginate(10);
         foreach ($datas as $data) {
             $data->task_count = TaskTarget::where('document_id', $data->id)
             ->where('type', 'Task')
@@ -67,7 +102,9 @@ class ReportController extends Controller
             ->where('status_code', 'in_progress_overdue')
             ->count();
         }
-        return view('reports.report_template_document', compact('datas'));
+        $organizations = Organization::where('isDelete', 0)->get();
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
+        return view('reports.report_template_document', compact('datas', 'organizationsType', 'organizations'));
     }
 
     public function exportDocument()
@@ -290,6 +327,8 @@ class ReportController extends Controller
     {
         // Lấy dữ liệu từ database hoặc từ một nguồn khác
         $datas = Organization::paginate(10);
+
+        
         foreach ($datas as $data) {
             $data->task_count = TaskTarget::where('organization_id', $data->id)
             ->where('type', 'Task')
@@ -560,32 +599,95 @@ class ReportController extends Controller
         exit;
     }
 
-    public function showReportPeriod()
+    public function showReportPeriod(Request $request)
     {
-        // Lấy dữ liệu từ database hoặc từ một nguồn khác
-        $data = [
-                ['date' => '2024-08-01', 'amount' => 150],
-                ['date' => '2024-08-02', 'amount' => 200],
-                ['date' => '2024-08-03', 'amount' => 250],
-    
-        ];
+       
+        $executionTimeFrom = $request->input('execution_time_from');
+        $executionTimeTo = $request->input('execution_time_to');
+        $datas = Document::query();
+        $organizations = Organization::where('isDelete', 0)->get();
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
 
-        // Truyền dữ liệu tới view
-        return view('reports.report_template_preriod', compact('data'));
+        if ($executionTimeFrom && $executionTimeTo) {
+            try {
+                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
+                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
+                if ($executionTimeFrom->gt($executionTimeTo)) {
+                    return redirect()->back()->withErrors([
+                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
+                    ]);
+                }
+            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
+            }
+        }
+
+        if ($request->filled('document_id')) {
+            $datas->where('id', $request->document_id);
+        }
+        if ($executionTimeFrom) {
+            $datas->whereDate('release_date', '>=', $executionTimeFrom);
+        }
+
+        if ($executionTimeTo) {
+            $datas->whereDate('release_date', '<=', $executionTimeTo);
+        }
+        // $datas = $datas->paginate(10);
+
+        $documents = $datas->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc');
+
+        $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->paginate(10);
+        $documentsSearch = Document::where('isDelete', 0)->get();
+
+        return view('reports.report_template_preriod', compact('datas', 'organizationsType', 'organizations', 'taskDocuments', 'documentsSearch'));
     }
 
-    public function showReportDetails()
+    public function showReportDetails(Request $request)
     {
-        // Lấy dữ liệu từ database hoặc từ một nguồn khác
-        $data = [
-                ['date' => '2024-08-01', 'amount' => 150],
-                ['date' => '2024-08-02', 'amount' => 200],
-                ['date' => '2024-08-03', 'amount' => 250],
-    
-        ];
+             
+        $executionTimeFrom = $request->input('execution_time_from');
+        $executionTimeTo = $request->input('execution_time_to');
+        $datas = Document::query();
+        $organizations = Organization::where('isDelete', 0)->get();
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
 
-        // Truyền dữ liệu tới view
-        return view('reports.report_template_details', compact('data'));
+        if ($executionTimeFrom && $executionTimeTo) {
+            try {
+                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
+                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
+                if ($executionTimeFrom->gt($executionTimeTo)) {
+                    return redirect()->back()->withErrors([
+                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
+                    ]);
+                }
+            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
+            }
+        }
+
+        if ($request->filled('document_id')) {
+            $datas->where('id', $request->document_id);
+        }
+      
+        if ($executionTimeFrom) {
+            $datas->whereDate('release_date', '>=', $executionTimeFrom);
+        }
+
+        if ($executionTimeTo) {
+            $datas->whereDate('release_date', '<=', $executionTimeTo);
+        }
+        // $datas = $datas->paginate(10);
+
+        $documents = $datas->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc');
+
+        $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0);
+        if ($request->filled('type')) {
+            $taskDocuments->where('type', $request->type);
+        }
+        $taskDocuments = $taskDocuments->paginate(10);
+        $documentsSearch = Document::where('isDelete', 0)->get();
+
+        return view('reports.report_template_details', compact('datas', 'organizationsType', 'organizations', 'taskDocuments', 'documentsSearch'));
     }
     
     

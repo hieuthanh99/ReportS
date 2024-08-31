@@ -209,9 +209,9 @@ class TaskTargetController extends Controller
             ->select('id_task_criteria', 'created_at', 'result', 'number_type', 'type') // Chọn trường cần thiết
             ->orderBy('created_at', 'desc')
             ->get()
-            ->groupBy('id_task_criteria') // Nhóm theo task_target_id
+            ->groupBy('id_task_criteria')
             ->map(function ($results) {
-                return $results->first(); // Lấy bản ghi mới nhất trong nhóm
+                return $results->first();
         });
 
         $mappedResults = $tasksWithSameCode->map(function ($task) use ($latestTaskResults, $organizations) {

@@ -277,6 +277,7 @@ class DocumentController extends Controller
         $organizationsType = OrganizationType::where('isDelete', 0)->get();
         return view('documents.report', compact('documents', 'organizations', 'taskDocuments', 'organizationsType'));
     }
+    
     public function index(Request $request)
     {
         $userId = Auth::id();

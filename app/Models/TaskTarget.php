@@ -38,7 +38,32 @@ class TaskTarget extends Model
         'status_code',
         'isDelete'
     ];
+    public function taskResults()
+    {
+        return $this->hasMany(TaskResult::class, 'id_task_criteria');
+    }
 
+    public function latestTaskResult()
+    {
+        $currentYear = now()->year;
+        return TaskResult::where('id_task_criteria', $this->id)->where('type_save', self::getType())
+                    ->whereYear('created_at', $currentYear)
+                    ->orderBy('created_at', 'desc')->first();
+
+    }
+    public function getTaskStatusDescription()
+    {
+        // Chuyển đổi giá trị status_code thành enum
+        $status = TaskStatus::tryFrom($this->status_code);
+    
+        if ($status) {
+            // Lấy mô tả từ phương thức label() của enum
+            return $status->label();
+        }
+    
+        // Nếu giá trị không hợp lệ, trả về mô tả mặc định hoặc thông báo lỗi
+        return 'Trạng thái không hợp lệ';
+    }
     public function scopeSearch($query, $searchTerm = null)
     {
         if ($searchTerm) {

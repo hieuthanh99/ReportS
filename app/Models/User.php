@@ -30,7 +30,10 @@ class User extends Authenticatable
         'position_id',
         'isDelete'
     ];
-
+    public function hasAnyRole(array $roles)
+    {
+        return in_array($this->role, $roles);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

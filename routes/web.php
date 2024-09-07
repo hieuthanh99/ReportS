@@ -20,7 +20,6 @@ use App\Http\Controllers\TaskGroupController;
 use App\Http\Controllers\IndicatorGroupController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ReportController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,12 +39,21 @@ use App\Http\Controllers\ReportController;
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware(['auth', 'roles:staff,sub_admin'])->group(function () {
+   
+});
 Route::middleware('auth')->group(function () {
+    Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report');
+    Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update');
+    Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details');
     Route::get('/reports', [ReportController::class, 'showReportDocument'])->name('reports.withDocument');
     Route::get('/reports-with-unit', [ReportController::class, 'showReportUnit'])->name('reports.withUnit');
     Route::get('/reports-with-period', [ReportController::class, 'showReportPeriod'])->name('reports.withPeriod');
     Route::get('/reports-with-details', [ReportController::class, 'showReportDetails'])->name('reports.withDetails');
     Route::get('/export-Document', [ReportController::class, 'exportDocument']);
+    Route::get('/export-Details', [ReportController::class, 'exportDetails'])->name('task-documents.export-details');
+
+    Route::get('/export-Period', [ReportController::class, 'exportPeriod'])->name('task-documents.export-period');
     Route::get('/export-Unit', [ReportController::class, 'exportUnit']);
 
     Route::get('/search', [SearchController::class, 'search'])->name('search');
@@ -70,7 +78,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/tasks/assign-organizations/{taskTargetId}', [TaskTargetController::class, 'assignOrganizations'])->name('tasks.assign-organizations');
     Route::resource('document_categories', DocumentCategoryController::class);
-
     Route::post('/tasks/update-remarks', [TaskTargetController::class, 'updateRemarks'])->name('tasks.updateRemarks');
     Route::resource('organization_types', OrganizationTypeController::class);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -101,9 +108,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/get-history/{code}', [DocumentController::class, 'getHistory'])->name('document.history');
     Route::post('/save-assign-organizations', [DocumentController::class, 'assignOrganizations']);
 
-    Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report');
-    Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update');
-    Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details');
+    // Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report');
+    // Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update');
+    // Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details');
 
     Route::post('/documents/{document}/task/update-cycle', [DocumentController::class, 'updateTaskCycle'])->name('documents.task.update.cycle');
 

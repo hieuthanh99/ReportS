@@ -181,14 +181,19 @@
                     <div class="mb-4" style="margin: 20px 0">
                         <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Danh sách tệp tin:</label>
                         <div id="file-list-data" class="mt-2 file-list-data">
+                        @if (!$document->files->isEmpty())
                             @foreach ($document->files as $file)
-                                <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
-                                    data-file-type="{{ mime_content_type(storage_path('app/public/' . $file->file_path)) }}">
-                                    <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                                    <span class="text-gray-700">{{ $file->file_name }}</span>
+                            <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
+                                data-file-type="{{ mime_content_type(storage_path('app/public/' . $file->file_path)) }}">
+                                <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
+                                <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
 
-                                </div>
-                            @endforeach
+                            </div>
+                        @endforeach
+                    @else
+                        <span>Không có tệp nào</span>
+                    @endif
+                           
                         </div>
                         <div id="file-list" class="mt-2 file-list"></div>
                     </div>

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>Nền tảng quản lý nhiệm vụ Ủy ban quốc gia về chuyển đổi số</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -40,7 +40,7 @@
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                 <div class="flex justify-center mb-4" style="flex-direction:  column;">
                     <a href="/" style="text-align: center">
-                        <img src="{{ asset('logo/image.png') }}" alt="Logo" class="w-auto" style="max-height: 150px; margin: 0 auto">
+                        <img src="{{ asset('logo/logo2.png') }}" alt="Logo" class="w-auto" style="max-height: 150px; margin: 0 auto">
                     </a>
                     <div class="flex-shrink-0 px-4 header-title">
                         <h3>Nền tảng quản lý nhiệm vụ Ủy ban quốc gia về chuyển đổi số</h3>

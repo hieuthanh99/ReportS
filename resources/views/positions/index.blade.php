@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                {!! Breadcrumbs::render('DSCN') !!}
+                {!! Breadcrumbs::render('DSCV') !!}
             </ol>
         </nav>
         @if ($errors->any())

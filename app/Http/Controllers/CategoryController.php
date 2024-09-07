@@ -11,9 +11,10 @@ class CategoryController extends Controller
     public function listCategories()
     {
         $categories = Category::where('isDelete', 0)->get();
+        
         return response()->json(['categories' => $categories]);
     }
-    public function index()
+    public function index($text = null)
     {
         $categories = Category::where('isDelete', 0)->paginate(10);
         return view('categories.index', compact('categories'));

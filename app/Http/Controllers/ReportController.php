@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function showReportDocument(Request $request)
+    public function showReportDocument(Request $request, $text=null)
     {
         // $datas = Document::paginate(10);
 
@@ -51,6 +51,9 @@ class ReportController extends Controller
 
         if ($executionTimeTo) {
             $datas->whereDate('release_date', '<=', $executionTimeTo);
+        }
+        if($text){
+            $datas->where('document_name', 'like', '%' . $text . '%');
         }
         $datas = $datas->paginate(10);
         foreach ($datas as $data) {
@@ -312,7 +315,7 @@ class ReportController extends Controller
         }
 
         $writer = new Xlsx($spreadsheet);
-        $filename = 'reportDocument.xlsx';
+        $filename = 'Báo cáo tổng hợp theo văn bản.xlsx';
 
         // Gửi file Excel cho người dùng
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -323,64 +326,159 @@ class ReportController extends Controller
         exit;
     }
 
-    public function showReportUnit()
+    public function showReportUnit(Request $request, $text=null)
     {
         // Lấy dữ liệu từ database hoặc từ một nguồn khác
-        $datas = Organization::paginate(10);
+        $datas = Organization::query();
+        $dataDocuments = Document::query();
+        $executionTimeFrom = $request->input('execution_time_from');
+        $executionTimeTo = $request->input('execution_time_to');
 
+        // Kiểm tra nếu cả hai thời gian đều có giá trị
+        if ($executionTimeFrom && $executionTimeTo) {
+            try {
+                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
+                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
+                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
         
-        foreach ($datas as $data) {
-            $data->task_count = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Task')
-            ->count();
-            $data->task_completed_in_time = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Task')
-            ->where('status_code', 'completed_in_time')
-            ->count();
-            $data->task_completed_overdue = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Task')
-            ->where('status_code', 'completed_overdue')
-            ->count();
-            $data->task_completed_overdue = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Task')
-            ->where('status_code', 'completed_overdue')
-            ->count();
-            $data->task_in_progress_in_time = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Task')
-            ->where('status_code', 'in_progress_in_time')
-            ->count();
-            $data->task_in_progress_overdue = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Task')
-            ->where('status_code', 'in_progress_overdue')
-            ->count();
-
-            $data->target_count = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Target')
-            ->count();
-            $data->target_completed_in_time = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Target')
-            ->where('status_code', 'completed_in_time')
-            ->count();
-            $data->target_completed_overdue = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Target')
-            ->where('status_code', 'completed_overdue')
-            ->count();
-            $data->target_completed_overdue = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Target')
-            ->where('status_code', 'completed_overdue')
-            ->count();
-            $data->target_in_progress_in_time = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Target')
-            ->where('status_code', 'in_progress_in_time')
-            ->count();
-            $data->target_in_progress_overdue = TaskTarget::where('organization_id', $data->id)
-            ->where('type', 'Target')
-            ->where('status_code', 'in_progress_overdue')
-            ->count();
+                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
+                if ($executionTimeFrom->gt($executionTimeTo)) {
+                    return redirect()->back()->withErrors([
+                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
+                    ]);
+                }
+            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
+            }
         }
 
+        if ($request->filled('document_id')) {
+            $dataDocuments->where('id',  $request->input('document_id'));
+        }
+        if ($executionTimeFrom) {
+            $dataDocuments->whereDate('release_date', '>=', $executionTimeFrom);
+        }
+
+        if ($executionTimeTo) {
+            $dataDocuments->whereDate('release_date', '<=', $executionTimeTo);
+        }
+        if($text){
+            $datas->where('document_name', 'like', '%' . $text . '%');
+        }
+        if ($request->filled('document_id') || $executionTimeFrom || $executionTimeTo) {
+            $dataDocuments = $dataDocuments->pluck('id');
+            $datas = Organization::whereHas('taskTargets', function ($query) use ($dataDocuments) {
+                $query->whereIn('document_id', $dataDocuments);
+            });
+        }
+       
+        $datas = $datas->paginate(10);
+
+        foreach ($datas as $data) {
+            if ($request->filled('document_id') || $executionTimeFrom || $executionTimeTo) {                
+                $data->task_count = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Task')
+                ->count();
+                $data->task_completed_in_time = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Task')
+                ->where('status_code', 'completed_in_time')
+                ->count();
+                $data->task_completed_overdue = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Task')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->task_completed_overdue = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Task')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->task_in_progress_in_time = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Task')
+                ->where('status_code', 'in_progress_in_time')
+                ->count();
+                $data->task_in_progress_overdue = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Task')
+                ->where('status_code', 'in_progress_overdue')
+                ->count();
+    
+                $data->target_count = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Target')
+                ->count();
+                $data->target_completed_in_time = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Target')
+                ->where('status_code', 'completed_in_time')
+                ->count();
+                $data->target_completed_overdue = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Target')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->target_completed_overdue = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Target')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->target_in_progress_in_time = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Target')
+                ->where('status_code', 'in_progress_in_time')
+                ->count();
+                $data->target_in_progress_overdue = TaskTarget::where('organization_id', $data->id)->whereIn('document_id', $dataDocuments->pluck('id'))
+                ->where('type', 'Target')
+                ->where('status_code', 'in_progress_overdue')
+                ->count();
+            }else{
+                $data->task_count = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Task')
+                ->count();
+                $data->task_completed_in_time = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Task')
+                ->where('status_code', 'completed_in_time')
+                ->count();
+                $data->task_completed_overdue = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Task')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->task_completed_overdue = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Task')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->task_in_progress_in_time = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Task')
+                ->where('status_code', 'in_progress_in_time')
+                ->count();
+                $data->task_in_progress_overdue = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Task')
+                ->where('status_code', 'in_progress_overdue')
+                ->count();
+    
+                $data->target_count = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Target')
+                ->count();
+                $data->target_completed_in_time = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Target')
+                ->where('status_code', 'completed_in_time')
+                ->count();
+                $data->target_completed_overdue = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Target')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->target_completed_overdue = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Target')
+                ->where('status_code', 'completed_overdue')
+                ->count();
+                $data->target_in_progress_in_time = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Target')
+                ->where('status_code', 'in_progress_in_time')
+                ->count();
+                $data->target_in_progress_overdue = TaskTarget::where('organization_id', $data->id)
+                ->where('type', 'Target')
+                ->where('status_code', 'in_progress_overdue')
+                ->count();
+            }
+           
+        }
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();
+        $documentsSearch = Document::where('isDelete', 0)->get();
+
         // Truyền dữ liệu tới view
-        return view('reports.report_template_unit', compact('datas'));
+        return view('reports.report_template_unit', compact('datas', 'organizationsType', 'documentsSearch'));
     }
 
     public function exportUnit()
@@ -588,7 +686,7 @@ class ReportController extends Controller
         }
 
         $writer = new Xlsx($spreadsheet);
-        $filename = 'reportUnit.xlsx';
+        $filename = 'Báo cáo tổng hợp theo đơn vị.xlsx';
 
         // Gửi file Excel cho người dùng
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -599,7 +697,7 @@ class ReportController extends Controller
         exit;
     }
 
-    public function showReportPeriod(Request $request)
+    public function showReportPeriod(Request $request, $text=null)
     {
        
         $executionTimeFrom = $request->input('execution_time_from');
@@ -632,6 +730,9 @@ class ReportController extends Controller
         if ($executionTimeTo) {
             $datas->whereDate('release_date', '<=', $executionTimeTo);
         }
+        if($text){
+            $datas->where('document_name', 'like', '%' . $text . '%');
+        }
         // $datas = $datas->paginate(10);
 
         $documents = $datas->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc');
@@ -642,7 +743,224 @@ class ReportController extends Controller
         return view('reports.report_template_preriod', compact('datas', 'organizationsType', 'organizations', 'taskDocuments', 'documentsSearch'));
     }
 
-    public function showReportDetails(Request $request)
+    public function exportPeriod()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $sheet->setCellValue('A1', 'BÁO CÁO TỔNG HỢP CHỈ TIÊU/ NHIỆM VỤ THEO ĐƠN VỊ TỪNG CHU KỲ');
+        $sheet->mergeCells('A1:K1');
+        $sheet->getStyle('A1:K1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        // Đặt tiêu đề cho các cột
+        $sheet->setCellValue('A2', 'STT');
+        $sheet->setCellValue('B2', 'Mã văn bản');
+        $sheet->setCellValue('C2', 'Tên văn bản');
+        $sheet->setCellValue('D2', 'Mã chỉ tiêu/ nhiệm vụ');
+        $sheet->setCellValue('E2', 'Tên chỉ tiêu/ nhiệm vụ');
+        $sheet->setCellValue('F2', 'Loại Cơ quan thực hiện');
+        $sheet->setCellValue('G2', 'Cơ quan thực hiện');
+        $sheet->setCellValue('H2', 'Tiến độ');
+        $sheet->setCellValue('I2', 'Đánh giá tiến độ');
+        $sheet->setCellValue('J2', 'Loại chu kỳ');
+        $sheet->setCellValue('K2', 'Kết quả');
+
+        // Định dạng hàng tiêu đề
+        $sheet->getStyle('A2:K2')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+        
+        // Lấy dữ liệu từ cơ sở dữ liệu
+        $datas = Document::query();
+        $documents = $datas->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc');
+
+        $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->get();
+        $row = 3; // Bắt đầu từ hàng thứ 4 để không ghi đè tiêu đề
+    
+        foreach ($taskDocuments as $index => $data) {
+            $type = $data->latestTaskResult()->type ?? null;
+            $numberType = $data->latestTaskResult()->number_type ?? '';
+
+
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $data->document->document_code);
+            $sheet->setCellValue('C' . $row, $data->document->document_name);
+            $sheet->setCellValue('D' . $row, $data->code);
+            $sheet->setCellValue('E' . $row, $data->name);
+            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name);
+            $sheet->setCellValue('G' . $row, $data->organization->name);
+            $sheet->setCellValue('H' . $row, $data->results);
+            $sheet->setCellValue('I' . $row, $data->getTaskStatusDescription());
+            $sheet->setCellValue('J' . $row, $this->formatCycleType($type, $numberType));
+            $sheet->setCellValue('K' . $row, $data->latestTaskResult()->result ?? '');
+            $row++;
+        }
+        foreach (range('A', 'K') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Báo cáo tổng hợp theo chu kỳ.xlsx';
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
+    }
+
+
+    public function exportDetails()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $sheet->setCellValue('A1', 'BÁO CÁO CHI TIẾT CHỈ TIÊU/ NHIỆM VỤ');
+        $sheet->mergeCells('A1:K1');
+        $sheet->getStyle('A1:K1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        // Đặt tiêu đề cho các cột
+        $sheet->setCellValue('A2', 'STT');
+        $sheet->setCellValue('B2', 'Mã văn bản');
+        $sheet->setCellValue('C2', 'Tên văn bản');
+        $sheet->setCellValue('D2', 'Mã chỉ tiêu/ nhiệm vụ');
+        $sheet->setCellValue('E2', 'Tên chỉ tiêu/ nhiệm vụ');
+        $sheet->setCellValue('F2', 'Loại Cơ quan thực hiện');
+        $sheet->setCellValue('G2', 'Cơ quan thực hiện');
+        $sheet->setCellValue('H2', 'Tiến độ');
+        $sheet->setCellValue('I2', 'Đánh giá tiến độ');
+        $sheet->setCellValue('J2', 'Loại chu kỳ');
+        $sheet->setCellValue('K2', 'Kết quả');
+
+        // Định dạng hàng tiêu đề
+        $sheet->getStyle('A2:K2')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+        
+        // Lấy dữ liệu từ cơ sở dữ liệu
+        $datas = Document::query();
+        $documents = $datas->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc');
+
+        $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->get();
+        $row = 3; // Bắt đầu từ hàng thứ 4 để không ghi đè tiêu đề
+    
+        foreach ($taskDocuments as $index => $data) {
+            $type = $data->latestTaskResult()->type ?? null;
+            $numberType = $data->latestTaskResult()->number_type ?? '';
+
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $data->document->document_code);
+            $sheet->setCellValue('C' . $row, $data->document->document_name);
+            $sheet->setCellValue('D' . $row, $data->code);
+            $sheet->setCellValue('E' . $row, $data->name);
+            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name);
+            $sheet->setCellValue('G' . $row, $data->organization->name);
+            $sheet->setCellValue('H' . $row, $data->results);
+            $sheet->setCellValue('I' . $row, $data->getTaskStatusDescription());
+            $sheet->setCellValue('J' . $row, $this->formatCycleType($type, $numberType));
+            $sheet->setCellValue('K' . $row, $data->latestTaskResult()->result ?? '');
+            $row++;
+        }
+        foreach (range('A', 'K') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Báo cáo tổng hợp chi tiết.xlsx';
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
+    }
+
+    private function formatCycleType($type, $numberType)
+    {
+        switch ($type) {
+            case 1: // Tuần
+                return "Tuần $numberType";
+            case 2: // Tháng
+                return "Tháng $numberType";
+            case 3: // Quý
+                return "Quý $numberType";
+            case 4: // Năm
+                return "Năm $numberType";
+            default:
+                return '';
+        }
+    }
+    public function showReportDetails(Request $request, $text=null)
     {
              
         $executionTimeFrom = $request->input('execution_time_from');
@@ -675,6 +993,9 @@ class ReportController extends Controller
 
         if ($executionTimeTo) {
             $datas->whereDate('release_date', '<=', $executionTimeTo);
+        }
+        if($text){
+            $datas->where('document_name', 'like', '%' . $text . '%');
         }
         // $datas = $datas->paginate(10);
 

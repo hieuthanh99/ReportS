@@ -1,8 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-6">
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+<div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {!! Breadcrumbs::render('details.tasks.byType', $type) !!}
+        </ol>
+    </nav>
+    <div class="overflow-hidden">
         <div class="p-6">
             @php
                 $text = "Chỉ tiêu";

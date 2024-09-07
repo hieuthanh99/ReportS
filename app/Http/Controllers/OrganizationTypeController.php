@@ -14,9 +14,13 @@ use App\Models\User;
 
 class OrganizationTypeController extends Controller
 {
-    public function index()
+    public function index($text=null)
     {
-        $types = OrganizationType::orderBy('created_at', 'desc')->where('isDelete', 0)->paginate(10);
+        $types = OrganizationType::orderBy('type_name', 'asc')->where('isDelete', 0);
+        if($text){
+            $types->where('type_name', 'like', '%' . $text . '%');
+        }
+        $types = $types->paginate(10);
         return view('organization_types.index', compact('types'));
     }
 
@@ -34,18 +38,19 @@ class OrganizationTypeController extends Controller
         try {
                  // Validate input
             $request->validate([
-                'code' => 'required|unique:organization_types,code',
+                'code' => 'required',
                 'type_name' => 'required'
             ], [
-                'code.required' => 'Mã loại cơ quan, tổ chức là bắt buộc.',
-                'code.unique' => 'Mã loại cơ quan, tổ chức đã tồn tại.',
-                'name.required' => 'Tên loại cơ quan, tổ chức là bắt buộc.'
+                'code.required' => 'Mã nhóm cơ quan, tổ chức là bắt buộc.',
+                'code.unique' => 'Mã nhóm cơ quan, tổ chức đã tồn tại.',
+                'name.required' => 'Tên nhóm cơ quan, tổ chức là bắt buộc.'
             ]);
-
+            $exitItem = OrganizationType::where('isDelete', 0)->where('code', $request->code)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             OrganizationType::create($request->all());
             DB::commit();
     
-            return redirect()->route('organization_types.index')->with('success', 'Tạo loại cơ quan, tổ chức thành công!');
+            return redirect()->route('organization_types.index')->with('success', 'Tạo nhóm cơ quan, tổ chức thành công!');
     
         } catch (\Exception $e) {
             DB::rollBack();
@@ -69,22 +74,22 @@ class OrganizationTypeController extends Controller
         try {
             $request->validate([
                 'code' => [
-                 'required',
-                     Rule::unique('organization_types', 'code')->ignore($id)
+                 'required'
                  ],
                  'type_name' => 'required',
              ], [
-                 'code.required' => 'Mã văn bản là bắt buộc.',
-                 'code.unique' => 'Mã văn bản đã tồn tại.',
-                 'type_name.required' => 'Tên văn bản là bắt buộc.'
+                 'code.required' => 'Mã nhóm cơ quan, tổ chức là bắt buộc.',
+                 'code.unique' => 'Mã nhóm cơ quan, tổ chức đã tồn tại.',
+                 'type_name.required' => 'Tên nhóm cơ quan, tổ chức là bắt buộc.'
              ]);
  
-    
+             $exitItem = OrganizationType::where('isDelete', 0)->where('code', $request->code)->where('id','!=', $id)->first();
+             if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             $documentCategory = OrganizationType::findOrFail($id);
             $documentCategory->update($request->all());
             DB::commit();
     
-            return redirect()->route('organization_types.index')->with('success', 'Cập nhật loại cơ quan, tổ chức thành công');
+            return redirect()->route('organization_types.index')->with('success', 'Cập nhật nhóm cơ quan, tổ chức thành công');
     
         } catch (\Exception $e) {
             DB::rollBack();
@@ -108,22 +113,22 @@ class OrganizationTypeController extends Controller
             foreach ($taskTargets as $taskTarget) {
                 $taskTarget->isDelete = 1;
                 $taskTarget->save();
+
+                $taskReults = TaskResult::where('id_task_criteria', $taskTarget->id)->get();
+
+                foreach ($taskReults as $taskReult) {
+                    $taskReult->isDelete = 1;
+                    $taskReult->save();
+                }
+
+    
             }
-
-            $taskReults = TaskResult::where('organization_id', $organization->id)->get();
-
-            foreach ($taskReults as $taskReult) {
-                $taskReult->isDelete = 1;
-                $taskReult->save();
-            }
-
             $users = User::where('organization_id', $organization->id)->get();
-
+    
             foreach ($users as $user) {
                 $user->isDelete = 1;
                 $user->save();
             }
-            
             $organization->isDelete = 1;
             $organization->save();
         }
@@ -131,6 +136,6 @@ class OrganizationTypeController extends Controller
         $organizationType->save();
 
         
-        return redirect()->route('organization_types.index')->with('success', 'Loại cơ quan đã được xóa thành công!');
+        return redirect()->route('organization_types.index')->with('success', 'Nhóm cơ quan đã được xóa thành công!');
     }
 }

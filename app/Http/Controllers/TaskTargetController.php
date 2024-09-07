@@ -27,11 +27,9 @@ use App\Models\IndicatorGroup;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 class TaskTargetController extends Controller
-{
+{ 
     public function updateRemarks(Request $request)
     {
-        // Bắt đầu transaction
-        //dd($request);
         DB::beginTransaction();
         try {
             // Lấy dữ liệu từ yêu cầu
@@ -39,9 +37,6 @@ class TaskTargetController extends Controller
             $remarks = $request->input("remarks");
             $type = $request->input("type");
             $taskResultId = $request->input("taskResultId");
-            
-            // Tìm nhiệm vụ theo ID (giả sử bạn có model Task)
-            // Nếu không có, bạn có thể thay thế bằng mã của bạn để lưu dữ liệu
             $task = TaskTarget::find($taskId);
 
             $taskResult = TaskResult::find($taskResultId);
@@ -49,7 +44,7 @@ class TaskTargetController extends Controller
             $status = 'rejected';
             if($type == 'Approval') $status = 'approved';
             if ($task) {
-                
+
                 TaskApprovalHistory::create([
                     'task_target_id' => $taskId,
                     'approver_id' => Auth::id(),
@@ -63,7 +58,7 @@ class TaskTargetController extends Controller
                     $task->status = 'reject';
                     $task->is_completed = 0;
                     $task->results =  "Đang thực hiện";
-          
+
                 }else{
                     $task->status = "sub_admin_complete";
                     $task->results =  "Hoàn thành";
@@ -104,13 +99,13 @@ class TaskTargetController extends Controller
         }
 
         if ($check) {
-          
+
            return redirect()->route('tasks.byType', ['type' => $type])->with('success', 'Xóa thành công!');
         } else {
         return redirect()->route('tasks.byType', ['type' => $type])->with('error', 'Đã xảy ra lỗi!');
         }
     }
-        
+
     public function editTaskTarget($code, $type)
     {
         $taskTarget = TaskTarget::where('code', $code)->firstOrFail();
@@ -126,12 +121,12 @@ class TaskTargetController extends Controller
         }
         return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories', 'typeTask'));
     }
-    
+
     public function deleteOrganization($code, $type, $id)
     {
         $check  = true;
         $taskTargetDelete = TaskTarget::where('code', $code)->where('type', $type)->where('organization_id', $id)->first();
-      
+
         try{
             if($taskTargetDelete){
                 $taskTargetDelete->delete();
@@ -146,7 +141,7 @@ class TaskTargetController extends Controller
         $organizationsType = OrganizationType::where('isDelete', 0)->get();;
         $documents = Document::where('isDelete', 0)->get();;
         $categories = Category::where('isDelete', 0)->get();;
-        
+
         if ($check) {
             session()->flash('success', 'Xóa cơ quan, tổ chức thành công!');
         } else {
@@ -154,11 +149,11 @@ class TaskTargetController extends Controller
         }
         return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories'));
     }
-    
+
     public function updateTaskTarget(Request $request, $code, $type)
     {
         DB::beginTransaction();
-        
+
         try {
             $type = $request->input('type');
             $code = $request->input('code');
@@ -173,7 +168,7 @@ class TaskTargetController extends Controller
             $taskTargets = TaskTarget::where('code', $code)->where('type', $type)->get();
             $document = Document::findOrFail($request->input("document_id"));
             foreach($taskTargets as $item){
-                    
+
                 $item->type =  $type;
                 $item->code =  $code;
                 $item->document_id =  $documentId;
@@ -187,7 +182,7 @@ class TaskTargetController extends Controller
                 $item->save();
                 DB::commit();
             }
-            
+
             session()->flash('success', 'Cập nhật thành công!');
             return $this->indexView($request, $type);
         } catch (\Exception $e) {
@@ -239,7 +234,7 @@ class TaskTargetController extends Controller
 
         return view('tasks.show', compact('taskTarget', 'type', 'organizations', 'paginatedResults'));
     }
-    public function indexView(Request $request, $type)
+    public function indexView(Request $request, $type, $text=null)
     {
         $organizations = Organization::where('isDelete', 0)->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->get();
@@ -247,8 +242,8 @@ class TaskTargetController extends Controller
         $categories = Category::where('isDelete', 0)->get();
 
         $taskDocumentsQuery = TaskDocument::query();
-        
-       
+
+
         if($type == 'task'){
             $taskTargets = TaskTarget::where('type', 'task')->select('name', 'code', 'document_id', 'cycle_type',
             'category_id',
@@ -268,7 +263,9 @@ class TaskTargetController extends Controller
             ->distinct('code')
             ->orderBy('id', 'desc');
         }
-    
+        if($text){
+            $taskTargets->where('name', 'like', '%' . $text . '%');
+        }
         if ($request->filled('document_id')) {
             // Chắc chắn rằng $documents là mảng phẳng trước khi sử dụng
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
@@ -285,7 +282,7 @@ class TaskTargetController extends Controller
                 // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
                 $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
                 $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
-        
+
                 // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
                 if ($executionTimeFrom->gt($executionTimeTo)) {
                     return redirect()->back()->withErrors([
@@ -303,13 +300,13 @@ class TaskTargetController extends Controller
         if ($executionTimeTo) {
             $taskTargets->whereDate('end_date', '<=', $executionTimeTo);
         }
-    
+
         $taskTargets = $taskTargets->orderBy('created_at', 'desc')->paginate(10);
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type'));
     }
 
-    
-    
+
+
 
     public function index($type)
     {
@@ -318,7 +315,7 @@ class TaskTargetController extends Controller
         $categories = Category::where('isDelete', 0)->get();
 
         if($type == 'task'){
-            
+
             $taskTargets = TaskTarget::where('type', 'task')->select('name', 'code', 'document_id', 'cycle_type',
             'category_id',
             'request_results',
@@ -328,7 +325,7 @@ class TaskTargetController extends Controller
             ->distinct('code') // Đảm bảo mỗi nhiệm vụ chỉ xuất hiện một lần
             ->orderBy('id', 'desc') // Sắp xếp theo ID hoặc bất kỳ tiêu chí nào khác
             ->paginate(10); // Phân trang kết quả
-        
+
         }else{
             $taskTargets = TaskTarget::where('type', 'target')->select('name', 'code', 'document_id', 'cycle_type',
             'category_id',
@@ -339,18 +336,18 @@ class TaskTargetController extends Controller
             ->distinct('code') // Đảm bảo mỗi nhiệm vụ chỉ xuất hiện một lần
             ->orderBy('id', 'desc') // Sắp xếp theo ID hoặc bất kỳ tiêu chí nào khác
             ->paginate(10); // Phân trang kết quả
-        
+
         }
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'type'));
     }
 
-    
-    
+
+
     public function createView($type)
     {
         $organizations = Organization::where('isDelete', 0)->get();
         $documents = Document::where('isDelete', 0)->get();
-        
+
         $categories = Category::where('isDelete', 0)->get();
 
         //     use App\Models\TaskGroup;
@@ -366,7 +363,7 @@ class TaskTargetController extends Controller
     {
         $organizations = Organization::where('isDelete', 0)->get();
         $documents = Document::where('isDelete', 0)->get();
-        
+
         $categories = Category::where('isDelete', 0)->get();
         return view('tasks.create', compact('organizations', 'documents', 'categories'));
     }
@@ -375,14 +372,14 @@ class TaskTargetController extends Controller
     {
         // Bắt đầu transaction
         DB::beginTransaction();
-        
+
         try {
             $typeRecord = $request->input("type") === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
 
             // Xác thực dữ liệu từ request
             $request->validate([
                 'document_id' => 'required',
-                'code' => 'required|unique:task_target,code',
+                'code' => 'required',
                 'name' => 'required|string|max:1000',
                 'cycle_type' => 'required|string|max:50',
                 'category_id' => 'nullable|integer|exists:categories,CategoryID',
@@ -405,7 +402,8 @@ class TaskTargetController extends Controller
                 'type_id.required' => 'Loại mục tiêu là bắt buộc.',
                 'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
             ]);
-
+            $exitItem = TaskTarget::where('isDelete', 0)->where('code', $request->code)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             // Lấy tất cả các giá trị từ request
             $data = $request->only([
                 'type_id',
@@ -425,7 +423,7 @@ class TaskTargetController extends Controller
             if($type == 'target') $result = $valueNumber;
             else if($type == 'task') $result = $valueArea;
             $organizationId = $user->organization_id;
-            
+
             $data['creator'] = Auth::id();
             $data['status'] = 'new';
             $data['organization_id'] = $organizationId;
@@ -435,7 +433,7 @@ class TaskTargetController extends Controller
             // dd($data);
             $taskTarget = TaskTarget::create($data);
             session(['taskTargetAssign' => $taskTarget]);
-            
+
             DB::commit();
             return redirect()->route('tasks.assign-organizations', [
                 'taskTargetId' => $taskTarget->id
@@ -466,24 +464,71 @@ class TaskTargetController extends Controller
 
     public function update(Request $request, $code)
     {
-        $request->validate([
-            'document_id' => 'required|exists:documents,id',
-            'code' => 'required|string|max:50',
-            'name' => 'required|string|max:1000',
-            'cycle_type' => 'required|string|max:50',
-            'category_id' => 'nullable|exists:categories,id',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
-            'status' => 'required|in:new,assign,complete,reject',
-            'type' => 'required|in:task,target',
-        ]);
+          // Bắt đầu transaction
+          DB::beginTransaction();
+
+          try {
+              $typeRecord = $request->input("type") === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
+
+              // Xác thực dữ liệu từ request
+              $request->validate([
+                  'document_id' => 'required',
+                  'code' => 'required',
+                  'name' => 'required|string|max:1000',
+                  'cycle_type' => 'required|string|max:50',
+                  'category_id' => 'nullable|integer|exists:categories,CategoryID',
+                  'end_date' => 'nullable|date',
+                  'type' => 'required|in:task,target',
+                  'type_id' => 'required',
+              ], [
+                  'document_id.required' => 'Văn bản là bắt buộc.',
+                  'code.required' => 'Mã là bắt buộc.',
+                  'code.unique' => 'Mã này đã tồn tại trong hệ thống.',
+                  'name.required' => 'Tên là bắt buộc.',
+                  'name.string' => 'Tên phải là một chuỗi ký tự.',
+                  'name.max' => 'Tên không được vượt quá 1000 ký tự.',
+                  'cycle_type.required' => 'Chu kỳ báo cáo là bắt buộc.',
+                  'cycle_type.string' => 'Chu kỳ báo cáo phải là một chuỗi ký tự.',
+                  'cycle_type.max' => 'Chu kỳ báo cáo không được vượt quá 50 ký tự.',
+                  'category_id.integer' => 'Phân loại phải là một số nguyên.',
+                  'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+                  'type.required' => 'Loại mục tiêu là bắt buộc.',
+                  'type_id.required' => 'Loại mục tiêu là bắt buộc.',
+                  'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
+              ]);
+        // $request->validate([
+        //     'document_id' => 'required|exists:documents,id',
+        //     'code' => 'required|string|max:50',
+        //     'name' => 'required|string|max:1000',
+        //     'cycle_type' => 'required|string|max:50',
+        //     'category_id' => 'nullable|exists:categories,id',
+        //     'start_date' => 'nullable|date',
+        //     'end_date' => 'nullable|date',
+        //     'status' => 'required|in:new,assign,complete,reject',
+        //     'type' => 'required|in:task,target',
+        // ]);
+        // $exitItem = TaskGroup::where('isDelete', 0)->where('code', $code)->first();
+        // if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
+
         $taskTarget = TaskTarget::where('code', $code)->get();
         foreach($taskTarget as $item){
+            $exitItem = TaskGroup::where('isDelete', 0)->where('code', $request->code)->where('id','!=', $item->id)->first();
+            if($exitItem){
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Mã đã tồn tại!');
+                
+            }  
             $item->update($request->all());
+            DB::commit();
         }
-        
 
-        return redirect()->route('tasks.index', ['type' => $request->input('cycle_type')])->with('success', 'Task Target updated successfully.');
+
+        return redirect()->route('tasks.index', ['type' => $request->input('cycle_type')])->with('success', 'Cập nhật thành công.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Error creating task/target: ' . $e->getMessage());
+        return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
+    }
     }
 
     public function destroy($code)
@@ -502,8 +547,8 @@ class TaskTargetController extends Controller
             $taskTarget->isDelete = 1;
             $taskTarget->save();
         }
-       
 
-        return redirect()->route('tasks.index', ['type' => $type])->with('success', 'Task Target deleted successfully.');
+
+        return redirect()->route('tasks.index', ['type' => $type])->with('success', 'Xóa thành công.');
     }
 }

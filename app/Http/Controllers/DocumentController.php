@@ -27,7 +27,7 @@ class DocumentController extends Controller
 {
     public function updateTaskCycle(Request $request, $documentId)
     {
-       // dd($request);
+       //dd($request);
         DB::beginTransaction();
         try {
             $cycleType = $request->input('cycle_type', []);
@@ -209,7 +209,7 @@ class DocumentController extends Controller
      * Display a listing of the resource.
      */
 
-    public function reportView(Request $request)
+    public function reportView(Request $request, $text=null)
     {
         $userId = Auth::id();
         $user = User::find($userId);
@@ -251,7 +251,9 @@ class DocumentController extends Controller
         if ($executionTimeTo) {
             $query->whereDate('release_date', '<=', $executionTimeTo);
         }
-    
+        if($text){
+            $query->where('document_name', 'like', '%' . $text . '%');
+        }
         if($user->role=='staff' || $user->role=='sub_admin'){
             $documents = Document::whereHas('taskTarget', function ($query) use ($user) {
                 $query->where('organization_id', $user->organization_id)->where('isDelete', 0);
@@ -278,7 +280,7 @@ class DocumentController extends Controller
         return view('documents.report', compact('documents', 'organizations', 'taskDocuments', 'organizationsType'));
     }
     
-    public function index(Request $request)
+    public function index(Request $request, $text = null)
     {
         $userId = Auth::id();
         $user = User::find($userId);
@@ -323,7 +325,9 @@ class DocumentController extends Controller
         if ($executionTimeTo) {
             $query->whereDate('release_date', '<=', $executionTimeTo);
         }
-    
+        if($text){
+            $query->where('document_name', 'like', '%' . $text . '%');
+        }
         $documents = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
         $organizations = Organization::where('isDelete', 0)->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->get();
@@ -382,7 +386,7 @@ class DocumentController extends Controller
         try {
                  // Validate input
             $request->validate([
-                'document_code' => 'required|unique:documents,document_code',
+                'document_code' => 'required',
                 'document_name' => 'required', // Validation rule for textarea
                 'issuing_department' => 'required',
                 'release_date' => 'required|date',
@@ -396,9 +400,11 @@ class DocumentController extends Controller
                 'release_date.required' => 'Ngày phát hành là bắt buộc.',
                 'release_date.date' => 'Ngày phát hành không hợp lệ.',
             ]);
+            
 
             $documentCode = str_replace(['/', ' '], '-', $request->input('document_code'));
-
+            $exitItem = Document::where('isDelete', 0)->where('document_code', $documentCode)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             // Lưu tài liệu
             $document = Document::create([
                 'document_code' => $documentCode,
@@ -425,7 +431,7 @@ class DocumentController extends Controller
             // Commit transaction nếu tất cả các bước trên thành công
             DB::commit();
     
-            return redirect()->route('documents.index')->with('success', 'Danh mục tạo thành công!');
+            return redirect()->route('documents.index')->with('success', 'Văn bản tạo thành công!');
     
         } catch (\Exception $e) {
             // Rollback transaction nếu có lỗi xảy ra
@@ -610,8 +616,7 @@ class DocumentController extends Controller
             // Validate request data
             $request->validate([
                'document_code' => [
-                'required',
-                    Rule::unique('documents', 'document_code')->ignore($request->input('document_id'))
+                'required'
                 ],
                 'document_name' => 'required', // Validation rule for textarea
                 'issuing_department' => 'required',
@@ -620,15 +625,17 @@ class DocumentController extends Controller
                 'document_code.required' => 'Mã văn bản là bắt buộc.',
                 'document_code.unique' => 'Mã văn bản đã tồn tại.',
                 'document_name.required' => 'Tên văn bản là bắt buộc.',
-                'issuing_department.required' => 'Đơn vị phát hành là bắt buộc.',
+                'issuing_department.required' => 'Cơ quan, tổ chức là bắt buộc.',
                 'release_date.required' => 'Ngày phát hành là bắt buộc.',
                 'release_date.date' => 'Ngày phát hành không hợp lệ.',
             ]);
 
             $documentCode = str_replace(['/', ' '], '-', $request->input('document_code'));
-
-            // Lấy dữ liệu từ request
             $documentId = $request->input('document_id');
+            $exitItem = Document::where('isDelete', 0)->where('document_code', $documentCode)->where('id', '!=',$documentId)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
+            // Lấy dữ liệu từ request
+           
             
 
             $documentName = $request->input('document_name');
@@ -664,7 +671,7 @@ class DocumentController extends Controller
                         $document->save();
                         DB::commit();
     
-                        return redirect()->route('documents.index')->with('success', 'Cập nhật danh mục thành công!');
+                        return redirect()->route('documents.index')->with('success', 'Cập nhật văn bản thành công!');
                     }
                 }
             } else {

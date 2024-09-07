@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+    <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {!! Breadcrumbs::render('create.tasks.byType', $type) !!}
+            </ol>
+        </nav>
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -30,7 +35,7 @@
         @endphp
         {{-- <h1 class="text-3xl font-bold mb-6 text-gray-800">Thêm nhiệm vụ/chỉ tiêu</h1> --}}
 
-        <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" id="task-create-form">
+        <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="p-6" id="task-create-form">
             @csrf
             <input type="hidden" id="type" name="type" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ $type }}">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4" >
@@ -40,7 +45,7 @@
                     <input type="text" readonly id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code') }}">
                 </div>
                 <div class="mb-4">
-                    <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại {{ $text }} <span class="text-red-500">*</span></label>
+                    <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Nhóm {{ $text }} <span class="text-red-500">*</span></label>
                  
                     <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required >
                         <option value="" data-code="">Chọn loại {{ $text }}</option>
@@ -111,7 +116,7 @@
                     <input type="date"  placeholder="dd-mm-yyyy"
                     min="1997-01-01" max="2100-12-31" id="end_date" name="end_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('end_date') }}" required>
                 </div>
-                <div class="mb-4">
+                <div class="mb-4" style="display: none">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Phân loại <span class="text-red-500">*</span></label>
                     <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required>
                         @foreach ($categories as $item)

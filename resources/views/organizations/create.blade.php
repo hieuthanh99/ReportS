@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg " style="margin-top: 10px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {!! Breadcrumbs::render('CO') !!}
+        </ol>
+    </nav>
     @if ($errors->any())
         <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
             <ul>
@@ -23,7 +28,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <form action="{{ route('organizations.store') }}" method="POST"  class="bg-white p-6 rounded-lg shadow-lg">
+    <form action="{{ route('organizations.store') }}" method="POST"  class="p-6">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="mb-4">
@@ -46,7 +51,7 @@
                 </select>
             </div>
             <div class="mb-4">
-                <label for="parent_id" class="block text-gray-700">Chọn Cơ quan, tổ chức cấp trên <span class="text-red-500">*</span></label>
+                <label for="parent_id" class="block text-gray-700">Chọn cơ quan, tổ chức cấp trên</label>
                 <select name="parent_id" id="parent_id" class="w-full border rounded-lg px-3 py-2 mt-1">
                     <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
                 </select>
@@ -86,7 +91,7 @@
                     .then(data => {
                         // Làm rỗng danh sách `parent_id`
                         var parentSelect = document.getElementById('parent_id');
-                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+                        parentSelect.innerHTML = '<option value="" selected>Chọn cơ quan tổ chức cấp trên</option>';
 
                         // Thêm các tùy chọn mới
                         data.forEach(function (organization) {

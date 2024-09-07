@@ -31,30 +31,26 @@
         @php
         session(['success' => null])
         @endphp
-        {{-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
+        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
             Lọc/Filter
-        </button> --}}
+        </button>
         <a href="{{ url('export-Unit') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
-        {{-- <form method="GET" action="{{ route('reports.withDocument') }}" class="hidden" id="filterForm">
+        <form method="GET" action="{{ route('reports.withUnit') }}" class="hidden" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
-                    <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                    <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
+                    <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full">
                         <option value="">Chọn loại cơ quan thực hiện</option>
-                        @foreach($organizationsType as $organization)
-                            <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->type_name }}
+
+                        @foreach($documentsSearch as $item)
+                           
+                            <option value="{{ $item->id }}" {{ request('document_id') == $item->id ? 'selected' : '' }}>
+                                {{ $item->document_name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan</label>
-                    <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
-                    </select>
-                </div>
-                <div class="flex gap-4 w-full">
+               
                     <div class="flex-1 min-w-[200px]">
                         <label for="execution_time_from" class="block text-gray-700 font-medium mb-2">Từ ngày</label>
                         <input type="date" id="execution_time_from" placeholder="dd-mm-yyyy"
@@ -68,9 +64,7 @@
                                class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
                     </div>
                     <!-- Các trường khác -->
-                    
-                </div>
-            </div>
+                                </div>
 
         <div class="flex justify-end gap-4">
                 <button type="submit"
@@ -79,7 +73,7 @@
                 </button>
         
         </div>
-        </form> --}}
+        </form>
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">

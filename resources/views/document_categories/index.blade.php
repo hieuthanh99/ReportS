@@ -77,12 +77,13 @@
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form> --}}
-                                <form id="delete-form" action="{{ route('document_categories.destroy', $item) }}" method="POST" style="display:inline;">
+                                <form id="delete-form-{{ $item->id }}" action="{{ route('document_categories.destroy', $item->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
+                                    
                                     <button type="button"
                                         class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete()">
+                                        onclick="confirmDelete({{ $item->id }})">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>
@@ -98,7 +99,7 @@
         </div>
     </div>
     <script>
-        function confirmDelete() {
+        function confirmDelete(id) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',
                 text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!',
@@ -110,7 +111,7 @@
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('delete-form').submit();
+                    document.getElementById('delete-form-' + id).submit();
                 }
             });
         }

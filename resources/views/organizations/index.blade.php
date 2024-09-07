@@ -139,7 +139,13 @@
             </div>
         @endif
     </div>
- <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg flex" style="margin-top: 10px;">
+ <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg " style="margin-top: 10px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {!! Breadcrumbs::render('DSO') !!}
+        </ol>
+    </nav>
+    <div class="flex">
         <!-- Tree View -->
         <div class="pr-4" style="width: 40%">
             <div class="flex justify-between items-center mb-6">
@@ -310,7 +316,7 @@
         </div>
 
     </div>
-
+ </div>
     <!-- Modal for Adding Child Node -->
     <div id="addChildModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden" >
         <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4" style="margin: 50px 100px">

@@ -40,6 +40,8 @@
                             @endif
                             <li><a href="#" title="">Tổng hợp, báo cáo</a>
                                 <ul>
+                                    @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
+
                                     <li><a href="#" title="">Tổng hợp, thống kê</a>
                                         <ul>
                                             <li><a href="{{route('reports.withDocument')}}" title="">Báo cáo tổng hợp theo văn bản</a></li>
@@ -48,16 +50,17 @@
                                             <li><a href="{{route('reports.withDetails')}}" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>
                                         </ul>
                                     </li>
-                                    <li><a href="{{route('documents.report')}}" title="">Báo cáo</a></li>
+                                    @endif
+                                    <li><a href="{{route('documents.report')}}" title="">Phê duyệt kết quả công việc</a></li>
                                 </ul>
                             </li>
                         </ul>
                     </li>
                 </ul>
             </nav>
-            <div class="flex-shrink-0 px-4">
+            <div class="flex-shrink-0 px-4" style="margin-top: -8px">
                 <a href="{{ route('dashboard') }}">
-                    <img src="{{ asset('logo/image.png') }}" alt="Logo" class="block w-auto" style="width: 70px;">
+                    <img src="{{ asset('logo/logo2.png') }}" alt="Logo" class="block w-auto" style="width: 70px;">
                 </a>
             </div>
             <div class="flex-shrink-0 px-4 header-title">
@@ -188,10 +191,35 @@
     document.addEventListener('DOMContentLoaded', function() {
         const searchForm = document.getElementById('searchForm');
         const searchInField = document.getElementById('searchIn');
-
+        const searchType = document.getElementById('searchType');
+        
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
         const currentUrl = window.location.pathname;
+        console.log(currentUrl);
 
-        if (currentUrl.includes('documents')) {
+        const searchInParam = getQueryParam('search_in');
+
+        const pathSegments = currentUrl.split('/');
+
+        const firstSegment = pathSegments[1] || 'general'; // Phần đầu tiên, hoặc 'general' nếu không có
+        const lastSegment = pathSegments[pathSegments.length - 1] || 'general'; // Phần cuối cùng, hoặc 'general' nếu không có
+        console.log(firstSegment);
+        console.log(pathSegments.length == 2);
+        console.log(pathSegments[0]== '');
+        if (pathSegments.length == 2 && pathSegments[0] == '' && pathSegments[1] == '') {
+            searchInField.value = 'dashboard';
+        }
+        else if (firstSegment.includes('tasks')) {
+            searchInField.value = firstSegment;
+            searchType.value = lastSegment;
+        }
+        else if (searchInParam) {
+            searchInField.value = searchInParam;
+        }
+        else if (currentUrl.includes('documents')) {
             searchInField.value = 'documents';
         } else if (currentUrl.includes('document_categories')) {
             searchInField.value = 'document_categories';
@@ -213,8 +241,14 @@
             searchInField.value = 'positions';
         } else if (currentUrl.includes('users')) {
             searchInField.value = 'users';
-        }else if (currentUrl.includes('report')) {
+        }else if (firstSegment === 'report') {
             searchInField.value = 'report';
+        }else if (firstSegment =='reports-with-unit') {
+            searchInField.value = 'reports-with-unit';
+        }else if (firstSegment == 'reports-with-period') {
+            searchInField.value = 'reports-with-period';
+        }else if (firstSegment == 'reports-with-details') {
+            searchInField.value = 'reports-with-details';
         } else {
             searchInField.value = 'general';
         }
@@ -224,6 +258,8 @@
 <div class="rounded-lg search-box hidden text-center" style="margin: 10px auto">
     <form id="searchForm" action="{{ route('search') }}" method="GET">
         <input type="hidden" name="search_in" id="searchIn" value="">
+        <input type="hidden" name="search_type" id="searchType" value="">
+
         <input type="text" placeholder="Tìm kiếm..." id="searchInput" name="query" value="{{ old('query') }}">
         <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Tìm kiếm</button>
     </form>

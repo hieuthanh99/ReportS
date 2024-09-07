@@ -102,10 +102,14 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Assigned users saved successfully');
     }
 
-    public function index()
+    public function index($text=null)
     {
 
-        $users = User::with('organization')->orderBy('created_at', 'desc')->where('isDelete', 0)->paginate(10);
+        $users = User::with('organization')->orderBy('created_at', 'desc')->where('isDelete', 0);
+        if($text){
+            $users->where('name', 'like', '%' . $text . '%');
+        }
+        $users =  $users->paginate(10);
         return view('users.index', compact('users'));
     }
 
@@ -120,7 +124,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'required|unique:users,code|max:255',
+            'code' => 'required|max:255',
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
             'password' => 'required|string|min:8|confirmed', // Xác thực mật khẩu
@@ -132,7 +136,8 @@ class UserController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-    
+        $exitItem = User::where('isDelete', 0)->where('code', $request->code)->first();
+        if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
         // Lưu người dùng mới
         $user = new User();
         $user->code = $request->input('code');
@@ -194,6 +199,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->isDelete = 1;
         $user->save();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('users.index')->with('success', 'Xóa người dùng thành công.');
     }
 }

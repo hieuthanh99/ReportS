@@ -19,9 +19,13 @@ class DocumentCategoryController extends Controller
         $this->documentCategoryRepository = $documentCategoryRepository;
     }
 
-    public function index()
+    public function index($text = null)
     {
-        $categories = DocumentCategory::where('isDelete', 0)->paginate(10);
+        $categories = DocumentCategory::orderBy('created_at', 'desc')->where('isDelete', 0);
+        if($text){
+            $categories->where('name', 'like', '%' . $text . '%');
+        }
+        $categories =  $categories->paginate(10);
         return view('document_categories.index', compact('categories'));
     }
 
@@ -36,14 +40,15 @@ class DocumentCategoryController extends Controller
 
         try {
             $request->validate([
-                'code' => 'required|unique:document_categories,code',
+                'code' => 'required',
                 'name' => 'required'
             ], [
                 'code.required' => 'Mã loại văn bản là bắt buộc.',
                 'code.unique' => 'Mã loại văn bản đã tồn tại.',
                 'name.required' => 'Tên loại văn bản là bắt buộc.'
             ]);
-
+            $exitItem = DocumentCategory::where('isDelete', 0)->where('code', $request->code)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             $this->documentCategoryRepository->create($request->all());
             DB::commit();
 
@@ -69,7 +74,7 @@ class DocumentCategoryController extends Controller
 
         try {
             $request->validate([
-                'code' => 'required|unique:document_categories,code,' . $id,
+                'code' => 'required',
                 'name' => 'required',
                 'description' => 'required'
             ], [
@@ -78,7 +83,8 @@ class DocumentCategoryController extends Controller
                 'name.required' => 'Tên loại văn bản là bắt buộc.',
                 'description.required' => 'Chi tiết loại văn bản là bắt buộc.'
             ]);
-
+            $exitItem = DocumentCategory::where('isDelete', 0)->where('code', $request->code)->where('id','!=', $id)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             $this->documentCategoryRepository->update($id, $request->all());
             DB::commit();
 
@@ -91,17 +97,15 @@ class DocumentCategoryController extends Controller
             return redirect()->back()->withErrors($e->getMessage())->withInput();
         }
     }
+    
 
     public function destroy($id)
     {
         DB::beginTransaction();
+        \Log::error('Deletecategory: ' . $id);
 
         try {
             // $this->documentCategoryRepository->delete($id);
-            $item = DocumentCategory::findOrFail($id);
-            $item->isDelete = 1;
-            $item->save();
-            DB::commit();
 
 
             $documents = Document::where('category_id', $id)->get();

@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {!! Breadcrumbs::render('update.tasks.byType', $type) !!}
+        </ol>
     @if ($errors->any())
         <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
             <ul>
@@ -23,7 +27,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="overflow-hidden">
         <div class="p-6">
         @php
         $text = "Chỉ tiêu";
@@ -94,7 +98,7 @@
 
               
                 <div class="mb-4">
-                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát hành:</label>
+                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày kết thúc:</label>
                     <input type="date" id="end_date" name="end_date" placeholder="dd-mm-yyyy"
                     min="1997-01-01" max="2100-12-31"
                   required
@@ -102,7 +106,7 @@
                     class="form-input w-full border border-gray-300 rounded-lg p-2">
 
                 </div>
-                <div class="mb-4">
+                <div class="mb-4" style="display: none">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Phân loại <span class="text-red-500">*</span></label>
                     <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required>
                         @foreach ($categories as $item)

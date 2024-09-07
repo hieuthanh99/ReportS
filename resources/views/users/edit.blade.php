@@ -2,7 +2,11 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6 bg-white shadow-md rounded-lg overflow-hidden">
-    <h1 class="text-3xl font-bold mb-6 text-gray-800">Cập nhật người dùng</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {!! Breadcrumbs::render('CNTK') !!}
+        </ol>
+    </nav>
     @if ($errors->any())
         <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
             <ul>

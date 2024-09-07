@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {!! Breadcrumbs::render('tasks.byType', $type) !!}
+            </ol>
+        </nav>
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -38,7 +43,7 @@
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
                     <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="">Chọn loại cơ quan thực hiện</option>
+                        <option value="">Chọn văn bản thực hiện</option>
 
                         @foreach($documents as $item)
                            

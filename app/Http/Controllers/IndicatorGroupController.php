@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IndicatorGroup;
 use App\Models\TaskTarget;
 use App\Models\TaskResult;
-
+use Illuminate\Validation\Rule; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,9 +13,13 @@ use Illuminate\Support\Facades\DB;
 class IndicatorGroupController extends Controller
 {
     // Hiển thị danh sách các nhóm công việc
-    public function index()
+    public function index($text=null)
     {
-        $taskGroups = IndicatorGroup::where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
+        $taskGroups = IndicatorGroup::where('isDelete', 0)->orderBy('created_at', 'desc');
+        if($text){
+            $taskGroups->where('name', 'like', '%' . $text . '%');
+        }
+        $taskGroups =  $taskGroups->paginate(10);
         return view('indicator_groups.index', compact('taskGroups'));
     }
 
@@ -33,15 +37,16 @@ class IndicatorGroupController extends Controller
         try {
                 // Validate input
             $request->validate([
-                'code' => 'required|unique:indicator_groups,code|max:5',
+                'code' => 'required|max:5',
                 'name' => 'required'
             ], [
                 'code.required' => 'Mã loại chỉ tiêu là bắt buộc.',
                 'code.unique' => 'Mã loại chỉ tiêu đã tồn tại.',
-                'code.max' => 'Mã loại nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
+                'code.max' => 'Mã loại chỉ tiêu chỉ được phép có tối đa 5 ký tự.',
                 'name.required' => 'Tên loại chỉ tiêu là bắt buộc.'
             ]);
-
+            $exitItem = IndicatorGroup::where('isDelete', 0)->where('code', $request->code)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             IndicatorGroup::create([
                 'code' => $request->code,
                 'name' => $request->name,
@@ -50,7 +55,7 @@ class IndicatorGroupController extends Controller
             ]);
             DB::commit();
     
-            return redirect()->route('indicator_groups.index')->with('success', 'Thêm mới loại chỉ tiêu thành công!');
+            return redirect()->route('indicator_groups.index')->with('success', 'Thêm mới nhóm chỉ tiêu thành công!');
     
         } catch (\Exception $e) {
             DB::rollBack();
@@ -76,23 +81,28 @@ class IndicatorGroupController extends Controller
     public function update(Request $request, IndicatorGroup $indicatorGroup)
     {
         $request->validate([
-            'code' => 'required|unique:indicator_groups,code|max:5' . $indicatorGroup->id,
+            // 'code' => 'required|unique:indicator_groups,code|max:5' . $indicatorGroup->id,
+            'code' => [
+                'required',
+                'max:5'
+            ],
             'name' => 'required'
         ], [
-            'code.required' => 'Mã loại chỉ tiêu là bắt buộc.',
-            'code.unique' => 'Mã loại chỉ tiêu đã tồn tại.',
-            'code.max' => 'Mã loại nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
-            'name.required' => 'Tên loại chỉ tiêu là bắt buộc.'
+            'code.required' => 'Mã nhóm chỉ tiêu là bắt buộc.',
+            'code.unique' => 'Mã nhóm chỉ tiêu đã tồn tại.',
+            'code.max' => 'Mã nhóm chỉ tiêu chỉ được phép có tối đa 5 ký tự.',
+            'name.required' => 'Tên nhóm chỉ tiêu là bắt buộc.'
         ]);
 
-
+        $exitItem = IndicatorGroup::where('isDelete', 0)->where('code', $request->code)->where('id','!=', $indicatorGroup->id)->first();
+        if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
         $indicatorGroup->update([
             'code' => $request->code,
             'name' => $request->name,
             'description' => $request->description,
         ]);
 
-        return redirect()->route('indicator_groups.index')->with('success', 'Nhóm công việc đã được cập nhật thành công.');
+        return redirect()->route('indicator_groups.index')->with('success', 'Nhóm chỉ tiêu đã được cập nhật thành công.');
     }
 
     // Xóa nhóm công việc
@@ -105,7 +115,7 @@ class IndicatorGroupController extends Controller
             $taskTarget->save();
         }
 
-        $taskReults = TaskResult::where('type_id', $indicatorGroup->id)->get();
+        $taskReults = TaskResult::where('id_task_criteria', $indicatorGroup->id)->get();
 
         foreach ($taskReults as $taskReult) {
             $taskReult->isDelete = 1;
@@ -114,6 +124,6 @@ class IndicatorGroupController extends Controller
 
         $indicatorGroup->isDelete = 1;
         $indicatorGroup->save();
-        return redirect()->route('indicator_groups.index')->with('success', 'Nhóm công việc đã được xóa thành công.');
+        return redirect()->route('indicator_groups.index')->with('success', 'Nhóm chỉ tiêu đã được xóa thành công.');
     }
     }

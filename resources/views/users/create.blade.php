@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6 bg-white shadow-md rounded-lg overflow-hidden">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {!! Breadcrumbs::render('CTK') !!}
+        </ol>
+    </nav>
     @if ($errors->any())
         <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
             <ul>

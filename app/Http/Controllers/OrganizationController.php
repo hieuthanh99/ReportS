@@ -113,8 +113,8 @@ class OrganizationController extends Controller
     public function index()
     {
         // Lấy tất cả các tổ chức từ cơ sở dữ liệu và chuyển đổi thành Collection
-        $organizations = Organization::where('isDelete', 0)->get();
-        $oranizationType = OrganizationType::where('isDelete', 0)->get();
+        $organizations = Organization::orderBy('name', 'asc')->where('isDelete', 0)->get();
+        $oranizationType = OrganizationType::orderBy('type_name', 'asc')->where('isDelete', 0)->get();
     
         // Tạo cây tổ chức từ các tổ chức đã lấy
         $tree = $this->buildTree($oranizationType, $organizations);
@@ -207,14 +207,15 @@ class OrganizationController extends Controller
 
             $request->validate([
                 'name' => 'required|string|max:255',
-                'code' => 'required|string|max:255|unique:organizations,code|max:5',
+                'code' => 'required|string|max:255|max:5',
              ], [
                  'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
                  'code.unique' => 'Mã cơ quan, tổ chức đã tồn tại.',
-                 'code.max' => 'Mã loại nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
+                 'code.max' => 'Mã loại cơ quan chỉ được phép có tối đa 5 ký tự.',
                  'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
              ]);
-    
+            $exitItem = Organization::where('isDelete', 0)->where('code', $request->code)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             $organization = Organization::create([
                 'name' => $request->name,
                 'code' => $request->code,
@@ -223,13 +224,14 @@ class OrganizationController extends Controller
                 'phone' => $request->phone,
                 'address' => $request->address,
                 'website' => $request->website,
-                'parent_id' => $request->parent_id,
+                'parent_id' => $request->parent_id ?? null,
+                'organization_type_id' => $request->organization_type_id,
                 'creator' => auth()->id(),
             ]);
             DB::commit();
             session()->flash('success', 'Tổ chức mới đã được thêm thành công!');
     
-            return redirect()->route('organizations.index')->with('success', 'Danh mục tạo thành công!');
+            return redirect()->route('organizations.index')->with('success', 'Tổ chức mới đã được thêm thành công!');
 
 /*             return response()->json(['success' => true, 'organization' => $organization]);
  */  
@@ -277,14 +279,18 @@ class OrganizationController extends Controller
         $organization = Organization::find($id);
         try {
             $request->validate([
-                'code' => 'required|unique:organizations,code|max:5'. $id,
+                'code' => [
+                    'required',
+                    'max:5'
+                ],
                  'name' => 'required', // Validation rule for textarea
              ], [
                  'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
                  'code.unique' => 'Mã cơ quan, tổ chức đã tồn tại.',
                  'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
              ]);
-    
+             $exitItem = Organization::where('isDelete', 0)->where('code', $request->code)->where('id','!=', $id)->first();
+             if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             $organization->update($request->all());
             DB::commit();
             session()->flash('success', 'Cơ quan, tổ chức đã được cập nhật thành công!');
@@ -296,10 +302,7 @@ class OrganizationController extends Controller
 
             // Ghi lỗi vào log (tùy chọn)
             \Log::error('Error creating document: ' . $e->getMessage());
-            return response()->json([
-                'error' => true,
-                'message' => 'Đã xảy ra lỗi, vui lòng thử lại.'
-            ]);
+            return redirect()->back()->withErrors($e->getMessage())->withInput();
         }
         
       

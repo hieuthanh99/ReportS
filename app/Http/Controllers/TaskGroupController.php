@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TaskGroup;
 use App\Models\TaskTarget;
 use App\Models\TaskResult;
-
+use Illuminate\Validation\Rule; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,9 +13,13 @@ use Illuminate\Support\Facades\DB;
 class TaskGroupController extends Controller
 {
     // Hiển thị danh sách các nhóm công việc
-    public function index()
+    public function index($text=null)
     {
-        $taskGroups = TaskGroup::orderBy('created_at', 'desc')->where('isDelete', 0)->paginate(10);
+        $taskGroups = TaskGroup::orderBy('created_at', 'desc')->where('isDelete', 0);
+        if($text){
+            $taskGroups->where('name', 'like', '%' . $text . '%');
+        }
+        $taskGroups =  $taskGroups->paginate(10);
         return view('task_groups.index', compact('taskGroups'));
     }
 
@@ -33,15 +37,16 @@ class TaskGroupController extends Controller
         try {
                  // Validate input
             $request->validate([
-                'code' => 'required|unique:task_groups,code|max:5',
+                'code' => 'required|max:5',
                 'name' => 'required'
             ], [
-                'code.required' => 'Mã loại nhiệm vụ là bắt buộc.',
-                'code.unique' => 'Mã loại nhiệm vụ đã tồn tại.',
-                'code.max' => 'Mã loại nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
-                'name.required' => 'Tên loại nhiệm vụ là bắt buộc.'
+                'code.required' => 'Mã nhóm nhiệm vụ là bắt buộc.',
+                'code.unique' => 'Mã nhóm nhiệm vụ đã tồn tại.',
+                'code.max' => 'Mã nhóm nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
+                'name.required' => 'Tên nhóm nhiệm vụ là bắt buộc.'
             ]);
-
+            $exitItem = TaskGroup::where('isDelete', 0)->where('code', $request->code)->first();
+            if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             TaskGroup::create([
                 'code' => $request->code,
                 'name' => $request->name,
@@ -50,7 +55,7 @@ class TaskGroupController extends Controller
             ]);
             DB::commit();
     
-            return redirect()->route('task_groups.index')->with('success', 'Thêm mới loại nhiệm vụ thành công!');
+            return redirect()->route('task_groups.index')->with('success', 'Thêm mới nhóm nhiệm vụ thành công!');
     
         } catch (\Exception $e) {
             DB::rollBack();
@@ -76,23 +81,28 @@ class TaskGroupController extends Controller
     public function update(Request $request, TaskGroup $taskGroup)
     {
         $request->validate([
-            'code' => 'required|unique:task_groups,code|max:5'. $taskGroup->id,
+            // 'code' => 'required|unique:task_groups,code|max:5'. $taskGroup->id,
+            'code' => [
+                'required',
+                'max:5'
+            ],
             'name' => 'required'
         ], [
-            'code.required' => 'Mã loại nhiệm vụ là bắt buộc.',
-            'code.unique' => 'Mã loại nhiệm vụ đã tồn tại.',
-            'code.max' => 'Mã loại nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
-            'name.required' => 'Tên loại nhiệm vụ là bắt buộc.'
+            'code.required' => 'Mã nhóm nhiệm vụ là bắt buộc.',
+            'code.unique' => 'Mã nhóm nhiệm vụ đã tồn tại.',
+            'code.max' => 'Mã nhóm nhiệm vụ chỉ được phép có tối đa 5 ký tự.',
+            'name.required' => 'Tên nhóm nhiệm vụ là bắt buộc.'
         ]);
 
-
+        $exitItem = TaskGroup::where('isDelete', 0)->where('code', $request->code)->where('id', '!=',$taskGroup->id)->first();
+        if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
         $taskGroup->update([
             'code' => $request->code,
             'name' => $request->name,
             'description' => $request->description,
         ]);
 
-        return redirect()->route('task_groups.index')->with('success', 'Nhóm công việc đã được cập nhật thành công.');
+        return redirect()->route('task_groups.index')->with('success', 'Nhóm nhiệm vụ đã được cập nhật thành công.');
     }
 
     // Xóa nhóm công việc
@@ -105,7 +115,7 @@ class TaskGroupController extends Controller
             $taskTarget->save();
         }
 
-        $taskReults = TaskResult::where('type_id', $taskGroup->id)->get();
+        $taskReults = TaskResult::where('id_task_criteria', $taskGroup->id)->get();
 
         foreach ($taskReults as $taskReult) {
             $taskReult->isDelete = 1;
@@ -114,6 +124,6 @@ class TaskGroupController extends Controller
 
         $taskGroup->isDelete = 1;
         $taskGroup->save();
-        return redirect()->route('task_groups.index')->with('success', 'Nhóm công việc đã được xóa thành công.');
+        return redirect()->route('task_groups.index')->with('success', 'Nhóm nhiệm vụ đã được xóa thành công.');
     }
 }

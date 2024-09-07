@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index($text=null)
     {
         $user = User::find(Auth::id());
-        $tasksTable = TaskTarget::where('type', 'task')->where('isDelete', 0)->paginate(10);
-        $targetsTable = TaskTarget::where('type', 'target')->where('isDelete', 0)->paginate(10);
+        $tasksTable = TaskTarget::where('type', 'task')->where('isDelete', 0);
+        $targetsTable = TaskTarget::where('type', 'target')->where('isDelete', 0);
 
         $taskList = DB::table('task_target')
             ->selectRaw('
@@ -23,10 +23,7 @@ class DashboardController extends Controller
                 status_code, 
                 COUNT(*) as total
             ')->where('type', 'task')
-            ->where('isDelete', 0)
-            ->groupBy('month', 'status_code')
-            ->orderBy('month')->get();
-
+            ->where('isDelete', 0);
 
         $tagertList = DB::table('task_target')
             ->selectRaw('
@@ -34,12 +31,25 @@ class DashboardController extends Controller
                 status_code, 
                 COUNT(*) as total
             ')->where('type', 'target')
-            ->where('isDelete', 0)
-            ->groupBy('month', 'status_code')
-            ->orderBy('month')->get();
+            ->where('isDelete', 0);
 
-        //dd($taskList);
-        // Chuẩn bị dữ liệu cho biểu đồ
+        if($text){
+            $tasksTable = $tasksTable->where('name', 'like', '%' . $text . '%');
+            $targetsTable = $targetsTable->where('name', 'like', '%' . $text . '%');
+            $taskList = $taskList->where('name', 'like', '%' . $text . '%');
+            $tagertList = $tagertList->where('name', 'like', '%' . $text . '%');
+        }
+        $tasksTable = $tasksTable->paginate(10);
+        $targetsTable = $targetsTable->paginate(10);
+
+        $taskList = $taskList
+        ->groupBy('month', 'status_code')
+        ->orderBy('month')->get();
+
+        $tagertList = $tagertList
+        ->groupBy('month', 'status_code')
+        ->orderBy('month')->get();
+            
         $chartDataTask = $this->getJson($taskList);
         $chartDataTarget =  $this->getJson($tagertList);
 

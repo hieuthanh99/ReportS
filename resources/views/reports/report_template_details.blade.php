@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {!! Breadcrumbs::render('THCT') !!}
+            </ol>
+        </nav> 
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -29,7 +34,7 @@
         <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
             Lọc/Filter
         </button>
-        {{-- <a href="{{ url('export-Document') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a> --}}
+        <a href="{{ route('task-documents.export-details') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
         <form method="GET" action="{{ route('reports.withDetails') }}" class="hidden" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
@@ -150,26 +155,6 @@
             const filterForm = document.getElementById('filterForm');
             filterForm.classList.toggle('hidden');
         });
-        document.getElementById('organization_type_id').addEventListener('change', function () {
-            var organizationTypeId = this.value;
-            
-            // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-            fetch(`/get-organizations/${organizationTypeId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Làm rỗng danh sách `parent_id`
-                    var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
-
-                    // Thêm các tùy chọn mới
-                    data.forEach(function (organization) {
-                        var option = document.createElement('option');
-                        option.value = organization.id;
-                        option.text = organization.name;
-                        parentSelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        });
+     
         </script>
 @endsection

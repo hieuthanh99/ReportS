@@ -2,8 +2,8 @@
 
 @section('content')
    
-    <div class="container mx-auto px-4 py-6">
-        <nav aria-label="breadcrumb">
+<div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
+    <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 {!! Breadcrumbs::render('CLNV') !!}
             </ol>
@@ -29,7 +29,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <form action="{{ route('task_groups.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" id="document-form">
+        <form action="{{ route('task_groups.store') }}" method="POST" enctype="multipart/form-data" class="p-6 " id="document-form">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->

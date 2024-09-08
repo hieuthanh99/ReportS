@@ -5,40 +5,57 @@
             <nav>
                 <ul>
                     <li style="cursor: pointer"><i class="fa-solid fa-bars" style="font-size: xx-large;"></i>
-                        <ul> 
+                        <ul class="menu-tree">
                             @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
-                                <li><a href="#" title="">Quản lý danh mục</a>
+                                <li>
+                                    <details open>
+                                        <summary class="btn btn-primary">Quản lý danh mục</summary>
                                     <ul>
-                                        <li><a href="#" title="">Văn bản</a>
+                                        <li>
+                                            <details open>
+                                                <summary>Văn bản</summary>
                                             <ul>
                                                 <li><a href="{{route('documents.index')}}" title="">Danh mục văn bản</a></li>
                                                 <li><a href="{{route('document_categories.index')}}" title="">Phân loại văn bản</a></li>
                                             </ul>
+                                            </details>
                                         </li>
-                                        <li><a href="#" title="">Cơ quan,tổ chức</a>
+                                        <li>
+                                            <details open>
+                                                <summary>Cơ quan,tổ chức</summary>
                                             <ul>
                                                 <li><a href="{{route('organization_types.index')}}" title="">Phân loại cơ quan, tổ chức</a></li>
                                                 <li><a href="{{route('organizations.index')}}" title="">Danh mục cơ quan, tổ chức</a></li>
                                             </ul>
+                                            </details>
                                         </li>
                                         <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
                                         <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
-                                        <li><a href="#" title="">Người dùng</a>
+                                        <li>
+                                            <details open>
+                                                <summary>Người dùng</summary>
                                             <ul>
                                                 <li><a href="{{route('positions.index')}}" title="">Danh mục Chức vụ</a></li>
                                                 <li><a href="{{route('users.index')}}" title="">Danh mục người dùng</a></li>
                                             </ul>
+                                            </details>
                                         </li>
                                     </ul>
+                                    </details>
                                 </li>
-                            <li><a href="#" title="">Quản lý công việc</a>
+                                <li>
+                                    <details open>
+                                        <summary>Quản lý công việc</summary>
                                 <ul>
                                     <li><a href="{{ route('tasks.byType', 'task') }}" title="">Nhiệm vụ</a></li>
                                     <li><a href="{{ route('tasks.byType', 'target') }}" title="">Chỉ tiêu</a></li>
                                 </ul>
+                                    </details>
                             </li>
                             @endif
-                            <li><a href="#" title="">Tổng hợp, báo cáo</a>
+                                <li>
+                                    <details open>
+                                        <summary>Tổng hợp, báo cáo</summary>
                                 <ul>
                                     @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
 
@@ -53,6 +70,7 @@
                                     @endif
                                     <li><a href="{{route('documents.report')}}" title="">Phê duyệt kết quả công việc</a></li>
                                 </ul>
+                                    </details>
                             </li>
                         </ul>
                     </li>

@@ -106,70 +106,68 @@
            
                 </div>
                 <div class="mb-4">
+                    <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản:</label>
+
+                    <select name="category_id" id="category_id" required
+                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                        @foreach ($documentCategory as $item)
+                            <option value="{{ $item->id }}"
+                                {{ $document->category_id == $item->id ? 'selected' : '' }}>
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-4">
                     <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Trích yếu văn bản:</label>
-                   
-                  {{--       <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
-                        class="form-input w-full border border-gray-300 rounded-lg p-2" required> --}}
+
+                    {{--       <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
+                          class="form-input w-full border border-gray-300 rounded-lg p-2" required> --}}
                     <textarea id="document_name" name="document_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ $document->document_name }}</textarea>
 
-                   
-                </div>
-                <div class="mb-4">
-                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan:</label>
-                      
-                            <select name="organization_type_id" id="organization_type_id" required
-                            class="form-input w-full border border-gray-300 rounded-lg p-2">
-                         
-                            @foreach ($organizationsType as $organization)
-                                <option value="{{ $organization->id }}"
-                                    {{ $document->issuingDepartment->organization_type_id == $organization->id ? 'selected' : '' }}>
-                                    {{ $organization->type_name }}
-                                </option>
-                            @endforeach
-                        </select>
-               
-                  
-                </div>
 
-                <div class="mb-4">
-                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan:</label>
-                            <select id="parent_id" name="issuing_department" required
-                          
-                            class="form-input w-full border border-gray-300 rounded-lg p-2">
-                            @foreach ($organizations as $organization)
-                                <option value="{{ $organization->id }}"
-                                    {{ $document->issuing_department == $organization->id ? 'selected' : '' }}>
-                                    {{ $organization->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                
-                </div>
-
-                <div class="mb-4">
-                    <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản:</label>
-                      
-                            <select name="category_id" id="category_id" required
-                            class="form-input w-full border border-gray-300 rounded-lg p-2">
-                            @foreach ($documentCategory as $item)
-                                <option value="{{ $item->id }}"
-                                    {{ $document->category_id == $item->id ? 'selected' : '' }}>
-                                    {{ $item->name }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                  
                 </div>
 
                 <div class="mb-4">
                     <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát hành:</label>
-                  
+
                     <input type="date" placeholder="dd-mm-yyyy"
-                    min="1997-01-01" max="2100-12-31" id="release_date" name="release_date"
-                    @if ($document->creator != auth()->user()->id) readonly @endif
-                    value="{{ $document->release_date }}"
-                    class="form-input w-full border border-gray-300 rounded-lg p-2">
+                           min="1997-01-01" max="2100-12-31" id="release_date" name="release_date"
+                           @if ($document->creator != auth()->user()->id) readonly @endif
+                           value="{{ $document->release_date }}"
+                           class="form-input w-full border border-gray-300 rounded-lg p-2">
+
+                </div>
+
+                <div class="mb-4">
+                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan:</label>
+
+                    <select name="organization_type_id" id="organization_type_id" required
+                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+
+                        @foreach ($organizationsType as $organization)
+                            <option value="{{ $organization->id }}"
+                                {{ $document->issuingDepartment->organization_type_id == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->type_name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                </div>
+
+                <div class="mb-4">
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan:</label>
+                    <select id="parent_id" name="issuing_department" required
+
+                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                        @foreach ($organizations as $organization)
+                            <option value="{{ $organization->id }}"
+                                {{ $document->issuing_department == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->name }}
+                            </option>
+                        @endforeach
+                    </select>
 
                 </div>
             </div>

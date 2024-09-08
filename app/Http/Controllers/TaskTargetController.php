@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\TaskTarget;
+use App\Services\MasterWorkResultTypeService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Document;
@@ -27,7 +28,7 @@ use App\Models\IndicatorGroup;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 class TaskTargetController extends Controller
-{ 
+{
     public function updateRemarks(Request $request)
     {
         DB::beginTransaction();
@@ -116,10 +117,14 @@ class TaskTargetController extends Controller
         $documents = Document::where('isDelete', 0)->get();;
         $categories = Category::where('isDelete', 0)->get();;
         $typeTask = IndicatorGroup::where('isDelete', 0)->get();;
+
+        $workResultTypes = MasterWorkResultTypeService::index();
+        $keyConstants = MasterWorkResultTypeService::keyConstants();
+
         if($type == 'task'){
            $typeTask =  TaskGroup::where('isDelete', 0)->get();;
         }
-        return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories', 'typeTask'));
+        return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories', 'typeTask', 'workResultTypes', 'keyConstants'));
     }
 
     public function deleteOrganization($code, $type, $id)
@@ -164,6 +169,7 @@ class TaskTargetController extends Controller
             $endDate = $request->input('end_date');
             $categoryId = $request->input('category_id');
             $type_id = $request->input('type_id');
+            $result_type = $request->input('result_type');
             // dd($request);
             $taskTargets = TaskTarget::where('code', $code)->where('type', $type)->get();
             $document = Document::findOrFail($request->input("document_id"));
@@ -179,6 +185,7 @@ class TaskTargetController extends Controller
                 $item->category_id =  $categoryId;
                 $item->start_date = $document->release_date;
                 $item->type_id = $type_id;
+                $item->result_type = $result_type;
                 $item->save();
                 DB::commit();
             }
@@ -350,13 +357,16 @@ class TaskTargetController extends Controller
 
         $categories = Category::where('isDelete', 0)->get();
 
+        $workResultTypes = MasterWorkResultTypeService::index();
+        $keyConstants = MasterWorkResultTypeService::keyConstants();
+
         //     use App\Models\TaskGroup;
         // use App\Models\IndicatorGroup;
         $typeTask = IndicatorGroup::where('isDelete', 0)->get();
         if($type == 'task'){
            $typeTask =  TaskGroup::where('isDelete', 0)->get();
         }
-        return view('tasks.create', compact('organizations', 'documents', 'categories', 'type', 'typeTask'));
+        return view('tasks.create', compact('organizations', 'documents', 'categories', 'type', 'typeTask', 'workResultTypes', 'keyConstants'));
     }
 
     public function create()
@@ -417,11 +427,9 @@ class TaskTargetController extends Controller
             ]);
             $user = Auth::user();
             $document = Document::findOrFail($request->input("document_id"));
-            $valueArea = $request->input("request_results_area");
-            $valueNumber = $request->input("request_results_number");
-            $type = $request->input("type");
-            if($type == 'target') $result = $valueNumber;
-            else if($type == 'task') $result = $valueArea;
+            $result = $request->input("request_results");
+            $type_id = $request->input('type_id');
+            $result_type = $request->input('result_type');
             $organizationId = $user->organization_id;
 
             $data['creator'] = Auth::id();
@@ -429,6 +437,8 @@ class TaskTargetController extends Controller
             $data['organization_id'] = $organizationId;
             $data['request_results'] = $result;
             $data['start_date'] = $document->release_date;
+            $data['type_id'] = $type_id;
+            $data['result_type'] = $result_type;
             // Tạo bản ghi mới
             // dd($data);
             $taskTarget = TaskTarget::create($data);
@@ -516,8 +526,8 @@ class TaskTargetController extends Controller
             if($exitItem){
                 DB::rollBack();
                 return redirect()->back()->with('error', 'Mã đã tồn tại!');
-                
-            }  
+
+            }
             $item->update($request->all());
             DB::commit();
         }

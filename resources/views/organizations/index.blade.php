@@ -116,7 +116,7 @@
         }
     </style>
     <div class="container mx-auto">
-        
+
         @if ($errors->any())
             <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
@@ -159,18 +159,21 @@
                     <p class="text-gray-500">Chưa có danh mục nào. Hãy thêm danh mục mới.</p>
                 @else
                 <ul>
-                    @foreach ($tree as $node)
+                    @php($displayInd = -1)
+                    @foreach ($tree as $idx => $node)
                         <li class="mb-2">
-                            <!-- Level 1: Organization Type -->
-                            <div class="flex items-center">
-                                <button onclick="toggleChildren(this)" class="toggle-children text-gray-600 hover:text-gray-800 mr-2">
-                                    <i class="fas fa-plus"></i> <!-- Icon + -->
-                                </button>
-                                <strong class="text-blue-600 ml-2">{{ $node['name'] }}</strong>
-                            </div>
-                         
                             @if (!empty($node['children']))
-                                <ul class="ml-4 space-y-2 hidden">
+                                @if($displayInd == -1)
+                                    @php($displayInd = $idx)
+                                @endif
+                                <!-- Level 1: Organization Type -->
+                                    <div class="flex items-center">
+                                        <button onclick="toggleChildren(this)" class="toggle-children text-gray-600 hover:text-gray-800 mr-2">
+                                            <i class="fas {{$displayInd == $idx ? 'fa-minus' : 'fa-plus'}}"></i> <!-- Icon + -->
+                                        </button>
+                                        <strong class="text-blue-600 ml-2">{{ $node['name'] }}</strong>
+                                    </div>
+                                <ul class="ml-4 space-y-2 {{$displayInd == $idx ? '' : 'hidden'}}">
                                     @foreach ($node['children'] as $organization)
                                         @include('organizations.partials.node', ['node' => $organization])
                                     @endforeach
@@ -382,6 +385,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            let orgs = document.getElementsByClassName('organizations')
+            if(orgs) {
+                loadDetails(orgs[0].value)
+            }
             document.getElementById('delete-button').addEventListener('click', function() {
                 const organizationId = document.getElementById('organization_id').value;
                 if (organizationId) {
@@ -493,9 +500,9 @@
                 <p><strong>Mã phòng ban:</strong> ${organization.code}</p>
           
                 <p><strong>Email:</strong> ${organization.email}</p>
-                <p><strong>Số điện thoại:</strong> ${organization.phone}</p>
-                <p><strong>Địa chỉ:</strong> ${organization.address}</p>
-                <p><strong>Website:</strong> ${organization.website}</p>
+                <p><strong>Số điện thoại:</strong> ${organization.phone !== null ? organization.phone : ''}</p>
+                <p><strong>Địa chỉ:</strong> ${organization.address !== null ? organization.address : ''}</p>
+                <p><strong>Website:</strong> ${organization.website !== null ? organization.website : ''}</p>
             `;
             document.getElementById('organization_id').value = organization.id;
 

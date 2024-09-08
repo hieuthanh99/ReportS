@@ -89,11 +89,29 @@
                 </div>
                 <div class="mb-4">
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
-                    @if($type == 'task')
-                        <textarea id="request_results" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ $taskTarget->request_results }}</textarea>
-                    @else
-                        <input type="number" name="request_results" id="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="{{ $taskTarget->request_results }}" step="any">
-                    @endif
+                    <select name="result_type" id="result_type" onchange="changeResultType(this.value)" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                        @foreach ($workResultTypes as $idx => $item)
+                            @continue($type != 'task' && $idx == 4)
+                            <option value="{{ $item->key }}" {{ $taskTarget->result_type == $item->key ? 'selected' : '' }}>
+                                {{ $item->value }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div id="result-area">
+                        @if($keyConstants[0] == $taskTarget->result_type)
+                                <input type="hidden" value="Yes" id="issuing_department" name="request_results">
+                                <input type="radio" id="yes" name="yes" value="Yes" {{ ($taskTarget->request_results == 'Yes') ? 'checked' : '' }} onclick="selectType(this.value)">
+                                <label for="yes">Yes</label><br>
+                                <input type="radio" id="no" name="no" value="No" {{ $taskTarget->request_results == 'No' ? 'checked' : '' }} onclick="selectType(this.value)">
+                                <label for="no">No</label><br>
+                        @elseif($keyConstants[4] == $taskTarget->result_type && $type == 'task')
+                            <textarea id="issuing_department" style="height: 62px" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ $taskTarget->request_results }}</textarea>
+                        @elseif($keyConstants[1] == $taskTarget->result_type)
+                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="{{ $taskTarget->request_results }}" oninput="this.value = this.value.replace('.', '')" step="1">
+                        @elseif($keyConstants[2] == $taskTarget->result_type || $keyConstants[3] == $taskTarget->result_type)
+                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="{{ $taskTarget->request_results }}" step="any">
+                        @endif
+                    </div>
                 </div>
 
               
@@ -190,6 +208,59 @@
      </div>
     </div>
 <script>
+    function changeResultType(value) {
+        let selectedType = {!! json_encode($taskTarget->result_type) !!};
+        let keys = {!! json_encode($keyConstants) !!};
+        let workType = {!! json_encode($type) !!};
+        let element = document.getElementById('result-area');
+        if(value == keys[0]) {
+            element.innerHTML =
+                '            <input type="hidden" value="Yes" id="issuing_department" name="request_results">' +
+                '            <input type="radio" id="yes" name="yes" value="Yes" onclick="selectType(this.value)" checked>\n' +
+                '            <label for="yes">Yes</label><br>\n' +
+                '            <input type="radio" id="no" name="no" value="No" onclick="selectType(this.value)">\n' +
+                '            <label for="no">No</label><br>'
+
+            if(selectedType === value) {
+                let yesBtn = document.getElementById('yes');
+                let noBtn = document.getElementById('no');
+                let selectedValue = {!! json_encode($taskTarget->request_results) !!};
+                if(selectedValue == yesBtn.value) {
+                    yesBtn.setAttribute('checked', 'checked')
+                    noBtn.checked = false
+                }
+                else {
+                    yesBtn.checked = false
+                    noBtn.setAttribute('checked', 'checked')
+                }
+            }
+
+        }
+        else if(value == keys[4] && workType == 'task') {
+            element.innerHTML = '<textarea id="issuing_department" style="height: 62px" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '</textarea>'
+        }
+        else if(value == keys[1]) {
+            element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '" oninput="this.value = this.value.replace(\'.\', \'\')" step="1">'
+        }
+        else if(value == keys[2] || value == keys[3]) {
+            element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '" step="any">'
+        }
+    }
+
+    function selectType(value) {
+        document.getElementById('issuing_department').value = value
+        let yesBtn = document.getElementById('yes');
+        let noBtn = document.getElementById('no');
+        if(value == yesBtn.value) {
+            yesBtn.setAttribute('checked', 'checked')
+            noBtn.checked = false
+        }
+        else {
+            yesBtn.checked = false
+            noBtn.setAttribute('checked', 'checked')
+        }
+    }
+
     document.getElementById('document_id').addEventListener('change', generateTaskCode);
         function generateTaskCode() {
             const documentSelect = document.getElementById('document_id');

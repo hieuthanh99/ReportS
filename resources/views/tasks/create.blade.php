@@ -45,6 +45,21 @@
                     <input type="text" readonly id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code') }}">
                 </div>
                 <div class="mb-4">
+                    <label for="document_id" class="block text-gray-700 text-sm font-medium mb-2">Văn bản <span class="text-red-500">*</span></label>
+
+                    <select name="document_id" id="document_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required >
+                        <option value="" data-code="">Chọn văn bản
+                        </option>
+                        @foreach ($documents as $item)
+                            <option value="{{ $item->id }}" data-code="{{ $item->document_code }}" {{ old('document_id') == $item->id ? 'selected' : '' }}>
+                                {{ $item->document_name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                </div>
+
+                <div class="mb-4">
                     <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Nhóm {{ $text }} <span class="text-red-500">*</span></label>
                  
                     <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required >
@@ -57,57 +72,42 @@
                     </select>
           
                 </div>
-             
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                <div class="flex gap-6 mb-4">
-                    <div class="flex-1">
-                        <label for="document_id" class="block text-gray-700 text-sm font-medium mb-2">Văn bản <span class="text-red-500">*</span></label>
-                        
-                        <select name="document_id" id="document_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required >
-                            <option value="" data-code="">Chọn văn bản
+                <div class="mb-4">
+                    <label for="cycle_type" class="block text-gray-700 text-sm font-medium mb-2">Chu kỳ báo cáo <span class="text-red-500">*</span></label>
+                    <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2" required>
+                        <option value="1" {{ old('cycle_type') == '1' ? 'selected' : '' }}>Tuần</option>
+                        <option value="2" {{ old('cycle_type') == '2' ? 'selected' : '' }}>Tháng</option>
+                        <option value="3" {{ old('cycle_type') == '3' ? 'selected' : '' }}>Quý</option>
+                        <option value="4" {{ old('cycle_type') == '4' ? 'selected' : '' }}>Năm</option>
+                    </select>
+
+                </div>
+
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên {{ $text }} <span class="text-red-500">*</span></label>
+                    <textarea id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('name') }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
+                    <select name="result_type" id="result_type" onchange="changeResultType(this.value)" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                        @foreach ($workResultTypes as $idx => $item)
+                            @continue($type != 'task' && $idx == 4)
+                            <option value="{{ $item->key }}">
+                                {{ $item->value }}
                             </option>
-                            @foreach ($documents as $item)
-                                <option value="{{ $item->id }}" data-code="{{ $item->document_code }}" {{ old('document_id') == $item->id ? 'selected' : '' }}>
-                                    {{ $item->document_name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        @endforeach
+                    </select>
+                    <div id="result-area">
+                        <input type="hidden" value="Yes" id="issuing_department" name="request_results">
+                        <input type="radio" id="yes" name="yes" value="Yes" checked onclick="selectType(this.value)">
+                        <label for="yes">Yes</label><br>
+                        <input type="radio" id="no" name="no" value="No" onclick="selectType(this.value)">
+                        <label for="no">No</label><br>
                     </div>
-                    <div class="flex-1">
-                        <label for="cycle_type" class="block text-gray-700 text-sm font-medium mb-2">Chu kỳ báo cáo <span class="text-red-500">*</span></label>
-                        <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2" required>
-                            <option value="1" {{ old('cycle_type') == '1' ? 'selected' : '' }}>Tuần</option>
-                            <option value="2" {{ old('cycle_type') == '2' ? 'selected' : '' }}>Tháng</option>
-                            <option value="3" {{ old('cycle_type') == '3' ? 'selected' : '' }}>Quý</option>
-                            <option value="4" {{ old('cycle_type') == '4' ? 'selected' : '' }}>Năm</option>
-                        </select>
-                    </div>
-                   
-                   
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4" >
-                    <div class="mb-4">
-                        <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên {{ $text }} <span class="text-red-500">*</span></label>
-                        <textarea id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('name') }}</textarea>
-                    </div>
-                    <div class="mb-4">
-                        <input type="hidden" id="request_results" name="request_results" value="">
-                        @if($type == 'task')
-                        <div id="text_area_div">
-                            <label for="request_results_area" class="block text-gray-700 text-sm font-medium mb-2">Kết quả</label>
-                            <textarea id="request_results_area" name="request_results_area" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ old('required_result') }}</textarea>
-                        </div>
-                        @else
-                        <div id="number_input_div" >
-                            <label for="request_results_number" class="block text-gray-700 text-sm font-medium mb-2">Kết quả số</label>
-                            <input type="number" name="request_results_number" id="request_results_number" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="{{ old('required_result') }}" step="any">
-                        </div>
-                        @endif
-                    </div>
-                   
-                </div>
+
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
@@ -192,6 +192,44 @@
                     // Hiển thị loader khi form được gửi
                     document.getElementById('loading').classList.remove('hidden');
                 });
+
+            function changeResultType(value) {
+                let keys = {!! json_encode($keyConstants) !!};
+                let workType = {!! json_encode($type) !!};
+                let element = document.getElementById('result-area');
+                if(value == keys[0]) {
+                    element.innerHTML =
+                        '            <input type="hidden" value="Yes" id="issuing_department" name="request_results">' +
+                        '            <input type="radio" id="yes" name="yes" value="Yes" onclick="selectType(this.value)" checked>\n' +
+                        '            <label for="yes">Yes</label><br>\n' +
+                        '            <input type="radio" id="no" name="no" value="No" onclick="selectType(this.value)">\n' +
+                        '            <label for="no">No</label><br>'
+
+                }
+                else if(value == keys[4] && workType == 'task') {
+                    element.innerHTML = '<textarea id="issuing_department" style="height: 62px" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4"></textarea>'
+                }
+                else if(value == keys[1]) {
+                    element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="" oninput="this.value = this.value.replace(\'.\', \'\')" step="1">'
+                }
+                else {
+                    element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="" step="any">'
+                }
+            }
+
+            function selectType(value) {
+                document.getElementById('issuing_department').value = value
+                let yesBtn = document.getElementById('yes');
+                let noBtn = document.getElementById('no');
+                if(value == yesBtn.value) {
+                    yesBtn.setAttribute('checked', 'checked')
+                    noBtn.checked = false
+                }
+                else {
+                    yesBtn.checked = false
+                    noBtn.setAttribute('checked', 'checked')
+                }
+            }
         </script>
     </div>
 @endsection

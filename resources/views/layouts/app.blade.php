@@ -23,7 +23,7 @@
         <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/css/menu.css', 'resources/js/app.js'])
         <style>
             /* public/css/app.css */
             .breadcrumb {

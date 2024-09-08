@@ -36,7 +36,8 @@ class TaskTarget extends Model
         'is_completed',
         'type_id',
         'status_code',
-        'isDelete'
+        'isDelete',
+        'result_type'
     ];
     public function taskResults()
     {
@@ -55,12 +56,12 @@ class TaskTarget extends Model
     {
         // Chuyển đổi giá trị status_code thành enum
         $status = TaskStatus::tryFrom($this->status_code);
-    
+
         if ($status) {
             // Lấy mô tả từ phương thức label() của enum
             return $status->label();
         }
-    
+
         // Nếu giá trị không hợp lệ, trả về mô tả mặc định hoặc thông báo lỗi
         return 'Trạng thái không hợp lệ';
     }
@@ -131,7 +132,7 @@ class TaskTarget extends Model
         return $data ?? null;
     }
 
-    
+
 
     public function hasOrganizationAppro()
     {
@@ -142,7 +143,7 @@ class TaskTarget extends Model
         $organizationTaskId = $this->organization_id;
 
         if ($organizationTaskId === $organizationId) {
-        
+
             if($user->role == 'sub_admin') return true;
         }
         //$organizationChild = Organization::where('id', $organizationTaskId)->first();
@@ -194,7 +195,7 @@ class TaskTarget extends Model
         return $this->belongsTo(Organization::class);
     }
 
-   
+
     public function issuingDepartment()
     {
         return $this->belongsTo(Organization::class, 'organization_id');

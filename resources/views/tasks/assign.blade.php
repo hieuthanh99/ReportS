@@ -110,10 +110,33 @@
           <button type="button" id="assign-organizations-save" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Giao việc</button>
         </div>
 
+        <div id="assigned-area" style="display: none">
+            <div class="mb-4 overflow-x-auto table-wrapper" style="max-height: 500px; overflow-y: auto;">
+                <label for="assigned-organizations-table" class="block text-gray-700">Đã giao việc: </label>
+                <table id="assigned-organizations-table" class="w-full border border-gray-300 rounded-lg">
+                    <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">Mã Đầu việc</th>
+                        <th class="py-2 px-4 border-b">Mã Cơ quan/tổ chức</th>
+                        <th class="py-2 px-4 border-b">Tên Cơ quan/Tổ chức</th>
+                        <th class="py-2 px-4 border-b">Email</th>
+                        <th class="py-2 px-4 border-b">Số điện thoại</th>
+                    </tr>
+                    </thead>
+                    <tbody id="assigned-organizations" style="text-align: center">
+                    <!-- Danh sách chỉ tiêu sẽ được chèn vào đây bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="space-x-4 text-right">
+                <button id="btn-complete" class="btn bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">Hoàn thành</button>
+            </div>
+        </div>
     </div>
 </div>
 <script>
-     document.getElementById('organization_type_id').addEventListener('change', function () {
+    var assignedOrgLst = [];
+    document.getElementById('organization_type_id').addEventListener('change', function () {
                 var organizationTypeId = this.value;
                 
                 // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
@@ -243,8 +266,8 @@
             .then(data => {
                 console.log(data);
                 if (data.success && data.type) {
-                    var url = "/tasks/type/"+ encodeURIComponent(data.type)+ "?success=" + encodeURIComponent(data.message);
-                    window.location.href = url;
+                    renderAssignTable(organizations)
+                    document.getElementById('assigned-area').style.display = 'block'
                 } else {
                     alert('Đã xảy ra lỗi!');
                 }
@@ -254,7 +277,62 @@
                 alert('Đã xảy ra lỗi!');
             });
         });
+        document.getElementById('btn-complete').addEventListener('click', function() {
+            window.location.href = document.referrer;
+        });
     });
+
+    function renderAssignTable(data) {
+        const taskTargetId = document.getElementById('task-target-id').value;
+        const taskTargetCode = document.getElementById('task-target-code').value;
+        const tasksTableBody = document.getElementById('assigned-organizations');
+
+        data.forEach(task => {
+            if(assignedOrgLst.includes(task.code)) return;
+            assignedOrgLst.push(task.code);
+            const row = document.createElement('tr');
+
+            // Tên công việc
+            const taskCodeAssignCell = document.createElement('td');
+            taskCodeAssignCell.textContent = taskTargetCode;
+            taskCodeAssignCell.classList.add('task-code');
+
+
+            const taskIdAssignCell = document.createElement('td');
+            taskIdAssignCell.textContent = taskTargetId;
+            taskIdAssignCell.classList.add('task-id');
+            taskIdAssignCell.style.display = 'none';
+
+            // Mã công việc
+            const codeCell = document.createElement('td');
+            codeCell.textContent = task.code;
+            codeCell.classList.add('organization-code');
+
+            // Tên công việc
+            const nameCell = document.createElement('td');
+            nameCell.textContent = task.name;
+            nameCell.classList.add('organization-name');
+            // Tên công việc
+            const emailCell = document.createElement('td');
+            emailCell.textContent = task.email;
+            emailCell.classList.add('organization-email');
+
+            // Tên công việc
+            const phoneCell = document.createElement('td');
+            phoneCell.textContent = task.phone;
+            phoneCell.classList.add('organization-phone');
+
+            row.appendChild(taskCodeAssignCell);
+            row.appendChild(taskIdAssignCell);
+            row.appendChild(codeCell);
+            row.appendChild(nameCell);
+            row.appendChild(emailCell);
+            row.appendChild(phoneCell);
+
+
+            tasksTableBody.appendChild(row);
+        });
+    }
     // document.addEventListener('DOMContentLoaded', function() {
     //     const organizationsMap = new Map();
     //     let taskCodeRow;

@@ -1,0 +1,35 @@
+.menu-tree {
+    --spacing: 1.5rem;
+    --radius: 10px;
+}
+
+.menu-tree li {
+    display: block;
+    position: relative;
+    padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+}
+
+.menu-tree li summary {
+    line-height: 35px;
+}
+
+/*.menu-tree li a {*/
+/*    line-height: 40px;*/
+/*}*/
+
+.menu-tree ul {
+    display: block;
+    margin-left: calc(var(--radius) - var(--spacing));
+    padding-left: 10px;
+    position: initial;
+    min-width: auto;
+}
+
+.menu-tree ul li {
+    border-left: 2px solid #ddd;
+}
+
+.menu-tree ul li:last-child {
+    border-color: transparent;
+}
+

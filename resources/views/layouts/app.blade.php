@@ -23,8 +23,51 @@
         <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/css/menu.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css','resources/js/app.js'])
         <style>
+            input[readonly] {
+    background-color: #e9ecef; /* Màu nền giống như input disabled */
+    color: #6c757d;            /* Màu chữ nhạt hơn */
+    border-color: #ced4da;      /* Màu viền nhạt hơn */
+    cursor: not-allowed;        /* Đổi con trỏ thành biểu tượng cấm */
+    pointer-events: none;       /* Ngăn tương tác người dùng */
+}
+.menu-tree {
+    --spacing: 1.5rem;
+    --radius: 10px;
+}
+
+.menu-tree li {
+    display: block;
+    position: relative;
+    padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+}
+
+.menu-tree li summary {
+    line-height: 35px;
+}
+
+/*.menu-tree li a {*/
+/*    line-height: 40px;*/
+/*}*/
+
+.menu-tree ul {
+    display: block;
+    margin-left: calc(var(--radius) - var(--spacing));
+    padding-left: 10px;
+    position: initial;
+    min-width: auto;
+}
+
+.menu-tree ul li {
+    border-left: 2px solid #ddd;
+}
+
+.menu-tree ul li:last-child {
+    border-color: transparent;
+}
+
+
             /* public/css/app.css */
             .breadcrumb {
                 padding: 0;

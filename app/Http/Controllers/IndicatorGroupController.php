@@ -15,7 +15,7 @@ class IndicatorGroupController extends Controller
     // Hiển thị danh sách các nhóm công việc
     public function index($text=null)
     {
-        $taskGroups = IndicatorGroup::where('isDelete', 0)->orderBy('created_at', 'desc');
+        $taskGroups = IndicatorGroup::where('isDelete', 0)->orderBy('name', 'asc');
         if($text){
             $taskGroups->where('name', 'like', '%' . $text . '%');
         }

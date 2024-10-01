@@ -107,9 +107,9 @@
                         @elseif($keyConstants[4] == $taskTarget->result_type && $type == 'task')
                             <textarea id="issuing_department" style="height: 62px" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ $taskTarget->request_results }}</textarea>
                         @elseif($keyConstants[1] == $taskTarget->result_type)
-                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="{{ $taskTarget->request_results }}" oninput="this.value = this.value.replace('.', '')" step="1">
+                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="99999999999999" value="{{ $taskTarget->request_results }}" oninput="this.value = this.value.replace('.', '')" step="1">
                         @elseif($keyConstants[2] == $taskTarget->result_type || $keyConstants[3] == $taskTarget->result_type)
-                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="{{ $taskTarget->request_results }}" step="any">
+                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="99999999999999" value="{{ $taskTarget->request_results }}" step="any">
                         @endif
                     </div>
                 </div>
@@ -240,10 +240,10 @@
             element.innerHTML = '<textarea id="issuing_department" style="height: 62px" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '</textarea>'
         }
         else if(value == keys[1]) {
-            element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '" oninput="this.value = this.value.replace(\'.\', \'\')" step="1">'
+            element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="99999999999999" value="' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '" oninput="this.value = this.value.replace(\'.\', \'\')" step="1">'
         }
         else if(value == keys[2] || value == keys[3]) {
-            element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="100" value="' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '" step="any">'
+            element.innerHTML = '<input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="99999999999999" value="' + (selectedType === value ? '{{$taskTarget->request_results }}' :'') + '" step="any">'
         }
     }
 

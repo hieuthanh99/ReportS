@@ -32,14 +32,6 @@
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="mb-4">
-                <label for="code" class="block text-gray-700">Mã cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                <input type="text" name="code" id="code" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('code') }}" >
-            </div>
-            <div class="mb-4">
-                <label for="name" class="block text-gray-700">Tên cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                <input type="text" name="name" id="name" class="w-full border rounded-lg px-3 py-2 mt-1"value="{{ old('name') }}">
-            </div>
-            <div class="mb-4">
                 <label for="organization_type_id" class="block text-gray-700">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
                 <select name="organization_type_id" id="organization_type_id" class="w-full border rounded-lg px-3 py-2 mt-1">
                     <option value="" {{ old('organization_type_id') ? '' : 'selected' }}>Chọn loại cơ quan</option>
@@ -50,7 +42,16 @@
                     @endforeach
                 </select>
             </div>
+         
             <div class="mb-4">
+                <label for="name" class="block text-gray-700">Tên cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                <input type="text" name="name" id="name" class="w-full border rounded-lg px-3 py-2 mt-1"value="{{ old('name') }}">
+            </div>
+            <div class="mb-4">
+                <label for="code" class="block text-gray-700">Mã cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                <input type="text" name="code" id="code" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('code') }}" >
+            </div>
+            <div class="mb-4" style="display:none">
                 <label for="parent_id" class="block text-gray-700">Chọn cơ quan, tổ chức cấp trên</label>
                 <select name="parent_id" id="parent_id" class="w-full border rounded-lg px-3 py-2 mt-1">
                     <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>

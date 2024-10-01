@@ -105,9 +105,9 @@
                 </div>
                 
                 <div class="mb-4">
-                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan<span class="text-red-500">*</span></label>
+                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan ban hành<span class="text-red-500">*</span></label>
                     <select id="organization_type_id" name="organization_type_id" class="form-input w-full border border-gray-300 rounded-lg p-2">
-                        <option value="">Chọn loại cơ quan thực hiện</option>
+                        <option value="">Chọn loại cơ quan ban hành</option>
                         @foreach($organizationsType as $organization)
                             <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
                                 {{ $organization->type_name }}
@@ -118,7 +118,7 @@
                 <div class="mb-4">
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban hành <span class="text-red-500">*</span></label>
                     <select name="issuing_department" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="" {{ old('issuing_department') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
+                        <option value="" {{ old('issuing_department') ? '' : 'selected' }}>Chọn cơ quan ban hành</option>
                     </select>
 
                 

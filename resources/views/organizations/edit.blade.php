@@ -67,7 +67,7 @@
                             @endforeach
                         </select>
                 </div>
-                <div class="mb-4">
+                <div class="mb-4" style="display:none">
                     <label for="parent_id" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan, tổ chức cha:</label>
                         <select name="parent_id" id="parent_id"
                             class="form-input w-full border border-gray-300 rounded-lg p-2">

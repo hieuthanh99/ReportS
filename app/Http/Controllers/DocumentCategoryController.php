@@ -26,7 +26,8 @@ class DocumentCategoryController extends Controller
             $categories->where('name', 'like', '%' . $text . '%');
         }
         $categories =  $categories->paginate(10);
-        return view('document_categories.index', compact('categories'));
+        $countsl =  $categories->count();
+        return view('document_categories.index', compact('categories', 'countsl'));
     }
 
     public function create()

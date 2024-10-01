@@ -15,7 +15,7 @@ class TaskGroupController extends Controller
     // Hiển thị danh sách các nhóm công việc
     public function index($text=null)
     {
-        $taskGroups = TaskGroup::orderBy('created_at', 'desc')->where('isDelete', 0);
+        $taskGroups = TaskGroup::orderBy('name', 'asc')->where('isDelete', 0);
         if($text){
             $taskGroups->where('name', 'like', '%' . $text . '%');
         }

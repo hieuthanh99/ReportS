@@ -110,10 +110,7 @@
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $item->code }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $item->type_name }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                {{-- <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
-                                onclick="window.location.href='{{ route('organization_types.show', $item) }}'">
-                                <i class="fas fa-info-circle"></i> <!-- Biểu tượng cho "Chi tiết" -->
-                            </button> --}}
+                                {{ $item->description }}
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
@@ -122,12 +119,12 @@
                                 </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <form id="delete-form" action="{{ route('organization_types.destroy', $item) }}" method="POST" style="display:inline;">
+                                <form id="delete-form-{{ $item->id }}" action="{{ route('organization_types.destroy', $item) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="button"
                                         class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete()">
+                                        onclick="confirmDelete({{ $item->id }})">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>
@@ -143,7 +140,7 @@
         </div>
     </div>
     <script>
-        function confirmDelete() {
+        function confirmDelete(id) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',
                 text: 'Xác nhận xóa!',
@@ -155,7 +152,7 @@
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('delete-form').submit();
+                    document.getElementById('delete-form-' + id).submit();
                 }
             });
         }

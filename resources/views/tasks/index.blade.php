@@ -144,28 +144,24 @@
                             </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                               
 
-                                <form id ="delete-form" action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}" method="POST">
+                                <form id="delete-form-{{ $index + $taskTargets->firstItem() }}" action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="button"
                                         class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete()">
+                                        onclick="confirmDelete({{ $index + $taskTargets->firstItem() }})">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>
                             </td>
-
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
                                     data-task-id="{{ $item->code }}"
                                     class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                       <i class="fa fa-history"></i>
                                 </button>
-                            
                             </td>
-                            
                         </tr>
                     @endforeach
                 </tbody>
@@ -207,7 +203,7 @@
             const filterForm = document.getElementById('filterForm');
             filterForm.classList.toggle('hidden');
         });
-        function confirmDelete() {
+        function confirmDelete(id) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',
                 text: 'Xác nhận xóa!',
@@ -219,7 +215,7 @@
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('delete-form').submit();
+                    document.getElementById('delete-form-' + id).submit();
                 }
             });
         }

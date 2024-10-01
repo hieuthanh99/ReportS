@@ -115,31 +115,16 @@ class OrganizationController extends Controller
         // Lấy tất cả các tổ chức từ cơ sở dữ liệu và chuyển đổi thành Collection
         $organizations = Organization::orderBy('name', 'asc')->where('isDelete', 0)->get();
         $oranizationType = OrganizationType::orderBy('type_name', 'asc')->where('isDelete', 0)->get();
-    
+        $organizationsCount = Organization::count();
+
         // Tạo cây tổ chức từ các tổ chức đã lấy
         $tree = $this->buildTree($oranizationType, $organizations);
     
         // Chuyển đổi mảng cây thành Collection
         $tree = collect($tree);
     
-        return view('organizations.index', compact('tree', 'oranizationType', 'organizations'));
+        return view('organizations.index', compact('tree', 'oranizationType', 'organizations', 'organizationsCount'));
     }
-    // private function buildTree($elements, $parentId = null)
-    // {
-    //     $branch = [];
-    
-    //     foreach ($elements as $element) {
-    //         if ($element['parent_id'] == $parentId) {
-    //             $children = $this->buildTree($elements, $element['id']);
-    //             if ($children) {
-    //                 $element['children'] = $children;
-    //             }
-    //             $branch[] = $element;
-    //         }
-    //     }
-    
-    //     return $branch;
-    // }
     private function buildTree($organizationTypes, $organizations)
     {
         $branch = [];

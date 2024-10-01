@@ -151,9 +151,7 @@
             <div class="flex justify-between items-center mb-6">
                 <a href="{{ route('organizations.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới cơ quan</a>
             </div>
-
-            
-
+            <div style="padding: 10px 0;">Tổng số lượng: {{ $organizationsCount }} bản ghi</div>
             <div class="overflow-x-auto bg-white p-6 border rounded-lg shadow-lg">
                 @if ($tree->isEmpty())
                     <p class="text-gray-500">Chưa có danh mục nào. Hãy thêm danh mục mới.</p>
@@ -173,11 +171,23 @@
                                         </button>
                                         <strong class="text-blue-600 ml-2">{{ $node['name'] }}</strong>
                                     </div>
-                                <ul class="ml-4 space-y-2 {{$displayInd == $idx ? '' : 'hidden'}}">
+                                    @if (!empty($node['children']))
+                                    <ul class="ml-4 space-y-2 {{$displayInd == $idx ? '' : 'hidden'}}">
+                                        @foreach ($node['children'] as $organization)
+                                            @include('organizations.partials.node', ['node' => $organization])
+                                        @endforeach
+                                    </ul>
+                                @endif
+                                {{-- <ul class="ml-4 space-y-2 {{$displayInd == $idx ? '' : 'hidden'}}">
                                     @foreach ($node['children'] as $organization)
                                         @include('organizations.partials.node', ['node' => $organization])
                                     @endforeach
-                                </ul>
+                                </ul> --}}
+                            @else
+                            <div class="flex items-center">
+                     
+                                <strong class="text-blue-600 ml-2">{{ $node['name'] }}</strong>
+                            </div>
                             @endif
                         </li>
                     @endforeach

@@ -61,10 +61,11 @@
                 </thead>
                 <tbody>
                     @foreach ($paginatedResults as $index => $item)
+                    @if($item['organization'])
                         <tr class="border-b border-gray-200">
                        
-                            <td class="py-3 border border-gray-300 px-6">{{ $item['organization']->code }}</td>
-                            <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item['organization']->name }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item['organization']->code ?? ""  }}</td>
+                            <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item['organization']->name ?? ""  }}</td>
                             <td class="py-3 border border-gray-300 px-6">
                                 {{ $item['organization']->organizationType->type_name ?? "" }}
                             </td>
@@ -99,6 +100,7 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item['latest_result']->result ?? ''}}</td>
                         
                         </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>

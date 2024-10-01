@@ -29,8 +29,7 @@
                                             </ul>
                                             </details>
                                         </li>
-                                        <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
-                                        <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
+                                       
                                         <li>
                                             <details open>
                                                 <summary>Người dùng</summary>
@@ -47,7 +46,9 @@
                                     <details open>
                                         <summary>Quản lý công việc</summary>
                                 <ul>
+                                    <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
                                     <li><a href="{{ route('tasks.byType', 'task') }}" title="">Nhiệm vụ</a></li>
+                                    <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
                                     <li><a href="{{ route('tasks.byType', 'target') }}" title="">Chỉ tiêu</a></li>
                                 </ul>
                                     </details>

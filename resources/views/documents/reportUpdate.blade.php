@@ -352,7 +352,7 @@
                                                                 value="{{ $result }}"
                                                                 placeholder="Nhập kết quả"
                                                                 min="0"
-                                                                max="100"
+                                                                max="99999999999999"
                                                                 step="any">
                                                         @else
                                                             <span>{{ $result }}</span>
@@ -659,7 +659,7 @@
                                                                 value="{{ $result }}"
                                                                 placeholder="Nhập kết quả"
                                                                 min="0"
-                                                                max="100"
+                                                                max="99999999999999"
                                                                 step="any">
                                                         @else
                                                             <span>{{ $result }}</span>
@@ -961,7 +961,7 @@
                                                                 value="{{ $result }}"
                                                                 placeholder="Nhập kết quả"
                                                                 min="0"
-                                                                max="100"
+                                                                max="99999999999999"
                                                                 step="any">
                                                         @else
                                                             <span>{{ $result }}</span>
@@ -1265,7 +1265,7 @@
                                                                 value="{{ $result }}"
                                                                 placeholder="Nhập kết quả"
                                                                 min="0"
-                                                                max="100"
+                                                                max="99999999999999"
                                                                 step="any">
                                                         @else
                                                             <span>{{ $result }}</span>

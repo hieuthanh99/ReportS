@@ -58,9 +58,10 @@
             </div>
             <!-- Nút lưu -->
             <div class="mt-4 flex" style="justify-content: space-between">
+                <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Lưu</button>
+
                 <a href="{{ route('document_categories.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
 
-                <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Lưu</button>
             </div>
         </form>
     </div>

@@ -130,6 +130,15 @@ class TaskTargetController extends Controller
     public function deleteOrganization($code, $type, $id)
     {
         $check  = true;
+       
+        $taskTarget = TaskTarget::where('code', $code)->firstOrFail();
+        $tasksWithSameCode = TaskTarget::where('code', $code)->get();
+        $organizationIds = $tasksWithSameCode->pluck('organization_id')->unique();
+        $organizations = Organization::whereIn('id', $organizationIds)->paginate(10);;
+        $organizationsType = OrganizationType::where('isDelete', 0)->get();;
+        $documents = Document::where('isDelete', 0)->get();;
+        $categories = Category::where('isDelete', 0)->get();;
+
         $taskTargetDelete = TaskTarget::where('code', $code)->where('type', $type)->where('organization_id', $id)->first();
 
         try{
@@ -139,20 +148,13 @@ class TaskTargetController extends Controller
         } catch (\Exception $e) {
             $check = false;
         }
-        $taskTarget = TaskTarget::where('code', $code)->firstOrFail();
-        $tasksWithSameCode = TaskTarget::where('code', $code)->get();
-        $organizationIds = $tasksWithSameCode->pluck('organization_id')->unique();
-        $organizations = Organization::whereIn('id', $organizationIds)->paginate(10);;
-        $organizationsType = OrganizationType::where('isDelete', 0)->get();;
-        $documents = Document::where('isDelete', 0)->get();;
-        $categories = Category::where('isDelete', 0)->get();;
-
         if ($check) {
             session()->flash('success', 'Xóa cơ quan, tổ chức thành công!');
         } else {
             session()->flash('error', 'Đã xảy ra lỗi!');
         }
-        return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories'));
+        return $this->editTaskTarget($code, $type);
+       // return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories'));
     }
 
     public function updateTaskTarget(Request $request, $code, $type)
@@ -323,7 +325,7 @@ class TaskTargetController extends Controller
 
         if($type == 'task'){
 
-            $taskTargets = TaskTarget::where('type', 'task')->select('name', 'code', 'document_id', 'cycle_type',
+            $taskTargets = TaskTarget::where('type', 'task')->select('id', 'name', 'code', 'document_id', 'cycle_type',
             'category_id',
             'request_results',
             'start_date',
@@ -334,7 +336,7 @@ class TaskTargetController extends Controller
             ->paginate(10); // Phân trang kết quả
 
         }else{
-            $taskTargets = TaskTarget::where('type', 'target')->select('name', 'code', 'document_id', 'cycle_type',
+            $taskTargets = TaskTarget::where('type', 'target')->select('id', 'name', 'code', 'document_id', 'cycle_type',
             'category_id',
             'request_results',
             'start_date',
@@ -345,6 +347,7 @@ class TaskTargetController extends Controller
             ->paginate(10); // Phân trang kết quả
 
         }
+      
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'type'));
     }
 

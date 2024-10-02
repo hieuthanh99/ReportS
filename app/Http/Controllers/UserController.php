@@ -126,7 +126,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'code' => 'required|max:255',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
+            'email' => 'required|string|max:255',
             'password' => 'required|string|min:8|confirmed', // Xác thực mật khẩu
            
             'phone' => 'nullable|string|max:15',
@@ -138,6 +138,8 @@ class UserController extends Controller
         }
         $exitItem = User::where('isDelete', 0)->where('code', $request->code)->first();
         if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
+        $exitItemEmail = User::where('isDelete', 0)->where('code', $request->email)->first();
+        if($exitItemEmail)  return redirect()->back()->with('error', 'Email đã tồn tại!');
         // Lưu người dùng mới
         $user = new User();
         $user->code = $request->input('code');
@@ -166,7 +168,7 @@ class UserController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required',
             'password' => 'nullable|string|min:8|confirmed',
    
             'phone' => 'nullable|string|max:20',

@@ -211,27 +211,43 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            var organizationTypeSelect = document.getElementById('organization_type_id');
+           var organizationTypeId = organizationTypeSelect.value;
+           console.log(organizationTypeId);
+           fetchOrganizations(organizationTypeId);
+
+
             document.getElementById('organization_type_id').addEventListener('change', function () {
                 var organizationTypeId = this.value;
                 
                 // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-                fetch(`/get-organizations/${organizationTypeId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Làm rỗng danh sách `parent_id`
-                        var parentSelect = document.getElementById('parent_id');
-                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
-
-                        // Thêm các tùy chọn mới
-                        data.forEach(function (organization) {
-                            var option = document.createElement('option');
-                            option.value = organization.id;
-                            option.text = organization.name;
-                            parentSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error:', error));
+                fetchOrganizations(selectedId);
             });
+
+            function fetchOrganizations(organizationTypeId) {
+        // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+        fetch(`/get-organizations/${organizationTypeId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Làm rỗng danh sách `parent_id`
+                var parentSelect = document.getElementById('parent_id');
+                parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+                // Thêm các tùy chọn mới
+                data.forEach(function (organization) {
+                    var option = document.createElement('option');
+                    option.value = organization.id;
+                    option.text = organization.name;
+                    parentSelect.appendChild(option);
+
+                    var selectedIssuingDepartment = "{{ $document->issuing_department }}"; // Lấy giá trị từ Laravel
+                if (selectedIssuingDepartment) {
+                    parentSelect.value = selectedIssuingDepartment;
+                }
+                
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
             const fileInput = document.getElementById('files');
             const fileList = document.getElementById('file-list');
             const fileListData = document.querySelectorAll('.file-item');

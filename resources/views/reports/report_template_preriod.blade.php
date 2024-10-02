@@ -34,7 +34,7 @@
         <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
             Lọc/Filter
         </button>
-        <a href="{{ route('task-documents.export-period', $taskDocuments) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
+        <a  onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
         <form method="GET" action="{{ route('reports.withPeriod') }}" class="hidden" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
@@ -168,5 +168,22 @@
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+        function exportExcel() {
+        let params = new URLSearchParams(window.location.search);
+        let document_id = document.getElementById('document_id').value;
+        let executionTimeFrom = document.getElementById('execution_time_from').value;
+        let executionTimeTo = document.getElementById('execution_time_to').value;
+
+        // Tạo URL cho xuất Excel kèm theo các tham số
+        var url = "{{ url('export-Period') }}";
+        let urlQuery = url  + 
+        `?document_id=${document_id}` + 
+        `&execution_time_from=${executionTimeFrom}` + 
+        `&execution_time_to=${executionTimeTo}`;
+
+       // Chuyển hướng đến URL xuất Excel
+       window.location.href = urlQuery;
+    }
         </script>
 @endsection

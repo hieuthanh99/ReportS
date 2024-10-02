@@ -206,8 +206,7 @@ class TaskTargetController extends Controller
         $tasksWithSameCode = TaskTarget::where('code', $code)->get();
         $organizationIds = $tasksWithSameCode->pluck('organization_id')->unique();
 
-
-        $organizations = Organization::whereIn('id', $organizationIds)->paginate(10);
+        $organizations = Organization::whereIn('id', $organizationIds)->get();
         $taskTargetIds = $tasksWithSameCode->pluck('id');
         $latestTaskResults = TaskResult::whereIn('id_task_criteria', $taskTargetIds)
             ->select('id_task_criteria', 'created_at', 'result', 'number_type', 'type') // Chọn trường cần thiết
@@ -241,7 +240,7 @@ class TaskTargetController extends Controller
         );
         // dd($mappedResults);
 
-        return view('tasks.show', compact('taskTarget', 'type', 'organizations', 'paginatedResults'));
+        return view('tasks.show', compact('taskTarget', 'type', 'organizations', 'paginatedResults', 'mappedResults'));
     }
     public function indexView(Request $request, $type, $text=null)
     {
@@ -258,18 +257,20 @@ class TaskTargetController extends Controller
             'category_id',
             'request_results',
             'start_date',
-            'end_date', 'type')
+            'end_date', 'type', \DB::raw('COUNT(organization_id) as organization_count'))
             ->where('isDelete', 0)
             ->distinct('code')
+            ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type')
             ->orderBy('id', 'desc');
         }else{
             $taskTargets = TaskTarget::where('type', 'target')->select('name', 'code', 'document_id', 'cycle_type',
             'category_id',
             'request_results',
             'start_date',
-            'end_date', 'type')
+            'end_date', 'type', \DB::raw('COUNT(organization_id) as organization_count'))
             ->where('isDelete', 0)
             ->distinct('code')
+            ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type')
             ->orderBy('id', 'desc');
         }
         if($text){
@@ -345,7 +346,6 @@ class TaskTargetController extends Controller
             ->distinct('code') // Đảm bảo mỗi nhiệm vụ chỉ xuất hiện một lần
             ->orderBy('id', 'desc') // Sắp xếp theo ID hoặc bất kỳ tiêu chí nào khác
             ->paginate(10); // Phân trang kết quả
-
         }
       
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'type'));
@@ -563,5 +563,11 @@ class TaskTargetController extends Controller
 
 
         return redirect()->route('tasks.index', ['type' => $type])->with('success', 'Xóa thành công.');
+    }
+
+    public function getOrganizationIdByCode($taskTargetCode)
+    {
+        $organizationId = TaskTarget::where('code', $taskTargetCode)->select('organization_id')->where('isDelete', 0)->get();
+        return response()->json($organizationId);
     }
 }

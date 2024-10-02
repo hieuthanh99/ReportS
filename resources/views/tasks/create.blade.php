@@ -93,7 +93,7 @@
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
                     <select name="result_type" id="result_type" onchange="changeResultType(this.value)" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
                         @foreach ($workResultTypes as $idx => $item)
-                            @continue($type != 'task' && $idx == 4)
+                            
                             <option value="{{ $item->key }}">
                                 {{ $item->value }}
                             </option>

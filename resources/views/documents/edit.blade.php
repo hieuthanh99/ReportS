@@ -184,14 +184,17 @@
                 <!-- Khu vực để hiển thị danh sách tệp đã chọn -->
                 <div id="file-list-data" class="mt-2 file-list-data">
                     @foreach ($document->files as $file)
-                    
+                        @php
+                            $filePath = storage_path('app/public/' . $file->file_path);
+                            $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
+                        @endphp
+
                         <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
-                            data-file-type="{{ mime_content_type(storage_path('app/public/' . $file->file_path)) }}">
+                            data-file-type="{{ $fileType }}">
                             <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                            {{-- <span class="text-gray-700">{{ $file->file_name }}</span> --}}
                             <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
                             <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                class="remove-button  remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded remove-file-button">×</button>
+                                class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button>
                         </div>
                     @endforeach
                 </div>

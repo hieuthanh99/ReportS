@@ -31,9 +31,6 @@
         @php
         session(['success' => null])
         @endphp
-        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
-            Lọc/Filter
-        </button>
         <a onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
         <form method="GET" action="{{ route('reports.withDocument') }}" class="hidden" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
@@ -73,6 +70,7 @@
             </div>
 
         <div class="flex justify-end gap-4">
+        <a href="{{ url('export-Document') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
                 <button type="submit"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                 Tìm kiếm
@@ -144,10 +142,10 @@
         </div>
     </div>
     <script>
-            document.getElementById('filterToggle').addEventListener('click', function() {
-            const filterForm = document.getElementById('filterForm');
-            filterForm.classList.toggle('hidden');
-        });
+        //     document.getElementById('filterToggle').addEventListener('click', function() {
+        //     const filterForm = document.getElementById('filterForm');
+        //     filterForm.classList.toggle('hidden');
+        // });
         document.getElementById('organization_type_id').addEventListener('change', function () {
             var organizationTypeId = this.value;
             

@@ -31,8 +31,8 @@
         @php
         session(['success' => null])
         @endphp
-        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
-            Lọc/Filter
+        <!-- <a href="{{ route('task-documents.export-details') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a> -->
+        <form method="GET" action="{{ route('reports.withDetails') }}" id="filterForm">
         </button>
         <a onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
         <form method="GET" action="{{ route('reports.withDetails') }}" class="hidden" id="filterForm">
@@ -73,6 +73,7 @@
             </div>
 
             <div class="flex justify-end gap-4">
+            <a href="{{ route('task-documents.export-details') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
                     <button type="submit"
                     class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tìm kiếm

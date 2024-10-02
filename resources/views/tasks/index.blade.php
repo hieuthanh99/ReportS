@@ -31,13 +31,13 @@
         @php
         session(['success' => null])
         @endphp
-        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
+        <!-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
             Lọc/Filter
-        </button>
-        <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a>
+        </button> -->
+        <!-- <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a> -->
 
         <!-- Search Form type-->
-        <form method="GET" action="{{ route('tasks.byType', $type) }}" class="hidden" id="filterForm">
+        <form method="GET" action="{{ route('tasks.byType', $type) }}"  id="filterForm">
 
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
@@ -85,8 +85,9 @@
                 </div>
 
             </div>
-
+        
         <div class="flex justify-end gap-4">
+        <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a>
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
@@ -106,10 +107,13 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Loại</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                           Giao việc
+                        </th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Chi tiết
                         </th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Cập nhật
+                           Chỉnh sửa
                         </th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Xóa 
@@ -131,6 +135,7 @@
                             </td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttribute() }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }} </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                     onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
@@ -138,7 +143,7 @@
                                 </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                                <button class="bg-yellow-400 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-900 transition duration-300 ml-2"
                                 onclick="window.location.href='{{ route('tasks.edit.taskTarget',['code' => $item->code, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
@@ -199,10 +204,10 @@
         </div>
     </div>
     <script>
-        document.getElementById('filterToggle').addEventListener('click', function() {
-            const filterForm = document.getElementById('filterForm');
-            filterForm.classList.toggle('hidden');
-        });
+        // document.getElementById('filterToggle').addEventListener('click', function() {
+        //     const filterForm = document.getElementById('filterForm');
+        //     filterForm.classList.toggle('hidden');
+        // });
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',

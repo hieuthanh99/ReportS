@@ -188,14 +188,18 @@
                 <ul>
                     @if (!$document->files->isEmpty())
                         @foreach ($document->files as $file)
-                            <li class="file-item flex items-center mb-2"
-                                data-file-type="{{ mime_content_type(storage_path('app/public/' . $file->file_path)) }}">
+                            @php
+                                $filePath = storage_path('app/public/' . $file->file_path);
+                                $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
+                            @endphp
+
+                            <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
+                                data-file-type="{{ $fileType }}">
                                 <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                                
-                                {{-- <a href="{{ route('file.download', ['id' => $file->id, 'type' => 3]) }}" class="text-blue-500 hover:underline"
-                                    download>{{ $file->file_name }}</a> --}}
-                                    <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
-                            </li>
+                                <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
+                                <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
+                                    class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button>
+                            </div>
                         @endforeach
                     @else
                         <span>Không có tệp nào</span>

@@ -32,14 +32,14 @@
                 {{ session('success') }}
             </div>
         @endif
-        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
+        <!-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
             Lọc/Filter
-        </button>
+        </button> -->
         @if(Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-        <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới văn bản</a>
+        <!-- <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới văn bản</a> -->
         @endif
         <!-- Search Form -->
-        <form method="GET" action="{{ route('documents.index') }}" class="hidden" id="filterForm">
+        <form method="GET" action="{{ route('documents.index') }}" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <!-- Các trường khác -->
                 <div class="flex-1 min-w-[200px]">
@@ -92,6 +92,7 @@
             </div>
 
         <div class="flex justify-end gap-4">
+        <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới văn bản</a>
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
@@ -141,7 +142,7 @@
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <!-- Button Edit -->
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                                <button class="bg-yellow-400 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-900 transition duration-300 ml-2"
                                   onclick="window.location.href='{{ route('documents.edit', $document) }}'">
                                   <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                               </button>
@@ -167,11 +168,12 @@
         </div>
     </div>
     <script>
-          document.getElementById('filterToggle').addEventListener('click', function() {
-            const filterForm = document.getElementById('filterForm');
-            filterForm.classList.toggle('hidden');
-        });
+        //   document.getElementById('filterToggle').addEventListener('click', function() {
+        //     const filterForm = document.getElementById('filterForm');
+        //     filterForm.classList.toggle('hidden');
+        // });
         document.getElementById('organization_type_id').addEventListener('change', function () {
+            console.log("test Fliter");
             var organizationTypeId = this.value;
             
             // Gửi yêu cầu AJAX đến server để lấy danh sách organizations

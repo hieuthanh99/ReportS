@@ -81,7 +81,7 @@
                             @endif
                         </td>
                         <td class="py-3 border border-gray-300 px-6 text-center">   
-                            <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                            <button class="bg-yellow-400 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-900 transition duration-300 ml-2"
                             onclick="window.location.href='{{ route('users.edit', $category->id) }}'">
                             <i class="fas fa-edit"></i>
                             </button>
@@ -135,7 +135,7 @@
     });
 });
 // <td class="py-3 border border-gray-300 px-6 flex items-center text-center">
-//                             <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+//                             <button class="bg-yellow-400 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-900 transition duration-300 ml-2"
 //                                 onclick="window.location.href='{{ route('users.edit', $category->id) }}'">
 //                                 <i class="fas fa-edit"></i>
 //                             </button>

@@ -73,6 +73,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('indicator_groups', IndicatorGroupController::class);
     Route::get('/get-organizations/{organization_type_id}', [OrganizationController::class, 'getOrganizationsByType']);
+    Route::get('/get-organization-id/{taskTargetCode}', [TaskTargetController::class, 'getOrganizationIdByCode']);
     Route::resource('task_groups', TaskGroupController::class);
     Route::get('/file/view/{id}', [FileController::class, 'view'])->name('file.view');
     Route::resource('positions', PositionController::class);

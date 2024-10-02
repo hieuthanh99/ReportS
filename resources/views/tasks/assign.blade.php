@@ -138,12 +138,16 @@
     var assignedOrgLst = [];
     document.getElementById('organization_type_id').addEventListener('change', function () {
                 var organizationTypeId = this.value;
-                
-                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-                fetch(`/get-organizations/${organizationTypeId}`)
+                var taskTargetCode = document.getElementById('task-target-code').value;
+                fetch(`/get-organization-id/${taskTargetCode}`)
                     .then(response => response.json())
-                    .then(data => {
-                        fillData(data);
+                    .then(organizationId => {
+                        // Sau khi nhận được organizationId, gửi yêu cầu để lấy danh sách organizations
+                        return fetch(`/get-organizations/${organizationTypeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                fillData(data, organizationId); // Gọi fillData với organizationId
+                            });
                     })
                     .catch(error => console.error('Error:', error));
             });
@@ -156,8 +160,9 @@
             window.location.href = `/tasks/type/${selectedValue}`;
         }
     });
-    function fillData(data) {
+    function fillData(data, organization_id) {
             console.log(data);
+            console.log(organization_id);
             const taskTargetId = document.getElementById('task-target-id').value;
             const taskTargetCode = document.getElementById('task-target-code').value;
             console.log(taskTargetId);
@@ -184,6 +189,11 @@
                         checkbox.type = 'checkbox';
                         checkbox.id = `organization-${taskTargetId}`;
                         checkbox.value = taskTargetId;
+                        organization_id.forEach(id => { 
+                            if (task.id === id.organization_id) {
+                                checkbox.checked = true;
+                            }
+                        })
                         checkbox.classList.add('organization-checkbox');
                         checkboxCell.appendChild(checkbox);
                         

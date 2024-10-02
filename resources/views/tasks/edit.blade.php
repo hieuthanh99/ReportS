@@ -178,7 +178,7 @@
                     <tr class="border-b border-gray-200">
                    
                         <td class="py-3 border border-gray-300 px-6">{{ $item->code }}</td>
-                        <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
                         <td class="py-3 border border-gray-300 px-6">
                             {{ $item->organizationType->type_name ?? "N/A" }}
                         </td>

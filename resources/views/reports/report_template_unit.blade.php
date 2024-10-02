@@ -31,11 +31,11 @@
         @php
         session(['success' => null])
         @endphp
-        <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
+        <!-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
             Lọc/Filter
-        </button>
-        <a href="{{ url('export-Unit') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
-        <form method="GET" action="{{ route('reports.withUnit') }}" class="hidden" id="filterForm">
+        </button> -->
+        <!-- <a href="{{ url('export-Unit') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a> -->
+        <form method="GET" action="{{ route('reports.withUnit') }}" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
@@ -67,6 +67,7 @@
                                 </div>
 
         <div class="flex justify-end gap-4">
+        <a href="{{ url('export-Unit') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
                 <button type="submit"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                 Tìm kiếm

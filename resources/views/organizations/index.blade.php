@@ -169,7 +169,7 @@
                                         <button onclick="toggleChildren(this)" class="toggle-children text-gray-600 hover:text-gray-800 mr-2">
                                             <i class="fas {{$displayInd == $idx ? 'fa-minus' : 'fa-plus'}}"></i> <!-- Icon + -->
                                         </button>
-                                        <strong class="text-blue-600 ml-2">{{ $node['name'] }}</strong>
+                                        <strong class="text-blue-600 ml-2">{{ $node['name'] }} ({{count($node['children'])}})</strong>
                                     </div>
                                     @if (!empty($node['children']))
                                     <ul class="ml-4 space-y-2 {{$displayInd == $idx ? '' : 'hidden'}}">

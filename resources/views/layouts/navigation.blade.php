@@ -8,20 +8,20 @@
                         <ul class="menu-tree">
                             @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
                                 <li>
-                                    <details open>
+                                    <details close>
                                         <summary class="btn btn-primary">Quản lý danh mục</summary>
                                     <ul>
                                         <li>
-                                            <details open>
+                                            <details close>
                                                 <summary>Văn bản</summary>
                                             <ul>
-                                                <li><a href="{{route('documents.index')}}" title="">Danh mục văn bản</a></li>
-                                                <li><a href="{{route('document_categories.index')}}" title="">Phân loại văn bản</a></li>
+                                                <li><a href="{{route('documents.index')}}" class="menu-text" title="">Danh mục văn bản</a></li>
+                                                <li><a href="{{route('document_categories.index')}}" class="menu-text" title="">Phân loại văn bản</a></li>
                                             </ul>
                                             </details>
                                         </li>
                                         <li>
-                                            <details open>
+                                            <details close>
                                                 <summary>Cơ quan,tổ chức</summary>
                                             <ul>
                                                 <li><a href="{{route('organization_types.index')}}" title="">Phân loại cơ quan, tổ chức</a></li>
@@ -31,7 +31,7 @@
                                         </li>
                                        
                                         <li>
-                                            <details open>
+                                            <details close>
                                                 <summary>Người dùng</summary>
                                             <ul>
                                                 <li><a href="{{route('positions.index')}}" title="">Danh mục Chức vụ</a></li>
@@ -43,7 +43,7 @@
                                     </details>
                                 </li>
                                 <li>
-                                    <details open>
+                                    <details close>
                                         <summary>Quản lý công việc</summary>
                                 <ul>
                                     <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
@@ -55,7 +55,7 @@
                             </li>
                             @endif
                                 <li>
-                                    <details open>
+                                    <details close>
                                         <summary>Tổng hợp, báo cáo</summary>
                                 <ul>
                                     @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
@@ -198,6 +198,15 @@
         border-color: #007bff;
         outline: none;
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    }
+
+    .menu-text{
+        color: #000;
+    }
+
+    .menu-text:hover{
+        font-size: 20px;
+        font-weight: bold;
     }
 </style>
 <script>

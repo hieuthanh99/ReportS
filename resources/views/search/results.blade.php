@@ -86,10 +86,10 @@
         </div>
     </div>
     <script>
-        document.getElementById('filterToggle').addEventListener('click', function() {
-            const filterForm = document.getElementById('filterForm');
-            filterForm.classList.toggle('hidden');
-        });
+        // document.getElementById('filterToggle').addEventListener('click', function() {
+        //     const filterForm = document.getElementById('filterForm');
+        //     filterForm.classList.toggle('hidden');
+        // });
         function confirmDelete() {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',

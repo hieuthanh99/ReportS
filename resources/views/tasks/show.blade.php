@@ -41,6 +41,33 @@
                     <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
                     <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
                 </div>
+                @php
+                    // Khởi tạo mảng để lưu trữ số lượng của từng type_name
+                    $typeCounts = [];
+
+                    // Duyệt qua các kết quả và đếm số lượng mỗi loại type_name
+                    foreach ($mappedResults as $item) {
+                        if ($item['organization'] && $item['organization']->organizationType) {
+                            $typeName = $item['organization']->organizationType->type_name;
+
+                            if ($typeName) {
+                                // Tăng số lượng cho type_name
+                                if (!isset($typeCounts[$typeName])) {
+                                    $typeCounts[$typeName] = 0;
+                                }
+                                $typeCounts[$typeName]++;
+                            }
+                        }
+                    }
+                @endphp
+
+                <!-- Hiển thị kết quả -->
+                @foreach ($typeCounts as $typeName => $count)
+                    <div class="flex items-center mb-4">
+                        <span class="text-gray-700 font-medium w-1/3">{{ $typeName }}:</span>
+                        <span class="text-gray-900 w-2/3">{{ $count }}</span>
+                    </div>
+                @endforeach
             </div>
             <table class="min-w-full bg-white border border-gray-300">
                 <thead class="bg-gray-100 border-b border-gray-300" >
@@ -65,7 +92,7 @@
                         <tr class="border-b border-gray-200">
                        
                             <td class="py-3 border border-gray-300 px-6">{{ $item['organization']->code ?? ""  }}</td>
-                            <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item['organization']->name ?? ""  }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item['organization']->name ?? ""  }}</td>
                             <td class="py-3 border border-gray-300 px-6">
                                 {{ $item['organization']->organizationType->type_name ?? "" }}
                             </td>

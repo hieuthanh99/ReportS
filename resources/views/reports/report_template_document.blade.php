@@ -31,11 +31,8 @@
         @php
         session(['success' => null])
         @endphp
-        <!-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
-            Lọc/Filter
-        </button> -->
-        <!-- <a href="{{ url('export-Document') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a> -->
-        <form method="GET" action="{{ route('reports.withDocument') }}" id="filterForm">
+        <a onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
+        <form method="GET" action="{{ route('reports.withDocument') }}" class="hidden" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
@@ -122,7 +119,7 @@
                 <tbody>
                     @foreach ($datas as $index => $data)
                         <tr class="border-b border-gray-200">
-                            <td class="py-3 border border-gray-300 px-6">{{ $index + $datas->firstItem() }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ ($datas->currentPage() - 1) * $datas->perPage() + $loop->iteration }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->document_code }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->document_name }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->task_count }}</td>
@@ -170,5 +167,26 @@
                 })
                 .catch(error => console.error('Error:', error));
         });
+        
+        function exportExcel() {
+        let params = new URLSearchParams(window.location.search);
+
+
+        let organizationId = params.get('organization_id') || null;
+        let organizationTypeId = document.getElementById('organization_type_id').value;
+        let executionTimeFrom = document.getElementById('execution_time_from').value;
+        let executionTimeTo = document.getElementById('execution_time_to').value;
+
+        // Tạo URL cho xuất Excel kèm theo các tham số
+        var url = "{{ url('export-Document') }}";
+        let urlQuery = url  + 
+        `?organization_type_id=${organizationTypeId}` + 
+        `&organization_id=${organizationId}` + 
+        `&execution_time_from=${executionTimeFrom}` + 
+        `&execution_time_to=${executionTimeTo}`;
+
+       // Chuyển hướng đến URL xuất Excel
+       window.location.href = urlQuery;
+    }
         </script>
 @endsection

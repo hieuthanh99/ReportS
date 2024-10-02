@@ -52,7 +52,7 @@ class DocumentController extends Controller
                         \Log::error('INSITE SAVE');
                         // Cập nhật các tác vụ
                        foreach ($taskTargetId as $index => $taskTarget) {
-                           $task = TaskTarget::find($taskTarget);
+                           $task = TaskTarget::where('isDelete', 0)->find($taskTarget);
                            $hasComplete = ($task->status == 'sub_admin_complete' || $task->status == 'complete')?true:false;
                            $user = User::find(Auth::id());
                            if($task->status == 'sub_admin_complete' && ($user->role=='admin' || $user->role=='supper_admin')){
@@ -69,7 +69,7 @@ class DocumentController extends Controller
                                 ? "complete" 
                                 : ($task->status == "sub_admin_complete" ? $task->status : "staff_complete");                              
                               
-                                $record = TaskResult::where('id_task_criteria' , $task->id)->where("document_id", $document->id)->where("type_save", $task->getType())->first();
+                                $record = TaskResult::where('id_task_criteria' , $task->id)->where('isDelete', 0)->where("document_id", $document->id)->where("type_save", $task->getType())->first();
                                 if($record){
                                     $record->result =  isset($cycleResult[$task->id]) ? $cycleResult[$task->id] : '';
                                     $record->description =  'ok';
@@ -157,11 +157,11 @@ class DocumentController extends Controller
     
                     $organization = Organization::where('code', $organizationCode)->where('name', $organizationName)->first();
                     if ($organization) {
-                        $taskTarget = TaskTarget::find($taskId);
+                        $taskTarget = TaskTarget::where('isDelete', 0)->find($taskId);
                         $typeRecord = $taskTarget->type === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
                         if($taskTarget->organization_id != null) $first = false;
                         $type = $taskTarget->type;
-                        $hasOrganization = TaskTarget::where('organization_id', $organization->id)->where('code', $taskTarget->code)->first();
+                        $hasOrganization = TaskTarget::where('organization_id', $organization->id)->where('isDelete', 0)->where('code', $taskTarget->code)->first();
                         if(!$hasOrganization){
 
                             if ($first) {
@@ -403,7 +403,7 @@ class DocumentController extends Controller
             
 
             $documentCode = str_replace(['/', ' '], '-', $request->input('document_code'));
-            $exitItem = Document::where('isDelete', 0)->where('document_code', $documentCode)->first();
+            $exitItem = Document::where('isDelete', 0)->where('document_code', $documentCode)->where('isDelete', 0)->first();
             if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             // Lưu tài liệu
             $document = Document::create([

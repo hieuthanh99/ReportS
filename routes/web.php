@@ -51,9 +51,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports-with-period', [ReportController::class, 'showReportPeriod'])->name('reports.withPeriod');
     Route::get('/reports-with-details', [ReportController::class, 'showReportDetails'])->name('reports.withDetails');
     Route::get('/export-Document', [ReportController::class, 'exportDocument']);
+    Route::get('/export-Document-Details', [ReportController::class, 'exportReportDetails']);
     Route::get('/export-Details', [ReportController::class, 'exportDetails'])->name('task-documents.export-details');
 
-    Route::get('/export-Period', [ReportController::class, 'exportPeriod'])->name('task-documents.export-period');
+    Route::get('/export-Period', [ReportController::class, 'exportPeriod']);
     Route::get('/export-Unit', [ReportController::class, 'exportUnit']);
 
     Route::get('/search', [SearchController::class, 'search'])->name('search');

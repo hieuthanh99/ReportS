@@ -31,11 +31,11 @@
         @php
         session(['success' => null])
         @endphp
-        <!-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
-            Lọc/Filter
-        </button> -->
         <!-- <a href="{{ route('task-documents.export-details') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a> -->
         <form method="GET" action="{{ route('reports.withDetails') }}" id="filterForm">
+        </button>
+        <a onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
+        <form method="GET" action="{{ route('reports.withDetails') }}" class="hidden" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
@@ -98,7 +98,6 @@
                         <th class="py-3 px-6 text-center text-gray-700 font-medium border border-black-300">Cơ quan thực hiện</th>
                         <th class="py-3 px-6 text-center text-gray-700 font-medium border border-black-300">Tiến độ</th>
                         <th class="py-3 px-6 text-center text-gray-700 font-medium border border-black-300">Đánh giá tiến độ</th>
-                        <th class="py-3 px-6 text-center text-gray-700 font-medium border border-black-300">Loại chu kỳ</th>
                         <th class="py-3 px-6 text-center text-gray-700 font-medium border border-black-300">Kết quả</th>
                       
                     </tr>
@@ -116,30 +115,7 @@
                             <td class="py-3 border border-gray-300 px-6">{{ $data->organization->name }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->results }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->getTaskStatusDescription() }}</td>
-                            <td class="py-3 border border-gray-300 px-6">
-                                
-                                @php
-                                    $type = $data->latestTaskResult()->type ?? null;
-                                    $numberType = $data->latestTaskResult()->number_type ?? '';
-                                @endphp
-                                @switch($type)
-                                    @case(1) {{-- Tuần --}}
-                                        Tuần {{ $numberType }}
-                                        @break
-                                    @case(2) {{-- Tháng --}}
-                                        Tháng {{ $numberType }}
-                                        @break
-                                    @case(3) {{-- Quý --}}
-                                        Quý {{ $numberType }}
-                                        @break
-                                    @case(4) {{-- Năm --}}
-                                        Năm {{ $numberType }}
-                                        @break
-                                    @default
-                                        
-                                @endswitch
-                            </td>
-                          
+                           
                             <td class="py-3 border border-gray-300 px-6">{{ $data->latestTaskResult()->result ?? '' }}</td>
 
                         </tr>
@@ -156,6 +132,24 @@
             const filterForm = document.getElementById('filterForm');
             filterForm.classList.toggle('hidden');
         });
-     
+        function exportExcel() {
+
+        let params = new URLSearchParams(window.location.search);
+        let document_id = document.getElementById('document_id').value;
+        let executionTimeFrom = document.getElementById('execution_time_from').value;
+        let executionTimeTo = document.getElementById('execution_time_to').value;
+        let type = params.get('type') || null;
+        
+        // Tạo URL cho xuất Excel kèm theo các tham số
+        var url = "{{ url('export-Document-Details') }}";
+        let urlQuery = url  + 
+        `?document_id=${document_id}` + 
+        `&type=${type}` + 
+        `&execution_time_from=${executionTimeFrom}` + 
+        `&execution_time_to=${executionTimeTo}`;
+
+       // Chuyển hướng đến URL xuất Excel
+       window.location.href = urlQuery;
+    }
         </script>
 @endsection

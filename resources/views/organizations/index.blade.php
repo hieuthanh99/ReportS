@@ -522,8 +522,8 @@
                     <tr>
                         <td class="py-2 px-4 border-b">${user.code}</td>
                         <td class="py-2 px-4 border-b">${user.name}</td>
-                        <td class="py-2 px-4 border-b">${user.email}</td>
-                        <td class="py-2 px-4 border-b">${user.phone}</td>
+                        <td class="py-2 px-4 border-b">${user.email ?? ''}</td>
+                        <td class="py-2 px-4 border-b">${user.phone ?? ''}</td>
                         <td class="py-2 px-4 border-b" style="display: none">${user.id}</td>
                         <td class="py-2 px-4 border-b">
                             <form action="/users/${user.id}/destroyOrganization" method="POST"

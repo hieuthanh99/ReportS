@@ -65,14 +65,18 @@
                 <!-- Cột trái -->
                 <div class="mb-4">
                     <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Số hiệu văn bản <span class="text-red-500">*</span></label>
-                    <input type="text" id="document_code" name="document_code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('document_code') }}" required>
+                    <input type="text" id="document_code" name="document_code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('document_code') }}" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập số hiệu văn bản.')" 
+                    oninput="setCustomValidity('')">
                     @error('document_code')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-4">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản <span class="text-red-500">*</span></label>
-                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required>
+                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn loại văn bản.')" 
+                    oninput="setCustomValidity('')">
                         <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Chọn văn bản</option>
                         @foreach ($documentCategory as $category)
                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -87,7 +91,9 @@
                
                 <div class="mb-4">
                     <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Trích yếu văn bản <span class="text-red-500">*</span></label>
-                    <textarea id="document_name" name="document_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('document_name') }}</textarea>
+                    <textarea id="document_name" name="document_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập trích yếu văn bản.')" 
+                    oninput="setCustomValidity('')">{{ old('document_name') }}</textarea>
                     @error('document_name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
@@ -98,7 +104,9 @@
                 <div class="mb-4">
                     <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát hành <span class="text-red-500">*</span></label>
                     <input type="date" placeholder="dd-mm-yyyy"
-                    min="1997-01-01" max="2100-12-31" id="release_date" name="release_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('release_date') }}" required>
+                    min="1997-01-01" max="2100-12-31" id="release_date" name="release_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('release_date') }}" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập ngày phát hành.')" 
+                    oninput="setCustomValidity('')">
                     @error('release_date')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
@@ -106,7 +114,9 @@
                 
                 <div class="mb-4">
                     <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan ban hành<span class="text-red-500">*</span></label>
-                    <select id="organization_type_id" name="organization_type_id" class="form-input w-full border border-gray-300 rounded-lg p-2">
+                    <select id="organization_type_id" name="organization_type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" require
+                    oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan ban hành.')" 
+                    oninput="setCustomValidity('')">
                         <option value="">Chọn loại cơ quan ban hành</option>
                         @foreach($organizationsType as $organization)
                             <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
@@ -117,7 +127,9 @@
                 </div>
                 <div class="mb-4">
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban hành <span class="text-red-500">*</span></label>
-                    <select name="issuing_department" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                    <select name="issuing_department" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full" require
+                    oninvalid="this.setCustomValidity('Vui lòng chọn cơ quan ban hành.')" 
+                    oninput="setCustomValidity('')">
                         <option value="" {{ old('issuing_department') ? '' : 'selected' }}>Chọn cơ quan ban hành</option>
                     </select>
 

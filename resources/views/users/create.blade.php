@@ -41,29 +41,35 @@
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label for="code" class="block text-gray-700 font-medium mb-2">Mã code</label>
-                <input type="text" id="code" name="code" value="{{ old('code') }}" class="w-full border border-gray-300 rounded-lg p-2" required>
+                <label for="code" class="block text-gray-700 font-medium mb-2">Mã code <span class="text-red-500">*</span></label>
+                <input type="text" id="code" name="code" value="{{ old('code') }}" class="w-full border border-gray-300 rounded-lg p-2" required
+                oninvalid="this.setCustomValidity('Vui lòng nhập mã code.')" 
+                    oninput="setCustomValidity('')">
                 @error('code')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
             <div>
-                <label for="name" class="block text-gray-700 font-medium mb-2">Tên</label>
-                <input type="text" id="name" name="name" value="{{ old('name') }}" class="w-full border border-gray-300 rounded-lg p-2" required>
+                <label for="name" class="block text-gray-700 font-medium mb-2">Tên <span class="text-red-500">*</span></label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" class="w-full border border-gray-300 rounded-lg p-2" required
+                oninvalid="this.setCustomValidity('Vui lòng nhập tên.')" 
+                    oninput="setCustomValidity('')">
                 @error('name')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
             <div>
-                <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
-                <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full border border-gray-300 rounded-lg p-2" required>
+                <label for="email" class="block text-gray-700 font-medium mb-2">Email <span class="text-red-500">*</span></label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full border border-gray-300 rounded-lg p-2" required
+                oninvalid="this.setCustomValidity('Vui lòng nhập Email.')" 
+                    oninput="setCustomValidity('')">
                 @error('email')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
           
         <div>
-            <label for="role" class="block text-gray-700 font-medium mb-2">Role</label>
+            <label for="role" class="block text-gray-700 font-medium mb-2">Role <span class="text-red-500">*</span></label>
             <select id="role" name="role"
             class="form-select w-full border border-gray-300 rounded-lg p-2">
             <option value="supper_admin">Supper Admin</option>
@@ -71,22 +77,26 @@
             <option value="sub_admin">Sub-Admin</option>
             <option value="staff">Nhân viên</option>
         </select>
-            @error('password')
+            @error('role')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
             @enderror
         </div>
        
             <div>
-                <label for="password" class="block text-gray-700 font-medium mb-2">Mật khẩu</label>
-                <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-lg p-2" required>
+                <label for="password" class="block text-gray-700 font-medium mb-2">Mật khẩu <span class="text-red-500">*</span></label>
+                <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-lg p-2" required
+                oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu.')" 
+                    oninput="setCustomValidity('')">
                 @error('password')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
            
             <div>
-                <label for="password_confirmation" class="block text-gray-700 font-medium mb-2">Xác nhận mật khẩu</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" class="w-full border border-gray-300 rounded-lg p-2" required>
+                <label for="password_confirmation" class="block text-gray-700 font-medium mb-2">Xác nhận mật khẩu <span class="text-red-500">*</span></label>
+                <input type="password" id="password_confirmation" name="password_confirmation" class="w-full border border-gray-300 rounded-lg p-2" required
+                oninvalid="this.setCustomValidity('Vui lòng nhập lại mật khẩu.')" 
+                    oninput="setCustomValidity('')">
                 @error('password_confirmation')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror

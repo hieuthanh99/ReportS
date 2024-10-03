@@ -33,24 +33,30 @@
         @method('PUT')
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div class="mb-4">
-                <label for="name" class="block text-gray-700">Tên:</label>
-                <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                <label for="name" class="block text-gray-700">Tên <span class="text-red-500">*</span>:</label>
+                <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required
+                oninvalid="this.setCustomValidity('Vui lòng nhập tên.')" 
+                    oninput="setCustomValidity('')">
                 @error('name')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="mb-4">
-                <label for="email" class="block text-gray-700">Email:</label>
-                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                <label for="email" class="block text-gray-700">Email <span class="text-red-500">*</span>:</label>
+                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required
+                oninvalid="this.setCustomValidity('Vui lòng nhập Email.')" 
+                    oninput="setCustomValidity('')">
                 @error('email')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
            
             <div class="mb-4">
-                <label for="password" class="block text-gray-700">Mật khẩu:</label>
-                <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <label for="password" class="block text-gray-700">Mật khẩu <span class="text-red-500">*</span>:</label>
+                <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg" require
+                oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu.')" 
+                    oninput="setCustomValidity('')">
                 <p class="text-gray-500 text-sm">Để trống nếu không thay đổi mật khẩu.</p>
                 @error('password')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -58,8 +64,10 @@
             </div>
 
             <div class="mb-4">
-                <label for="password_confirmation" class="block text-gray-700">Xác nhận mật khẩu:</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <label for="password_confirmation" class="block text-gray-700">Xác nhận mật khẩu <span class="text-red-500">*</span>:</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-2 border border-gray-300 rounded-lg" require
+                oninvalid="this.setCustomValidity('Vui lòng nhập lại mật khẩu.')" 
+                    oninput="setCustomValidity('')">
                 @error('password_confirmation')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror

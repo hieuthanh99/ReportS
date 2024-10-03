@@ -71,33 +71,16 @@
                                class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
                     </div> -->
                     <!-- Các trường khác -->
-                     <!-- Các trường khác -->
-                <div class="flex-1 min-w-[200px]">
-                    <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
-                    <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="">Chọn loại cơ quan thực hiện</option>
-                        @foreach($organizationsType as $organization)
-                            <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->type_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                
-        
-                <!-- Đoạn code này bao quanh hai trường Ngày phát hành -->
-                <div class="flex gap-4 w-full">
                     <div class="flex-1 min-w-[200px]">
-                        <label for="execution_time_from" class="block text-gray-700 font-medium mb-2">Từ ngày</label>
-                        <input type="date" id="execution_time_from" placeholder="dd-mm-yyyy"
-                               min="1997-01-01" max="2100-12-31" name="execution_time_from" value="{{ request('execution_time_from') }}"
-                               class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
-                    </div>
-                    <div class="flex-1 min-w-[200px]">
-                        <label for="execution_time_to" class="block text-gray-700 font-medium mb-2">Đến ngày</label>
-                        <input type="date" id="execution_time_to" placeholder="dd-mm-yyyy"
-                               min="1997-01-01" max="2100-12-31" name="execution_time_to" value="{{ request('execution_time_to') }}"
-                               class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
+                        <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
+                        <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                            <option value="">Chọn loại cơ quan thực hiện</option>
+                            @foreach($organizationsType as $organization)
+                                <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
+                                    {{ $organization->type_name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <!-- Các trường khác -->
                     <div class="flex-1 min-w-[200px]" id="organization_id_hidden"></div>
@@ -187,6 +170,7 @@
         </div>
     </div>
     <script>
+        
         //   document.getElementById('filterToggle').addEventListener('click', function() {
         //     const filterForm = document.getElementById('filterForm');
         //     filterForm.classList.toggle('hidden');

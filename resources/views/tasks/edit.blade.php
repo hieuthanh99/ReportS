@@ -51,7 +51,9 @@
                 <div class="mb-4">
                     <label for="document_id" class="block text-gray-700 text-sm font-medium mb-2">Văn bản:</label>
                         <select name="document_id" id="document_id" required
-                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                            class="form-input w-full border border-gray-300 rounded-lg p-2"
+                            oninvalid="this.setCustomValidity('Vui lòng chọn văn bản.')" 
+                    oninput="setCustomValidity('')">
                             @foreach ($documents as $item)
                                 <option value="{{ $item->id }}" data-code="{{ $item->document_code }}"
                                     {{ $item->id == $taskTarget->document_id? 'selected' : '' }}>
@@ -64,7 +66,9 @@
                 <div class="mb-4">
                     <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Nhóm {{ $text }} <span class="text-red-500">*</span></label>
                  
-                    <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required >
+                    <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required 
+                    oninvalid="this.setCustomValidity('Vui lòng chọn nhóm.')" 
+                    oninput="setCustomValidity('')">
                         <option value="" data-code="">Chọn nhóm {{ $text }}</option>
                         @foreach ($typeTask as $item)
                             <option value="{{ $item->id }}" {{ $taskTarget->type_id == $item->id ? 'selected' : '' }}>
@@ -76,7 +80,9 @@
                 </div>
                 <div class="mb-4">
                     <label for="cycle_type" class="block text-gray-700 text-sm font-medium mb-2">Chu kỳ báo cáo <span class="text-red-500">*</span></label>
-                    <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2" required>
+                    <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn chu kỳ báo cáo.')" 
+                    oninput="setCustomValidity('')">
                         <option value="1" {{ $taskTarget->cycle_type == '1' ? 'selected' : '' }}>Tuần</option>
                         <option value="2" {{ $taskTarget->cycle_type == '2' ? 'selected' : '' }}>Tháng</option>
                         <option value="3" {{ $taskTarget->cycle_type == '3' ? 'selected' : '' }}>Quý</option>
@@ -155,8 +161,8 @@
                     </div> --}}
                 </div>
                 <div class="mb-4">
-                    <label for="request_results_task" class="block text-gray-700 font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>
-                    <input type="text" id="request_results_task" value="{{ $taskTarget->request_results_task }}" name="request_results_task" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập kết quả yêu cầu...">
+                    <label for="request_results_task" class="block text-gray-700 text-sm font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>
+                    <input type="text" id="request_results_task" value="{{ $taskTarget->request_results_task }}" name="request_results_task" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả yêu cầu...">
                 </div>
                 @endif
              

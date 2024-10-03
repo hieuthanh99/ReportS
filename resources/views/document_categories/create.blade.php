@@ -35,7 +35,9 @@
                 <!-- Cột trái -->
                 <div class="mb-4">
                     <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Số hiệu loại văn bản <span class="text-red-500">*</span></label>
-                    <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code') }}" required>
+                    <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code') }}" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập số hiệu loại văn bản.')" 
+                    oninput="setCustomValidity('')">
                     @error('code')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
@@ -43,14 +45,18 @@
                 <div class="mb-4"></div>
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Trích yếu loại văn bản <span class="text-red-500">*</span></label>
-                    <textarea id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('name') }}</textarea>
+                    <textarea id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập trích yếu loại văn bản.')" 
+                    oninput="setCustomValidity('')">{{ old('name') }}</textarea>
                     @error('name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-4">
                     <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Chi tiết loại văn bản <span class="text-red-500">*</span></label>
-                    <textarea id="description" name="description" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('description') }}</textarea>
+                    <textarea id="description" name="description" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập chi tiết loại văn bản.')" 
+                    oninput="setCustomValidity('')">{{ old('description') }}</textarea>
                     @error('description')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror

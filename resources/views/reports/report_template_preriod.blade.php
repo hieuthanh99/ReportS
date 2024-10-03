@@ -46,7 +46,7 @@
                         @endforeach
                     </select>
                 </div>
-                    <div class="flex-1 min-w-[200px]">
+                    <!-- <div class="flex-1 min-w-[200px]">
                         <label for="execution_time_from" class="block text-gray-700 font-medium mb-2">Từ ngày</label>
                         <input type="date" id="execution_time_from" placeholder="dd-mm-yyyy"
                                min="1997-01-01" max="2100-12-31" name="execution_time_from" value="{{ request('execution_time_from') }}"
@@ -57,7 +57,7 @@
                         <input type="date" id="execution_time_to" placeholder="dd-mm-yyyy"
                                min="1997-01-01" max="2100-12-31" name="execution_time_to" value="{{ request('execution_time_to') }}"
                                class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
-                    </div>
+                    </div> -->
             </div>
 
             <div class="flex justify-end gap-4">

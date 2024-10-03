@@ -88,8 +88,53 @@
                     <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên {{ $text }} <span class="text-red-500">*</span></label>
                     <textarea id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('name') }}</textarea>
                 </div>
-
+                @if($type == 'task')
                 <div class="mb-4">
+                    
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Loại nhiệm vụ<span class="text-red-500">*</span></label>
+                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                        <option value="" disabled selected>-- Chọn loại nhiệm vụ --</option>
+                        <option value="timed">Có thời hạn</option> <!-- Giá trị tiếng Anh: "timed" -->
+                        <option value="regular">Thường xuyên</option> <!-- Giá trị tiếng Anh: "regular" -->
+                    </select>
+                   
+                </div>
+                @else
+                <div class="mb-4">
+                    
+                    <label for="task_type" class="block text-gray-700 text-sm font-medium mb-2">Loại chỉ tiêu<span class="text-red-500">*</span></label>
+                   
+                    <select id="target_type" name="target_type" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                        <option value="" disabled selected>-- Chọn loại chỉ tiêu --</option>
+                        <option value="single">Đơn</option> <!-- "Đơn" -> "single" -->
+                        <option value="aggregate">Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
+                    </select>
+                    
+                </div>
+                @endif
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                @if($type == 'target')
+                <div class="mb-4">
+                    <label for="unit" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị <span class="text-red-500">*</span></label>
+                    <select id="unit" name="unit" class="w-full p-2 border border-gray-300 rounded-md" onchange="toggleCustomInput(this)">
+                        @foreach ($units as $item)
+                            <option value="{{ $item->id }}" {{ old('unit') == $item->id ? 'selected' : '' }}>
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
+                        <option value="0">Khác</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="target" class="block text-gray-700 text-sm font-medium mb-2">Chỉ tiêu <span class="text-red-500">*</span></label>
+                    <input type="text"  placeholder="Nhập chỉ tiêu"
+                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('target') }}">
+                </div>
+                @else
+                <div class="mb-4">
+                    
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
                     <select name="result_type" id="result_type" onchange="changeResultType(this.value)" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
                         @foreach ($workResultTypes as $idx => $item)
@@ -107,12 +152,13 @@
                         <label for="no">No</label><br>
                     </div>
                 </div>
-
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                @endif
+                <div class="mb-4 hidden" id="custom-unit">
+                    <label for="custom_unit" class="block text-gray-700 font-medium mb-2">Nhập đơn vị tùy chỉnh <span class="text-red-500">*</span></label>
+                    <input type="text" id="custom_unit" name="custom_unit" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập đơn vị khác...">
+                </div>
                 <div class="mb-4">
-                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày Kết Thúc <span class="text-red-500">*</span></label>
+                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày hoàn thành <span class="text-red-500">*</span></label>
                     <input type="date"  placeholder="dd-mm-yyyy"
                     min="1997-01-01" max="2100-12-31" id="end_date" name="end_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('end_date') }}" required>
                 </div>
@@ -134,6 +180,14 @@
         </form>
 
         <script>
+             function toggleCustomInput(selectElement) {
+            var customInput = document.getElementById('custom-unit');
+            if (selectElement.value === '0') {
+                customInput.classList.remove('hidden');
+            } else {
+                customInput.classList.add('hidden');
+            }
+        }
             document.getElementById('document_id').addEventListener('change', generateTaskCode);
 
                 function generateTaskCode() {

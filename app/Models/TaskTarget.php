@@ -37,8 +37,31 @@ class TaskTarget extends Model
         'type_id',
         'status_code',
         'isDelete',
-        'result_type'
+        'result_type',
+        'unit',      // Đơn vị
+        'target_type', // Loại chỉ tiêu
+        'task_type',   // Loại nhiệm vụ
+        'target',      // Chỉ tiêu
     ];
+
+    public function getUnitName()
+    {
+       
+    
+        $typeTask = Unit::where('id', $this->unit)->first();
+        return $typeTask->name??'';
+    }
+    public function getGroupName()
+    {
+       
+    
+        $typeTask = IndicatorGroup::where('isDelete', 0)->where('id', $this->type_id)->first();
+        if($this->type == 'task'){
+           $typeTask =  TaskGroup::where('isDelete', 0)->where('id', $this->type_id)->first();
+        }
+        return $typeTask->name??'';
+    }
+    
     public function taskResults()
     {
         return $this->hasMany(TaskResult::class, 'id_task_criteria');
@@ -245,5 +268,39 @@ class TaskTarget extends Model
     public function getDateFromToTextAttribute()
     {
         return $this->getStartDate() . ' - ' . $this->getEndDate() ?? '';
+    }
+
+
+
+    public static function getTypesSomes()
+    {
+        return [
+            'timed' => 'Có thời hạn',
+            'regular' => 'Thường xuyên'
+        ];
+    }
+
+    // Phương thức để lấy giá trị type dưới dạng văn bản
+    public function getTypeTextAttributeTime()
+    {
+        
+        $types = self::getTypesSomes();
+        return $types[$this->task_type] ?? 'Không xác định';
+    }
+
+    public static function getTypesTarget()
+    {
+        return [
+            'single' => 'Đơn',
+            'aggregate' => 'Tổng hợp'
+        ];
+    }
+
+    // Phương thức để lấy giá trị type dưới dạng văn bản
+    public function getTypeTextAttributeTarget()
+    {
+        
+        $types = self::getTypesTarget();
+        return $types[$this->target_type] ?? '';
     }
 }

@@ -31,13 +31,12 @@
         @php
         session(['success' => null])
         @endphp
-        <!-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
+        {{-- <button id="filterToggle" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">
             Lọc/Filter
-        </button> -->
-        <!-- <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a> -->
+        </button> --}}
 
         <!-- Search Form type-->
-        <form method="GET" action="{{ route('tasks.byType', $type) }}"  id="filterForm">
+        <form method="GET" action="{{ route('tasks.byType', $type) }}" id="filterForm">
 
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
@@ -85,9 +84,10 @@
                 </div>
 
             </div>
-        
+
         <div class="flex justify-end gap-4">
-        <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a>
+            <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a>
+
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
@@ -99,21 +99,19 @@
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
+                    @if( $type == 'target')
                     <tr>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Mã</th>
                         <th style="width: 450px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Loại</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Đơn vị tính</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Chỉ tiêu</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Giao việc
-                        </th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Loại</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Chi tiết
                         </th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Chỉnh sửa
+                           Cập nhật
                         </th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Xóa 
@@ -122,20 +120,42 @@
                             Lịch sử 
                         </th>
                     </tr>
+                    @else
+                    <tr>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
+                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên nhiệm vụ</th>
+                        <th style="width: 100px" class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhóm nhiệm vụ</th>
+                        <th  style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium">Có thời hạn/thường xuyên</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                           Chi tiết
+                        </th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                           Cập nhật
+                        </th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                           Xóa 
+                        </th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            Lịch sử 
+                        </th>
+                    </tr>
+                    @endif
                 </thead>
                 <tbody>
+                    @if( $type == 'target')
                     @foreach ($taskTargets as $index => $item)
+                  
                         <tr class="border-b border-gray-200">
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
-
-                            <td class="py-3 border border-gray-300 px-6">{{ $item->code }}</td>
                             <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
                             <td class="py-3 border border-gray-300 px-6">
-                                {{ $item->getCycleTypeTextAttribute() }}
+                                {{ $item->getUnitName() }}
                             </td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttribute() }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->target }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }} </td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTarget() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                     onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
@@ -143,12 +163,13 @@
                                 </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-yellow-400 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-900 transition duration-300 ml-2"
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                 onclick="window.location.href='{{ route('tasks.edit.taskTarget',['code' => $item->code, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
+                               
 
                                 <form id="delete-form-{{ $index + $taskTargets->firstItem() }}" action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}" method="POST">
                                     @csrf
@@ -160,6 +181,7 @@
                                     </button>
                                 </form>
                             </td>
+
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
                                     data-task-id="{{ $item->code }}"
@@ -167,8 +189,59 @@
                                       <i class="fa fa-history"></i>
                                 </button>
                             </td>
+                            
                         </tr>
                     @endforeach
+                    @else
+                    @foreach ($taskTargets as $index => $item)
+                  
+                    <tr class="border-b border-gray-200">
+                        <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
+                        <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
+                        <td style="width: 100px;" class="py-3 border border-gray-300 px-6">{{ $item->request_results }}</td>
+                        <td class="py-3 border border-gray-300 px-6">
+                                 {{  $item->getGroupName() }}
+                       
+                        </td>
+                        <td style="width: 80px" class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTime() }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
+                        <td class="py-3 border border-gray-300 px-6 text-center">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
+                                onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
+                                <i class="fas fa-info-circle"></i> <!-- Biểu tượng cho "Chi tiết" -->
+                            </button>
+                        </td>
+                        <td class="py-3 border border-gray-300 px-6 text-center">
+                            <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                            onclick="window.location.href='{{ route('tasks.edit.taskTarget',['code' => $item->code, 'type' => $item->type]) }}'">
+                            <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
+                        </button>
+                        </td>
+                        <td class="py-3 border border-gray-300 px-6 text-center">
+                           
+
+                            <form id="delete-form-{{ $index + $taskTargets->firstItem() }}" action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                    class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                    onclick="confirmDelete({{ $index + $taskTargets->firstItem() }})">
+                                    <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
+                                </button>
+                            </form>
+                        </td>
+
+                        <td class="py-3 border border-gray-300 px-6 text-center">
+                            <button data-document-id="{{ $item->document_id }}"
+                                data-task-id="{{ $item->code }}"
+                                class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                  <i class="fa fa-history"></i>
+                            </button>
+                        </td>
+                        
+                    </tr>
+                @endforeach
+                    @endif
                 </tbody>
             </table>
             <div class="mt-4">
@@ -204,10 +277,10 @@
         </div>
     </div>
     <script>
-        // document.getElementById('filterToggle').addEventListener('click', function() {
-        //     const filterForm = document.getElementById('filterForm');
-        //     filterForm.classList.toggle('hidden');
-        // });
+        document.getElementById('filterToggle').addEventListener('click', function() {
+            const filterForm = document.getElementById('filterForm');
+            filterForm.classList.toggle('hidden');
+        });
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',

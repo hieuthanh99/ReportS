@@ -62,10 +62,10 @@
                   
                 </div>
                 <div class="mb-4">
-                    <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại {{ $text }} <span class="text-red-500">*</span></label>
+                    <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Nhóm {{ $text }} <span class="text-red-500">*</span></label>
                  
                     <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required >
-                        <option value="" data-code="">Chọn loại {{ $text }}</option>
+                        <option value="" data-code="">Chọn nhóm {{ $text }}</option>
                         @foreach ($typeTask as $item)
                             <option value="{{ $item->id }}" {{ $taskTarget->type_id == $item->id ? 'selected' : '' }}>
                                 {{ $item->name }}

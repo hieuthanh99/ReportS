@@ -31,8 +31,7 @@
         @php
         session(['success' => null])
         @endphp
-        <a  onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
-        <form method="GET" action="{{ route('reports.withPeriod') }}" class="hidden" id="filterForm">
+        <form method="GET" action="{{ route('reports.withPeriod') }}"  id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
@@ -62,7 +61,8 @@
             </div>
 
             <div class="flex justify-end gap-4">
-            <a href="{{ route('task-documents.export-period', $taskDocuments) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
+                <a  onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
+
 
                     <button type="submit"
                     class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">

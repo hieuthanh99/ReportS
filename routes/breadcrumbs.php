@@ -21,10 +21,10 @@ Breadcrumbs::for('QLCV', function ($trail) {
 
 Breadcrumbs::for('THBC', function ($trail) {
     $trail->parent('home');
-    $trail->push('Tông hợp, báo cáo',null);
+    $trail->push('Tổng hợp, báo cáo',null);
 });
 Breadcrumbs::for('BCKQ', function ($trail) {
-    $trail->parent('home');
+    $trail->parent('THBC');
     $trail->push('Phê duyệt kết quả công việc',null);
 });
 
@@ -236,22 +236,22 @@ Breadcrumbs::for('UCV', function ($trail, $document) {
 
 //Tổng hợp, thống kê
 Breadcrumbs::for('THTVB', function ($trail) {
-    $trail->parent('THTK');
+    $trail->parent('THBC');
     $trail->push('Báo cáo tổng hợp theo văn bản', route('reports.withDocument'));
 });
 
 Breadcrumbs::for('THTDV', function ($trail) {
-    $trail->parent('THTK');
+    $trail->parent('THBC');
     $trail->push('Báo cáo tổng hợp theo đơn vị', route('reports.withUnit'));
 });
 
 Breadcrumbs::for('THTCK', function ($trail) {
-    $trail->parent('THTK');
+    $trail->parent('THBC');
     $trail->push('Báo cáo tổng hợp theo chu kỳ', route('reports.withUnit'));
 });
 
 Breadcrumbs::for('THCT', function ($trail) {
-    $trail->parent('THTK');
+    $trail->parent('THBC');
     $trail->push('Báo cáo tổng hợp chi tiết', route('reports.withUnit'));
 });
 

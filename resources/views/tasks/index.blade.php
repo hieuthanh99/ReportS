@@ -63,10 +63,10 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px]">
+                <div class="flex-1 min-w-[200px] hidden" id = "organization_id">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tên cơ quan:</label>
                     <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
+                        <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
                     </select>
                 </div>
     
@@ -102,11 +102,12 @@
                     @if( $type == 'target')
                     <tr>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                        <th style="width: 450px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên</th>
+                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Đơn vị tính</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chỉ tiêu</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Loại</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Chi tiết
                         </th>
@@ -128,6 +129,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhóm nhiệm vụ</th>
                         <th  style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium">Có thời hạn/thường xuyên</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Chi tiết
                         </th>
@@ -149,13 +151,14 @@
                   
                         <tr class="border-b border-gray-200">
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
-                            <td style="width: 450px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
+                            <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
                             <td class="py-3 border border-gray-300 px-6">
                                 {{ $item->getUnitName() }}
                             </td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->target }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTarget() }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                     onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
@@ -198,13 +201,22 @@
                     <tr class="border-b border-gray-200">
                         <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
                         <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
-                        <td style="width: 100px;" class="py-3 border border-gray-300 px-6">{{ $item->request_results }}</td>
+                        <td style="width: 100px;" class="py-3 border border-gray-300 px-6"> 
+                        @foreach ($workResultTypes as $idx => $result_type)
+                            @continue($type != 'task' && $idx == 4)
+                            @if($item->result_type == $result_type->key)
+                         
+                                {{ $result_type->value }}
+                            @endif
+                        @endforeach
+                        </td>
                         <td class="py-3 border border-gray-300 px-6">
                                  {{  $item->getGroupName() }}
                        
                         </td>
                         <td style="width: 80px" class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTime() }}</td>
                         <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
                         <td class="py-3 border border-gray-300 px-6 text-center">
                             <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                 onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
@@ -277,10 +289,11 @@
         </div>
     </div>
     <script>
-        document.getElementById('filterToggle').addEventListener('click', function() {
-            const filterForm = document.getElementById('filterForm');
-            filterForm.classList.toggle('hidden');
-        });
+        
+        // document.getElementById('filterToggle').addEventListener('click', function() {
+        //     const filterForm = document.getElementById('filterForm');
+        //     filterForm.classList.toggle('hidden');
+        // });
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',
@@ -315,6 +328,8 @@
                         option.text = organization.name;
                         parentSelect.appendChild(option);
                     });
+                    var customInput = document.getElementById('organization_id');
+                customInput.classList.remove('hidden');
                 })
                 .catch(error => console.error('Error:', error));
         });

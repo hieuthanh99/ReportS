@@ -87,9 +87,50 @@
                     <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên {{ $text }}:</label>
                     <textarea required id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ $taskTarget->name }}</textarea>
                 </div>
+                @if($type == 'task')
                 <div class="mb-4">
+                    
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Loại nhiệm vụ<span class="text-red-500">*</span></label>
+                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                        <option value="timed" {{ $taskTarget->task_type == 'timed' ? 'selected' : '' }}>Có thời hạn</option>
+                        <option value="regular" {{ $taskTarget->task_type == 'regular' ? 'selected' : '' }}>Thường xuyên</option>
+                    </select>
+                   
+                </div>
+                @else
+                <div class="mb-4">
+                    
+                    <label for="task_type" class="block text-gray-700 text-sm font-medium mb-2">Loại chỉ tiêu<span class="text-red-500">*</span></label>
+                   
+                    <select id="target_type" name="target_type" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                        <option value="single" {{ $taskTarget->target_type == 'single' ? 'selected' : '' }}>Đơn</option> <!-- "Đơn" -> "single" -->
+                        <option value="aggregate" {{ $taskTarget->target_type == 'aggregate' ? 'selected' : '' }}>Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
+                    </select>
+                    
+                </div>
+                @endif
+                @if($type == 'target')
+               <div class="mb-4">
+                    <label for="unit" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị tính<span class="text-red-500">*</span></label>
+                    <select id="unit" name="unit" class="w-full p-2 border border-gray-300 rounded-md" onchange="toggleCustomInput(this)">
+                        @foreach ($units as $item)
+                            <option value="{{ $item->id }}" {{ $taskTarget->unit == $item->id ? 'selected' : '' }}>
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
+                        <option value="0">Khác</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="target" class="block text-gray-700 text-sm font-medium mb-2">Chỉ tiêu <span class="text-red-500">*</span></label>
+                    <input type="text"  placeholder="Nhập chỉ tiêu"
+                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ $taskTarget->target }}">
+                </div>
+                @else
+                <div class="mb-4">
+                    {{-- onchange="changeResultType(this.value)" --}}
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
-                    <select name="result_type" id="result_type" onchange="changeResultType(this.value)" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                    <select name="result_type" id="result_type" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
                         @foreach ($workResultTypes as $idx => $item)
                             @continue($type != 'task' && $idx == 4)
                             <option value="{{ $item->key }}" {{ $taskTarget->result_type == $item->key ? 'selected' : '' }}>
@@ -97,7 +138,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <div id="result-area">
+                    {{-- <div id="result-area">
                         @if($keyConstants[0] == $taskTarget->result_type)
                                 <input type="hidden" value="Yes" id="issuing_department" name="request_results">
                                 <input type="radio" id="yes" name="yes" value="Yes" {{ ($taskTarget->request_results == 'Yes') ? 'checked' : '' }} onclick="selectType(this.value)">
@@ -111,10 +152,18 @@
                         @elseif($keyConstants[2] == $taskTarget->result_type || $keyConstants[3] == $taskTarget->result_type)
                             <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="99999999999999" value="{{ $taskTarget->request_results }}" step="any">
                         @endif
-                    </div>
+                    </div> --}}
                 </div>
-
-              
+                <div class="mb-4">
+                    <label for="request_results_task" class="block text-gray-700 font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>
+                    <input type="text" id="request_results_task" value="{{ $taskTarget->request_results_task }}" name="request_results_task" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập kết quả yêu cầu...">
+                </div>
+                @endif
+             
+                <div class="mb-4 hidden" id="custom-unit">
+                    <label for="custom_unit" class="block text-gray-700 font-medium mb-2">Nhập đơn vị tùy chỉnh <span class="text-red-500">*</span></label>
+                    <input type="text" id="custom_unit" name="custom_unit" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập đơn vị khác...">
+                </div>
                 <div class="mb-4">
                     <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày kết thúc:</label>
                     <input type="date" id="end_date" name="end_date" placeholder="dd-mm-yyyy"
@@ -208,6 +257,14 @@
      </div>
     </div>
 <script>
+      function toggleCustomInput(selectElement) {
+            var customInput = document.getElementById('custom-unit');
+            if (selectElement.value === '0') {
+                customInput.classList.remove('hidden');
+            } else {
+                customInput.classList.add('hidden');
+            }
+        }
     function changeResultType(value) {
         let selectedType = {!! json_encode($taskTarget->result_type) !!};
         let keys = {!! json_encode($keyConstants) !!};

@@ -29,8 +29,8 @@
             </div>
         @endif
         @php
-        $text = "Chỉ tiêu";
-        if($type == 'task') $text = "Nhiệm vụ";
+        $text = "chỉ tiêu";
+        if($type == 'task') $text = "nhiệm vụ";
 
         @endphp
         {{-- <h1 class="text-3xl font-bold mb-6 text-gray-800">Thêm nhiệm vụ/chỉ tiêu</h1> --}}
@@ -117,7 +117,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                 @if($type == 'target')
                 <div class="mb-4">
-                    <label for="unit" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị <span class="text-red-500">*</span></label>
+                    <label for="unit" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị tính<span class="text-red-500">*</span></label>
                     <select id="unit" name="unit" class="w-full p-2 border border-gray-300 rounded-md" onchange="toggleCustomInput(this)">
                         @foreach ($units as $item)
                             <option value="{{ $item->id }}" {{ old('unit') == $item->id ? 'selected' : '' }}>
@@ -133,26 +133,31 @@
                      id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('target') }}">
                 </div>
                 @else
+                
                 <div class="mb-4">
-                    
+                    {{-- onchange="changeResultType(this.value)" --}}
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
-                    <select name="result_type" id="result_type" onchange="changeResultType(this.value)" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                    <select name="result_type" id="result_type"  class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
                         @foreach ($workResultTypes as $idx => $item)
-                            
                             <option value="{{ $item->key }}">
                                 {{ $item->value }}
                             </option>
                         @endforeach
                     </select>
-                    <div id="result-area">
+                    {{-- <div id="result-area">
                         <input type="hidden" value="Yes" id="issuing_department" name="request_results">
                         <input type="radio" id="yes" name="yes" value="Yes" checked onclick="selectType(this.value)">
                         <label for="yes">Yes</label><br>
                         <input type="radio" id="no" name="no" value="No" onclick="selectType(this.value)">
                         <label for="no">No</label><br>
-                    </div>
+                    </div> --}}
+                </div>
+                <div class="mb-4">
+                    <label for="request_results_task" class="block text-gray-700 font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>
+                    <input type="text" id="request_results_task" name="request_results_task" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập kết quả yêu cầu...">
                 </div>
                 @endif
+               
                 <div class="mb-4 hidden" id="custom-unit">
                     <label for="custom_unit" class="block text-gray-700 font-medium mb-2">Nhập đơn vị tùy chỉnh <span class="text-red-500">*</span></label>
                     <input type="text" id="custom_unit" name="custom_unit" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập đơn vị khác...">

@@ -279,16 +279,20 @@
                     renderAssignTable(organizations)
                     document.getElementById('assigned-area').style.display = 'block'
                 } else {
-                    alert('Đã xảy ra lỗi!');
+                    console.log('Đã xảy ra lỗi!');
                 }
             })
             .catch(error => {
                 console.error('Lỗi:', error);
-                alert('Đã xảy ra lỗi!');
             });
         });
         document.getElementById('btn-complete').addEventListener('click', function() {
-            window.location.href = document.referrer;
+            var type = document.getElementById('type');
+        var selectedValue = type.value;
+        // Chuyển hướng đến URL tương ứng với giá trị được chọn
+        if (selectedValue) {
+            window.location.href = `/tasks/type/${selectedValue}`;
+        }
         });
     });
 

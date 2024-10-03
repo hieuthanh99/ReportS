@@ -8,7 +8,7 @@
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                {!! Breadcrumbs::render('DSBC') !!}
+                {!! Breadcrumbs::render('BCKQ') !!}
             </ol>
         </nav> 
         @if ($errors->any())
@@ -78,7 +78,8 @@
                                class="border border-gray-300 rounded-lg p-2 w-full" placeholder="Ngày phát hành">
                     </div>
                     <!-- Các trường khác -->
-                    <div class="flex-1 min-w-[200px]">
+                    <div class="flex-1 min-w-[200px]" id="organization_id_hidden"></div>
+                    <div class="flex-1 min-w-[200px] hidden" id="organization_id">
                         <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan</label>
                         <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
                             <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
@@ -101,10 +102,11 @@
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                     <tr>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Mã văn bản</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Tên văn bản</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Mã nhiệm vụ</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Tên nhiệm vụ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Đơn vị phát hành</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời gian ban hành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chi tiết</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Cập nhật</th>
                         @if(Auth::user()->role !== 'staff')
@@ -113,14 +115,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($documents as $index => $document)
+                    @foreach ($taskDocuments as $index => $document)
+                    
                         <tr class="border-b border-gray-200">
-                            <td class="py-3 border border-gray-300 px-6">{{ $index + $documents->firstItem() }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $document->document_code }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $document->document_name }}</td>
-                            <td class="py-3 border border-gray-300 px-6">
-                                {{ $document->issuingDepartment ? $document->issuingDepartment->name : 'N/A' }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $document->release_date_formatted }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $index + $taskDocuments->firstItem() }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $document->code ?? '' }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $document->name ?? ''}}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $document->getOrganization()->name ?? '' }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $document->getDateFromToTextAttribute() ?? ''  }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $document->getStatusLabelAttributeTaskTarget() ?? ''  }}</td>
                             <td class="py-3 border border-gray-300 px-6">
                                 <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                 onclick="window.location.href='{{ route('documents.report.details', $document->id) }}'">
@@ -161,7 +164,7 @@
                 </tbody>
             </table>
             <div class="mt-4">
-                {{ $documents->links() }} <!-- Render pagination links -->
+                {{ $taskDocuments->links() }} <!-- Render pagination links -->
             </div>
         </div>
     </div>
@@ -183,7 +186,12 @@
                         option.value = organization.id;
                         option.text = organization.name;
                         parentSelect.appendChild(option);
+                        
                     });
+                    var customInput = document.getElementById('organization_id');
+                customInput.classList.remove('hidden');
+                var customInput = document.getElementById('organization_id_hidden');
+                customInput.classList.add('hidden');
                 })
                 .catch(error => console.error('Error:', error));
         });

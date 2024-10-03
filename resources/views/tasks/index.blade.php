@@ -205,7 +205,6 @@
                         @foreach ($workResultTypes as $idx => $result_type)
                             @continue($type != 'task' && $idx == 4)
                             @if($item->result_type == $result_type->key)
-                         
                                 {{ $result_type->value }}
                             @endif
                         @endforeach

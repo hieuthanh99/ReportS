@@ -18,8 +18,8 @@ enum TaskTargetStatus: string
         return match($this) {
             self::NEW => 'Đơn mới',
             self::COMPLETE => 'Hoàn thành đánh giá',
-            self::ASSIGN => 'Đơn đã được giao việc',
-            self::REJECT => 'Đơn bị từ chối',
+            self::ASSIGN => 'Báo cáo đã giao việc',
+            self::REJECT => 'Báo cáo bị từ chối',
             self::STAFF_COMPLETE => 'Nhân viên hoàn thành đánh giá',
             self::SUB_ADMIN_COMPLETE => 'Sub-Admin hoàn thành đánh giá',
         };

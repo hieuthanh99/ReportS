@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class TaskResult extends Model
 {
@@ -26,7 +27,22 @@ class TaskResult extends Model
     {
         return $this->belongsTo(TaskDocument::class, 'id_task_criteria')->where('type', 1);
     }
+    public static function getCycleTypes()
+    {
+        return [
+            '1' => 'tuần',
+            '2' => 'tháng',
+            '3' => 'quý',
+            '4' => 'năm'
+        ];
+    }
 
+    // Phương thức để lấy giá trị cycle_type dưới dạng văn bản
+    public function getCycleTypeTextAttribute()
+    {
+        $cycleTypes = self::getCycleTypes();
+        return $cycleTypes[$this->type] ?? 'Không xác định';
+    }
     /**
      * Get the criteria task that owns the task result.
      */
@@ -39,4 +55,6 @@ class TaskResult extends Model
     {
         return $this->belongsTo(Document::class, 'document_id');
     }
+
+    
 }

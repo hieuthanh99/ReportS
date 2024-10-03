@@ -47,10 +47,17 @@ class TaskTarget extends Model
         'results_task'
     ];
 
+
+    public function getCurrentCycle(){
+        return TimeHelper::getTimeParameters((int)$this->cycle_type);
+    }
+
+    public function hasCompletedTask(){
+        return $this->contains('status', 'staff_complete');
+    }
+
     public function getUnitName()
     {
-       
-    
         $typeTask = Unit::where('id', $this->unit)->first();
         return $typeTask->name??'';
     }
@@ -142,7 +149,9 @@ class TaskTarget extends Model
     }
     public function getFilePath()
     {
-       return File::where('document_id', $this->id)->where('type', 1)->first();
+        if($this->type == 'target') $type = 2;
+        else $type = 1;
+       return File::where('document_id', $this->id)->where('type', $type)->first();
     }
     public function taskResultsById($numberType)
     {
@@ -151,12 +160,19 @@ class TaskTarget extends Model
         return TaskResult::where('id_task_criteria', $this->id)->where('type_save', self::getType())->where('number_type', $numberType)->where('type', $this->cycle_type)->first();
     }
 
+
+    public function taskResultsByIdTaskTarget()
+    {
+        $currentYear = Carbon::now()->year;
+        return TaskResult::where('id_task_criteria', $this->id)->where('type_save', self::getType())->where('type', $this->cycle_type)->orderBy('created_at', 'desc')->first();
+    }
+
 //TaskApprovalHistory
 
     public function getTaskApprovalHistory()
     {
         $timeParams = TimeHelper::getTimeParameters($this->cycle_type);
-        $taskResult = TaskResult::where('id_task_criteria', $this->id)->where('type', $this->cycle_type)->where('number_type', $timeParams['current'])->first();
+        $taskResult = TaskResult::where('id_task_criteria', $this->id)->where('type', $this->cycle_type)->where('number_type', (int)$timeParams)->first();
         if($taskResult){
 
             $data = TaskApprovalHistory::where('task_target_id', $this->id)->where('task_result_id', $taskResult->id)->orderBy('created_at', 'desc')->first();
@@ -242,10 +258,10 @@ class TaskTarget extends Model
     public static function getCycleTypes()
     {
         return [
-            '1' => 'Tuần',
-            '2' => 'Tháng',
-            '3' => 'Quý',
-            '4' => 'Năm'
+            '1' => 'tuần',
+            '2' => 'tháng',
+            '3' => 'quý',
+            '4' => 'năm'
         ];
     }
 

@@ -1,3 +1,6 @@
+
+
+
 @extends('layouts.app')
 
 @section('content')
@@ -144,6 +147,7 @@
             $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
             $hasOrganization = $taskTarget->hasOrganizationAppro();
             $taskApproval = $taskTarget->getTaskApprovalHistory();
+
         @endphp
         <div class="bg-white  overflow-hidden">
 
@@ -187,7 +191,7 @@
                         </div>
 
                         <!-- Hàng upload file -->
-                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0">
+                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0;">
                             <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Danh sách
                                 tệp tin:</label>
                             <div id="file-list-data-document" class="mt-2 file-list-data-document">
@@ -218,21 +222,22 @@
                     </div>
                     <hr class="mb-6">
                     <div class="bg-white p-6 ">
-                        <h5 class="text-xl font-semibold mb-4">Nhiệm vụ</h5>
+                        <h5 class="text-xl font-semibold mb-4">Chỉ tiêu</h5>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
                             <!-- Cột trái -->
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Mã nhiệm vụ:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Mã chỉ tiêu:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->code }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Tên nhiệm vụ:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Tên chỉ tiêu:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Nhóm nhiệm vụ:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Nhóm chỉ tiêu:</span>
                                 <span class="text-gray-900 w-2/3">
-                                    @foreach ($groupTask as $item)
+                               
+                                    @foreach ($groupTarget as $item)
                                         @if ($taskTarget->type_id == $item->id)
                                             {{ $item->name }}
                                         @endif
@@ -244,23 +249,26 @@
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Loại nhiệm vụ:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTime() }}</span>
+                                <span class="text-gray-700 font-medium w-1/3">Loại chỉ tiêu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTarget() }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Kết quả:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Chỉ tiêu:</span>
                                 <span class="text-gray-900 w-2/3">
-                                    @foreach ($workResultTypes as $idx => $item)
-                                        @continue($type != 'task' && $idx == 4)
-                                        @if ($taskTarget->result_type == $item->key)
-                                            {{ $item->value }}
-                                        @endif
-                                    @endforeach
+                                {{ $taskTarget->target }}
                                 </span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Kết quả yêu cầu:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->request_results_task }}</span>
+                                <span class="text-gray-700 font-medium w-1/3">Đơn vị tính:</span>
+                                <span class="text-gray-900 w-2/3">
+                                @foreach ($units as $item)
+                                @if($taskTarget->unit == $item->id)
+                                 
+                                        {{ $item->name }}
+                             
+                                    @endif
+                                @endforeach
+                            </span>
                             </div>
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
@@ -274,34 +282,8 @@
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Báo cáo kết quả:</span>
                                 @if ($isEditable && Auth::user()->role === 'staff')
-                                    {{-- <textarea required class="styled-textarea" name="cycle_result" id="current_note"
-                                        placeholder="Nhập kết quả" rows="5" cols="30">{{ $result }}</textarea> --}}
-                                    {{-- ['BOOL', 'INT', 'DBL', 'PCT', 'TXT']; --}}
-                                    @if ($taskTarget->result_type == 'BOOL')
-                                        <div id="result-area">
-                                            <input type="hidden" value="Yes" id="issuing_department"
-                                                name="request_results">
-                                            <input type="radio" id="yes" name="yes" value="Yes" checked
-                                                onclick="selectType(this.value)">
-                                            <label for="yes">Yes</label><br>
-                                            <input type="radio" id="no" name="no" value="No"
-                                                onclick="selectType(this.value)">
-                                            <label for="no">No</label><br>
-                                        </div>
-                                    @elseif($taskTarget->result_type == 'INT')
-                                        <input id="issuing_department" type="number" name="request_results"
-                                            class="form-input w-full border border-gray-300 rounded-lg p-2"
-                                            placeholder="Nhập kết quả" min="0" max="99999999999999"
-                                            value="{{ $result }}" step="1">
-                                    @elseif($taskTarget->result_type == 'TXT')
                                         <textarea id="issuing_department" style="height: 62px" name="request_results"
-                                            class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ $result }}</textarea>
-                                    @else
-                                        <input id="issuing_department" type="number" name="request_results"
-                                            class="form-input w-full border border-gray-300 rounded-lg p-2"
-                                            placeholder="Nhập kết quả" min="0" max="99999999999999"
-                                            value="{{ $result }}" step="any">
-                                    @endif
+                                            class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{$result  }}</textarea>
                                 @else
                                     <span>{{ $result }}</span>
                                 @endif
@@ -350,13 +332,12 @@
                                     class="form-input w-full border border-gray-300 rounded-lg p-2">
                                 <p class="text-gray-500 text-sm mt-1">Chọn tệp để tải lên.</p>
                                 <label for="files" class="text-gray-700 font-medium w-1/3">Tệp:</label>
-                                <div id="file-list" class="mt-2 file-list">
-                                    
-                                </div>
+                                <div id="file-list" class="mt-2 file-list"></div>
                             @else
                                 <label class="text-gray-700 font-medium w-1/3">Tệp báo cáo</label>
                                 @php
                                     $file = $taskTarget->getFilePath() ?? null;
+                          
                                 @endphp
                                 @if ($file && !empty($file->file_path))
                                     @foreach ($document->files as $file)
@@ -455,23 +436,6 @@
         </div>
     </div>
     <script>
-          var result = "<?php echo $result; ?>";
-          var taskTarget = "<?php $taskTarget->result_type; ?>";
-
-          if(taskTarget == 'BOOL')
-          {
-            let yesBtnSet = document.getElementById('yes');
-            let noBtnSet = document.getElementById('no');
-// Kiểm tra giá trị và chọn radio button tương ứng
-if (result === "Yes") {
-    yesBtnSet.setAttribute('checked', 'checked')
-    noBtnSet.checked = false
-} else if (result === "No") {
-    yesBtnSet.checked = false
-    noBtnSet.setAttribute('checked', 'checked')
-}
-          }
-  
         function selectType(value) {
             document.getElementById('issuing_department').value = value
             let yesBtn = document.getElementById('yes');

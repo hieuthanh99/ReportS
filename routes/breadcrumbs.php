@@ -258,7 +258,13 @@ Breadcrumbs::for('THCT', function ($trail) {
 //Tổng hợp, thống kê
 Breadcrumbs::for('DSBC', function ($trail) {
     $trail->parent('BCKQ');
-    $trail->push('Danh sách báo cáo', route('documents.report'));
+    $trail->push('Danh sách báo cáo phê duyệt nhiệm vụ', route('documents.report'));
+});
+
+//Tổng hợp, thống kê
+Breadcrumbs::for('DSBCTG', function ($trail) {
+    $trail->parent('BCKQ');
+    $trail->push('Danh sách báo cáo phê duyệt chỉ tiêu', route('documents.report.target'));
 });
 
 Breadcrumbs::for('CTBC', function ($trail, $document) {
@@ -268,5 +274,16 @@ Breadcrumbs::for('CTBC', function ($trail, $document) {
 
 Breadcrumbs::for('UBC', function ($trail, $document) {
     $trail->parent('DSBC');
+    $trail->push('Đánh giá báo cáo', route('documents.report.update', $document));
+});
+
+
+Breadcrumbs::for('CTBCTG', function ($trail, $document) {
+    $trail->parent('DSBCTG');
+    $trail->push('Chi tiết báo cáo', route('documents.report.details', $document));
+});
+
+Breadcrumbs::for('UBCTG', function ($trail, $document) {
+    $trail->parent('DSBCTG');
     $trail->push('Đánh giá báo cáo', route('documents.report.update', $document));
 });

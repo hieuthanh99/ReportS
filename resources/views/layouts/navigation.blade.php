@@ -69,7 +69,8 @@
                                         </ul>
                                     </li>
                                     @endif
-                                    <li><a href="{{route('documents.report')}}" title="">Phê duyệt kết quả công việc</a></li>
+                                    <li><a href="{{route('documents.report')}}" title="">Phê duyệt kết quả nhiệm vụ</a></li>
+                                    <li><a href="{{route('documents.report.target')}}" title="">Phê duyệt kết quả chỉ tiêu</a></li>
                                 </ul>
                                     </details>
                             </li>

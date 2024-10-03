@@ -8,7 +8,7 @@
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                {!! Breadcrumbs::render('DSBC') !!}
+                {!! Breadcrumbs::render('DSBCTG') !!}
             </ol>
         </nav> 
         @if ($errors->any())
@@ -132,7 +132,7 @@
                             </td>
                             <td class="py-3 border border-gray-300 px-6">
                                 <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                                    onclick="window.location.href='{{ route('documents.report.update', $document) }}'">
+                                    onclick="window.location.href='{{ route('documents.report.update.target', $document) }}'">
                                     <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                 </button>    
                             </td>

@@ -138,21 +138,7 @@
                             </option>
                         @endforeach
                     </select>
-                    {{-- <div id="result-area">
-                        @if($keyConstants[0] == $taskTarget->result_type)
-                                <input type="hidden" value="Yes" id="issuing_department" name="request_results">
-                                <input type="radio" id="yes" name="yes" value="Yes" {{ ($taskTarget->request_results == 'Yes') ? 'checked' : '' }} onclick="selectType(this.value)">
-                                <label for="yes">Yes</label><br>
-                                <input type="radio" id="no" name="no" value="No" {{ $taskTarget->request_results == 'No' ? 'checked' : '' }} onclick="selectType(this.value)">
-                                <label for="no">No</label><br>
-                        @elseif($keyConstants[4] == $taskTarget->result_type && $type == 'task')
-                            <textarea id="issuing_department" style="height: 62px" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ $taskTarget->request_results }}</textarea>
-                        @elseif($keyConstants[1] == $taskTarget->result_type)
-                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="99999999999999" value="{{ $taskTarget->request_results }}" oninput="this.value = this.value.replace('.', '')" step="1">
-                        @elseif($keyConstants[2] == $taskTarget->result_type || $keyConstants[3] == $taskTarget->result_type)
-                            <input id="issuing_department" type="number" name="request_results" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả" min="0" max="99999999999999" value="{{ $taskTarget->request_results }}" step="any">
-                        @endif
-                    </div> --}}
+    
                 </div>
                 <div class="mb-4">
                     <label for="request_results_task" class="block text-gray-700 font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>

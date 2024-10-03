@@ -44,7 +44,11 @@ Route::middleware(['auth', 'roles:staff,sub_admin'])->group(function () {
 });
 Route::middleware('auth')->group(function () {
     Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report');
+    Route::get('/report-target', [DocumentController::class, 'reportTargetView'])->name('documents.report.target');
+
     Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update');
+    Route::get('/report-update-view-target/{document}', [DocumentController::class, 'reportViewUpdateTarget'])->name('documents.report.update.target');
+
     Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details');
     Route::get('/reports', [ReportController::class, 'showReportDocument'])->name('reports.withDocument');
     Route::get('/reports-with-unit', [ReportController::class, 'showReportUnit'])->name('reports.withUnit');

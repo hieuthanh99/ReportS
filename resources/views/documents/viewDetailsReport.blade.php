@@ -3,40 +3,37 @@
 @section('content')
 
     <style>
-        .table-container {
-            width: 2100px;
-            border-collapse: collapse;
-            overflow-x: auto;
-            /* Cho phép cuộn ngang */
-        }
+        /* .table-container {
+                                        width: 2100px;
+                                        border-collapse: collapse;
+                                        overflow-x: auto;
+                                    }
 
-        .table-container th,
-        .table-container td {
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            word-wrap: break-word;
-            /* Đảm bảo văn bản dài sẽ xuống dòng */
-            white-space: normal;
-            /* Cho phép văn bản wrap */
-        }
+                                    .table-container th,
+                                    .table-container td {
+                                        text-align: center;
+                                        border: 1px solid #ddd;
+                                        padding: 8px;
+                                        text-align: left;
+                                        word-wrap: break-word;
+                                        white-space: normal;
+                                    }
 
-        .table-container th {
-            text-align: center;
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-/* Cột cố định thứ ba */
-        th:nth-child(3),
-        td:nth-child(3) {
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
-            padding: 5px;
-            background-color: #f9f9f9;
-            z-index: 10;
-        }
+                                    .table-container th {
+                                        text-align: center;
+                                        background-color: #f4f4f4;
+                                        font-weight: bold;
+                                    }
+
+                                    th:nth-child(3),
+                                    td:nth-child(3) {
+                                        position: -webkit-sticky;
+                                        position: sticky;
+                                        left: 0;
+                                        padding: 5px;
+                                        background-color: #f9f9f9;
+                                        z-index: 10;
+                                    } */
 
         .col-110 {
             width: 110px;
@@ -69,8 +66,9 @@
         .col-90 {
             width: 90px;
         }
-        
-        input[readonly], textarea[readonly] {
+
+        input[readonly],
+        textarea[readonly] {
             background-color: #f0f0f0 !important;
             /* Màu nền nhạt hơn để hiển thị trạng thái readonly */
             cursor: not-allowed;
@@ -140,1009 +138,357 @@
                 {{ session('success') }}
             </div>
         @endif
-
+        @php
+            $type = 'task';
+            $isEditable = $taskTarget->status == 'assign' || $taskTarget->status == 'reject';
+            $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
+            $hasOrganization = $taskTarget->hasOrganizationAppro();
+            $taskApproval = $taskTarget->getTaskApprovalHistory();
+        @endphp
         <div class="bg-white  overflow-hidden">
+
             <div class="p-6">
-            <nav aria-label="breadcrumb">
+                <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         {!! Breadcrumbs::render('CTBC', $document) !!}
                     </ol>
-                </nav> 
-                <form action="{{ route('documents.task.update.cycle', $document->id) }}" method="POST" enctype="multipart/form-data"
-                    class="bg-white p-6 ">
+                </nav>
+                <form action="{{ route('documents.task.update.cycle', $taskTarget->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('POST')
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Cột trái -->
-                        <div class="mb-4">
-                            <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Mã văn
-                                bản:</label>
-                          
-                                <span class="rounded-lg">{{ $document->document_code }}</span>
-                       
-                        </div>
-                        <div class="mb-4">
-                            <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Tên văn
-                                bản:</label>
-                          
-                                <span class="rounded-lg">{{ $document->document_name }}</span>
-                      
+                    <div class="bg-white p-6 ">
+                        <h5 class="text-xl font-semibold mb-4">Thông tin văn bản</h5>
 
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
+                            <!-- Cột trái -->
+                            <div class="flex items-center mb-4">
+                                <label for="document_code" class="text-gray-700 font-medium w-1/3">Mã văn
+                                    bản:</label>
+                                <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <label for="document_name" class="text-gray-700 font-medium w-1/3">Tên văn
+                                    bản:</label>
+                                <span class="text-gray-900 w-2/3">{{ $document->document_name }}</span>
+
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Cơ
+                                    quan, tổ chức phát
+                                    hành:</label>
+                                <span class="text-gray-900 w-2/3">{{ $document->issuingDepartment->name ?? '' }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <label for="release_date" class="text-gray-700 font-medium w-1/3">Ngày phát
+                                    hành:</label>
+                                <span class="text-gray-900 w-2/3">{{ $document->getReleaseDateFormattedAttribute() }}</span>
+                            </div>
                         </div>
-                        <div class="mb-4">
-                            <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan, đơn vị phát
-                                hành:</label>
-                                <span class="rounded-lg">{{ $document->issuingDepartment->name ?? '' }}</span>
+
+                        <!-- Hàng upload file -->
+                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0">
+                            <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Danh sách
+                                tệp tin:</label>
+                            <div id="file-list-data-document" class="mt-2 file-list-data-document">
+                                @if (!$document->files->isEmpty())
+                                    @foreach ($document->files as $file)
+                                        @php
+                                            $filePath = storage_path('app/public/' . $file->file_path);
+                                            $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
+                                        @endphp
+
+                                        <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
+                                            data-file-type="{{ $fileType }}">
+                                            <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
+                                            <a href="{{ route('file.view', ['id' => $file->id]) }}"
+                                                class="text-blue-500 hover:underline"
+                                                target="_blank">{{ $file->file_name }}</a>
+                                            {{-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
+                                                class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> --}}
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <span>Không có tệp nào</span>
+                                @endif
+
+                            </div>
+                            {{-- <div id="file-list" class="mt-2 file-list"></div> --}}
                         </div>
-                        <div class="mb-4">
-                            <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày phát
-                                hành:</label>
+                    </div>
+                    <hr class="mb-6">
+                    <div class="bg-white p-6 ">
+                        <h5 class="text-xl font-semibold mb-4">Nhiệm vụ</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
+                            <!-- Cột trái -->
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Mã nhiệm vụ:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->code }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Tên nhiệm vụ:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Nhóm nhiệm vụ:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    @foreach ($groupTask as $item)
+                                        @if ($taskTarget->type_id == $item->id)
+                                            {{ $item->name }}
+                                        @endif
+                                    @endforeach
+                                </span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Chu kỳ báo cáo:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Loại nhiệm vụ:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTime() }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Kết quả:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    @foreach ($workResultTypes as $idx => $item)
+                                        @continue($type != 'task' && $idx == 4)
+                                        @if ($taskTarget->result_type == $item->key)
+                                            {{ $item->value }}
+                                        @endif
+                                    @endforeach
+                                </span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Kết quả yêu cầu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->request_results_task }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
+                            </div>
+
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Báo cáo kết quả:</span>
+                                    <span class="text-gray-900 w-2/3">{{ $result }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Trạng thái:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabelAttributeTaskTarget() }}</span>
+                                
+                            </div>
+                          
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Hoàn thành:</span>
+                                @if ($taskTarget->is_completed)
+                                    <span class="text-gray-900 w-2/3"> Hoàn thành</span>
+                                @else
+                                <span class="text-gray-900 w-2/3">Chưa hoàn thành</span>
+                                @endif
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4 gap-6 p-6 bg-white" style="padding-top: 0">
                            
-                                <span class="rounded-lg">{{ $document->getReleaseDateFormattedAttribute() }}</span>
-                         
-
-                        </div>
-                    </div>
-
-                    <!-- Hàng upload file -->
-                    <div class="mb-4" style="margin: 20px 0">
-                        <label for="release_date" class="block text-gray-700 text-sm font-medium mb-2">Danh sách tệp tin:</label>
-                        <div id="file-list-data" class="mt-2 file-list-data">
-                            @if (!$document->files->isEmpty())
-                            @foreach ($document->files as $file)
+                                <label class="text-gray-700 font-medium w-1/3">Tệp báo cáo</label>
                                 @php
-                                    $filePath = storage_path('app/public/' . $file->file_path);
-                                    $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
+                                    $file = $taskTarget->getFilePath() ?? null;
                                 @endphp
+                                @if ($file && !empty($file->file_path))
+                                    @foreach ($document->files as $file)
+                                        @php
+                                            $filePath = storage_path('app/public/' . $file->file_path);
+                                            $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
+                                        @endphp
 
-                                <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
-                                    data-file-type="{{ $fileType }}">
-                                    <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                                    <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
-                                    <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                        class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button>
-                                </div>
-                            @endforeach
-                    @else
-                        <span>Không có tệp nào</span>
-                    @endif
+                                        <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
+                                            data-file-type="{{ $fileType }}" style="margin-top: 20px">
+                                            <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
+                                            <a href="{{ route('file.view', ['id' => $file->id]) }}"
+                                                class="text-blue-500 hover:underline"
+                                                target="_blank">{{ $file->file_name }}</a>
+                                            {{-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
+                                        class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> --}}
+                                        </div>
+                                    @endforeach
+                                @endif
+                     
+
                         </div>
-                        <div id="file-list" class="mt-2 file-list"></div>
                     </div>
-                   
-                    {{-- Tuần --}}
-                    @if ($weekTask->isNotEmpty())
-                        <div class="mt-6">
-                            <h5 class="text-xl font-semibold mb-4">Danh sách nhiệm vụ/chỉ tiêu theo tuần:</h5>
-                            <div class="overflow-x-auto">
-                            
-                                <table class="min-w-full divide-y divide-gray-200 border border-gray-300 table-container">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th rowspan="2"
-                                                class="fixed-side col-110 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Mã 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-130 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Cơ quan, tổ chức
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-320 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tên 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tiến độ
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Đánh giá tiến độ
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tuần {{ $timeParamsWeek['current'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tuần {{ $timeParamsWeek['previous'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tuần {{ $timeParamsWeek['two_previous'] }}
-                                            </th>
-
-
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                               Hoàn thành
-                                            </th>
-                   
-                                            <th rowspan="2"
-                                                class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Nhận xét báo cáo
-                                            </th>
-                                    
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Thao tác
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                          
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                          
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                         
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @forelse ($weekTask as $task)
+                    
+                    <hr class="mb-6">
+                    <div class="bg-white p-6 ">
+                        
+                        <h5 class="text-xl font-semibold mb-4">Lịch sử chu kỳ</h5>
+                        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+                            <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
+                                <tr>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $stt = 1;
+                                @endphp
+                                @foreach ($lstResult as $index => $item)
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">
+                                            {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">
                                             @php
-                                                $isDisabled = $task->status == 'Đã giao việc';
-                                                $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
-                                                $hasOrganization = $task->hasOrganizationAppro();
-                                                $taskApproval = $task->getTaskApprovalHistory();
+                                                $file = $taskTarget->getFilePath() ?? null;
                                             @endphp
-                                            <tr>
-                                                <td class="fixed-side col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <input type="hidden" id="cycle_type" name="cycle_type[{{ $task->id }}]"
-                                                        value="1">
-                                                    <input type="hidden" id="number_cycle" name="number_cycle[{{ $task->id }}]"
-                                                        value="{{ $timeParamsWeek['current'] }}">
-                                                    <input type="hidden" id="document_id" name="document_id[{{ $task->id }}]"
-                                                        value="{{ $document->id }}">
-                                                    <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
-                                                        value="{{ $task->id }}">
-                                                    {{ $task->code }}
-                                                </td>
-                                                <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span
-                                                        class="text-gray-900">{{ $task->organization->name ?? 'Chưa giao việc' }}</span>
-                                                </td>
-                                                <td class="fixed-side col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->name }}</span>
-                                                </td>
-                                                <td class="fixed-side col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->request_results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->getStatus() }}</span>
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    <span >{{ $task->taskResultsByNumber($timeParamsWeek['current'])->result ?? '' }}</span>
-                                                    
-                                                </td>
-                                              
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center !important">
-                                                      @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsWeek['current']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['current']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsWeek['previous'])->result ?? '' }}</span>
-                                                </td>
-                                            
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsWeek['previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
+                                            @if ($file && !empty($file->file_path))
+                                                <a style="width: 49px;"
+                                                    href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $taskTarget->cycle_type, 'numberType' => $item->number_type]) }}"
+                                                    id="button-file-task-{{ $taskTarget->id }}"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    download>
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            @endif
+                                        </td>
 
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                   
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsWeek['two_previous'])->result ?? '' }}</span>
-                                                </td>
-                                            
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsWeek['two_previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsWeek['two_previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-
-                                                <td
-                                                    class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    @if($task->is_completed)
-                                                        Hoàn thành
-                                                    @endif
-                                                </td>
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                </td>
-                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>
-                                                        @if($taskApproval != null)
-                                                            @if($taskApproval->status === 'approved') 
-                                                                Đã duyệt 
-                                                            @elseif ($taskApproval->status === 'rejected')
-                                                                Đã từ chối
-                                                            @endif
-                                                        @endif
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="17"
-                                                    class="border border-gray-300 px-4 py-2 text-center text-gray-500">
-                                                    Không có dữ liệu</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                
-                            </div>
-                            {{-- {{ $weekTask->withPath(url()->current())->links() }} --}}
-                        </div>
-                    @endif
-                    {{-- End Tuần --}}
-
-                    {{-- Tháng --}}
-                    @if ($monthTask->isNotEmpty())
-                        <div class="mt-6">
-                            <h5 class="text-xl font-semibold mb-4">Danh sách nhiệm vụ/chỉ tiêu theo tháng:</h5>
-                            <div class="overflow-x-auto">
-                            
-                                <table class="min-w-full divide-y divide-gray-200 border border-gray-300 table-container">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th rowspan="2"
-                                                class="fixed-side col-110 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Mã 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-130 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Cơ quan, tổ chức
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-320 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tên 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xsng font-medium text-gray-500 uppercase tracking-wider">
-                                                Tiến độ
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Đánh giá tiến độ
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tháng {{ $timeParamsMonth['current'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tháng {{ $timeParamsMonth['previous'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tháng {{ $timeParamsMonth['two_previous'] }}
-                                            </th>
-
-
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                               Hoàn thành
-                                            </th>
-                            
-                                            <th rowspan="2"
-                                                class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Nhận xét báo cáo
-                                            </th>
-                                    
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Thao tác
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                            
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                          
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                         
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @forelse ($monthTask as $task)
-                                            @php
-                                                $isDisabled = $task->status == 'Đã giao việc';
-                                                $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
-                                                $hasOrganization = $task->hasOrganizationAppro();
-                                                $taskApproval = $task->getTaskApprovalHistory();
-                                            @endphp
-                                            <tr>
-                                                <td class="fixed-side col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <input type="hidden" id="cycle_type" name="cycle_type[{{ $task->id }}]"
-                                                        value="2">
-                                                    <input type="hidden" id="number_cycle" name="number_cycle[{{ $task->id }}]"
-                                                        value="{{ $timeParamsMonth['current'] }}">
-                                                    <input type="hidden" id="document_id" name="document_id[{{ $task->id }}]"
-                                                        value="{{ $document->id }}">
-                                                    <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
-                                                        value="{{ $task->id }}">
-                                                    {{ $task->code }}
-                                                </td>
-                                                <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span
-                                                        class="text-gray-900">{{ $task->organization->name ?? 'Chưa giao việc' }}</span>
-                                                </td>
-                                                <td class="fixed-side col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->name }}</span>
-                                                </td>
-                                                <td class="fixed-side col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->request_results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->getStatus() }}</span>
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsMonth['current'])->result ?? '' }}</span>
-
-                                                   
-                                                </td>
-                                             
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center !important">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsMonth['current']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['current']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsMonth['previous'])->result ?? '' }}</span>
-                                                </td>
-                                             
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsMonth['previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsMonth['two_previous'])->result ?? '' }}</span>
-                                                </td>
-                                             
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsMonth['two_previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsMonth['two_previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-
-                                                <td
-                                                    class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    @if($task->is_completed)
-                                                        Hoàn thành
-                                                    @endif
-                                                </td>
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                </td>
-                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>
-                                                        @if($taskApproval != null)
-                                                            @if($taskApproval->status === 'approved') 
-                                                                Đã duyệt 
-                                                            @elseif ($taskApproval->status === 'rejected')
-                                                                Đã từ chối
-                                                            @endif
-                                                        @endif
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="17"
-                                                    class="border border-gray-300 px-4 py-2 text-center text-gray-500">
-                                                    Không có dữ liệu</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                
-                            </div>
-                            {{-- {{ $weekTask->withPath(url()->current())->links() }} --}}
-                        </div>
-                    @endif
-                    {{-- End tháng --}}
-
-                    {{-- Quý --}}
-                    @if ($quarterTask->isNotEmpty())
-                        <div class="mt-6">
-                            <h5 class="text-xl font-semibold mb-4">Danh sách nhiệm vụ/chỉ tiêu theo quý:</h5>
-                            <div class="overflow-x-auto">
-                            
-                                <table class="min-w-full divide-y divide-gray-200 border border-gray-300 table-container">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th rowspan="2"
-                                                class="fixed-side col-110 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Mã 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-130 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Cơ quan, tổ chức
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-320 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tên 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tiến độ
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Đánh giá tiến độ
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Quý {{ $timeParamsQuarter['current'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Quý {{ $timeParamsQuarter['previous'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Quý {{ $timeParamsQuarter['two_previous'] }}
-                                            </th>
-
-
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Hoàn thành
-                                            </th>
-                                          
-                                            <th rowspan="2"
-                                                class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Nhận xét báo cáo
-                                            </th>
-                                    
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Thao tác
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                        
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                           
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                          
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @forelse ($quarterTask as $task)
-                                            @php
-                                                $isDisabled = $task->status == 'Đã giao việc';
-                                                $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
-                                                $hasOrganization = $task->hasOrganizationAppro();
-                                                $taskApproval = $task->getTaskApprovalHistory();
-                                            @endphp
-                                            <tr>
-                                                <td class="fixed-side col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <input type="hidden" id="cycle_type" name="cycle_type[{{ $task->id }}]"
-                                                        value="3">
-                                                    <input type="hidden" id="number_cycle" name="number_cycle[{{ $task->id }}]"
-                                                        value="{{ $timeParamsQuarter['current'] }}">
-                                                    <input type="hidden" id="document_id" name="document_id[{{ $task->id }}]"
-                                                        value="{{ $document->id }}">
-                                                    <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
-                                                        value="{{ $task->id }}">
-                                                    {{ $task->code }}
-                                                </td>
-                                                <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span
-                                                        class="text-gray-900">{{ $task->organization->name ?? 'Chưa giao việc' }}</span>
-                                                </td>
-                                                <td class="fixed-side col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->name }}</span>
-                                                </td>
-                                                <td class="fixed-side col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->request_results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->getStatus() }}</span>
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsQuarter['current'])->result ?? '' }}</span>
-
-                                                   
-                                                </td>
-                                            
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center !important">
-                                                    @php
-                                                    $file =
-                                                        $task->getFilePathByType(
-                                                            $timeParamsQuarter['current']
-                                                        ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['current']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsQuarter['previous'])->result ?? '' }}</span>
-                                                </td>
-                                            
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsQuarter['previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsQuarter['two_previous'])->result ?? '' }}</span>
-                                                </td>
-                                             
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsQuarter['two_previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsQuarter['two_previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-
-                                                <td
-                                                    class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    @if($task->is_completed)
-                                                        Hoàn thành
-                                                    @endif
-                                                </td>
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                </td>
-                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>
-                                                        @if($taskApproval != null)
-                                                            @if($taskApproval->status === 'approved') 
-                                                                Đã duyệt 
-                                                            @elseif ($taskApproval->status === 'rejected')
-                                                                Đã từ chối
-                                                            @endif
-                                                        @endif
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="17"
-                                                    class="border border-gray-300 px-4 py-2 text-center text-gray-500">
-                                                    Không có dữ liệu</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                
-                            </div>
-                            {{-- {{ $weekTask->withPath(url()->current())->links() }} --}}
-                        </div>
-                    @endif
-                    {{-- End Quý --}}
-
-                    {{-- Năm --}}
-                    @if ($yearTask->isNotEmpty())
-                        <div class="mt-6">
-                            <h5 class="text-xl font-semibold mb-4">Danh sách nhiệm vụ/chỉ tiêu theo năm:</h5>
-                            <div class="overflow-x-auto">
-                            
-                                <table class="min-w-full divide-y divide-gray-200 border border-gray-300 table-container">
-                                    <thead class="bg-gray-100">
-                                        <tr>
-                                            <th rowspan="2"
-                                                class="fixed-side col-110 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Mã 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-130 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Cơ quan, tổ chức
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-320 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tên 
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tiến độ
-                                            </th>
-                                            <th rowspan="2"
-                                                class="fixed-side col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Đánh giá tiến độ
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Năm {{ $timeParamsYear['current'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Năm {{ $timeParamsYear['previous'] }}
-                                            </th>
-                                            <th colspan="2"
-                                                class="col-400 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Năm {{ $timeParamsYear['two_previous'] }}
-                                            </th>
-
-
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Hoàn thành
-                                            </th>
-                                       
-                                            <th rowspan="2"
-                                                class="col-250 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Nhận xét báo cáo
-                                            </th>
-                                    
-                                            <th rowspan="2"
-                                                class="col-100 text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Thao tác
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                          
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                         
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Kết quả</th>
-                                         
-                                            <th
-                                                class="text-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tài liệu</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @forelse ($yearTask as $task)
-                                            @php
-                                                $isDisabled = $task->status == 'Đã giao việc';
-                                                $isStatus = $task->status == 'Đã hoàn thành chu kỳ';
-                                                $hasOrganization = $task->hasOrganizationAppro();
-                                                $taskApproval = $task->getTaskApprovalHistory();
-                                            @endphp
-                                            <tr>
-                                                <td class="fixed-side col-110 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <input type="hidden" id="cycle_type" name="cycle_type[{{ $task->id }}]"
-                                                        value="4">
-                                                    <input type="hidden" id="number_cycle" name="number_cycle[{{ $task->id }}]"
-                                                        value="{{ $timeParamsYear['current'] }}">
-                                                    <input type="hidden" id="document_id" name="document_id[{{ $task->id }}]"
-                                                        value="{{ $document->id }}">
-                                                    <input type="hidden" id="taskTargetId" name="task_target_id[{{ $task->id }}]"
-                                                        value="{{ $task->id }}">
-                                                    {{ $task->code }}
-                                                </td>
-                                                <td class="fixed-side col-130 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span
-                                                        class="text-gray-900">{{ $task->organization->name ?? 'Chưa giao việc' }}</span>
-                                                </td>
-                                                <td class="fixed-side col-320 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->name }}</span>
-                                                </td>
-                                                <td class="fixed-side col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->request_results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->results }}</span>
-                                                </td>
-                                                <td class="fixed-side col-100 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->getStatus() }}</span>
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsYear['current'])->result ?? '' }}</span>
-                                                   
-                                                </td>
-                                            
-                                                <td
-                                                    class=" border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center !important">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsYear['current']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['current']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-
-                                                </td>
-                                                <td
-                                                    class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsYear['previous'])->result ?? '' }}</span>
-                                                </td>
-                                             
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsYear['previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap">
-                                                    <span>{{ $task->taskResultsByNumber($timeParamsYear['two_previous'])->result ?? '' }}</span>
-                                                </td>
-                                             
-                                                <td
-                                                    class="border border-gray-300 px-4 py-2 whitespace-nowrap text-center">
-                                                    @php
-                                                        $file =
-                                                            $task->getFilePathByType(
-                                                                $timeParamsYear['two_previous']
-                                                            ) ?? null;
-                                                    @endphp
-                                                    @if ($file && !empty($file->file_path))
-                                                        <a style="width: 49px;" href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $task->cycle_type, 'numberType' => $timeParamsYear['two_previous']]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-                                                            download>
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-red-500"></span>
-                                                    @endif
-                                                </td>
-
-                                                <td
-                                                    class="col-100 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    @if($task->is_completed)
-                                                        Hoàn thành
-                                                    @endif
-                                                </td>
-                                                <td class="col-250 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>{{ $taskApproval->remarks ?? '' }}</span>
-                                                </td>
-                                                <td class="col-150 border border-gray-300 px-4 py-2 whitespace-nowrap text-center" style="text-align: center">
-                                                    <span>
-                                                        @if($taskApproval != null)
-                                                            @if($taskApproval->status === 'approved') 
-                                                                Đã duyệt 
-                                                            @elseif ($taskApproval->status === 'rejected')
-                                                                Đã từ chối
-                                                            @endif
-                                                        @endif
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="17"
-                                                    class="border border-gray-300 px-4 py-2 text-center text-gray-500">
-                                                    Không có dữ liệu</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                
-                            </div>
-                            {{-- {{ $weekTask->withPath(url()->current())->links() }} --}}
-                        </div>
-                    @endif
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </form>
             </div>
+
         </div>
     </div>
     <script>
+          var result = "<?php echo $result; ?>";
+          var taskTarget = "<?php $taskTarget->result_type; ?>";
+
+          if(taskTarget == 'BOOL')
+          {
+            let yesBtnSet = document.getElementById('yes');
+            let noBtnSet = document.getElementById('no');
+// Kiểm tra giá trị và chọn radio button tương ứng
+if (result === "Yes") {
+    yesBtnSet.setAttribute('checked', 'checked')
+    noBtnSet.checked = false
+} else if (result === "No") {
+    yesBtnSet.checked = false
+    noBtnSet.setAttribute('checked', 'checked')
+}
+          }
+  
+        function selectType(value) {
+            document.getElementById('issuing_department').value = value
+            let yesBtn = document.getElementById('yes');
+            let noBtn = document.getElementById('no');
+            if (value == yesBtn.value) {
+                yesBtn.setAttribute('checked', 'checked')
+                noBtn.checked = false
+            } else {
+                yesBtn.checked = false
+                noBtn.setAttribute('checked', 'checked')
+            }
+        }
+        //=====================================FILE=============================================
+        const fileInput = document.getElementById('files');
+        const fileList = document.getElementById('file-list');
+
+        function getFileIcon(fileType) {
+            // URL tương đối từ thư mục public
+            const baseUrl = '/icons/';
+
+            switch (fileType) {
+                case 'application/pdf':
+                    return baseUrl + 'pdf.png'; // Đặt đường dẫn đến biểu tượng PDF
+                case 'application/msword':
+                case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                    return baseUrl + 'word.png'; // Đặt đường dẫn đến biểu tượng Word
+                case 'application/vnd.ms-excel':
+                case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                    return baseUrl + 'excel.png'; // Đặt đường dẫn đến biểu tượng Excel
+                default:
+                    return baseUrl + 'default-icon.png'; // Đặt đường dẫn đến biểu tượng mặc định
+            }
+        }
+
+        function updateFileList() {
+            fileList.innerHTML = '';
+            const files = fileInput.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                // Kiểm tra kích thước file (2MB = 2 * 1024 * 1024 bytes)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert(`${file.name} vượt quá kích thước 2MB và sẽ không được thêm vào danh sách.`);
+                    continue;
+                }
+
+
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                const fileIcon = document.createElement('img');
+                fileIcon.src = getFileIcon(file.type);
+                fileItem.appendChild(fileIcon);
+
+                const fileName = document.createElement('span');
+                fileName.className = 'text-gray-700';
+                fileName.textContent = file.name;
+                fileItem.appendChild(fileName);
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'remove-button';
+                removeButton.textContent = '×';
+                removeButton.addEventListener('click', () => {
+                    removeFile(i);
+                });
+                fileItem.appendChild(removeButton);
+
+                fileList.appendChild(fileItem);
+            }
+        }
+
+        function removeFile(index) {
+            const dt = new DataTransfer();
+            const {
+                files
+            } = fileInput;
+
+            for (let i = 0; i < files.length; i++) {
+                if (i !== index) {
+                    dt.items.add(files[i]);
+                }
+            }
+
+            fileInput.files = dt.files;
+            updateFileList();
+        }
+
+        //=============================================== End file ==========================================
         function updateTaskInput(taskId, isChecked) {
             var input = document.getElementById('task-input-' + taskId);
             input.value = isChecked ? '1' : '0';
         }
+
         function downloadFile(filename, type) {
             window.location.href = '/download/' + filename + '/' + type;
         }
@@ -1151,19 +497,18 @@
             console.log(type);
             let fileInput;
             let file;
-            if (type == "1") {
-                fileInput = document.getElementById('fileInput-' + id);
-                file = fileInput.files[0];
-            } else {
-                fileInput = document.getElementById('criteria-fileInput-' + id);
-                file = fileInput.files[0];
-            }
+            fileInput = document.getElementById('fileInput-' + id);
+            file = fileInput.files[0];
             console.log(fileInput);
             console.log(file);
             if (file) {
+                const cycleType = document.getElementById('task-cycle_type-input-' + id).value;
+                const numberType = document.getElementById('task-number-type-input-' + id).value;
                 const formData = new FormData();
                 formData.append('files', file);
                 formData.append('file_id', id);
+                formData.append('numberType', numberType);
+                formData.append('cycleType', cycleType);
 
                 formData.append('type', type);
 
@@ -1181,7 +526,7 @@
                             //alert("Upload file thành công " + data.file_path);
                             var uploadStatus = document.getElementById('uploadStatus-' + data.id);
                             uploadStatus.classList.remove('hidden');
-                            document.getElementById('button-file-task-'+ data.id).style.display = 'none';
+                            document.getElementById('button-file-task-' + data.id).style.display = 'none';
                         } else {
                             document.getElementById('fileName').textContent = 'Upload failed: ' + data.message;
                         }
@@ -1242,7 +587,6 @@
                 }
             });
 
-           
             // Xóa tệp từ danh sách đã chọn
             function removeFile(index) {
                 const dt = new DataTransfer();
@@ -1299,20 +643,19 @@
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
                     const taskId = this.getAttribute('data-id');
-                    const remarksValue = document.getElementById('remarks-' + taskId).value;
-                    const taskResultId = document.getElementById('task-result-input-' + taskId).value;
-                    
+                    const remarksValue = document.getElementById('remarks').value;
+
                     fetch('{{ route('tasks.updateRemarks') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').getAttribute('content')
                             },
                             body: JSON.stringify({
                                 taskId: taskId,
                                 remarks: remarksValue,
-                                type : 'Approval',
-                                taskResultId : taskResultId
+                                type: 'Approval'
                             })
                         })
                         .then(response => response.json())
@@ -1330,12 +673,12 @@
                                 }, 1000);
                             } else {
                                 Swal.fire({
-                                icon: 'error',
-                                title: 'Có lỗi xảy ra!',
-                                text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
-                                confirmButtonText: 'Đóng'
-                            });
-                               // alert(data.message);
+                                    icon: 'error',
+                                    title: 'Có lỗi xảy ra!',
+                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
+                                    confirmButtonText: 'Đóng'
+                                });
+                                // alert(data.message);
                                 // Xử lý lỗi
                             }
                         })
@@ -1349,19 +692,18 @@
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
                     const taskId = this.getAttribute('data-id');
-                    const remarksValue = document.getElementById('remarks-' + taskId).value;
-                    const taskResultId = document.getElementById('task-result-input-' + taskId).value;
+                    const remarksValue = document.getElementById('remarks').value;
                     fetch('{{ route('tasks.updateRemarks') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').getAttribute('content')
                             },
                             body: JSON.stringify({
                                 taskId: taskId,
                                 remarks: remarksValue,
-                                type : 'Reject',
-                                taskResultId : taskResultId
+                                type: 'Reject',
                             })
                         })
                         .then(response => response.json())
@@ -1377,15 +719,15 @@
                                 setTimeout(function() {
                                     location.reload();
                                 }, 1000);
-                               
+
                             } else {
                                 Swal.fire({
-                                icon: 'error',
-                                title: 'Có lỗi xảy ra!',
-                                text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
-                                confirmButtonText: 'Đóng'
-                            });
-                               // alert(data.message);
+                                    icon: 'error',
+                                    title: 'Có lỗi xảy ra!',
+                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
+                                    confirmButtonText: 'Đóng'
+                                });
+                                // alert(data.message);
                                 // Xử lý lỗi
                             }
                         })
@@ -1395,6 +737,9 @@
                         });
                 });
             });
+
+            fileInput.addEventListener('change', updateFileList);
+            updateFileList();
         });
     </script>
 @endsection

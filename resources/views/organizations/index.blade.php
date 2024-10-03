@@ -275,7 +275,7 @@
                     <input type="text" id="search-user" class="form-input w-full border border-gray-300 rounded-lg p-2"
                         placeholder="Tìm kiếm tên">
                 </div>
-                <div class="mb-4 overflow-x-auto">
+                <div class="mb-4 overflow-x-auto max-h-[60vh] overflow-y-auto">
                     <table id="existing-user-table" class="w-full border border-gray-300 rounded-lg">
                         <thead>
                             <tr>
@@ -522,8 +522,8 @@
                     <tr>
                         <td class="py-2 px-4 border-b">${user.code}</td>
                         <td class="py-2 px-4 border-b">${user.name}</td>
-                        <td class="py-2 px-4 border-b">${user.email}</td>
-                        <td class="py-2 px-4 border-b">${user.phone}</td>
+                        <td class="py-2 px-4 border-b">${user.email ?? ''}</td>
+                        <td class="py-2 px-4 border-b">${user.phone ?? ''}</td>
                         <td class="py-2 px-4 border-b" style="display: none">${user.id}</td>
                         <td class="py-2 px-4 border-b">
                             <form action="/users/${user.id}/destroyOrganization" method="POST"

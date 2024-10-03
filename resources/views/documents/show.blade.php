@@ -197,8 +197,8 @@
                                 data-file-type="{{ $fileType }}">
                                 <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
                                 <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
-                                <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                    class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button>
+                                <!-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
+                                    class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> -->
                             </div>
                         @endforeach
                     @else

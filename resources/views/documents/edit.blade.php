@@ -99,7 +99,9 @@
                   
                         <input type="text" id="document_code" name="document_code"
                             value="{{ $document->document_code }}"
-                            class="form-input w-full border border-gray-300 rounded-lg p-2" required>
+                            class="form-input w-full border border-gray-300 rounded-lg p-2" required
+                            oninvalid="this.setCustomValidity('Vui lòng nhập số hiệu văn bản.')" 
+                    oninput="setCustomValidity('')">
                         @error('document_code')
                             <div class="text-red-500 text-sm">{{ $message }}</div>
                         @enderror
@@ -109,7 +111,9 @@
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản:</label>
 
                     <select name="category_id" id="category_id" required
-                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                            class="form-input w-full border border-gray-300 rounded-lg p-2"
+                            oninvalid="this.setCustomValidity('Vui lòng chọn loại văn bản.')" 
+                    oninput="setCustomValidity('')">
                         @foreach ($documentCategory as $item)
                             <option value="{{ $item->id }}"
                                 {{ $document->category_id == $item->id ? 'selected' : '' }}>
@@ -124,7 +128,9 @@
 
                     {{--       <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
                           class="form-input w-full border border-gray-300 rounded-lg p-2" required> --}}
-                    <textarea id="document_name" name="document_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ $document->document_name }}</textarea>
+                    <textarea id="document_name" name="document_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập trích yếu văn bản.')" 
+                    oninput="setCustomValidity('')">{{ $document->document_name }}</textarea>
 
 
                 </div>
@@ -144,7 +150,9 @@
                     <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan:</label>
 
                     <select name="organization_type_id" id="organization_type_id" required
-                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                            class="form-input w-full border border-gray-300 rounded-lg p-2"
+                            oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan.')" 
+                    oninput="setCustomValidity('')">
 
                         @foreach ($organizationsType as $organization)
                             <option value="{{ $organization->id }}"
@@ -160,7 +168,9 @@
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan:</label>
                     <select id="parent_id" name="issuing_department" required
 
-                            class="form-input w-full border border-gray-300 rounded-lg p-2">
+                            class="form-input w-full border border-gray-300 rounded-lg p-2"
+                            oninvalid="this.setCustomValidity('Vui lòng chọn cơ quan.')" 
+                    oninput="setCustomValidity('')">
                         @foreach ($organizations as $organization)
                             <option value="{{ $organization->id }}"
                                 {{ $document->issuing_department == $organization->id ? 'selected' : '' }}>
@@ -224,7 +234,7 @@
                 var organizationTypeId = this.value;
                 
                 // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-                fetchOrganizations(selectedId);
+                fetchOrganizations(organizationTypeId);
             });
 
             function fetchOrganizations(organizationTypeId) {

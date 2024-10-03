@@ -34,7 +34,7 @@
                                             <details close>
                                                 <summary>Người dùng</summary>
                                             <ul>
-                                                <li><a href="{{route('positions.index')}}" title="">Danh mục Chức vụ</a></li>
+                                                <li><a href="{{route('positions.index')}}" title="">Danh mục chức vụ</a></li>
                                                 <li><a href="{{route('users.index')}}" title="">Danh mục người dùng</a></li>
                                             </ul>
                                             </details>

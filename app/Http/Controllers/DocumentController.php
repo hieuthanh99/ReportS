@@ -137,6 +137,7 @@ class DocumentController extends Controller
         $type = '';
         try {
             $organizations = $request->input('organizations');
+            // \Log::error('organizations giao việc: ' . $organizations);
             $userId = Auth::id();
             $processedOrganizations = []; // Tạo tập hợp để lưu mã organization đã xử lý
     
@@ -159,7 +160,7 @@ class DocumentController extends Controller
                     if ($organization) {
                         $taskTarget = TaskTarget::where('isDelete', 0)->find($taskId);
                         $typeRecord = $taskTarget->type === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
-                        if($taskTarget->organization_id != null) $first = false;
+                        if($taskTarget->organization_id != null) $first = true;
                         $type = $taskTarget->type;
                         $hasOrganization = TaskTarget::where('organization_id', $organization->id)->where('isDelete', 0)->where('code', $taskTarget->code)->first();
                         if(!$hasOrganization){
@@ -171,11 +172,13 @@ class DocumentController extends Controller
                                 $taskTarget->save();
                                 $first = false;
                                 
-                                \Log::error('biến check giao việc: ' . $taskTarget->name);
+                                \Log::error('Giao việc cơ quan đầu tiên ' . $taskTarget->status);
                             } else {
                                 $newTaskTarget = $taskTarget->replicate();
+                                $newTaskTarget->status = "assign";
                                 $newTaskTarget->organization_id = $organization->id;
                                 $newTaskTarget->save();
+                                \Log::error('Giao việc cơ quan thứ: ' . $newTaskTarget->status);
                             }
                         }
                         // Thêm mã organization vào tập hợp đã xử lý
@@ -257,26 +260,28 @@ class DocumentController extends Controller
         if($user->role=='staff' || $user->role=='sub_admin'){
             $documents = Document::whereHas('taskTarget', function ($query) use ($user) {
                 $query->where('organization_id', $user->organization_id)->where('isDelete', 0);
-            })->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+            })->with('issuingDepartment')->orderBy('created_at', 'desc')->get();
 
             if ($documents && method_exists($documents, 'pluck')) {
                 $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))
                     ->where('organization_id', $user->organization->id)
                     ->where('isDelete', 0)
-                    ->get();
+                    ->paginate(10);
             } else {
                 $taskDocuments = collect();
             }
         }
         else if($user->role=='admin' || $user->role=='supper_admin'){
-            $documents = $query->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
+            $documents = $query->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc')->get();
 
-            $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->get();
+            $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->paginate(10);
 
         }
 
         $organizations = Organization::where('isDelete', 0)->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->get();
+
+       // dd($taskDocuments);
         return view('documents.report', compact('documents', 'organizations', 'taskDocuments', 'organizationsType'));
     }
     
@@ -488,7 +493,8 @@ class DocumentController extends Controller
     
     public function reportViewUpdate(string $id)
     {
-        
+        dd($id);
+        TaskTarget::where('code', $code)->where('isDelete', 0)->first();
         $document = Document::findOrFail($id);
         $userId = Auth::id();
         $user = User::find($userId);

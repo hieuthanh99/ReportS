@@ -121,11 +121,11 @@ class TaskTargetController extends Controller
 
         $workResultTypes = MasterWorkResultTypeService::index();
         $keyConstants = MasterWorkResultTypeService::keyConstants();
-
+        $units = Unit::all();
         if($type == 'task'){
            $typeTask =  TaskGroup::where('isDelete', 0)->get();;
         }
-        return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories', 'typeTask', 'workResultTypes', 'keyConstants'));
+        return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories', 'typeTask', 'workResultTypes', 'keyConstants', 'units'));
     }
 
     public function deleteOrganization($code, $type, $id)
@@ -163,6 +163,84 @@ class TaskTargetController extends Controller
         DB::beginTransaction();
 
         try {
+            $typeRecord = $request->input("type") === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
+
+                
+            if($request->input("type") === 'target'){
+                $request->validate([
+                    'document_id' => 'required',
+                    'code' => 'required',
+                    'name' => 'required|string|max:1000',
+                    'cycle_type' => 'required|string|max:50',
+                    'category_id' => 'nullable|integer|exists:categories,CategoryID',
+                    'end_date' => 'nullable|date',
+                    'type' => 'required|in:task,target',
+                    'type_id' => 'required',
+                    'unit' => 'required',   // Đơn vị
+                    'target_type' => 'required',
+                    'target' => 'required',
+                ], [
+                    'document_id.required' => 'Văn bản là bắt buộc.',
+                    'code.required' => 'Mã là bắt buộc.',
+                    'code.unique' => 'Mã này đã tồn tại trong hệ thống.',
+                    'name.required' => 'Tên là bắt buộc.',
+                    'name.string' => 'Tên phải là một chuỗi ký tự.',
+                    'name.max' => 'Tên không được vượt quá 1000 ký tự.',
+                    'cycle_type.required' => 'Chu kỳ báo cáo là bắt buộc.',
+                    'cycle_type.string' => 'Chu kỳ báo cáo phải là một chuỗi ký tự.',
+                    'cycle_type.max' => 'Chu kỳ báo cáo không được vượt quá 50 ký tự.',
+                    'category_id.integer' => 'Phân loại phải là một số nguyên.',
+                    'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+                    'type.required' => 'Loại mục tiêu là bắt buộc.',
+                    'type_id.required' => 'Loại mục tiêu là bắt buộc.',
+                    'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
+                    'unit.required' => 'Đơn vị là bắt buộc',   // Đơn vị
+                    'target_type.required' => 'Loại chỉ tiêu là bắt buộc',
+                    'target.required' => 'Chỉ tiêu là bắt buộc',
+                ]);
+            }else{
+                $request->validate([
+                    'document_id' => 'required',
+                    'code' => 'required',
+                    'name' => 'required|string|max:1000',
+                    'cycle_type' => 'required|string|max:50',
+                    'category_id' => 'nullable|integer|exists:categories,CategoryID',
+                    'end_date' => 'nullable|date',
+                    'type' => 'required|in:task,target',
+                    'type_id' => 'required',
+                    'task_type' => 'required',   // Đơn vị
+                ], [
+                    'document_id.required' => 'Văn bản là bắt buộc.',
+                    'code.required' => 'Mã là bắt buộc.',
+                    'code.unique' => 'Mã này đã tồn tại trong hệ thống.',
+                    'name.required' => 'Tên là bắt buộc.',
+                    'name.string' => 'Tên phải là một chuỗi ký tự.',
+                    'name.max' => 'Tên không được vượt quá 1000 ký tự.',
+                    'cycle_type.required' => 'Chu kỳ báo cáo là bắt buộc.',
+                    'cycle_type.string' => 'Chu kỳ báo cáo phải là một chuỗi ký tự.',
+                    'cycle_type.max' => 'Chu kỳ báo cáo không được vượt quá 50 ký tự.',
+                    'category_id.integer' => 'Phân loại phải là một số nguyên.',
+                    'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+                    'type.required' => 'Loại mục tiêu là bắt buộc.',
+                    'type_id.required' => 'Loại mục tiêu là bắt buộc.',
+                    'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
+                    'task_type.required' => 'Loại nhiệm vụ là bắt buộc',   // Đơn vị
+
+         
+                ]);
+            }
+            if($request->input("type") === 'target'){
+            $unit = null;
+            if($request->unit == 0 && $request->custom_unit == null){
+                return redirect()->back()->with('error', 'Vui lòng nhập đơn vị khác!');
+            }
+            if($request->unit == 0 && $request->custom_unit != null){
+                $unit = Unit::create(['name'=> $request->custom_unit])->id;
+            }else{
+                $unit = $request->unit;
+            }
+        }
+
             $type = $request->input('type');
             $code = $request->input('code');
             $documentId = $request->input('document_id');
@@ -189,6 +267,16 @@ class TaskTargetController extends Controller
                 $item->start_date = $document->release_date;
                 $item->type_id = $type_id;
                 $item->result_type = $result_type;
+
+                  //update
+                if($request->input("type") === 'target'){
+                    $item->unit = $unit;
+                    $item->target_type = $request->target_type;
+                    $item->target = $request->target;
+                }else{
+                    $item->task_type = $request->task_type;
+                }
+
                 $item->save();
                 DB::commit();
             }
@@ -254,14 +342,14 @@ class TaskTargetController extends Controller
 
 
         if($type == 'task'){
-            $taskTargets = TaskTarget::where('type', 'task')->select('name', 'code', 'document_id', 'cycle_type','type_id', 'task_type',
+            $taskTargets = TaskTarget::where('type', 'task')->select('name', 'code', 'document_id', 'cycle_type','type_id', 'task_type','request_results_task', 'result_type',
             'category_id',
             'request_results',
             'start_date',
             'end_date', 'type', \DB::raw('COUNT(organization_id) as organization_count'))
             ->where('isDelete', 0)
             ->distinct('code')
-            ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'task_type')
+            ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'task_type', 'request_results_task', 'result_type')
             ->orderBy('id', 'desc');
         }else{
             $taskTargets = TaskTarget::where('type', 'target')->select('name', 'code', 'document_id', 'cycle_type', 'type_id', 
@@ -318,8 +406,9 @@ class TaskTargetController extends Controller
         if($type == 'task'){
            $typeTask =  TaskGroup::where('isDelete', 0)->get();
         }
+        $workResultTypes = MasterWorkResultTypeService::index();
         $taskTargets = $taskTargets->orderBy('created_at', 'desc')->paginate(10);
-        return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask'));
+        return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes'));
     }
 
 
@@ -441,7 +530,8 @@ class TaskTargetController extends Controller
                     'end_date' => 'nullable|date',
                     'type' => 'required|in:task,target',
                     'type_id' => 'required',
-                    'task_type' => 'required',   // Đơn vị
+                    'task_type' => 'required',
+                    'request_results_task'=> 'required'
                 ], [
                     'document_id.required' => 'Văn bản là bắt buộc.',
                     'code.required' => 'Mã là bắt buộc.',
@@ -458,8 +548,7 @@ class TaskTargetController extends Controller
                     'type_id.required' => 'Loại mục tiêu là bắt buộc.',
                     'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
                     'task_type.required' => 'Loại nhiệm vụ là bắt buộc',   // Đơn vị
-
-         
+                    'request_results_task.required' => 'Kết quả yêu cầu là bắt buộc',   // Đơn vị
                 ]);
             }
             if($request->input("type") === 'target'){
@@ -495,11 +584,11 @@ class TaskTargetController extends Controller
 
             $data['creator'] = Auth::id();
             $data['status'] = 'new';
-            $data['organization_id'] = $organizationId;
+            //$data['organization_id'] = $organizationId;
             $data['request_results'] = $result;
             $data['start_date'] = $document->release_date;
             $data['type_id'] = $type_id;
-            $data['result_type'] = $result_type;
+
   
             //update
             if($request->input("type") === 'target'){
@@ -508,6 +597,8 @@ class TaskTargetController extends Controller
             $data['target'] = $request->target;
             }else{
                 $data['task_type'] = $request->task_type;
+                $data['result_type'] = $result_type;
+                $data['request_results_task'] = $request->input('request_results_task');
             }
           
             // Tạo bản ghi mới

@@ -340,6 +340,7 @@
                                                     @endphp
 
                                                     @if($task->type == 'task')
+                                   
                                                         @if($isEditable && Auth::user()->role === 'staff')
                                                             <textarea required class="styled-textarea"
                                                                 name="cycle_result[{{ $task->id }}]"

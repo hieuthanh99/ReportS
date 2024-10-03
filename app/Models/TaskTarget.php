@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\TimeHelper;
 use App\Enums\TaskStatus;
+use App\Enums\TaskTargetStatus;
 
 
 
@@ -42,6 +43,8 @@ class TaskTarget extends Model
         'target_type', // Loại chỉ tiêu
         'task_type',   // Loại nhiệm vụ
         'target',      // Chỉ tiêu
+        'request_results_task',
+        'results_task'
     ];
 
     public function getUnitName()
@@ -86,7 +89,7 @@ class TaskTarget extends Model
         }
 
         // Nếu giá trị không hợp lệ, trả về mô tả mặc định hoặc thông báo lỗi
-        return 'Trạng thái không hợp lệ';
+        return '';
     }
     public function scopeSearch($query, $searchTerm = null)
     {
@@ -103,6 +106,13 @@ class TaskTarget extends Model
         }
 
         return $query;
+    }
+    
+
+    public function getStatusLabelAttributeTaskTarget()
+    {
+
+        return TaskTargetStatus::tryFrom($this->status)?->label() ?? '';
     }
 
     public function getStatusLabelAttribute()
@@ -156,7 +166,12 @@ class TaskTarget extends Model
     }
 
 
-
+    public function getOrganization()
+    {
+     
+        $organization = Organization::where('id', $this->organization_id)->first();
+        return $organization;
+    }
     public function hasOrganizationAppro()
     {
         $user = Auth::user();
@@ -285,7 +300,7 @@ class TaskTarget extends Model
     {
         
         $types = self::getTypesSomes();
-        return $types[$this->task_type] ?? 'Không xác định';
+        return $types[$this->task_type] ?? '';
     }
 
     public static function getTypesTarget()

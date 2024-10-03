@@ -15,8 +15,8 @@
                                             <details close>
                                                 <summary>Văn bản</summary>
                                             <ul>
-                                                <li><a href="{{route('documents.index')}}" class="menu-text" title="">Danh mục văn bản</a></li>
-                                                <li><a href="{{route('document_categories.index')}}" class="menu-text" title="">Phân loại văn bản</a></li>
+                                                <li><a href="{{route('documents.index')}}" title="">Danh mục văn bản</a></li>
+                                                <li><a href="{{route('document_categories.index')}}" title="">Phân loại văn bản</a></li>
                                             </ul>
                                             </details>
                                         </li>
@@ -207,6 +207,19 @@
     .menu-text:hover{
         font-size: 20px;
         font-weight: bold;
+    }
+
+    details summary {
+        list-style: none;
+        cursor: pointer;
+    }
+
+    details summary::before {
+        content: '\23F5'; /* Mũi tên phải (icon khi đóng) */
+    }
+
+    details[open] summary::before {
+        content: '\23F7'; /* Mũi tên xuống (icon khi mở) */
     }
 </style>
 <script>

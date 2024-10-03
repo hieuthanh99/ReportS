@@ -48,7 +48,8 @@
                     // Duyệt qua các kết quả và đếm số lượng mỗi loại type_name
                     foreach ($mappedResults as $item) {
                         if ($item['organization'] && $item['organization']->organizationType) {
-                            $typeName = $item['organization']->organizationType->type_name;
+                            // Chuyển đổi type_name thành chữ thường và chỉ viết hoa chữ cái đầu
+                            $typeName = ucwords(strtolower($item['organization']->organizationType->type_name));
 
                             if ($typeName) {
                                 // Tăng số lượng cho type_name

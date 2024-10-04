@@ -509,7 +509,7 @@
                 <h3 class="text-2xl font-bold">${organization.name}</h3>
                 <p><strong>Mã phòng ban:</strong> ${organization.code}</p>
           
-                <p><strong>Email:</strong> ${organization.email}</p>
+                <p><strong>Email:</strong> ${organization.email ?? ''}</p>
                 <p><strong>Số điện thoại:</strong> ${organization.phone !== null ? organization.phone : ''}</p>
                 <p><strong>Địa chỉ:</strong> ${organization.address !== null ? organization.address : ''}</p>
                 <p><strong>Website:</strong> ${organization.website !== null ? organization.website : ''}</p>

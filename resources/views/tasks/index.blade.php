@@ -102,7 +102,7 @@
                     @if( $type == 'target')
                     <tr>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên</th>
+                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên chỉ tiêu</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Đơn vị tính</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chỉ tiêu</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>

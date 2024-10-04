@@ -35,10 +35,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->
                 <div class="mb-4">
-                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã cơ quan, tổ chức(Tối đa 5 ký tự) <span class="text-red-500">*</span></label>
                     <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code', $organization->code) }}" required
                     oninvalid="this.setCustomValidity('Vui lòng nhập mã cơ quan, tổ chức.')" 
-                    oninput="setCustomValidity('')">
+                    oninput="setCustomValidity('')"
+                    maxlength="5">
                     @error('code')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror

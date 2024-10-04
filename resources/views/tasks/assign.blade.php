@@ -82,7 +82,40 @@
                 </div>
             </div>
 
-            <!-- Bảng danh sách chỉ tiêu -->
+        <!-- Bảng danh sách chỉ tiêu -->
+        <div class="mb-4 overflow-x-auto table-wrapper" style="max-height: 500px; overflow-y: auto;">
+            <table id="existing-organizations-table" class="w-full border border-gray-300 rounded-lg">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b checkbox-column">
+                            <input type="checkbox" id="check-all-organizations">
+                            <label for="check-all-organization" class="text-gray-700 text-sm font-medium"></label>
+                        </th>
+                        <th class="py-2 px-4 border-b">Mã Đầu việc</th>
+                        <th class="py-2 px-4 border-b">Mã Cơ quan/tổ chức</th>
+                        <th class="py-2 px-4 border-b">Tên Cơ quan/Tổ chức</th>
+                        <th class="py-2 px-4 border-b">Email</th>
+                        <th class="py-2 px-4 border-b">Số điện thoại</th>
+                    </tr>
+                </thead>
+                <tbody id="existing-organizations" style="text-align: center">
+                    <!-- Danh sách chỉ tiêu sẽ được chèn vào đây bằng JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+       <div class="flex space-x-4">
+            <p class="text-sm font-medium">
+                <span class="text-red-500">*</span> Nếu không chọn tổ chức nào, nhiệm vụ/chỉ tiêu sẽ giao cho người tạo.
+            </p>
+        </div>
+         <div class="flex space-x-4 text-right">
+            <button type="button"  id="back" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Quay lại</button>
+
+          <button type="button" id="assign-organizations-save" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Giao việc</button>
+        </div>
+
+        <div id="assigned-area" style="display: none">
             <div class="mb-4 overflow-x-auto table-wrapper" style="max-height: 500px; overflow-y: auto;">
                 <table id="existing-organizations-table" class="w-full border border-gray-300 rounded-lg">
                     <thead>

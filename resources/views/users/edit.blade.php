@@ -37,9 +37,9 @@
                 <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required
                 oninvalid="this.setCustomValidity('Vui lòng nhập tên.')" 
                     oninput="setCustomValidity('')">
-                @error('name')
+                <!-- @error('name')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
 
             <div class="mb-4">
@@ -47,9 +47,9 @@
                 <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required
                 oninvalid="this.setCustomValidity('Vui lòng nhập Email.')" 
                     oninput="setCustomValidity('')">
-                @error('email')
+                <!-- @error('email')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
            
             <div class="mb-4">
@@ -58,9 +58,9 @@
                 oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu.')" 
                     oninput="setCustomValidity('')">
                 <p class="text-gray-500 text-sm">Để trống nếu không thay đổi mật khẩu.</p>
-                @error('password')
+                <!-- @error('password')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
 
             <div class="mb-4">
@@ -68,9 +68,9 @@
                 <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-3 py-2 border border-gray-300 rounded-lg" require
                 oninvalid="this.setCustomValidity('Vui lòng nhập lại mật khẩu.')" 
                     oninput="setCustomValidity('')">
-                @error('password_confirmation')
+                <!-- @error('password_confirmation')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
 
             
@@ -78,17 +78,17 @@
             <div class="mb-4">
                 <label for="phone" class="block text-gray-700">Số điện thoại:</label>
                 <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                @error('phone')
+                <!-- @error('phone')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
 
             <div class="mb-4">
                 <label for="address" class="block text-gray-700">Địa chỉ:</label>
                 <input type="text" id="address" name="address" value="{{ old('address', $user->address) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                @error('address')
+                <!-- @error('address')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
         </div>
         <div class="flex gap-6 mb-4">
@@ -101,9 +101,9 @@
                     <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Nhân viên</option>
 
                 </select>
-                @error('role')
+                <!-- @error('role')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
             <div class="mb-4 flex-1">
                 <label for="organization_id" class="block text-gray-700">Tổ chức:</label>
@@ -115,9 +115,9 @@
                         </option>
                     @endforeach
                 </select>
-                @error('organization_id')
+                <!-- @error('organization_id')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
             <div class="mb-4 flex-1">
                 <label for="position_id" class="block text-gray-700">Chức vụ:</label>
@@ -129,9 +129,9 @@
                         </option>
                     @endforeach
                 </select>
-                @error('position_id')
+                <!-- @error('position_id')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+                @enderror -->
             </div>
         </div>
             <div class="mt-4 flex" style="justify-content: space-between">

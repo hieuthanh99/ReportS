@@ -267,15 +267,15 @@
             </div>
         </div>
 
-        <div id="assign-user-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
+        <div id="assign-user-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden" style="z-index: 1000;">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-3/4" style="height: 85%">
                 <h2 class="text-xl font-bold mb-4">Danh sách nhân viên</h2>
                 <div class="mb-4">
                     <label for="search-user" class="block text-gray-700 text-sm font-medium mb-2">Tìm kiếm</label>
                     <input type="text" id="search-user" class="form-input w-full border border-gray-300 rounded-lg p-2"
                         placeholder="Tìm kiếm tên">
                 </div>
-                <div class="mb-4 overflow-x-auto max-h-[60vh] overflow-y-auto">
+                <div class="mb-4 overflow-x-auto overflow-y-auto" style="height: 75%">
                     <table id="existing-user-table" class="w-full border border-gray-300 rounded-lg">
                         <thead>
                             <tr>
@@ -509,7 +509,7 @@
                 <h3 class="text-2xl font-bold">${organization.name}</h3>
                 <p><strong>Mã phòng ban:</strong> ${organization.code}</p>
           
-                <p><strong>Email:</strong> ${organization.email}</p>
+                <p><strong>Email:</strong> ${organization.email ?? ''}</p>
                 <p><strong>Số điện thoại:</strong> ${organization.phone !== null ? organization.phone : ''}</p>
                 <p><strong>Địa chỉ:</strong> ${organization.address !== null ? organization.address : ''}</p>
                 <p><strong>Website:</strong> ${organization.website !== null ? organization.website : ''}</p>

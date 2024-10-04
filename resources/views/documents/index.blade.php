@@ -57,7 +57,7 @@
                 
         
                 <!-- Đoạn code này bao quanh hai trường Ngày phát hành -->
-                <div class="flex gap-4 w-full">
+
                     <!-- <div class="flex-1 min-w-[200px]">
                         <label for="execution_time_from" class="block text-gray-700 font-medium mb-2">Từ ngày</label>
                         <input type="date" id="execution_time_from" placeholder="dd-mm-yyyy"
@@ -72,9 +72,9 @@
                     </div> -->
                     <!-- Các trường khác -->
                     <div class="flex-1 min-w-[200px]">
-                        <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
+                        <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
                         <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                            <option value="">Chọn loại cơ quan thực hiện</option>
+                            <option value="">Chọn cơ quan ban hành</option>
                             @foreach($organizationsType as $organization)
                                 <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
                                     {{ $organization->type_name }}
@@ -82,15 +82,12 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- Các trường khác -->
-                    <div class="flex-1 min-w-[200px]" id="organization_id_hidden"></div>
                     <div class="flex-1 min-w-[200px] hidden" id="organization_id">
-                        <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan</label>
+                        <label for="organization_id" class="block text-gray-700 font-medium mb-2">&nbsp; </label>
                         <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                            <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức thực hiện</option>
+                            <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
                         </select>
                     </div>
-                </div>
             </div>
 
         <div class="flex justify-end gap-4">

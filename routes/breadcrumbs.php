@@ -35,6 +35,12 @@ Breadcrumbs::for('tasks.byType', function ($trail, $type) {
     else $trail->push('Danh sách chỉ tiêu', route('tasks.byType', $type));
 });
 
+Breadcrumbs::for('tasks.byType.approved', function ($trail, $type) {
+    $trail->parent('QLCV');
+    if($type == 'task')     $trail->push('Phê duyệt báo cáo nhiệm vụ', route('tasks.byType.approved', $type));
+    else $trail->push('Phê duyệt báo cáo chỉ tiêu', route('tasks.byType.approved', $type));
+});
+
 
 Breadcrumbs::for('create.tasks.byType', function ($trail, $type) {
     $trail->parent('tasks.byType', $type);

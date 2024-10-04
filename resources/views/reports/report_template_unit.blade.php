@@ -46,7 +46,7 @@
                         @endforeach
                     </select>
                 </div>
-               
+                <div class="flex-1 min-w-[200px]"></div>
                     <!-- <div class="flex-1 min-w-[200px]">
                         <label for="execution_time_from" class="block text-gray-700 font-medium mb-2">Từ ngày</label>
                         <input type="date" id="execution_time_from" placeholder="dd-mm-yyyy"

@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/report-update-view-target/{document}', [DocumentController::class, 'reportViewUpdateTarget'])->name('documents.report.update.target');
 
     Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details');
+    Route::get('/report-details-view-target/{document}', [DocumentController::class, 'detailsReportTarget'])->name('documents.report.details.target');
+
     Route::get('/reports', [ReportController::class, 'showReportDocument'])->name('reports.withDocument');
     Route::get('/reports-with-unit', [ReportController::class, 'showReportUnit'])->name('reports.withUnit');
     Route::get('/reports-with-period', [ReportController::class, 'showReportPeriod'])->name('reports.withPeriod');
@@ -65,8 +67,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{code}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget');
     Route::get('/tasks/details/{code}/{type}', [TaskTargetController::class, 'showDetails'])->name('tasks.show-details');
     Route::get('/tasks/edit/{code}/{type}', [TaskTargetController::class, 'editTaskTarget'])->name('tasks.edit.taskTarget');
+
+
+    Route::get('/tasks/edit/approved/{code}/{type}', [DocumentController::class, 'approvedTaskTarget'])->name('tasks.edit.approved');
+
+
     Route::delete('/tasks/delete-organization/{code}/{type}/{id}', [TaskTargetController::class, 'deleteOrganization'])->name('tasks.delete.organization');
     Route::get('/tasks/type/{type}', [TaskTargetController::class, 'indexView'])->name('tasks.byType');
+
+    Route::get('/tasks/type/approved/{type}', [TaskTargetController::class, 'indexViewApproved'])->name('tasks.byType.approved');
 
     Route::get('/tasks/create/{type}', [TaskTargetController::class, 'createView'])->name('tasks.create.byType');
 
@@ -99,6 +108,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/upload', [FileController::class, 'upload'])->name('upload');
     Route::get('/download/{id}/{type}', [FileController::class, 'download'])->name('file.download');
 
+    Route::get('/task-target/{id}/organizations', [TaskTargetController::class, 'getOrganizationsByTaskTargetId']);
 
     Route::get('/organization/search-type', [OrganizationController::class, 'searchOrganizationByType'])->name('organization.search.type');
 

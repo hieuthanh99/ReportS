@@ -44,7 +44,9 @@ class TaskTarget extends Model
         'task_type',   // Loại nhiệm vụ
         'target',      // Chỉ tiêu
         'request_results_task',
-        'results_task'
+        'results_task',
+        'issuing_organization_id',
+        'slno'
     ];
 
 

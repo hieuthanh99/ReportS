@@ -116,7 +116,7 @@ class UserController extends Controller
     public function create()
     {
         $positions = Position::where('isDelete', 0)->get();
-        $organizations = Organization::where('isDelete', 0)->get();
+        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         return view('users.create', compact('organizations', 'positions'));
        // return view('users.create');
     }
@@ -160,7 +160,7 @@ class UserController extends Controller
         $positions = Position::where('isDelete', 0)->get();
 
         $user = User::findOrFail($id);
-        $organizations = Organization::where('isDelete', 0)->get();
+        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         return view('users.edit', compact('user', 'organizations', 'positions'));
     }
 

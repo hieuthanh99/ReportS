@@ -272,17 +272,14 @@
                             </div>
 
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Báo cáo kết quả:</span>
-                                    <span class="text-gray-900 w-2/3">{{ $result }}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
-                            <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Trạng thái:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabelAttributeTaskTarget() }}</span>
                                 
                             </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
+                          
                           
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Hoàn thành:</span>
@@ -299,32 +296,44 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="mb-4 gap-6 p-6 bg-white" style="padding-top: 0">
-                           
-                                <label class="text-gray-700 font-medium w-1/3">Tệp báo cáo</label>
-                                @php
-                                    $file = $taskTarget->getFilePath() ?? null;
-                                @endphp
-                                @if ($file && !empty($file->file_path))
-                                    @foreach ($document->files as $file)
-                                        @php
-                                            $filePath = storage_path('app/public/' . $file->file_path);
-                                            $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
-                                        @endphp
+                        <hr class="mb-6">
+                        <h4 class="text-xl font-semibold mb-4">Nhân viên báo cáo</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
+                            <div class="flex items-center">
+                               
+                                <div class="flex mb-4 flex-col">
+                                    <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo cáo</label>
+                                    @php
+                                        $file = $taskTarget->getFilePath() ?? null;
+                                    @endphp
+                                    @if ($file && !empty($file->file_path))
+                                        @foreach ($document->files as $file)
+                                            @php
+                                                $filePath = storage_path('app/public/' . $file->file_path);
+                                                $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
+                                            @endphp
 
-                                        <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
-                                            data-file-type="{{ $fileType }}" style="margin-top: 20px">
-                                            <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                                            <a href="{{ route('file.view', ['id' => $file->id]) }}"
-                                                class="text-blue-500 hover:underline"
-                                                target="_blank">{{ $file->file_name }}</a>
-                                            {{-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                        class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> --}}
-                                        </div>
-                                    @endforeach
-                                @endif
-                     
+                                            <div class="file-item flex items-center mb-2"
+                                                data-file-id="{{ $file->id }}" data-file-type="{{ $fileType }}"
+                                                style="margin-top: 20px">
+                                                <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
+                                                <a href="{{ route('file.view', ['id' => $file->id]) }}"
+                                                    class="text-blue-500 hover:underline"
+                                                    target="_blank">{{ $file->file_name }}</a>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+            
 
+                            </div>
+
+                            <div class="flex">
+                                <span class="text-gray-700 font-medium w-1/3">Báo cáo kết quả:</span>
+                               
+                                    <span>{{ $result }}</span>
+    
+                            </div>
                         </div>
                     </div>
                     

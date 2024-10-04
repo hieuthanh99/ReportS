@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                {!! Breadcrumbs::render('tasks.byType', $type) !!}
+                {!! Breadcrumbs::render('tasks.byType.approved', $type) !!}
             </ol>
         </nav>
         @if ($errors->any())
@@ -53,9 +53,9 @@
                     </select>
                 </div>
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
+                    <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
                     <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="">Chọn cơ quan ban hành</option>
+                        <option value="">Chọn loại cơ quan thực hiện</option>
                         @foreach($organizationsType as $organization)
                             <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
                                 {{ $organization->type_name }}
@@ -63,8 +63,8 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px] hidden" id="organization_id">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">&nbsp; </label>
+                <div class="flex-1 min-w-[200px] hidden" id = "organization_id">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tên cơ quan:</label>
                     <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
                         <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
                     </select>
@@ -72,8 +72,6 @@
             </div>
 
         <div class="flex justify-end gap-4">
-            <a href="{{ route('tasks.create.byType', ['type' => $type]) }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</a>
-
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
@@ -95,17 +93,11 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Loại</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Chi tiết
-                        </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Cập nhật
-                        </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Xóa 
-                        </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                            Lịch sử 
-                        </th>
+                            Cập nhật phê duyệt
+                         </th>
+                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            Lịch sử phê duyệt
+                         </th>
                     </tr>
                     @else
                     <tr>
@@ -117,17 +109,11 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Chi tiết
-                        </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Cập nhật
-                        </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                           Xóa 
-                        </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                            Lịch sử 
-                        </th>
+                            Cập nhật phê duyệt
+                         </th>
+                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            Lịch sử phê duyệt
+                         </th>
                     </tr>
                     @endif
                 </thead>
@@ -146,29 +132,10 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTarget() }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
-                                    onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
-                                    <i class="fas fa-info-circle"></i> <!-- Biểu tượng cho "Chi tiết" -->
-                                </button>
-                            </td>
-                            <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                                onclick="window.location.href='{{ route('tasks.edit.taskTarget',['code' => $item->code, 'type' => $item->type]) }}'">
+                                onclick="window.location.href='{{ route('tasks.edit.approved',['code' => $item->code, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
-                            </td>
-                            <td class="py-3 border border-gray-300 px-6 text-center">
-                               
-
-                                <form id="delete-form-{{ $index + $taskTargets->firstItem() }}" action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button"
-                                        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete({{ $index + $taskTargets->firstItem() }})">
-                                        <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
-                                    </button>
-                                </form>
                             </td>
 
                             <td class="py-3 border border-gray-300 px-6 text-center">
@@ -203,31 +170,11 @@
                         <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
                         <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
                         <td class="py-3 border border-gray-300 px-6 text-center">
-                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
-                                onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
-                                <i class="fas fa-info-circle"></i> <!-- Biểu tượng cho "Chi tiết" -->
-                            </button>
-                        </td>
-                        <td class="py-3 border border-gray-300 px-6 text-center">
                             <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                            onclick="window.location.href='{{ route('tasks.edit.taskTarget',['code' => $item->code, 'type' => $item->type]) }}'">
+                            onclick="window.location.href='{{ route('tasks.edit.approved',['code' => $item->code, 'type' => $item->type]) }}'">
                             <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                         </button>
                         </td>
-                        <td class="py-3 border border-gray-300 px-6 text-center">
-                           
-
-                            <form id="delete-form-{{ $index + $taskTargets->firstItem() }}" action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button"
-                                    class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                    onclick="confirmDelete({{ $index + $taskTargets->firstItem() }})">
-                                    <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
-                                </button>
-                            </form>
-                        </td>
-
                         <td class="py-3 border border-gray-300 px-6 text-center">
                             <button data-document-id="{{ $item->document_id }}"
                                 data-task-id="{{ $item->code }}"

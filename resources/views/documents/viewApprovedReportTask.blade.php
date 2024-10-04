@@ -1,6 +1,3 @@
-
-
-
 @extends('layouts.app')
 
 @section('content')
@@ -147,14 +144,13 @@
             $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
             $hasOrganization = $taskTarget->hasOrganizationAppro();
             $taskApproval = $taskTarget->getTaskApprovalHistory();
-
         @endphp
         <div class="bg-white  overflow-hidden">
 
             <div class="p-6">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        {!! Breadcrumbs::render('UBCTG', $document) !!}
+                        {!! Breadcrumbs::render('CTBC', $document) !!}
                     </ol>
                 </nav>
                 <form action="{{ route('documents.task.update.cycle', $taskTarget->id) }}" method="POST"
@@ -191,7 +187,7 @@
                         </div>
 
                         <!-- Hàng upload file -->
-                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0;">
+                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0">
                             <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Danh sách
                                 tệp tin:</label>
                             <div id="file-list-data-document" class="mt-2 file-list-data-document">
@@ -222,22 +218,21 @@
                     </div>
                     <hr class="mb-6">
                     <div class="bg-white p-6 ">
-                        <h5 class="text-xl font-semibold mb-4">Chỉ tiêu</h5>
+                        <h5 class="text-xl font-semibold mb-4">Nhiệm vụ</h5>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
                             <!-- Cột trái -->
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Mã chỉ tiêu:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Mã nhiệm vụ:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->code }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Tên chỉ tiêu:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Tên nhiệm vụ:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Nhóm chỉ tiêu:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Nhóm nhiệm vụ:</span>
                                 <span class="text-gray-900 w-2/3">
-                               
-                                    @foreach ($groupTarget as $item)
+                                    @foreach ($groupTask as $item)
                                         @if ($taskTarget->type_id == $item->id)
                                             {{ $item->name }}
                                         @endif
@@ -249,26 +244,23 @@
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Loại chỉ tiêu:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTarget() }}</span>
+                                <span class="text-gray-700 font-medium w-1/3">Loại nhiệm vụ:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTime() }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Chỉ tiêu:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Kết quả:</span>
                                 <span class="text-gray-900 w-2/3">
-                                {{ $taskTarget->target }}
+                                    @foreach ($workResultTypes as $idx => $item)
+                                        @continue($type != 'task' && $idx == 4)
+                                        @if ($taskTarget->result_type == $item->key)
+                                            {{ $item->value }}
+                                        @endif
+                                    @endforeach
                                 </span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Đơn vị tính:</span>
-                                <span class="text-gray-900 w-2/3">
-                                @foreach ($units as $item)
-                                @if($taskTarget->unit == $item->id)
-                                 
-                                        {{ $item->name }}
-                             
-                                    @endif
-                                @endforeach
-                            </span>
+                                <span class="text-gray-700 font-medium w-1/3">Kết quả yêu cầu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->request_results_task }}</span>
                             </div>
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
@@ -281,36 +273,26 @@
 
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Trạng thái:</span>
-                                <span
-                                    class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabelAttributeTaskTarget() }}</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabelAttributeTaskTarget() }}</span>
+                                
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
-                           
+                          
+                          
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Hoàn thành:</span>
                                 @if ($taskTarget->is_completed)
                                     <span class="text-gray-900 w-2/3"> Hoàn thành</span>
                                 @else
-                                    @if (
-                                        $taskTarget->status == 'sub_admin_complete' &&
-                                            (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
-                                        <input type="checkbox" name="is_completed" value="1">
-                                    @else
-                                        <span class="text-gray-900 w-2/3">Chưa hoàn thành</span>
-                                    @endif
+                                <span class="text-gray-900 w-2/3">Chưa hoàn thành</span>
                                 @endif
                             </div>
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
                                 <span class="text-gray-900 w-2/3">
-                                    @if ($taskTarget->status == 'staff_complete' && Auth::user()->role === 'sub_admin')
-                                        <textarea required class="styled-textarea" name="remarks" id="remarks" placeholder="Nhập kết quả" rows="5" onclick="clearText(this)"
-                                            cols="30">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                    @else
-                                        <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
-                                    @endif
+                                    <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
                                 </span>
                             </div>
                         </div>
@@ -318,17 +300,7 @@
                         <h4 class="text-xl font-semibold mb-4">Nhân viên báo cáo</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
                             <div class="flex items-center">
-                                @if ($isEditable && Auth::user()->role === 'staff')
-                                    <div class="flex mb-4 flex-col">
-                                        <label for="files" class="text-gray-700 font-medium w-1/3"
-                                            style="margin-bottom: 10px">Tải lên tài
-                                            liệu</label>
-                                        <input type="file" id="files" name="files[]"
-                                            class="form-input w-full border border-gray-300 rounded-lg p-2">
-                                        <p class="text-gray-500 text-sm mt-1">Chọn tệp để tải lên.</p>
-                                      
-                                    </div>
-                                @else
+                               
                                 <div class="flex mb-4 flex-col">
                                     <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo cáo</label>
                                     @php
@@ -350,52 +322,61 @@
                                                     target="_blank">{{ $file->file_name }}</a>
                                             </div>
                                         @endforeach
+                                    @else
+                                        <label class="text-gray-900 w-2/3">&nbsp;</label>
                                     @endif
                                 </div>
-                                @endif
+            
 
                             </div>
 
                             <div class="flex ">
                                 <span class="text-gray-700 font-medium w-1/3">Báo cáo kết quả:</span>
-                                @if ($isEditable && Auth::user()->role === 'staff')
-                                        <textarea id="issuing_department" style="height: 62px" name="request_results"
-                                            class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" onclick="clearText(this)" rows="4">{{$result  }}</textarea>
-                                @else
-                                    <span>{{ $result }}</span>
-                                @endif
-                            </div>
-                            <div class="flex mb-4 flex-col" style="margin-top: 0; padding-top: 0">
-                                <div id="file-list" class="mt-2 file-list">
-
-                                </div>
+                               
+                                    <span class="text-gray-900 w-2/3">{{ $result }}</span>
+    
                             </div>
                         </div>
                     </div>
-                    
+                       
                     <hr class="mb-6">
                     <div class="bg-white p-6 ">
                         
-                        <h5 class="text-xl font-semibold mb-4">Lịch sử chu kỳ</h5>
+                        <h5 class="text-xl font-semibold mb-4">Danh sách cơ quan thực hiện</h5>
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                                 <tr>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan thực hiện</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Hoàn thành</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhận xét báo cáo</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Báo cáo kết quả</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhận xét báo cáo</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Duyệt</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Lịch sử</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php
                                     $stt = 1;
                                 @endphp
-                                @foreach ($lstResult as $index => $item)
+                                @foreach ($taskDocuments as $index => $item)
                                     <tr class="border-b border-gray-200">
                                         <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->organization->name??'' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
-                                            {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>
+                                            @if ($taskTarget->is_completed)
+                                            <span class="text-gray-900 w-2/3"> Hoàn thành</span>
+                                        @else
+                                        <span class="text-gray-900 w-2/3">Chưa hoàn thành</span>
+                                        @endif
+                                        </td>
+                                        <td class="py-3 border border-gray-300 px-6"></td>
+                                        <td class="py-3 border border-gray-300 px-6"></td>
+                                        <td class="py-3 border border-gray-300 px-6"></td>
+                                        <td class="py-3 border border-gray-300 px-6"></td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             @php
                                                 $file = $taskTarget->getFilePath() ?? null;
@@ -416,42 +397,30 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="gap-6 p-6 bg-white ">
-                    @if (($isEditable && Auth::user()->role === 'staff') || ($taskTarget->status == 'sub_admin_complete' && (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')))
-                        <div class="mb-4">
-                            <button type="submit" id="save-button"
-                                class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Lưu
-                            </button>
-                        </div>
-                    @endif
-
-                    @if ($hasOrganization && $taskTarget->status == 'staff_complete')
-                        <button data-id="{{ $taskTarget->id }}" id="button-apprrover-{{ $taskTarget->id }}"
-                            style="margin:  10px 0" type="button"
-                            class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
-                            Duyệt
-                        </button>
-
-                        <!-- Nút Reject -->
-                        <button data-id="{{ $taskTarget->id }}" id="button-reject-{{ $taskTarget->id }}"
-                            style="margin:  10px" type="button"
-                            class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                            Từ chối
-                        </button>
-                  
-                    @endif
-                    </div>
+                
                 </form>
             </div>
 
         </div>
     </div>
     <script>
-            function clearText(element) {
-        if (element.value === '{{ $result }}') {
-            element.value = ''; // Xóa text khi nhấp vào nếu nó là kết quả ban đầu
-        }
-    }
+          var result = "<?php echo $result; ?>";
+          var taskTarget = "<?php $taskTarget->result_type; ?>";
+
+          if(taskTarget == 'BOOL')
+          {
+            let yesBtnSet = document.getElementById('yes');
+            let noBtnSet = document.getElementById('no');
+// Kiểm tra giá trị và chọn radio button tương ứng
+if (result === "Yes") {
+    yesBtnSet.setAttribute('checked', 'checked')
+    noBtnSet.checked = false
+} else if (result === "No") {
+    yesBtnSet.checked = false
+    noBtnSet.setAttribute('checked', 'checked')
+}
+          }
+  
         function selectType(value) {
             document.getElementById('issuing_department').value = value
             let yesBtn = document.getElementById('yes');

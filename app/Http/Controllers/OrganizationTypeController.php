@@ -104,7 +104,7 @@ class OrganizationTypeController extends Controller
     public function destroy(OrganizationType $organizationType)
     {
         // dd($organizationType);
-        $organizations = Organization::where('organization_type_id', $organizationType->id)->get();
+        $organizations = Organization::where('organization_type_id', $organizationType->id)->orderBy('name', 'asc')->get();
 
         foreach ($organizations as $organization) {
 

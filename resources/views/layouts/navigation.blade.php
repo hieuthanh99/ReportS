@@ -39,6 +39,16 @@
                                             </ul>
                                             </details>
                                         </li>
+
+                                        <li>
+                                            <details close>
+                                                <summary>Nhóm nhiệm vụ/chỉ tiêu</summary>
+                                            <ul>
+                                                <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
+                                                <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
+                                            </ul>
+                                            </details>
+                                        </li>
                                     </ul>
                                     </details>
                                 </li>
@@ -46,10 +56,11 @@
                                     <details close>
                                         <summary>Quản lý công việc</summary>
                                 <ul>
-                                    <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
+                                    {{-- tasks.byType.approved --}}
                                     <li><a href="{{ route('tasks.byType', 'task') }}" title="">Nhiệm vụ</a></li>
-                                    <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
+                                    <li><a href="{{route('tasks.byType.approved', 'task')}}" title="">Phê duyệt báo cáo nhiệm vụ</a></li>
                                     <li><a href="{{ route('tasks.byType', 'target') }}" title="">Chỉ tiêu</a></li>
+                                    <li><a href="{{route('tasks.byType.approved', 'target')}}" title="">Phê duyệt báo cáo chỉ tiêu</a></li>
                                 </ul>
                                     </details>
                             </li>
@@ -69,8 +80,25 @@
                                         </ul>
                                     </li>
                                     @endif
-                                    <li><a href="{{route('documents.report')}}" title="">Phê duyệt kết quả nhiệm vụ</a></li>
-                                    <li><a href="{{route('documents.report.target')}}" title="">Phê duyệt kết quả chỉ tiêu</a></li>
+                                 
+                                    @if(Auth::user()->role == 'staff' || Auth::user()->role == 'sub_admin')
+
+                                    <li><a href="{{route('documents.report')}}" title="">
+                                        @if(Auth::user()->role == 'staff')
+                                        Báo cáo nhiệm vụ
+                                        @else
+                                        Phê duyệt báo cáo nhiệm vụ
+                                        @endif
+                                 
+                                    </a></li>
+                                    <li><a href="{{route('documents.report.target')}}" title="">
+                                        @if(Auth::user()->role == 'staff')
+                                        Báo cáo chỉ tiêu
+                                        @else
+                                        Phê duyệt báo cáo chỉ tiêu
+                                        @endif
+                                    </a></li>
+                                    @endif
                                 </ul>
                                     </details>
                             </li>

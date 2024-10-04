@@ -50,7 +50,7 @@ class OrganizationController extends Controller
         \Log::info('Search Query: ' . $query);
         
         if (!empty($query)) {
-            $organizations = Organization::where('type', 'like', '%' . $query . '%')->where('isDelete', 0)->get();
+            $organizations = Organization::where('type', 'like', '%' . $query . '%')->where('isDelete', 0)->orderBy('name', 'asc')->get();
         } else {
             $organizations =[];
         }
@@ -68,9 +68,9 @@ class OrganizationController extends Controller
         
         // Nếu query không rỗng, lọc theo query
         if (!empty($query)) {
-            $organizations = Organization::where('code', 'like', '%' . $query . '%')->orWhere('name', 'like', '%' . $query . '%')->where('isDelete', 0)->get();
+            $organizations = Organization::where('code', 'like', '%' . $query . '%')->orWhere('name', 'like', '%' . $query . '%')->where('isDelete', 0)->orderBy('name', 'asc')->get();
         } else {
-            $organizations = Organization::where('isDelete', 0)->get();
+            $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         }
         
         return response()->json([
@@ -85,7 +85,7 @@ class OrganizationController extends Controller
         // Hàm đệ quy để lấy các cấp dưới của một tổ chức
         function getChildren($parentId) {
             // Lấy các tổ chức con trực tiếp
-            $children = Organization::where('parent_id', $parentId)->where('isDelete', 0)->get();
+            $children = Organization::where('parent_id', $parentId)->where('isDelete', 0)->orderBy('name', 'asc')->get();
             
             // Khởi tạo mảng để lưu các tổ chức con và tổ chức con của chúng
             $allChildren = $children;
@@ -106,7 +106,7 @@ class OrganizationController extends Controller
     }
     public function getOrganizationsByType($organization_type_id)
     {
-        $organizations = Organization::where('organization_type_id', $organization_type_id)->where('isDelete', 0)->get();
+        $organizations = Organization::where('organization_type_id', $organization_type_id)->where('isDelete', 0)->orderBy('name', 'asc')->get();
         return response()->json($organizations);
     }
 
@@ -180,8 +180,8 @@ class OrganizationController extends Controller
 
     public function create($parentId = null)
     {
-        $organizations = Organization::where('isDelete', 0)->get();
-        $oranizationType = OrganizationType::where('isDelete', 0)->get();
+        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $oranizationType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
         return view('organizations.create', compact('oranizationType', 'organizations'));
     }
 
@@ -199,7 +199,7 @@ class OrganizationController extends Controller
                  'code.max' => 'Mã loại cơ quan chỉ được phép có tối đa 5 ký tự.',
                  'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
              ]);
-            $exitItem = Organization::where('isDelete', 0)->where('code', $request->code)->first();
+            $exitItem = Organization::where('isDelete', 0)->where('code', $request->code)->orderBy('name', 'asc')->first();
             if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             $organization = Organization::create([
                 'name' => $request->name,
@@ -253,8 +253,8 @@ class OrganizationController extends Controller
 
     public function edit(Organization $organization)
     {
-        $organizationType = OrganizationType::where('isDelete', 0)->get();;
-        $organizations = Organization::where('isDelete', 0)->get();;
+        $organizationType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         return view('organizations.edit', compact('organization', 'organizationType', 'organizations'));
     }
 

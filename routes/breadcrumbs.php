@@ -90,15 +90,15 @@ Breadcrumbs::for('ND', function ($trail) {
 //Nguoi dùng
 Breadcrumbs::for('DSTK', function ($trail) {
     $trail->parent('ND');
-    $trail->push('Danh sách tài khoản',null);
+    $trail->push('Danh sách người dùng',null);
 });
 Breadcrumbs::for('CTK', function ($trail) {
     $trail->parent('DSTK');
-    $trail->push('Thêm mới tài khoản',null);
+    $trail->push('Thêm mới người dùng',null);
 });
 Breadcrumbs::for('CNTK', function ($trail) {
     $trail->parent('DSTK');
-    $trail->push('Cập nhật tài khoản',null);
+    $trail->push('Cập nhật người dùng',null);
 });
 
 
@@ -153,8 +153,13 @@ Breadcrumbs::for('CTDMVB', function ($trail, $document) {
 });
 
 //Tổ chức
-Breadcrumbs::for('DSO', function ($trail) {
+Breadcrumbs::for('CQTC', function ($trail) {
     $trail->parent('QLDM');
+    $trail->push('Cơ quan, tổ chức', null);
+});
+
+Breadcrumbs::for('DSO', function ($trail) {
+    $trail->parent('CQTC');
     $trail->push('Danh sách cơ quan', route('organizations.index'));
 });
 
@@ -174,8 +179,8 @@ Breadcrumbs::for('CTO', function ($trail, $document) {
 
 //Loại Tổ chức
 Breadcrumbs::for('DSLO', function ($trail) {
-    $trail->parent('QLDM');
-    $trail->push('Danh sách loại cơ quan', route('organization_types.index'));
+    $trail->parent('CQTC');
+    $trail->push('Danh sách phân loại cơ quan', route('organization_types.index'));
 });
 
 Breadcrumbs::for('CLO', function ($trail) {
@@ -227,7 +232,7 @@ Breadcrumbs::for('ULCT', function ($trail, $document) {
 //Danh mục chức vụ
 Breadcrumbs::for('DSCV', function ($trail) {
     $trail->parent('ND');
-    $trail->push('Danh sách chức Vụ', route('positions.index'));
+    $trail->push('Danh sách chức vụ', route('positions.index'));
 });
 
 Breadcrumbs::for('CCV', function ($trail) {

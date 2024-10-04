@@ -82,6 +82,7 @@
                             @endforeach
                         </select>
                     </div>
+
                     <div class="flex-1 min-w-[200px] hidden" id="organization_id">
                         <label for="organization_id" class="block text-gray-700 font-medium mb-2">&nbsp; </label>
                         <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
@@ -167,17 +168,21 @@
         </div>
     </div>
     <script>
-        
-        //   document.getElementById('filterToggle').addEventListener('click', function() {
-        //     const filterForm = document.getElementById('filterForm');
-        //     filterForm.classList.toggle('hidden');
-        // });
-        document.getElementById('organization_type_id').addEventListener('change', function () {
-            console.log("test Fliter");
-            var organizationTypeId = this.value;
-            
-            // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-            fetch(`/get-organizations/${organizationTypeId}`)
+        document.addEventListener('DOMContentLoaded', function() {
+            var organizationTypeSelect = document.getElementById('organization_type_id');
+            var organizationTypeId = organizationTypeSelect.value;
+            console.log(organizationTypeId);
+            fetchOrganizations(organizationTypeId);
+            var currentUrl = window.location.href;
+            var params = new URLSearchParams(window.location.search);
+            var organizationId = parseInt(params.get('organization_id'));
+            if(!isNaN(organizationId)){
+                var customInput = document.getElementById('organization_id');
+                customInput.classList.remove('hidden');
+            }
+           document.getElementById('organization_type_id').addEventListener('change', function () {
+                var organizationTypeId = this.value;
+                fetch(`/get-organizations/${organizationTypeId}`)
                 .then(response => response.json())
                 .then(data => {
                     // Làm rỗng danh sách `parent_id`
@@ -191,14 +196,77 @@
                         option.text = organization.name;
                         parentSelect.appendChild(option);
                         var customInput = document.getElementById('organization_id');
-                customInput.classList.remove('hidden');
-                var customInput = document.getElementById('organization_id_hidden');
-                customInput.classList.add('hidden');
+                        customInput.classList.remove('hidden');
                 
                     });
                 })
                 .catch(error => console.error('Error:', error));
+                
+                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+                fetchOrganizations(organizationTypeId);
+            });
+
+            function fetchOrganizations(organizationTypeId) {
+                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+                fetch(`/get-organizations/${organizationTypeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Làm rỗng danh sách `parent_id`
+                        var parentSelect = document.getElementById('parent_id');
+                        var currentUrl = window.location.href;
+                        var params = new URLSearchParams(window.location.search);
+                        var organizationId = parseInt(params.get('organization_id'));
+
+                        console.log(organizationId);
+                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+                        // Thêm các tùy chọn mới
+                        data.forEach(function (organization) {
+                            var option = document.createElement('option');
+                            option.value = organization.id;
+                            option.text = organization.name;
+                            parentSelect.appendChild(option);
+
+                            if (organization.id === organizationId) {
+                                console.log(organization.name);
+                                parentSelect.value = organization.id;
+                            }
+                        
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
         });
+        //   document.getElementById('filterToggle').addEventListener('click', function() {
+        //     const filterForm = document.getElementById('filterForm');
+        //     filterForm.classList.toggle('hidden');
+        // });
+        // document.getElementById('organization_type_id').addEventListener('change', function () {
+        //     console.log("test Fliter");
+        //     var organizationTypeId = this.value;
+            
+        //     // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+        //     fetch(`/get-organizations/${organizationTypeId}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // Làm rỗng danh sách `parent_id`
+        //             var parentSelect = document.getElementById('parent_id');
+        //             parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+
+        //             // Thêm các tùy chọn mới
+        //             data.forEach(function (organization) {
+        //                 var option = document.createElement('option');
+        //                 option.value = organization.id;
+        //                 option.text = organization.name;
+        //                 parentSelect.appendChild(option);
+        //                 var customInput = document.getElementById('organization_id');
+        //         customInput.classList.remove('hidden');
+        //         var customInput = document.getElementById('organization_id_hidden');
+        //         customInput.classList.add('hidden');
+                
+        //             });
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // });
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',

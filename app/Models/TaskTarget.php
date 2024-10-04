@@ -153,7 +153,7 @@ class TaskTarget extends Model
     {
         if($this->type == 'target') $type = 2;
         else $type = 1;
-       return File::where('document_id', $this->id)->where('type', $type)->first();
+       return File::where('document_id', $this->id)->where('type', $type)->orderBy('created_at', 'desc')->first();
     }
     public function taskResultsById($numberType)
     {

@@ -307,7 +307,6 @@
                                         $file = $taskTarget->getFilePath() ?? null;
                                     @endphp
                                     @if ($file && !empty($file->file_path))
-                                        @foreach ($document->files as $file)
                                             @php
                                                 $filePath = storage_path('app/public/' . $file->file_path);
                                                 $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
@@ -320,9 +319,7 @@
                                                 <a href="{{ route('file.view', ['id' => $file->id]) }}"
                                                     class="text-blue-500 hover:underline"
                                                     target="_blank">{{ $file->file_name }}</a>
-                                            </div>
-                                        @endforeach
-                                    @endif
+                                            </div>                                            @endif
                                 </div>
             
 

@@ -197,15 +197,12 @@
                                             $filePath = storage_path('app/public/' . $file->file_path);
                                             $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
                                         @endphp
-
                                         <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
                                             data-file-type="{{ $fileType }}">
                                             <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
                                             <a href="{{ route('file.view', ['id' => $file->id]) }}"
                                                 class="text-blue-500 hover:underline"
                                                 target="_blank">{{ $file->file_name }}</a>
-                                            {{-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                                class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> --}}
                                         </div>
                                     @endforeach
                                 @else
@@ -213,7 +210,6 @@
                                 @endif
 
                             </div>
-                            {{-- <div id="file-list" class="mt-2 file-list"></div> --}}
                         </div>
                     </div>
                     <hr class="mb-6">
@@ -270,73 +266,9 @@
                                 <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
                             </div>
-
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Trạng thái:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabelAttributeTaskTarget() }}</span>
-                                
-                            </div>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
-                          
-                          
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Hoàn thành:</span>
-                                @if ($taskTarget->is_completed)
-                                    <span class="text-gray-900 w-2/3"> Hoàn thành</span>
-                                @else
-                                <span class="text-gray-900 w-2/3">Chưa hoàn thành</span>
-                                @endif
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
-                                <span class="text-gray-900 w-2/3">
-                                    <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
-                                </span>
-                            </div>
-                        </div>
-                        <hr class="mb-6">
-                        <h4 class="text-xl font-semibold mb-4">Nhân viên báo cáo</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
-                            <div class="flex items-center">
-                               
-                                <div class="flex mb-4 flex-col">
-                                    <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo cáo</label>
-                                    @php
-                                        $file = $taskTarget->getFilePath() ?? null;
-                                    @endphp
-                                    @if ($file && !empty($file->file_path))
-                                        @foreach ($document->files as $file)
-                                            @php
-                                                $filePath = storage_path('app/public/' . $file->file_path);
-                                                $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
-                                            @endphp
-
-                                            <div class="file-item flex items-center mb-2"
-                                                data-file-id="{{ $file->id }}" data-file-type="{{ $fileType }}"
-                                                style="margin-top: 20px">
-                                                <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                                                <a href="{{ route('file.view', ['id' => $file->id]) }}"
-                                                    class="text-blue-500 hover:underline"
-                                                    target="_blank">{{ $file->file_name }}</a>
-                                            </div>
-                                        @endforeach
-                                    @else
-                                        <label class="text-gray-900 w-2/3">&nbsp;</label>
-                                    @endif
-                                </div>
-            
-
-                            </div>
-
-                            <div class="flex ">
-                                <span class="text-gray-700 font-medium w-1/3">Báo cáo kết quả:</span>
-                               
-                                    <span class="text-gray-900 w-2/3">{{ $result }}</span>
-    
-                            </div>
-                        </div>
+                      
+                   
                     </div>
                        
                     <hr class="mb-6">
@@ -346,15 +278,15 @@
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                                 <tr>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan thực hiện</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Hoàn thành</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhận xét báo cáo</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Báo cáo kết quả</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhận xét báo cáo</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Duyệt</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Lịch sử</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Cơ quan thực hiện</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Trạng thái</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Hoàn thành</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Nhận xét báo cáo</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Báo cáo kết quả</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tệp</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Lịch sử</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Duyệt</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -362,36 +294,67 @@
                                     $stt = 1;
                                 @endphp
                                 @foreach ($taskDocuments as $index => $item)
+                                    @php
+                                        $taskApproval = $item->getTaskApprovalHistory();
+                                        $result = $item->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
+                                        $hasOrganization = $item->hasOrganizationAppro();
+                                    @endphp
                                     <tr class="border-b border-gray-200">
                                         <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->organization->name??'' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
-                                            @if ($taskTarget->is_completed)
+                                            @if ($item->is_completed)
                                             <span class="text-gray-900 w-2/3"> Hoàn thành</span>
                                         @else
                                         <span class="text-gray-900 w-2/3">Chưa hoàn thành</span>
                                         @endif
                                         </td>
-                                        <td class="py-3 border border-gray-300 px-6"></td>
-                                        <td class="py-3 border border-gray-300 px-6"></td>
-                                        <td class="py-3 border border-gray-300 px-6"></td>
-                                        <td class="py-3 border border-gray-300 px-6"></td>
-                                        <td class="py-3 border border-gray-300 px-6">
+                                        <td class="py-3 border border-gray-300 px-6">{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $result  }}</td>
+                                        <td class="py-3 border border-gray-300 px-6" >
+                                    @php
+                                        $file = $item->getFilePath() ?? null;
+                                    @endphp
+                                    @if ($file && !empty($file->file_path))
                                             @php
-                                                $file = $taskTarget->getFilePath() ?? null;
+                                                $filePath = storage_path('app/public/' . $file->file_path);
+                                                $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
                                             @endphp
-                                            @if ($file && !empty($file->file_path))
-                                                <a style="width: 49px;"
-                                                    href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $taskTarget->cycle_type, 'numberType' => $item->number_type]) }}"
-                                                    id="button-file-task-{{ $taskTarget->id }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
-                                                    download>
-                                                    <i class="fas fa-download"></i>
-                                                </a>
+
+                                            <div class="file-item flex items-center mb-2 text-center"  
+                                                data-file-id="{{ $file->id }}" data-file-type="{{ $fileType }}"
+                                                style="margin-top: 20px; word-wrap:break-word">
+                                               
+                                                <a href="{{ route('file.view', ['id' => $file->id]) }}"
+                                                    class="text-blue-500 hover:underline"
+                                                    target="_blank"> <i style="text-align: center; margin-right: 0" class="fa-2x fas fa-download"></i></a>
+                                            </div>
+
+                                            @else
+                                        <label class="text-gray-900 w-2/3">&nbsp;</label>
+                                    @endif
+                                        </td>
+                                        <td class="py-3 border border-gray-300 px-6 text-center">
+                                            <button data-document-id="{{ $item->document_id }}"
+                                                data-task-id="{{ $item->code }}" type="button"
+                                                class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                  <i class="fa fa-history"></i>
+                                            </button>
+                                        </td>
+                                        <td class="py-3 border border-gray-300 px-6">
+                                            @if ($item->status == 'sub_admin_complete' &&
+                                                    (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
+                                                <button data-id="{{ $item->id }}" id="button-apprrover-{{ $item->id }}"
+                                                    style="margin:  10px 0" type="button"
+                                                    class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
+                                                    Hoàn thành
+                                                </button>
+                                            @elseif($item->status == 'complete')
+                                            <i class="fas fa-check" style="color: green;"></i>
+
                                             @endif
                                         </td>
-
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -403,7 +366,166 @@
 
         </div>
     </div>
+       {{-- lich su --}}
+       <div id="history-change-modal" style="z-index: 9999;" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
+            <h2 class="text-xl font-bold mb-4">Lịch sử cập nhật kết quả</h2>
+            <div class="mb-4 overflow-x-auto" style="
+                max-height: 400px;
+                overflow-y: auto;
+                overflow-x: auto;
+                text-align: center;">
+                <table id="history-changes-table" class="w-full border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">STT</th>
+                            <th class="py-2 px-4 border-b">Tiến độ</th>
+                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">Thời gian</th>
+                            <th class="py-2 px-4 border-b">Chu kỳ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-changes-tbody" style="text-align: center">
+                        <!-- Danh sách chỉ tiêu sẽ được chèn vào đây bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" id="cancel-history-changes" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy</button>
+        </div>
+    </div>
     <script>
+        //============================== Hoàn thành ==========================
+    document.addEventListener('DOMContentLoaded', function () {
+    // Lắng nghe sự kiện click cho tất cả các nút hoàn thành
+    document.querySelectorAll('.button-approved').forEach(button => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-id'); 
+            const url = `/update-status/${itemId}`; 
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    status: 'completed'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                                console.log(data.message)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Duyệt thành công!',
+                                    text: data.message,
+                                    confirmButtonText: 'OK'
+                                });
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Có lỗi xảy ra!',
+                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
+                                    confirmButtonText: 'Đóng'
+                                });
+                            }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert('Có lỗi xảy ra trong quá trình gửi yêu cầu.');
+            });
+        });
+    });
+});
+
+               document.addEventListener('DOMContentLoaded', function() {
+                //============================== Lich su ==========================
+                // history-change-cri-modal
+                const cancelHistoryBtn = document.getElementById('cancel-history-changes');
+                const assignHistoryModal = document.getElementById('history-change-modal');
+
+                function hideModalHistory() {
+                    assignHistoryModal.classList.add('hidden');
+                }
+
+                cancelHistoryBtn.addEventListener('click', hideModalHistory);
+                document.querySelectorAll('.history-task').forEach(button => {
+                    button.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const documentIdRow = this.getAttribute('data-document-id');
+                        const taskCodeRow = this.getAttribute('data-task-id');
+                        document.getElementById('history-change-modal').classList.remove('hidden');
+                        fetch(`/api/get-history/byId/${documentIdRow}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const histories = data.histories;
+                            console.log(histories);
+                            const tableBody = document.getElementById('history-changes-tbody');
+
+                            populateTable(histories, tableBody);
+                            });
+                    });
+                });
+
+                function populateTable(histories, tableBody) {
+                    
+                    // Xóa các hàng cũ nếu có
+                    tableBody.innerHTML = '';
+
+                    // Tạo và chèn các hàng mới từ dữ liệu
+                    histories.forEach((history, index) => {
+                        const row = document.createElement('tr');
+
+                        // Cột STT
+                        const sttCell = document.createElement('td');
+                        sttCell.classList.add('py-2', 'px-4', 'border-b');
+                        sttCell.textContent = index + 1;
+                        row.appendChild(sttCell);
+
+                                
+                        let cycle_text;
+                        if(history.type_cycle == 1){
+                            cycle_text = 'Tuần';
+                        }else if(history.type_cycle == 2){
+                            cycle_text = 'Tháng';
+                        }else if(history.type_cycle == 3){
+                            cycle_text = 'Quý';
+                        }else if(history.type_cycle == 4){
+                            cycle_text = 'Năm';
+                        }
+                        const text_result_cycle = cycle_text + ' ' + history.number_cycle;
+                        // Các cột khác
+                        const mappingIdCell = document.createElement('td');
+                        mappingIdCell.classList.add('py-2', 'px-4', 'border-b');
+                        mappingIdCell.textContent = history.result;
+                        row.appendChild(mappingIdCell);
+
+                        const typeSaveCell = document.createElement('td');
+                        typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
+                        typeSaveCell.textContent = history.description;
+                        row.appendChild(typeSaveCell);
+
+                        
+                        const descriptionCell = document.createElement('td');
+                        descriptionCell.classList.add('py-2', 'px-4', 'border-b');
+                        descriptionCell.textContent = history.update_date;
+                        row.appendChild(descriptionCell);
+
+                        const resultCell = document.createElement('td');
+                        resultCell.classList.add('py-2', 'px-4', 'border-b');
+                        resultCell.textContent =  text_result_cycle;
+                        row.appendChild(resultCell);
+
+
+                        // Thêm hàng vào bảng
+                        tableBody.appendChild(row);
+                    });
+                }
+          });
+          
           var result = "<?php echo $result; ?>";
           var taskTarget = "<?php $taskTarget->result_type; ?>";
 
@@ -664,106 +786,7 @@ if (result === "Yes") {
             // Cập nhật danh sách tệp khi trang được tải
             //updateFileList();
 
-            ///////////==================từ chối/duyệt================
-            document.querySelectorAll('.button-approved').forEach(button => {
-                button.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const taskId = this.getAttribute('data-id');
-                    const remarksValue = document.getElementById('remarks').value;
-
-                    fetch('{{ route('tasks.updateRemarks') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector(
-                                    'meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                taskId: taskId,
-                                remarks: remarksValue,
-                                type: 'Approval'
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                console.log(data.message)
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Duyệt thành công!',
-                                    text: data.message,
-                                    confirmButtonText: 'OK'
-                                });
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 1000);
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Có lỗi xảy ra!',
-                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
-                                    confirmButtonText: 'Đóng'
-                                });
-                                // alert(data.message);
-                                // Xử lý lỗi
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            // Xử lý lỗi
-                        });
-                });
-            });
-            document.querySelectorAll('.button-reject').forEach(button => {
-                button.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const taskId = this.getAttribute('data-id');
-                    const remarksValue = document.getElementById('remarks').value;
-                    fetch('{{ route('tasks.updateRemarks') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector(
-                                    'meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                taskId: taskId,
-                                remarks: remarksValue,
-                                type: 'Reject',
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                console.log(data.message)
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Từ chối thành công!',
-                                    text: data.message,
-                                    confirmButtonText: 'OK'
-                                });
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 1000);
-
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Có lỗi xảy ra!',
-                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
-                                    confirmButtonText: 'Đóng'
-                                });
-                                // alert(data.message);
-                                // Xử lý lỗi
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            // Xử lý lỗi
-                        });
-                });
-            });
-
+           
             fileInput.addEventListener('change', updateFileList);
             updateFileList();
         });

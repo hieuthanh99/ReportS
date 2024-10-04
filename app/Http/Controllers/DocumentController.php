@@ -31,6 +31,29 @@ use App\Services\MasterWorkResultTypeService;
 class DocumentController extends Controller
 {
 
+    public function changeComplete(Request $request, $id){
+        DB::beginTransaction();
+        try {
+            $user = User::find(Auth::id());
+
+            $task = TaskTarget::where('isDelete', 0)->find($id);
+            if ($task->status == 'sub_admin_complete' && ($user->role == 'admin' || $user->role == 'supper_admin')) {
+
+                $task->is_completed = $request->is_completed ?? 0;
+                $task->status = 'complete';
+                $task->save();
+                DB::commit();
+                return response()->json(['success' => true, 'message' => 'Thành công.']);
+            }
+            else {
+                return response()->json(['success' => false, 'message' => 'Task not found.'], 404);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error creating task/target: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
+        }
+    }
     public function approvedTaskTarget($code, $type)
     {
         try {
@@ -41,7 +64,7 @@ class DocumentController extends Controller
 
         if ($type == 'target') {
                 if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                    $taskDocuments = $document->taskTarget->where('isDelete', 0);
+                    $taskDocuments = $document->taskTarget->where('type', 'target')->where('isDelete', 0);
                 } else {
                     $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
                         return $task->organization_id == $user->organization_id;
@@ -59,7 +82,7 @@ class DocumentController extends Controller
               
 
                 if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                    $taskDocuments = $document->taskTarget->where('isDelete', 0);
+                    $taskDocuments = $document->taskTarget->where('type', 'task')->where('isDelete', 0);
                 } else {
                     $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
                         return $task->organization_id == $user->organization_id;
@@ -514,6 +537,19 @@ if($user->organization){
 
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)
+            ->get();
+
+        // return $lstHistory; // Trả về danh sách các bản ghi
+
+        return response()->json(['histories' => $lstHistory]);
+    }
+    public function getHistoryById($id)
+    {
+
+        $taskTargetId = TaskTarget::where('code', $id)->where('isDelete', 0)->first();
+
+        // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
+        $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId)
             ->get();
 
         // return $lstHistory; // Trả về danh sách các bản ghi

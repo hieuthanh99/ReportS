@@ -43,14 +43,12 @@
                     <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
                     <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full">
                         <option value="">Chọn văn bản thực hiện</option>
-
                         @foreach($documents as $item)
-                           
                             <option value="{{ $item->id }}" {{ request('document_id') == $item->id ? 'selected' : '' }}>
                                 {{ $item->document_name }}
                             </option>
                         @endforeach
-                    </select>
+                    </select>               
                 </div>
                 <div class="flex-1 min-w-[200px]">
                     <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
@@ -417,7 +415,7 @@
                     });
                 }
           });
-            
+          
     </script>
     
 @endsection

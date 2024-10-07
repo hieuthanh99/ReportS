@@ -84,7 +84,7 @@
                 </div>
             </div>
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
-                @if()
+                @if($type == 'task')
                 <div class="flex-1 min-w-[200px]">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
                     <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">

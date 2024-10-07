@@ -345,7 +345,7 @@
                                     @endif
                                         </td>
                                         <td class="py-3 border border-gray-300 px-6 text-center">
-                                            <button data-document-id="{{ $item->document_id }}"
+                                            <button data-document-id="{{ $item->id }}"
                                                 data-task-id="{{ $item->code }}" type="button"
                                                 class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                   <i class="fa fa-history"></i>
@@ -405,7 +405,8 @@
       {{-- lich su --}}
       <div id="history-change-modal" style="z-index: 9999;" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
-            <h2 class="text-xl font-bold mb-4">Lịch sử cập nhật kết quả</h2>
+            
+            <h2 class="text-xl font-semibold mb-4">Lịch sử cập nhật kết quả</h2>
             <div class="mb-4 overflow-x-auto" style="
                 max-height: 400px;
                 overflow-y: auto;

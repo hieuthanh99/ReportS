@@ -62,7 +62,7 @@
                 <select name="parent_id" id="parent_id" class="w-full border rounded-lg px-3 py-2 mt-1" require
                     oninvalid="this.setCustomValidity('Vui lòng chọn cơ quan, tổ chức.')" 
                     oninput="setCustomValidity('')">
-                    <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
+                    <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn Cơ quan ban hành</option>
                 </select>
             </div>
             <div class="mb-4">
@@ -104,7 +104,7 @@
                     .then(data => {
                         // Làm rỗng danh sách `parent_id`
                         var parentSelect = document.getElementById('parent_id');
-                        parentSelect.innerHTML = '<option value="" selected>Chọn cơ quan tổ chức cấp trên</option>';
+                        parentSelect.innerHTML = '<option value="" selected>Chọn Cơ quan ban hành</option>';
 
                         // Thêm các tùy chọn mới
                         data.forEach(function (organization) {

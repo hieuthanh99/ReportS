@@ -147,7 +147,7 @@
                 <table class="min-w-full bg-white border border-gray-300">
                     <thead class="bg-gray-100 border-b border-gray-300">
                         <tr>
-                            <th colspan="7" class="border border-gray-300 py-3 px-6 text-left font-medium text-center">Cơ
+                            <th colspan="8" class="border border-gray-300 py-3 px-6 text-left font-medium text-center">Cơ
                                 quan, tổ chức đã được giao</th>
 
                         </tr>
@@ -160,73 +160,90 @@
                             <th class="border border-gray-300 py-3 px-6 text-left font-medium">Chu kỳ</th>
                             <th class="border border-gray-300 py-3 px-6 text-left font-medium">Kết quả</th>
 
+                            <th class="border border-gray-300 py-3 px-6 text-left font-medium">Lịch sử</th>
+
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($paginatedResults as $index => $item)
-                            @if ($item['organization'])
+                        @foreach ($taskDocuments as $index => $item)
+                            {{-- @if ($item['organization']) --}}
                                 <tr class="border-b border-gray-200">
 
-                                    <td class="py-3 border border-gray-300 px-6">{{ $item['organization']->code ?? '' }}
+                                    <td class="py-3 border border-gray-300 px-6">{{ $item->organization->code ?? '' }}
                                     </td>
-                                    <td class="py-3 border border-gray-300 px-6">{{ $item['organization']->name ?? '' }}
-                                    </td>
-                                    <td class="py-3 border border-gray-300 px-6">
-                                        {{ $item['organization']->organizationType->type_name ?? '' }}
+                                    <td class="py-3 border border-gray-300 px-6">{{ $item->organization->name ?? '' }}
                                     </td>
                                     <td class="py-3 border border-gray-300 px-6">
-                                        {{ $item['task']->results ?? '' }}
+                                        {{ $item->organization->organizationType->type_name ?? '' }}
                                     </td>
                                     <td class="py-3 border border-gray-300 px-6">
-                                        {{ $item['task']->getStatusLabelAttribute() ?? '' }}
+                                        {{ $item->results }}
+                                    </td>
+                                    <td class="py-3 border border-gray-300 px-6">
+                                        {{ $item->getStatusLabelAttribute() ?? '' }}
+                                    </td>
+                                    <td class="py-3 border border-gray-300 px-6">
+                                       {{ $item->getCycleTypeTextAttribute() }}
                                     </td>
                                     <td class="py-3 border border-gray-300 px-6">
                                         @php
-                                            $type = $item['latest_result']->type ?? null;
-                                            $numberType = $item['latest_result']->number_type ?? '';
-                                        @endphp
-                                        @switch($type)
-                                            @case(1)
-                                                {{-- Tuần --}}
-                                                Tuần {{ $numberType }}
-                                            @break
-
-                                            @case(2)
-                                                {{-- Tháng --}}
-                                                Tháng {{ $numberType }}
-                                            @break
-
-                                            @case(3)
-                                                {{-- Quý --}}
-                                                Quý {{ $numberType }}
-                                            @break
-
-                                            @case(4)
-                                                {{-- Năm --}}
-                                                Năm {{ $numberType }}
-                                            @break
-
-                                            @default
-                                        @endswitch
-                                    </td>
-                                    <td class="py-3 border border-gray-300 px-6">
-                                        {{ $item['latest_result']->result ?? '' }}</td>
+                                        $resultCycle = $item->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
+                                    @endphp
+                                        {{ $resultCycle }}</td>
+                                    
+                                        <td class="py-3 border border-gray-300 px-6 text-center">
+                                            
+                                            <button data-document-id="{{ $item->id }}"
+                                                data-task-id="{{ $item->code }}" type="button"
+                                                class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                  <i class="fa fa-history"></i>
+                                            </button>
+                                          
+                                        </td>
 
                                 </tr>
-                            @endif
+                            {{-- @endif --}}
                         @endforeach
                     </tbody>
                 </table>
-                <div class="mt-4">
+                {{-- <div class="mt-4">
                     {{ $paginatedResults->links() }}
-                </div>
+                </div> --}}
                 <div class="mt-4 flex" style="justify-content: space-between">
                     <button type="button" id="back"
-                        class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Quay
+                        class="inline-block bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300 mb-4">Quay
                         lại</button>
                 </div>
             </div>
 
+        </div>
+    </div>
+     {{-- lich su --}}
+     <div id="history-change-modal" style="z-index: 9999;" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-3/4">
+            
+            <h2 class="text-xl font-semibold mb-4">Lịch sử cập nhật kết quả</h2>
+            <div class="mb-4 overflow-x-auto" style="
+                max-height: 400px;
+                overflow-y: auto;
+                overflow-x: auto;
+                text-align: center;">
+                <table id="history-changes-table" class="w-full border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">STT</th>
+                            <th class="py-2 px-4 border-b">Tiến độ</th>
+                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">Thời gian</th>
+                            <th class="py-2 px-4 border-b">Chu kỳ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-changes-tbody" style="text-align: center">
+                        <!-- Danh sách chỉ tiêu sẽ được chèn vào đây bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" id="cancel-history-changes" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy</button>
         </div>
     </div>
     <script>
@@ -239,5 +256,89 @@
                 window.location.href = `/tasks/type/${selectedValue}`;
             }
         });
+        document.addEventListener('DOMContentLoaded', function() {
+                //============================== Lich su ==========================
+                // history-change-cri-modal
+                const cancelHistoryBtn = document.getElementById('cancel-history-changes');
+                const assignHistoryModal = document.getElementById('history-change-modal');
+
+                function hideModalHistory() {
+                    assignHistoryModal.classList.add('hidden');
+                }
+
+                cancelHistoryBtn.addEventListener('click', hideModalHistory);
+                document.querySelectorAll('.history-task').forEach(button => {
+                    button.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const documentIdRow = this.getAttribute('data-document-id');
+                        const taskCodeRow = this.getAttribute('data-task-id');
+                        document.getElementById('history-change-modal').classList.remove('hidden');
+                        fetch(`/api/get-history/byId/${documentIdRow}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const histories = data.histories;
+                            console.log(histories);
+                            const tableBody = document.getElementById('history-changes-tbody');
+
+                            populateTable(histories, tableBody);
+                            });
+                    });
+                });
+
+                function populateTable(histories, tableBody) {
+                    
+                    // Xóa các hàng cũ nếu có
+                    tableBody.innerHTML = '';
+
+                    // Tạo và chèn các hàng mới từ dữ liệu
+                    histories.forEach((history, index) => {
+                        const row = document.createElement('tr');
+
+                        // Cột STT
+                        const sttCell = document.createElement('td');
+                        sttCell.classList.add('py-2', 'px-4', 'border-b');
+                        sttCell.textContent = index + 1;
+                        row.appendChild(sttCell);
+
+                                
+                        let cycle_text;
+                        if(history.type_cycle == 1){
+                            cycle_text = 'Tuần';
+                        }else if(history.type_cycle == 2){
+                            cycle_text = 'Tháng';
+                        }else if(history.type_cycle == 3){
+                            cycle_text = 'Quý';
+                        }else if(history.type_cycle == 4){
+                            cycle_text = 'Năm';
+                        }
+                        const text_result_cycle = cycle_text + ' ' + history.number_cycle;
+                        // Các cột khác
+                        const mappingIdCell = document.createElement('td');
+                        mappingIdCell.classList.add('py-2', 'px-4', 'border-b');
+                        mappingIdCell.textContent = history.result;
+                        row.appendChild(mappingIdCell);
+
+                        const typeSaveCell = document.createElement('td');
+                        typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
+                        typeSaveCell.textContent = history.description;
+                        row.appendChild(typeSaveCell);
+
+                        
+                        const descriptionCell = document.createElement('td');
+                        descriptionCell.classList.add('py-2', 'px-4', 'border-b');
+                        descriptionCell.textContent = history.update_date;
+                        row.appendChild(descriptionCell);
+
+                        const resultCell = document.createElement('td');
+                        resultCell.classList.add('py-2', 'px-4', 'border-b');
+                        resultCell.textContent =  text_result_cycle;
+                        row.appendChild(resultCell);
+
+
+                        // Thêm hàng vào bảng
+                        tableBody.appendChild(row);
+                    });
+                }
+          });
     </script>
 @endsection

@@ -136,7 +136,7 @@
                     </table>
                 </div>
                 <div class="space-x-4 text-right">
-                    <button id="btn-complete"
+                    <button onclick="goBackWithRefresh();" type="button"
                         class="btn bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">Hoàn
                         thành</button>
                 </div>
@@ -144,6 +144,14 @@
         </div>
     </div>
     <script>
+         function goBackWithRefresh() {
+        var previousUrl = document.referrer; // Lấy URL của trang trước
+        if (previousUrl) {
+            window.location.href = previousUrl; // Điều hướng đến trang trước và load lại
+        } else {
+            window.history.back(); // Nếu không lấy được URL, fallback về phương thức back
+        }
+    }
         var assignedOrgLst = [];
         document.getElementById('organization_type_id').addEventListener('change', function() {
             var organizationTypeId = this.value;
@@ -191,8 +199,10 @@
                 tasksTableBody.appendChild(row);
                 return;
             }
-
-            data.forEach(task => {
+            const filteredData = data.filter(task =>
+                !organization_id.some(id => id.organization_id === task.id)
+            );
+            filteredData.forEach(task => {
                 const row = document.createElement('tr');
 
                 // Checkbox
@@ -201,11 +211,11 @@
                 checkbox.type = 'checkbox';
                 checkbox.id = `organization-${taskTargetId}`;
                 checkbox.value = taskTargetId;
-                organization_id.forEach(id => {
-                    if (task.id === id.organization_id) {
-                        checkbox.checked = true;
-                    }
-                })
+                // organization_id.forEach(id => {
+                //     if (task.id === id.organization_id) {
+                //         checkbox.checked = true;
+                //     }
+                // })
                 checkbox.classList.add('organization-checkbox');
                 checkboxCell.appendChild(checkbox);
 
@@ -254,7 +264,7 @@
         document.addEventListener('DOMContentLoaded', function() {
 
 
-            
+
             const taskTargetId = document.getElementById('task-target-id').value;
             const taskTargetCode = document.getElementById('task-target-code').value;
             fetchOrganizations(taskTargetCode);
@@ -274,6 +284,7 @@
                         .then(data => {
                             if (data.success) {
                                 data.data.forEach(org => {
+                                  
                                     organizationsTotal.push({
                                         code: org.code,
                                         name: org.name,
@@ -283,6 +294,8 @@
                                         task_id: taskTargetId
                                     });
                                 });
+                                console.log("org");
+                                    console.log(organizationsTotal);
                                 renderAssignTable(organizationsTotal);
                                 document.getElementById('assigned-area').style.display = 'block';
                             } else {
@@ -341,9 +354,9 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        
+
                         if (data.success) {
-                          
+
                             fetchOrganizations(taskTargetCode);
                             document.getElementById('assigned-area').style.display = 'block'
                         } else {
@@ -354,24 +367,24 @@
                         console.error('Lỗi:', error);
                     });
             });
-            document.getElementById('btn-complete').addEventListener('click', function() {
-                var type = document.getElementById('type');
-                var selectedValue = type.value;
-                // Chuyển hướng đến URL tương ứng với giá trị được chọn
-                if (selectedValue) {
-                    window.location.href = `/tasks/type/${selectedValue}`;
-                }
-            });
+            // document.getElementById('btn-complete').addEventListener('click', function() {
+            //     var type = document.getElementById('type');
+            //     var selectedValue = type.value;
+            //     // Chuyển hướng đến URL tương ứng với giá trị được chọn
+            //     if (selectedValue) {
+            //         window.location.href = `/tasks/type/${selectedValue}`;
+            //     }
+            // });
         });
 
         function renderAssignTable(data) {
             const taskTargetId = document.getElementById('task-target-id').value;
             const taskTargetCode = document.getElementById('task-target-code').value;
             const tasksTableBody = document.getElementById('assigned-organizations');
-            tasksTableBody.innerHTML = ''; 
+            tasksTableBody.innerHTML = '';
             data.forEach(task => {
-                if (assignedOrgLst.includes(task.code)) return;
-                assignedOrgLst.push(task.code);
+                // if (assignedOrgLst.includes(task.code)) return;
+                // assignedOrgLst.push(task.code);
                 const row = document.createElement('tr');
 
                 // Tên công việc

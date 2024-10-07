@@ -42,18 +42,41 @@
         <form method="GET" action="{{ route('documents.index') }}" id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <!-- Các trường khác -->
-                <div class="flex-1 min-w-[200px]">
+                {{-- <div class="flex-1 min-w-[200px]">
                     <label for="document_code" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản</label>
                     <input type="text" id="document_code" name="document_code" value="{{ request('document_code') }}" placeholder="Số hiệu văn bản"
                            class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                           <div id="search-results" class="absolute bg-white w-full border border-gray-300 rounded-lg shadow-lg mt-1 z-10 hidden">
+                            <ul class="list-none p-0 m-0"></ul>
+                        </div>
+                </div> --}}
+                <div class="flex-1 min-w-[200px] relative">
+                    <label for="document_code" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản</label>
+                    <input type="text" id="document_code" name="document_code" placeholder="Số hiệu văn bản"
+                           class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                
+                    <!-- Kết quả tìm kiếm sẽ được hiển thị ngay bên dưới input -->
+                    <div id="search-results" class="absolute bg-white w-full border border-gray-300 rounded-lg shadow-lg mt-1 z-10 hidden">
+                        <ul class="list-none p-0 m-0"></ul>
+                    </div>
                 </div>
                 <!-- Các trường khác -->
-                <div class="flex-1 min-w-[200px]">
+                {{-- <div class="flex-1 min-w-[200px]">
                     <label for="document_name" class="block text-gray-700 font-medium mb-2">Trích yếu văn bản</label>
                     <input type="text" id="document_name" name="document_name" value="{{ request('document_name') }}" placeholder="Tên văn bản"
                            class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
                 </div>
+                 --}}
+                <div class="flex-1 min-w-[200px] relative">
+                    <label for="document_name" class="block text-gray-700 font-medium mb-2">Trích yếu văn bản</label>
+                    <input type="text" id="document_name" name="document_name" placeholder="Trích yếu văn bản"
+                           class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
                 
+                    <!-- Kết quả tìm kiếm sẽ được hiển thị ngay bên dưới input -->
+                    <div id="search-results-name" class="absolute bg-white w-full border border-gray-300 rounded-lg shadow-lg mt-1 z-10 hidden">
+                        <ul class="list-none p-0 m-0"></ul>
+                    </div>
+                </div>
                 
         
                 <!-- Đoạn code này bao quanh hai trường Ngày phát hành -->
@@ -73,7 +96,7 @@
                     <!-- Các trường khác -->
                     <div class="flex-1 min-w-[200px]">
                         <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
-                        <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                        <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                             <option value="">Chọn cơ quan ban hành</option>
                             @foreach($organizationsType as $organization)
                                 <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
@@ -168,18 +191,114 @@
         </div>
     </div>
     <script>
+          $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Chọn cơ quan",
+            allowClear: true
+        });
+    });
+        //============================ Search Input Code ====================================
+        $(document).ready(function() {
+        $('#document_code').on('keyup', function() {
+            var query = $(this).val();
+            if (query.length > 0) {
+                $.ajax({
+                    url: "{{ route('documents.search') }}",
+                    type: "GET",
+                    data: {'document_code': query},
+                    success: function(data) {
+                        $('#search-results ul').html(''); // Xóa kết quả cũ
+                        if (data.length > 0) {
+                            $.each(data, function(key, document) {
+                                $('#search-results ul').append('<li class="p-2 cursor-pointer hover:bg-gray-200" data-code="'+document.document_code+'">' + document.document_code + '</li>');
+                            });
+                            $('#search-results').removeClass('hidden');
+                        } else {
+                            $('#search-results ul').append('<li class="p-2">Không có kết quả.</li>');
+                            $('#search-results').removeClass('hidden');
+                        }
+                    }
+                });
+            } else {
+                $('#search-results').addClass('hidden');
+            }
+        });
+        $(document).on('click', function(event) {
+            var selectedCode = $(this).data('code');  // Lấy giá trị từ thuộc tính data-code
+            $('#document_code').value = selectedCode;    // Gán giá trị vào input
+            $('#search-results').addClass('hidden');  // Ẩn danh sách sau khi chọn
+        });
+        $(document).on('click', '#search-results li', function() {
+            $('#document_code').val($(this).text());
+            $('#search-results').addClass('hidden'); 
+        });
+    });
+     //============================End Search Input Code ====================================
+      //============================ Search Input Name ====================================
+      $(document).ready(function() {
+        $('#document_name').on('keyup', function() {
+            var query = $(this).val();
+            if (query.length > 0) {
+                $.ajax({
+                    url: "{{ route('documents.search.name') }}",
+                    type: "GET",
+                    data: {'document_name': query},
+                    success: function(data) {
+                        $('#search-results-name ul').html(''); // Xóa kết quả cũ
+                        if (data.length > 0) {
+                            $.each(data, function(key, document) {
+                                $('#search-results-name ul').append('<li class="p-2 cursor-pointer hover:bg-gray-200" data-code="'+document.document_name+'">' + document.document_name + '</li>');
+                            });
+                            $('#search-results-name').removeClass('hidden');
+                        } else {
+                            $('#search-results-name ul').append('<li class="p-2">Không có kết quả.</li>');
+                            $('#search-results-name').removeClass('hidden');
+                        }
+                    }
+                });
+            } else {
+                $('#search-results-name').addClass('hidden');
+            }
+        });
+        $(document).on('click', function(event) {
+            var selectedCode = $(this).data('code');  // Lấy giá trị từ thuộc tính data-code
+            $('#document_name').value = selectedCode;    // Gán giá trị vào input
+            $('#search-results-name').addClass('hidden');  // Ẩn danh sách sau khi chọn
+        });
+        $(document).on('click', '#search-results-name li', function() {
+            $('#document_name').val($(this).text());
+            $('#search-results-name').addClass('hidden'); 
+        });
+    });
+     //============================End Search Input Name ====================================
         document.addEventListener('DOMContentLoaded', function() {
             var organizationTypeSelect = document.getElementById('organization_type_id');
-            var organizationTypeId = organizationTypeSelect.value;
-            console.log(organizationTypeId);
-            fetchOrganizations(organizationTypeId);
+            if(organizationTypeSelect && organizationTypeSelect.value){
+                console.log(organizationTypeSelect);
+                var organizationTypeId = organizationTypeSelect.value;
+                fetchOrganizations(organizationTypeId);
+            }
             var currentUrl = window.location.href;
             var params = new URLSearchParams(window.location.search);
             var organizationId = parseInt(params.get('organization_id'));
+
+            var document_code =params.get('document_code');
+            var document_name = params.get('document_name');
+            console.log("params")
+            console.log(document_name)
             if(!isNaN(organizationId)){
                 var customInput = document.getElementById('organization_id');
                 customInput.classList.remove('hidden');
             }
+            if(document_code !== null || document_code !== undefined || document_code !== ""){
+                var customInput = document.getElementById('document_code');
+                customInput.value = document_code;
+            }
+            if(document_name !== null || document_name !== undefined || document_name !== ""){
+                var customInput = document.getElementById('document_name');
+                customInput.value = document_name;
+            }
+
            document.getElementById('organization_type_id').addEventListener('change', function () {
                 var organizationTypeId = this.value;
                 fetch(`/get-organizations/${organizationTypeId}`)
@@ -187,7 +306,7 @@
                 .then(data => {
                     // Làm rỗng danh sách `parent_id`
                     var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
 
                     // Thêm các tùy chọn mới
                     data.forEach(function (organization) {
@@ -218,7 +337,7 @@
                         var organizationId = parseInt(params.get('organization_id'));
 
                         console.log(organizationId);
-                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
                         // Thêm các tùy chọn mới
                         data.forEach(function (organization) {
                             var option = document.createElement('option');
@@ -250,7 +369,7 @@
         //         .then(data => {
         //             // Làm rỗng danh sách `parent_id`
         //             var parentSelect = document.getElementById('parent_id');
-        //             parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+        //             parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
 
         //             // Thêm các tùy chọn mới
         //             data.forEach(function (organization) {

@@ -89,6 +89,7 @@ class TaskTarget extends Model
     }
     public function getTaskStatusDescription()
     {
+   
         // Chuyển đổi giá trị status_code thành enum
         $status = TaskStatus::tryFrom($this->status_code);
 
@@ -290,17 +291,17 @@ class TaskTarget extends Model
     }
     public function getStartDate()
     {
-        return $this->start_date ? Carbon::parse($this->start_date)->format('d-m-Y') : '';
+        return $this->start_date ? Carbon::parse($this->start_date)->format('d/m/Y') : '';
     }
 
     public function getEndDate()
     {
-        return $this->end_date ? Carbon::parse($this->end_date)->format('d-m-Y') : '';
+        return $this->end_date ? Carbon::parse($this->end_date)->format('d/m/Y') : '';
     }
 
     public function getDateFromToTextAttribute()
     {
-        return $this->getStartDate() . ' - ' . $this->getEndDate() ?? '';
+        return $this->getStartDate() . '-' . $this->getEndDate() ?? '';
     }
 
 

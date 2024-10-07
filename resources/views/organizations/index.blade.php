@@ -361,7 +361,7 @@
                     <div class="mb-4">
                         <label for="parent_id" class="block text-gray-700">Chọn Cơ quan, tổ chức cấp trên <span class="text-red-500">*</span></label>
                         <select name="parent_id" id="parent_id" class="w-full border rounded-lg px-3 py-2 mt-1">
-                            <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức cấp trên</option>
+                            <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn Cơ quan ban hành</option>
                         </select>
                     </div>
                     <div class="mb-4">
@@ -449,7 +449,7 @@
                     .then(data => {
                         // Làm rỗng danh sách `parent_id`
                         var parentSelect = document.getElementById('parent_id');
-                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
 
                         // Thêm các tùy chọn mới
                         data.forEach(function (organization) {

@@ -21,10 +21,32 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
         <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
         <!-- Scripts -->
         @vite(['resources/css/app.css','resources/js/app.js'])
         <style>
+ .select2-container--default .select2-selection--single {
+        border: 1px solid #D1D5DB; /* Border gray-300 */
+        border-radius: 0.5rem; /* Rounded-lg */
+        height: 42px; /* Chiều cao */
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 42px; /* Giữ cho nội dung nằm giữa */
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 42px; /* Chiều cao của mũi tên dropdown */
+        right: 10px; /* Căn chỉnh mũi tên */
+    }
+
+    /* Tùy chỉnh mũi tên dropdown */
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: transparent transparent #555 transparent; /* Mũi tên màu xám */
+    }
             input[readonly] {
     background-color: #e9ecef; /* Màu nền giống như input disabled */
     color: #6c757d;            /* Màu chữ nhạt hơn */

@@ -251,7 +251,7 @@
                 .then(data => {
                     // Làm rỗng danh sách `parent_id`
                     var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
 
                     // Thêm các tùy chọn mới
                     data.forEach(function (organization) {

@@ -30,7 +30,28 @@ use App\Services\MasterWorkResultTypeService;
 
 class DocumentController extends Controller
 {
+    public function searchDocuments(Request $request)
+    {
+        $query = $request->input('query');
 
+        // Tìm kiếm các document_code chứa từ khóa tìm kiếm (có thể điều chỉnh logic tìm kiếm)
+        $documents = Document::where('document_code', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->orderBy('created_at', 'desc')->take(10)->get();
+
+        // Trả về kết quả dưới dạng JSON
+        return response()->json($documents);
+    }
+    public function searchDocumentsName(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Tìm kiếm các document_code chứa từ khóa tìm kiếm (có thể điều chỉnh logic tìm kiếm)
+        $documents = Document::where('document_name', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->orderBy('created_at', 'desc')->take(10)->get();
+
+        // Trả về kết quả dưới dạng JSON
+        return response()->json($documents);
+    }
+    
+    
     public function changeComplete(Request $request, $id){
         DB::beginTransaction();
         try {
@@ -64,9 +85,9 @@ class DocumentController extends Controller
 
         if ($type == 'target') {
                 if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                    $taskDocuments = $document->taskTarget->where('type', 'target')->where('isDelete', 0);
+                    $taskDocuments = $document->taskTarget->where('code', $code)->where('type', 'target')->where('isDelete', 0);
                 } else {
-                    $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
+                    $taskDocuments = $document->taskTarget->where('code', $code)->filter(function ($task) use ($user) {
                         return $task->organization_id == $user->organization_id;
                     })->where('isDelete', 0);
                 }
@@ -74,6 +95,7 @@ class DocumentController extends Controller
                 $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
                 $workResultTypes = MasterWorkResultTypeService::index();
                 $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
+                $taskDocuments = $taskDocuments->whereNotNull('organization_id');
 
                 $units = Unit::all();
                 return view('documents.viewApprovedReportTarget', compact('units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
@@ -82,9 +104,9 @@ class DocumentController extends Controller
               
 
                 if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                    $taskDocuments = $document->taskTarget->where('type', 'task')->where('isDelete', 0);
+                    $taskDocuments = $document->taskTarget->where('code', $code)->where('type', 'task')->where('isDelete', 0);
                 } else {
-                    $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
+                    $taskDocuments = $document->taskTarget->where('code', $code)->filter(function ($task) use ($user) {
                         return $task->organization_id == $user->organization_id;
                     })->where('isDelete', 0);
                 }
@@ -92,6 +114,7 @@ class DocumentController extends Controller
                 $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
                 $workResultTypes = MasterWorkResultTypeService::index();
                 $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
+                $taskDocuments = $taskDocuments->whereNotNull('organization_id');
 
                 return view('documents.viewApprovedReportTask', compact('document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
         }
@@ -526,7 +549,7 @@ if($user->organization){
 
     public function getHistory($code)
     {
-
+        // \DB::enableQueryLog();
         $taskTargetIds = TaskTarget::where('code', $code)->where('isDelete', 0)
             ->pluck('id'); // Lấy danh sách các ID dưới dạng mảng
 
@@ -536,22 +559,22 @@ if($user->organization){
         }
 
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
-        $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)
-            ->get();
-
+        $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)->get();
+       //dd($taskTargetIds);
         // return $lstHistory; // Trả về danh sách các bản ghi
+        // dd(\DB::getQueryLog());
 
         return response()->json(['histories' => $lstHistory]);
     }
+
     public function getHistoryById($id)
     {
 
-        $taskTargetId = TaskTarget::where('code', $id)->where('isDelete', 0)->first();
+        $taskTargetId = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
 
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
-        $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId)
+        $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId->id)
             ->get();
-
         // return $lstHistory; // Trả về danh sách các bản ghi
 
         return response()->json(['histories' => $lstHistory]);

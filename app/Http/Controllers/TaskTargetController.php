@@ -317,6 +317,8 @@ class TaskTargetController extends Controller
         $tasksWithSameCode = TaskTarget::where('code', $code)->where('isDelete', 0)->get();
         $organizationIds = $tasksWithSameCode->pluck('organization_id')->unique();
         $documents = Document::where('isDelete', 0)->get();
+        $document = Document::where('isDelete', 0)->where('id', $taskTarget->document_id)->first();
+
         $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->get();
         $taskTargetIds = $tasksWithSameCode->pluck('id');
         $latestTaskResults = TaskResult::whereIn('id_task_criteria', $taskTargetIds)
@@ -327,6 +329,7 @@ class TaskTargetController extends Controller
             ->map(function ($results) {
                 return $results->first();
             });
+        $taskDocuments = $document->taskTarget->where('type', $type)->where('isDelete', 0);
 
         $mappedResults = $tasksWithSameCode->map(function ($task) use ($latestTaskResults, $organizations) {
             return [
@@ -336,19 +339,19 @@ class TaskTargetController extends Controller
             ];
         });
         // Chuyển đổi $mappedResults thành Collection
-        $mappedResultsCollection = collect($mappedResults);
+        // $mappedResultsCollection = collect($taskDocuments);
 
-        // Phân trang kết quả
-        $currentPage = Paginator::resolveCurrentPage();
-        $perPage = 10; // Số kết quả mỗi trang
-        $currentPageResults = $mappedResultsCollection->slice(($currentPage - 1) * $perPage, $perPage)->all();
-        $paginatedResults = new LengthAwarePaginator(
-            $currentPageResults,
-            $mappedResultsCollection->count(),
-            $perPage,
-            $currentPage,
-            ['path' => Paginator::resolveCurrentPath()]
-        );
+        // // Phân trang kết quả
+        // $currentPage = Paginator::resolveCurrentPage();
+        // $perPage = 10; // Số kết quả mỗi trang
+        // $currentPageResults = $mappedResultsCollection->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        // $paginatedResults = new LengthAwarePaginator(
+        //     $currentPageResults,
+        //     $mappedResultsCollection->count(),
+        //     $perPage,
+        //     $currentPage,
+        //     ['path' => Paginator::resolveCurrentPath()]
+        // );
         // dd($mappedResults);
         $typeTask = IndicatorGroup::where('isDelete', 0)->get();;
 
@@ -358,7 +361,7 @@ class TaskTargetController extends Controller
         if ($type == 'task') {
             $typeTask =  TaskGroup::where('isDelete', 0)->get();;
         }
-        return view('tasks.show', compact('typeTask', 'workResultTypes', 'units',  'keyConstants', 'taskTarget', 'type', 'organizations', 'paginatedResults', 'mappedResults', 'documents'));
+        return view('tasks.show', compact('taskDocuments','typeTask', 'workResultTypes', 'units',  'keyConstants', 'taskTarget', 'type', 'organizations', 'mappedResults', 'documents'));
     }
 
 
@@ -470,9 +473,6 @@ class TaskTargetController extends Controller
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
 
-        $taskDocumentsQuery = TaskDocument::query();
-
-
         if ($type == 'task') {
             $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->select(
                 'name',
@@ -521,8 +521,12 @@ class TaskTargetController extends Controller
         if ($text) {
             $taskTargets->where('name', 'like', '%' . $text . '%');
         }
+        if ($request->filled('document_code')) {
+            $documentsSearch = Document::where('isDelete', 0)->where('document_code', 'like', '%' . $request->document_code . '%')->pluck('id');
+            $taskTargets = $taskTargets->whereIn('document_id', $documentsSearch);
+        }
         if ($request->filled('document_id')) {
-            // Chắc chắn rằng $documents là mảng phẳng trước khi sử dụng
+
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
         }
         if ($request->filled('organization_id')) {
@@ -530,15 +534,10 @@ class TaskTargetController extends Controller
         }
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');
-
-        // Kiểm tra nếu cả hai thời gian đều có giá trị
         if ($executionTimeFrom && $executionTimeTo) {
             try {
-                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
                 $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
                 $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
-
-                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
                 if ($executionTimeFrom->gt($executionTimeTo)) {
                     return redirect()->back()->withErrors([
                         'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
@@ -751,7 +750,7 @@ class TaskTargetController extends Controller
 
             $data['creator'] = Auth::id();
             $data['status'] = 'new';
-            $data['organization_id'] = $organizationId;
+            // $data['organization_id'] = $organizationId;
             $data['request_results'] = $result;
             $data['start_date'] = $document->release_date;
             $data['type_id'] = $type_id;

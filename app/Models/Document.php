@@ -46,7 +46,7 @@ class Document extends Model
 
     public function getReleaseDateFormattedAttribute()
     {
-        return $this->release_date ? Carbon::parse($this->release_date)->format('d-m-Y') : 'N/A';
+        return $this->release_date ? Carbon::parse($this->release_date)->format('d/m/Y') : 'N/A';
     }
     public function issuingDepartment()
     {

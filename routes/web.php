@@ -43,6 +43,10 @@ Route::middleware(['auth', 'roles:staff,sub_admin'])->group(function () {
    
 });
 Route::middleware('auth')->group(function () {
+    Route::get('/search-documents', [DocumentController::class, 'searchDocuments'])->name('documents.search');
+
+    Route::get('/search-documents-name', [DocumentController::class, 'searchDocumentsName'])->name('documents.search.name');
+
     Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report')->middleware('check.organization');
     Route::get('/report-target', [DocumentController::class, 'reportTargetView'])->name('documents.report.target')->middleware('check.organization');
 

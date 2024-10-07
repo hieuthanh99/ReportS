@@ -39,7 +39,17 @@
         <form method="GET" action="{{ route('tasks.byType', $type) }}" id="filterForm">
 
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
-                <div class="flex-1 min-w-[200px]">
+                <div class="flex-1 min-w-[200px] relative">
+                    <label for="document_code" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản</label>
+                    <input type="text" id="document_code" name="document_code" placeholder="Số hiệu văn bản"
+                           class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                
+                    <!-- Kết quả tìm kiếm sẽ được hiển thị ngay bên dưới input -->
+                    <div id="search-results" class="absolute bg-white w-full border border-gray-300 rounded-lg shadow-lg mt-1 z-10 hidden">
+                        <ul class="list-none p-0 m-0"></ul>
+                    </div>
+                </div>
+                {{-- <div class="flex-1 min-w-[200px]">
                     <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
                     <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full">
                         <option value="">Chọn văn bản thực hiện</option>
@@ -49,24 +59,78 @@
                             </option>
                         @endforeach
                     </select>               
-                </div>
+                </div> --}}
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
-                    <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
+                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn cơ quan ban hành</option>
-                        @foreach($organizationsType as $organization)
-                            <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->type_name }}
+                        @foreach($organizations as $organization)
+                            <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px] hidden" id="organization_id">
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Nhóm nhiệm vụ:</label>
+                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="">Chọn cơ quan ban hành</option>
+                        @foreach($organizations as $organization)
+                            <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="mb-6 flex flex-wrap gap-4 mb-4">
+                @if()
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
+                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="" disabled selected>-- Chọn loại chỉ tiêu --</option>
+                        <option value="single">Đơn</option> <!-- "Đơn" -> "single" -->
+                        <option value="aggregate">Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
+                    </select>
+                </div>
+                @else
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
+                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="" disabled selected>-- Chọn loại chỉ tiêu --</option>
+                        <option value="single">Đơn</option> <!-- "Đơn" -> "single" -->
+                        <option value="aggregate">Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
+                    </select>
+                </div>
+                @endif
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Ngày hoàn thành:</label>
+                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="">Chọn cơ quan ban hành</option>
+                        @foreach($organizations as $organization)
+                            <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
+                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="">Chọn cơ quan ban hành</option>
+                        @foreach($organizations as $organization)
+                            <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                {{-- <div class="flex-1 min-w-[200px] hidden" id="organization_id">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">&nbsp; </label>
                     <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
                         <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
                     </select>
-                </div>
+                </div> --}}
             </div>
 
         <div class="flex justify-end gap-4">
@@ -85,13 +149,13 @@
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                     @if( $type == 'target')
                     <tr>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên chỉ tiêu</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Đơn vị tính</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Chỉ tiêu</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Loại</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
+                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên chỉ tiêu</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Đơn vị tính</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Chỉ tiêu</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày bắt đầu - kết thúc</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Loại</th>
+                        <th  style="width: 100px;"  class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số đơn vị được giao</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Chi tiết
                         </th>
@@ -101,19 +165,19 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Xóa 
                         </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                        {{-- <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Lịch sử 
-                        </th>
+                        </th> --}}
                     </tr>
                     @else
                     <tr>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên nhiệm vụ</th>
-                        <th style="width: 100px" class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhóm nhiệm vụ</th>
-                        <th  style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium">Có thời hạn/thường xuyên</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
+                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên nhiệm vụ</th>
+                        <th style="width: 100px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Kết quả</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Nhóm nhiệm vụ</th>
+                        <th  style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Có thời hạn/thường xuyên</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày bắt đầu - kết thúc</th>
+                        <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số đơn vị được giao</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Chi tiết
                         </th>
@@ -123,9 +187,9 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                            Xóa 
                         </th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                        {{-- <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Lịch sử 
-                        </th>
+                        </th> --}}
                     </tr>
                     @endif
                 </thead>
@@ -142,7 +206,7 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->target }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTarget() }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
+                            <td style="width: 100px;" class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                     onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
@@ -169,14 +233,14 @@
                                 </form>
                             </td>
 
-                            <td class="py-3 border border-gray-300 px-6 text-center">
+                            {{-- <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
                                     data-task-id="{{ $item->code }}"
                                     class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                       <i class="fa fa-history"></i>
                                 </button>
                             </td>
-                            
+                             --}}
                         </tr>
                     @endforeach
                     @else
@@ -199,7 +263,7 @@
                         </td>
                         <td style="width: 80px" class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTime() }}</td>
                         <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
-                        <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
+                        <td  style="width: 100px;" class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
                         <td class="py-3 border border-gray-300 px-6 text-center">
                             <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                 onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
@@ -226,13 +290,13 @@
                             </form>
                         </td>
 
-                        <td class="py-3 border border-gray-300 px-6 text-center">
+                        {{-- <td class="py-3 border border-gray-300 px-6 text-center">
                             <button data-document-id="{{ $item->document_id }}"
                                 data-task-id="{{ $item->code }}"
                                 class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                   <i class="fa fa-history"></i>
                             </button>
-                        </td>
+                        </td> --}}
                         
                     </tr>
                 @endforeach
@@ -272,7 +336,49 @@
         </div>
     </div>
     <script>
-        
+            $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Chọn cơ quan ban hành",
+            allowClear: true
+        });
+    });
+         //============================ Search Input Code ====================================
+         $(document).ready(function() {
+        $('#document_code').on('keyup', function() {
+            var query = $(this).val();
+            if (query.length > 0) {
+                $.ajax({
+                    url: "{{ route('documents.search') }}",
+                    type: "GET",
+                    data: {'document_code': query},
+                    success: function(data) {
+                        $('#search-results ul').html(''); // Xóa kết quả cũ
+                        if (data.length > 0) {
+                            $.each(data, function(key, document) {
+                                $('#search-results ul').append('<li class="p-2 cursor-pointer hover:bg-gray-200" data-code="'+document.document_code+'">' + document.document_code + '</li>');
+                            });
+                            $('#search-results').removeClass('hidden');
+                        } else {
+                            $('#search-results ul').append('<li class="p-2">Không có kết quả.</li>');
+                            $('#search-results').removeClass('hidden');
+                        }
+                    }
+                });
+            } else {
+                $('#search-results').addClass('hidden');
+            }
+        });
+        $(document).on('click', function(event) {
+            var selectedCode = $(this).data('code');  // Lấy giá trị từ thuộc tính data-code
+            $('#document_code').value = selectedCode;    // Gán giá trị vào input
+            $('#search-results').addClass('hidden');  // Ẩn danh sách sau khi chọn
+        });
+        $(document).on('click', '#search-results li', function() {
+            $('#document_code').val($(this).text());
+            $('#search-results').addClass('hidden'); 
+        });
+    });
+     //============================End Search Input Code ====================================
         // document.getElementById('filterToggle').addEventListener('click', function() {
         //     const filterForm = document.getElementById('filterForm');
         //     filterForm.classList.toggle('hidden');
@@ -293,29 +399,29 @@
                 }
             });
         }
-         document.getElementById('organization_type_id').addEventListener('change', function () {
-            var organizationTypeId = this.value;
+        //  document.getElementById('organization_type_id').addEventListener('change', function () {
+        //     var organizationTypeId = this.value;
             
-            // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-            fetch(`/get-organizations/${organizationTypeId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Làm rỗng danh sách `parent_id`
-                    var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+        //     // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+        //     fetch(`/get-organizations/${organizationTypeId}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // Làm rỗng danh sách `parent_id`
+        //             var parentSelect = document.getElementById('parent_id');
+        //             parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
 
-                    // Thêm các tùy chọn mới
-                    data.forEach(function (organization) {
-                        var option = document.createElement('option');
-                        option.value = organization.id;
-                        option.text = organization.name;
-                        parentSelect.appendChild(option);
-                    });
-                    var customInput = document.getElementById('organization_id');
-                customInput.classList.remove('hidden');
-                })
-                .catch(error => console.error('Error:', error));
-        });
+        //             // Thêm các tùy chọn mới
+        //             data.forEach(function (organization) {
+        //                 var option = document.createElement('option');
+        //                 option.value = organization.id;
+        //                 option.text = organization.name;
+        //                 parentSelect.appendChild(option);
+        //             });
+        //             var customInput = document.getElementById('organization_id');
+        //         customInput.classList.remove('hidden');
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // });
         
           document.addEventListener('DOMContentLoaded', function() {
                 //============================== Lich su ==========================

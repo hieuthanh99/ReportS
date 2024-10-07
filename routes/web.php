@@ -69,14 +69,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/search', [SearchController::class, 'search'])->name('search')->middleware('check.organization');
     Route::delete('/tasks/{code}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget')->middleware('check.organization');
-    Route::get('/tasks/details/{code}/{type}', [TaskTargetController::class, 'showDetails'])->name('tasks.show-details')->middleware('check.organization');
-    Route::get('/tasks/edit/{code}/{type}', [TaskTargetController::class, 'editTaskTarget'])->name('tasks.edit.taskTarget')->middleware('check.organization');
+    Route::get('/tasks/details/{id}/{type}', [TaskTargetController::class, 'showDetails'])->name('tasks.show-details')->middleware('check.organization');
+    Route::get('/tasks/edit/{id}/{type}', [TaskTargetController::class, 'editTaskTarget'])->name('tasks.edit.taskTarget')->middleware('check.organization');
 
 
     Route::get('/tasks/edit/approved/{code}/{type}', [DocumentController::class, 'approvedTaskTarget'])->name('tasks.edit.approved')->middleware('check.organization');
 
 
-    Route::delete('/tasks/delete-organization/{code}/{type}/{id}', [TaskTargetController::class, 'deleteOrganization'])->name('tasks.delete.organization')->middleware('check.organization');
+    Route::delete('/tasks/delete-organization/{id_task_criteria}/{type}/{id}', [TaskTargetController::class, 'deleteOrganization'])->name('tasks.delete.organization')->middleware('check.organization');
     Route::get('/tasks/type/{type}', [TaskTargetController::class, 'indexView'])->name('tasks.byType')->middleware('check.organization');
 
     Route::get('/tasks/type/approved/{type}', [TaskTargetController::class, 'indexViewApproved'])->name('tasks.byType.approved')->middleware('check.organization');

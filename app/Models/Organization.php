@@ -22,6 +22,12 @@ class Organization extends Model
         'organization_type_id',
         'isDelete'
     ];
+    
+    public function taskResults()
+    {
+        return $this->hasMany(TaskResult::class, 'organization_id');
+    }
+
     public function taskTargets()
     {
         return $this->hasMany(TaskTarget::class);

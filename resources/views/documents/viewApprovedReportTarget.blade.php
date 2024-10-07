@@ -139,7 +139,7 @@
             </div>
         @endif
         @php
-            $type = 'task';
+            $type = 'target';
             $isEditable = $taskTarget->status == 'assign' || $taskTarget->status == 'reject';
             $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
             $hasOrganization = $taskTarget->hasOrganizationAppro();
@@ -159,36 +159,89 @@
                     @csrf
                     @method('POST')
                     <div class="bg-white p-6 ">
-                        <h5 class="text-xl font-semibold mb-4">Thông tin văn bản</h5>
-
+                        <h5 class="text-xl font-semibold mb-4">Thông tin chỉ tiêu</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
+                            <!-- Cột trái -->
+                            <!-- <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Mã chỉ tiêu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->code }}</span>
+                            </div> -->
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Tên chỉ tiêu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
+                            </div>
+                            <!-- <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Nhóm chỉ tiêu:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    
+                                    @foreach ($groupTarget as $item)
+                                    @if ($taskTarget->type_id == $item->id)
+                                    {{ $item->name }}
+                                    @endif
+                                    @endforeach
+                                </span>
+                            </div> -->
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Chỉ tiêu:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    {{ $taskTarget->target }}
+                                </span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Chu kỳ báo cáo:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
+                            </div>
+                            <!-- <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Loại chỉ tiêu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTarget() }}</span>
+                            </div> -->
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Đơn vị tính:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    @foreach ($units as $item)
+                                    @if ($taskTarget->unit == $item->id)
+                                    {{ $item->name }}
+                                    @endif
+                                    @endforeach
+                                </span>
+                            </div>
+                            <!-- <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
+                            </div> -->
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Thời gian hoàn thành:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Trạng thái báo cáo:</span>
+                                <span class="text-gray-900 w-2/3"></span>
+                            </div>
+                            
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
                             <!-- Cột trái -->
                             <div class="flex items-center mb-4">
-                                <label for="document_code" class="text-gray-700 font-medium w-1/3">Mã văn
-                                    bản:</label>
+                                <label for="document_code" class="text-gray-700 font-medium w-1/3">Số hiệu văn bản:</label>
                                 <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <label for="document_name" class="text-gray-700 font-medium w-1/3">Tên văn
-                                    bản:</label>
-                                <span class="text-gray-900 w-2/3">{{ $document->document_name }}</span>
+                                <label for="document_name" class="text-gray-700 font-medium w-1/3">Văn bản giao việc:</label>
+                                <span class="text-gray-900 w-2/3"></span>
 
                             </div>
                             <div class="flex items-center mb-4">
-                                <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Cơ
-                                    quan, tổ chức phát
-                                    hành:</label>
-                                <span class="text-gray-900 w-2/3">{{ $document->issuingDepartment->name ?? '' }}</span>
+                                <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</label>
+                                <span class="text-gray-900 w-2/3"></span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <label for="release_date" class="text-gray-700 font-medium w-1/3">Ngày phát
-                                    hành:</label>
-                                <span class="text-gray-900 w-2/3">{{ $document->getReleaseDateFormattedAttribute() }}</span>
+                                <label for="release_date" class="text-gray-700 font-medium w-1/3">Kết quả báo cáo:</label>
+                                <span class="text-gray-900 w-2/3"></span>
                             </div>
                         </div>
 
                         <!-- Hàng upload file -->
-                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0;">
+                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0">
                             <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Danh sách
                                 tệp tin:</label>
                             <div id="file-list-data-document" class="mt-2 file-list-data-document">
@@ -198,15 +251,12 @@
                                             $filePath = storage_path('app/public/' . $file->file_path);
                                             $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
                                         @endphp
-
                                         <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
                                             data-file-type="{{ $fileType }}">
                                             <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
                                             <a href="{{ route('file.view', ['id' => $file->id]) }}"
                                                 class="text-blue-500 hover:underline"
                                                 target="_blank">{{ $file->file_name }}</a>
-                                            {{-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                                class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> --}}
                                         </div>
                                     @endforeach
                                 @else
@@ -214,73 +264,18 @@
                                 @endif
 
                             </div>
-                            {{-- <div id="file-list" class="mt-2 file-list"></div> --}}
                         </div>
+                        
                     </div>
-                    <hr class="mb-6">
+                    <!-- <hr class="mb-6">
+                    
+                    
                     <div class="bg-white p-6 ">
-                        <h5 class="text-xl font-semibold mb-4">Chỉ tiêu</h5>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
-                            <!-- Cột trái -->
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Mã chỉ tiêu:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->code }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Tên chỉ tiêu:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Nhóm chỉ tiêu:</span>
-                                <span class="text-gray-900 w-2/3">
-
-                                    @foreach ($groupTarget as $item)
-                                        @if ($taskTarget->type_id == $item->id)
-                                            {{ $item->name }}
-                                        @endif
-                                    @endforeach
-                                </span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Chu kỳ báo cáo:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Loại chỉ tiêu:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTarget() }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Chỉ tiêu:</span>
-                                <span class="text-gray-900 w-2/3">
-                                    {{ $taskTarget->target }}
-                                </span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Đơn vị tính:</span>
-                                <span class="text-gray-900 w-2/3">
-                                    @foreach ($units as $item)
-                                        @if ($taskTarget->unit == $item->id)
-                                            {{ $item->name }}
-                                        @endif
-                                    @endforeach
-                                </span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
-                            </div>
+                        <h5 class="text-xl font-semibold mb-4">Thông tin văn bản</h5>
 
                         
-                        </div>
-
-                       
                     </div>
-            
-                    <hr class="mb-6">
+                    <hr class="mb-6"> -->
                     <div class="bg-white p-6 ">
                         
                         <h5 class="text-xl font-semibold mb-4">Danh sách cơ quan thực hiện</h5>
@@ -396,6 +391,9 @@
                                 Từ chối
                             </button>
                         @endif
+                    </div>
+                    <div class="mt-4 flex" style="justify-content: space-between">
+                        <a href="{{ route('tasks.byType.approved', $type) }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
                     </div>
                 </form>
             </div>

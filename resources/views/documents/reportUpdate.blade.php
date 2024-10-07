@@ -157,12 +157,12 @@
                     enctype="multipart/form-data">
                     @csrf
                     @method('POST')
-                    <div class="bg-white p-6 ">
+                    <!-- <div class="bg-white p-6 ">
                         <h5 class="text-xl font-semibold mb-4">Thông tin văn bản</h5>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white "> -->
                             <!-- Cột trái -->
-                            <div class="flex items-center mb-4">
+                            <!-- <div class="flex items-center mb-4">
                                 <label for="document_code" class="text-gray-700 font-medium w-1/3">Mã văn
                                     bản:</label>
                                 <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
@@ -184,10 +184,10 @@
                                     hành:</label>
                                 <span class="text-gray-900 w-2/3">{{ $document->getReleaseDateFormattedAttribute() }}</span>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Hàng upload file -->
-                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0">
+                        <!-- <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0">
                             <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Danh sách
                                 tệp tin:</label>
                             <div id="file-list-data-document" class="mt-2 file-list-data-document">
@@ -215,21 +215,21 @@
                             </div>
                             {{-- <div id="file-list" class="mt-2 file-list"></div> --}}
                         </div>
-                    </div>
+                    </div> -->
                     <hr class="mb-6">
                     <div class="bg-white p-6 ">
                         <h5 class="text-xl font-semibold mb-4">Nhiệm vụ</h5>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
                             <!-- Cột trái -->
-                            <div class="flex items-center mb-4">
+                            <!-- <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Mã nhiệm vụ:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->code }}</span>
-                            </div>
+                            </div> -->
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Tên nhiệm vụ:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
                             </div>
-                            <div class="flex items-center mb-4">
+                            <!-- <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Nhóm nhiệm vụ:</span>
                                 <span class="text-gray-900 w-2/3">
                                     @foreach ($groupTask as $item)
@@ -238,43 +238,47 @@
                                         @endif
                                     @endforeach
                                 </span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Chu kỳ báo cáo:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
+                            </div> -->
+                            <!-- <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Loại nhiệm vụ:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTime() }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Kết quả:</span>
-                                <span class="text-gray-900 w-2/3">
-                                    @foreach ($workResultTypes as $idx => $item)
-                                        @continue($type != 'task' && $idx == 4)
-                                        @if ($taskTarget->result_type == $item->key)
-                                            {{ $item->value }}
-                                        @endif
-                                    @endforeach
-                                </span>
-                            </div>
+                            </div> -->
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Kết quả yêu cầu:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->request_results_task }}</span>
                             </div>
                             <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Kiểu dữ liệu báo cáo:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    @foreach ($workResultTypes as $idx => $item)
+                                    @continue($type != 'task' && $idx == 4)
+                                    @if ($taskTarget->result_type == $item->key)
+                                    {{ $item->value }}
+                                    @endif
+                                    @endforeach
+                                </span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Chu kỳ báo cáo:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
+                            </div>
+                            <!-- <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
-                            </div>
+                            </div> -->
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Thời gian hoàn thành:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
                             </div>
-
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Trạng thái:</span>
+                                <label for="document_code" class="text-gray-700 font-medium w-1/3">Số hiệu văn
+                                    bản:</label>
+                                <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Trạng thái báo cáo:</span>
                                 <span
-                                    class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabelAttributeTaskTarget() }}</span>
+                                    class="text-gray-900 w-2/3"></span>
 
                             </div>
 
@@ -457,6 +461,9 @@
                                 Từ chối
                             </button>
                         @endif
+                    </div>
+                    <div class="mt-4 flex" style="justify-content: space-between">
+                        <a href="{{ route('documents.report') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
                     </div>
                 </form>
             </div>

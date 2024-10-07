@@ -107,7 +107,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chi tiết</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Cập nhật</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Báo cáo</th>
                         @if(Auth::user()->role !== 'staff')
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Xóa</th>
                         @endif

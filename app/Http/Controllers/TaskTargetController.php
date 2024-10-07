@@ -348,11 +348,13 @@ class TaskTargetController extends Controller
                 'end_date',
                 'type',
                 'isDelete',
+                'issuing_organization_id',
+                'status_code',
                 \DB::raw('COUNT(organization_id) as organization_count')
             )
 
                 ->distinct('code')
-                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'task_type', 'request_results_task', 'result_type', 'isDelete')
+                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'task_type', 'request_results_task', 'result_type', 'isDelete', 'issuing_organization_id', 'status_code')
                 ->orderBy('id', 'desc');
         } else {
             $taskTargets = TaskTarget::where('type', 'target')->where('isDelete', 0)->select(
@@ -370,11 +372,13 @@ class TaskTargetController extends Controller
                 'end_date',
                 'type',
                 'isDelete',
+                'issuing_organization_id',
+                'status_code',
                 \DB::raw('COUNT(organization_id) as organization_count')
             )
 
                 ->distinct('code')
-                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'unit', 'target_type', 'target', 'isDelete')
+                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'unit', 'target_type', 'target', 'isDelete', 'issuing_organization_id', 'status_code')
                 ->orderBy('id', 'desc');
         }
         if ($text) {

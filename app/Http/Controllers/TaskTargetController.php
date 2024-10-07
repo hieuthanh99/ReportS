@@ -109,9 +109,10 @@ class TaskTargetController extends Controller
         }
     }
 
-    public function getOrganizationsByTaskTargetId($taskTargetCode)
-    {
-        $organizationIds = TaskTarget::where('code', $taskTargetCode)->select('organization_id')->where('isDelete', 0)->get();
+    public function getOrganizationsByTaskTargetId($idTaskTarget)
+    {   
+        // dd( $idTaskTarget);
+        $organizationIds = TaskResult::where('id_task_criteria', $idTaskTarget)->select('organization_id')->where('isDelete', 0)->get();
 
         $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->get();
         if ($organizations->isEmpty()) {
@@ -130,54 +131,35 @@ class TaskTargetController extends Controller
 
    
 
-    public function editTaskTarget($code, $type)
+    public function editTaskTarget($id, $type)
     {
-        $taskTarget = TaskTarget::where('code', $code)->firstOrFail();
-        $tasksWithSameCode = TaskTarget::where('code', $code)->where('isDelete', 0)->get();
-        $organizationIds = $tasksWithSameCode->pluck('organization_id')->unique();
-        $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->paginate(10);;
+        $taskTarget = TaskTarget::where('id', $id)->firstOrFail();
+        $taskResult = TaskResult::where('id_task_criteria', $id)->where('isDelete', 0)->paginate(10);
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();;
         $documents = Document::where('isDelete', 0)->get();;
         $categories = Category::where('isDelete', 0)->get();;
         $typeTask = IndicatorGroup::where('isDelete', 0)->get();;
-
         $workResultTypes = MasterWorkResultTypeService::index();
         $keyConstants = MasterWorkResultTypeService::keyConstants();
         $units = Unit::all();
         if ($type == 'task') {
             $typeTask =  TaskGroup::where('isDelete', 0)->get();;
         }
-        return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories', 'typeTask', 'workResultTypes', 'keyConstants', 'units'));
+        return view('tasks.edit', compact('taskTarget', 'type', 'taskResult', 'documents', 'categories', 'typeTask', 'workResultTypes', 'keyConstants', 'units'));
     }
 
-    public function deleteOrganization($code, $type, $id)
+    public function deleteOrganization($idTaskCriteria, $type, $id)
     {
-        $check  = true;
-
-        $taskTarget = TaskTarget::where('code', $code)->firstOrFail();
-        $tasksWithSameCode = TaskTarget::where('code', $code)->get();
-        $organizationIds = $tasksWithSameCode->pluck('organization_id')->unique();
-        $organizations = Organization::whereIn('id', $organizationIds)->orderBy('name', 'asc')->paginate(10);;
-        $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();;
-        $documents = Document::where('isDelete', 0)->get();;
-        $categories = Category::where('isDelete', 0)->get();;
-
-        $taskTargetDelete = TaskTarget::where('code', $code)->where('type', $type)->where('organization_id', $id)->first();
-
         try {
-            if ($taskTargetDelete) {
-                $taskTargetDelete->delete();
+            $taskResult = TaskResult::where('id', $id)->first();
+            if ($taskResult) {
+                $taskResult->delete();
+                session()->flash('success', 'Xóa cơ quan, tổ chức thành công!');
             }
         } catch (\Exception $e) {
-            $check = false;
-        }
-        if ($check) {
-            session()->flash('success', 'Xóa cơ quan, tổ chức thành công!');
-        } else {
             session()->flash('error', 'Đã xảy ra lỗi!');
         }
-        return $this->editTaskTarget($code, $type);
-        // return view('tasks.edit', compact('taskTarget', 'type', 'organizations', 'documents', 'categories'));
+        return $this->editTaskTarget($idTaskCriteria, $type);
     }
 
     public function updateTaskTarget(Request $request, $code, $type)
@@ -311,59 +293,34 @@ class TaskTargetController extends Controller
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
         }
     }
-    public function showDetails($code, $type)
+
+
+    public function showDetails($id, $type)
     {
-        $taskTarget = TaskTarget::where('code', $code)->firstOrFail();
-        $tasksWithSameCode = TaskTarget::where('code', $code)->where('isDelete', 0)->get();
-        $organizationIds = $tasksWithSameCode->pluck('organization_id')->unique();
-        $documents = Document::where('isDelete', 0)->get();
-        $document = Document::where('isDelete', 0)->where('id', $taskTarget->document_id)->first();
+        try{
+            $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->firstOrFail();
+            $documents = Document::where('isDelete', 0)->get();
+            $taskResult = TaskResult::where('id_task_criteria', $id)->where('isDelete', 0)->paginate(10);
+            $typeTask = IndicatorGroup::where('isDelete', 0)->get();
+            $workResultTypes = MasterWorkResultTypeService::index();
+            $keyConstants= MasterWorkResultTypeService::keyConstants();
+            $units = Unit::all();
 
-        $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->get();
-        $taskTargetIds = $tasksWithSameCode->pluck('id');
-        $latestTaskResults = TaskResult::whereIn('id_task_criteria', $taskTargetIds)
-            ->select('id_task_criteria', 'created_at', 'result', 'number_type', 'type') // Chọn trường cần thiết
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->groupBy('id_task_criteria')
-            ->map(function ($results) {
-                return $results->first();
-            });
-        $taskDocuments = $document->taskTarget->where('type', $type)->where('isDelete', 0);
+            if ($type == 'task') {
+                $typeTask =  TaskGroup::where('isDelete', 0)->get();;
+            }
+            $organizationTypes = OrganizationType::withCount(['organizations' => function ($query) use ($taskTarget) {
+                $query->whereHas('taskResults', function ($q) use ($taskTarget) {
+                    $q->where('id_task_criteria', $taskTarget->id); 
+                });
+            }])->having('organizations_count', '>', 0) ->get();
 
-        $mappedResults = $tasksWithSameCode->map(function ($task) use ($latestTaskResults, $organizations) {
-            return [
-                'task' => $task,
-                'latest_result' => $latestTaskResults->get($task->id),
-                'organization' => $organizations->firstWhere('id', $task->organization_id) // Sử dụng Collection
-            ];
-        });
-        // Chuyển đổi $mappedResults thành Collection
-        // $mappedResultsCollection = collect($taskDocuments);
-
-        // // Phân trang kết quả
-        // $currentPage = Paginator::resolveCurrentPage();
-        // $perPage = 10; // Số kết quả mỗi trang
-        // $currentPageResults = $mappedResultsCollection->slice(($currentPage - 1) * $perPage, $perPage)->all();
-        // $paginatedResults = new LengthAwarePaginator(
-        //     $currentPageResults,
-        //     $mappedResultsCollection->count(),
-        //     $perPage,
-        //     $currentPage,
-        //     ['path' => Paginator::resolveCurrentPath()]
-        // );
-        // dd($mappedResults);
-        $typeTask = IndicatorGroup::where('isDelete', 0)->get();;
-
-        $workResultTypes = MasterWorkResultTypeService::index();
-        $keyConstants = MasterWorkResultTypeService::keyConstants();
-        $units = Unit::all();
-        if ($type == 'task') {
-            $typeTask =  TaskGroup::where('isDelete', 0)->get();;
+            return view('tasks.show', compact('taskTarget', 'taskResult', 'typeTask', 'workResultTypes', 'keyConstants', 'type', 'documents', 'organizationTypes'));    
+        }catch (\Exception $e) {
+            \Log::error('Error creating task/target: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
         }
-        return view('tasks.show', compact('taskDocuments','typeTask', 'workResultTypes', 'units',  'keyConstants', 'taskTarget', 'type', 'organizations', 'mappedResults', 'documents'));
     }
-
 
     public function indexViewApproved(Request $request, $type, $text = null)
     {
@@ -478,49 +435,9 @@ class TaskTargetController extends Controller
         $categories = Category::where('isDelete', 0)->get();
 
         if ($type == 'task') {
-            $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->select(
-                'name',
-                'code',
-                'document_id',
-                'cycle_type',
-                'type_id',
-                'task_type',
-                'request_results_task',
-                'result_type',
-                'category_id',
-                'request_results',
-                'start_date',
-                'end_date',
-                'type',
-                'isDelete',
-                \DB::raw('COUNT(organization_id) as organization_count')
-            )
-
-                ->distinct('code')
-                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'task_type', 'request_results_task', 'result_type', 'isDelete')
-                ->orderBy('id', 'desc');
+            $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->orderBy('id', 'desc');
         } else {
-            $taskTargets = TaskTarget::where('type', 'target')->where('isDelete', 0)->select(
-                'name',
-                'code',
-                'document_id',
-                'cycle_type',
-                'type_id',
-                'unit',      // Đơn vị
-                'target_type', // Loại chỉ tiêu
-                'target',      // Chỉ tiêu
-                'category_id',
-                'request_results',
-                'start_date',
-                'end_date',
-                'type',
-                'isDelete',
-                \DB::raw('COUNT(organization_id) as organization_count')
-            )
-
-                ->distinct('code')
-                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'unit', 'target_type', 'target', 'isDelete')
-                ->orderBy('id', 'desc');
+            $taskTargets = TaskTarget::where('type', 'target')->where('isDelete', 0)->orderBy('id', 'desc');
         }
         if ($text) {
             $taskTargets->where('name', 'like', '%' . $text . '%');
@@ -566,9 +483,6 @@ class TaskTargetController extends Controller
         $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes'));
     }
-
-
-
 
     public function index($type)
     {
@@ -616,8 +530,6 @@ class TaskTargetController extends Controller
 
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'type'));
     }
-
-
 
     public function createView($type)
     {
@@ -797,7 +709,6 @@ class TaskTargetController extends Controller
         $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->get();
         return view('tasks.show', compact('taskTarget', 'organizations', 'documents'));
     }
-
 
     public function edit($code)
     {

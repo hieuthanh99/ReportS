@@ -215,20 +215,20 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($organizations as $index => $item)
+                @foreach ($taskResult as $index => $item)
                     <tr class="border-b border-gray-200">
                    
-                        <td class="py-3 border border-gray-300 px-6">{{ $item->code }}</td>
-                        <td class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ $item->organization->code }}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ $item->organization->name }}</td>
                         <td class="py-3 border border-gray-300 px-6">
-                            {{ $item->organizationType->type_name ?? "N/A" }}
+                            {{ $item->organization->organizationType->type_name ?? '' }}
                         </td>
-                        <td class="py-3 border border-gray-300 px-6"> {{ $item->phone }}</td>
-                        <td class="py-3 border border-gray-300 px-6"> {{ $item->email }}</td>
-                        <td class="py-3 border border-gray-300 px-6"> {{ $item->website }}</td>
-                        <td class="py-3 border border-gray-300 px-6"> {{ $item->address }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $item->organization->phone }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $item->organization->email }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $item->organization->website }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $item->organization->address }}</td>
                         <td class="py-3 border border-gray-300 px-6 text-center">
-                            <form id="delete-form-{{ $item->id }}" action="{{ route('tasks.delete.organization', ['code' => $taskTarget->code, 'type' => $taskTarget->type, 'id' => $item->id ]) }}" method="POST">
+                            <form id="delete-form-{{ $item->id }}" action="{{ route('tasks.delete.organization', ['id_task_criteria' => $item->id_task_criteria, 'type' => $taskTarget->type, 'id' => $item->id ]) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button"
@@ -243,7 +243,7 @@
             </tbody>
         </table>
         <div class="mt-4">
-            {{ $organizations->links() }}
+            {{ $taskResult->links() }}
         </div>
         </div>
      </div>

@@ -102,11 +102,11 @@
                 </table>
             </div>
 
-            <div class="flex space-x-4">
+            {{-- <div class="flex space-x-4">
                 <p class="text-sm font-medium">
                     <span class="text-red-500">*</span> Nếu không chọn tổ chức nào, nhiệm vụ/chỉ tiêu sẽ giao cho người tạo.
                 </p>
-            </div>
+            </div> --}}
             <div class="flex space-x-4 text-right">
                 <button type="button" onclick="window.history.back();"
                     class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Quay
@@ -144,14 +144,14 @@
         </div>
     </div>
     <script>
-         function goBackWithRefresh() {
-        var previousUrl = document.referrer; // Lấy URL của trang trước
-        if (previousUrl) {
-            window.location.href = previousUrl; // Điều hướng đến trang trước và load lại
-        } else {
-            window.history.back(); // Nếu không lấy được URL, fallback về phương thức back
+        function goBackWithRefresh() {
+            var previousUrl = document.referrer;
+            if (previousUrl) {
+                window.location.href = previousUrl;
+            } else {
+                window.history.back();
+            }
         }
-    }
         var assignedOrgLst = [];
         document.getElementById('organization_type_id').addEventListener('change', function() {
             var organizationTypeId = this.value;
@@ -230,6 +230,12 @@
                 taskIdAssignCell.classList.add('task-id');
                 taskIdAssignCell.style.display = 'none';
 
+
+                const idAssignCell = document.createElement('td');
+                idAssignCell.textContent = task.id;
+                idAssignCell.classList.add('id');
+                idAssignCell.style.display = 'none';
+
                 // Mã công việc
                 const codeCell = document.createElement('td');
                 codeCell.textContent = task.code;
@@ -250,6 +256,7 @@
                 phoneCell.classList.add('organization-phone');
 
                 row.appendChild(checkboxCell);
+                row.appendChild(idAssignCell);
                 row.appendChild(taskCodeAssignCell);
                 row.appendChild(taskIdAssignCell);
                 row.appendChild(codeCell);
@@ -262,17 +269,14 @@
             });
         }
         document.addEventListener('DOMContentLoaded', function() {
-
-
-
             const taskTargetId = document.getElementById('task-target-id').value;
             const taskTargetCode = document.getElementById('task-target-code').value;
-            fetchOrganizations(taskTargetCode);
+            fetchOrganizations(taskTargetId);
 
-            function fetchOrganizations(taskTargetCode) {
+            function fetchOrganizations(id) {
                 try {
                     const organizationsTotal = [];
-                    fetch('/task-target/' + taskTargetCode + '/organizations', {
+                    fetch('/task-target/' + id + '/organizations', {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -284,18 +288,18 @@
                         .then(data => {
                             if (data.success) {
                                 data.data.forEach(org => {
-                                  
+
                                     organizationsTotal.push({
                                         code: org.code,
                                         name: org.name,
                                         email: org.email,
                                         phone: org.phone,
                                         task_code: taskTargetCode,
-                                        task_id: taskTargetId
+                                        task_id: id
                                     });
                                 });
                                 console.log("org");
-                                    console.log(organizationsTotal);
+                                console.log(organizationsTotal);
                                 renderAssignTable(organizationsTotal);
                                 document.getElementById('assigned-area').style.display = 'block';
                             } else {
@@ -306,11 +310,6 @@
                         .catch(error => {
                             console.error('Lỗi:', error);
                         });
-
-
-
-                    // Debug xem mảng organizations đã được đẩy dữ liệu hay chưa
-                    //console.log(organizationsTotal);
 
                 } catch (error) {
                     console.error('Có lỗi xảy ra khi gọi API:', error);
@@ -327,6 +326,7 @@
                     const organizationCode = row.querySelector('.organization-code').textContent;
                     const organizationName = row.querySelector('.organization-name').textContent;
                     const taskId = row.querySelector('.task-id').textContent;
+                    const id = row.querySelector('.id').textContent;
                     const organizationEmail = row.querySelector('.organization-email').textContent;
                     const organizationPhone = row.querySelector('.organization-phone').textContent;
                     const taskCode = row.querySelector('.task-code').textContent;
@@ -337,6 +337,7 @@
                         email: organizationEmail,
                         phone: organizationPhone,
                         task_code: taskCode,
+                        id: id,
                         task_id: taskId
                     });
                 });
@@ -357,7 +358,7 @@
 
                         if (data.success) {
 
-                            fetchOrganizations(taskTargetCode);
+                            fetchOrganizations(taskTargetId);
                             document.getElementById('assigned-area').style.display = 'block'
                         } else {
                             console.log('Đã xảy ra lỗi!');
@@ -367,14 +368,6 @@
                         console.error('Lỗi:', error);
                     });
             });
-            // document.getElementById('btn-complete').addEventListener('click', function() {
-            //     var type = document.getElementById('type');
-            //     var selectedValue = type.value;
-            //     // Chuyển hướng đến URL tương ứng với giá trị được chọn
-            //     if (selectedValue) {
-            //         window.location.href = `/tasks/type/${selectedValue}`;
-            //     }
-            // });
         });
 
         function renderAssignTable(data) {
@@ -428,48 +421,6 @@
                 tasksTableBody.appendChild(row);
             });
         }
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const organizationsMap = new Map();
-        //     let taskCodeRow;
-        //     let taskIdRow;
-        //     // Hàm để thêm hoặc cập nhật tiêu chí cho một mã công việc
-        //     function addOrganizations(taskCode, criteriaCode) {
-        //         if (!organizationsMap.has(taskCode)) {
-        //             organizationsMap.set(taskCode, new Set());
-        //         }
-        //         organizationsMap.get(taskCode).add(criteriaCode);
-        //     }
-
-        //     // Hàm để xóa tiêu chí cho một mã công việc
-        //     function removeOrganizations(taskCode, criteriaCode) {
-        //         if (organizationsMap.has(taskCode)) {
-        //             organizationsMap.get(taskCode).delete(criteriaCode);
-        //             if (organizationsMap.get(taskCode).size === 0) {
-        //                 organizationsMap.delete(taskCode);
-        //             }
-        //         }
-        //     }
-
-        //     // Hàm để lấy danh sách tiêu chí cho một mã công việc
-        //     function getOrganizationsForTask(taskCode) {
-        //         return organizationsMap.has(taskCode) ? Array.from(organizationsMap.get(taskCode)) : [];
-        //     }
-
-        //     function hasOrganizations(taskCode, criteriaCode) {
-        //         console.log("organizationsMap");
-        //         console.log(organizationsMap);
-        //         if (!organizationsMap.has(taskCode)) {
-        //             return false; // Mã công việc không tồn tại trong criteriaMap
-        //         }
-
-        //         const criteriaSet = organizationsMap.get(taskCode);
-        //         return organizationsMap.has(criteriaCode); // Kiểm tra xem tiêu chí có trong Set không
-        //     }
-        //     const otherFilterCheckbox = document.getElementById('other-filter');
-        //     const searchOtherSection = document.getElementById('search-organizations');
-        //     searchOtherSection.classList.add('hidden');
-        //     // Hiển thị popup chọn đầu việc có sẵn
-        //     // Khi checkbox "Chọn tất cả" thay đổi trạng thái
         document.getElementById('check-all-organizations').addEventListener('change', function(event) {
             const checked = event.target.checked;
             document.querySelectorAll('#existing-organizations input.organization-checkbox').forEach(
@@ -477,288 +428,5 @@
                     checkbox.checked = checked;
                 });
         });
-
-
-        //     const filterRadios = document.querySelectorAll('.filter-radio');
-
-        //     // Thêm sự kiện change cho tất cả các radio button
-        //     filterRadios.forEach(radio => {
-        //         console.log("check");
-
-        //         radio.addEventListener('change', function () {
-        //             document.getElementById('check-all-organizations').checked = false;
-        //             document.querySelectorAll('#existing-organizations input.organization-checkbox').forEach(
-        //             checkbox => {
-        //                 checkbox.checked = false;
-        //             });
-        //             console.log(this.value);
-        //             handleFilterChange(this.value);
-
-        //         });
-        //     });
-
-        //     // Hàm xử lý sự kiện thay đổi radio button
-        //     function handleFilterChange(selectedFilter) {
-
-        //         switch (selectedFilter) {
-        //             case 'unit-filter':
-        //                 searchOtherSection.classList.add('hidden');
-        //                 fetchOrganizationsByParentId();
-        //                 console.log('Chọn: Các đơn vị trực thuộc');
-        //                 // Thực hiện các hành động liên quan
-        //                 break;
-        //             case 'all-provinces-filter':
-        //                 searchOtherSection.classList.add('hidden');
-        //                 fetchOrganizationsByType('tỉnh');
-        //                 console.log('Chọn: Tất cả các tỉnh');
-        //                 break;
-        //             case 'all-units-filter':
-        //                 searchOtherSection.classList.add('hidden');
-        //                 fetchOrganizationsByType('bộ');
-        //                 console.log('Chọn: Tất cả các bộ');
-        //                 // Thực hiện các hành động liên quan
-        //                 break;
-        //             case 'other-filter':
-        //                 // Xử lý khi chọn "Khác"
-        //                 console.log('Chọn: Khác');
-        //                 // Thực hiện các hành động liên quan
-        //                 // Hiển thị ô tìm kiếm
-        //                 searchOtherSection.classList.remove('hidden');
-        //                 document.getElementById('existing-organizations').innerHTML = '';
-        //                 break;
-        //             default:
-        //                 break;
-        //         }
-        //     }
-        //     searchOtherSection.addEventListener('input', function(event) {
-        //         const query = event.target.value;
-        //         fetchOrSearchName(query);
-        //         // fetchOrganizationsByParentId(query);
-        //     });
-        //     function fetchOrganizationsByType(query = '') {
-        //         fetch(`{{ route('organization.search.type') }}?query=${encodeURIComponent(query)}`)
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 fillData(data);
-        //             })
-        //             .catch(error => console.error('Error fetching tasks:', error));
-        //     }
-        //     function fetchOrganizationsByNameOrCode(query = '') {
-        //         fetch(`{{ route('organization.search.name') }}?query=${encodeURIComponent(query)}`)
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 fillData(data);
-        //             })
-        //             .catch(error => console.error('Error fetching tasks:', error));
-        //     }
-        //     function fetchOrganizationsByParentId(query = '') {
-        //         fetch(`{{ route('organization.search.parent') }}?query=${encodeURIComponent(query)}`)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             fillData(data);
-        //         })
-        //         .catch(error => console.error('Error fetching tasks:', error));
-        //     }
-
-        //     function fillData(data) {
-        //         console.log(data);
-        //         const taskTargetId = document.getElementById('task-target-id').value;
-        //         const taskTargetCode = document.getElementById('task-target-code').value;
-        //         console.log(taskTargetId);
-        //         const tasksTableBody = document.getElementById('existing-organizations');
-        //                 tasksTableBody.innerHTML = ''; // Xóa nội dung hiện tại
-
-        //                 // Kiểm tra xem có dữ liệu không
-        //                 if (!data.organizations || data.organizations.length === 0) {
-        //                     const row = document.createElement('tr');
-        //                     const cell = document.createElement('td');
-        //                     cell.colSpan = 4; // Chiếm toàn bộ số cột
-        //                     cell.textContent = 'Không có đầu việc nào';
-        //                     row.appendChild(cell);
-        //                     tasksTableBody.appendChild(row);
-        //                     return;
-        //                 }
-
-        //                 data.organizations.forEach(task => {
-        //                     const row = document.createElement('tr');
-
-        //                     // Checkbox
-        //                     const checkboxCell = document.createElement('td');
-        //                     const checkbox = document.createElement('input');
-        //                     checkbox.type = 'checkbox';
-        //                     checkbox.id = `organization-${taskTargetId}`;
-        //                     checkbox.value = taskTargetId;
-        //                     checkbox.classList.add('organization-checkbox');
-        //                     checkboxCell.appendChild(checkbox);
-
-        //                     // Tên công việc
-        //                     const taskCodeAssignCell = document.createElement('td');
-        //                     taskCodeAssignCell.textContent = taskTargetCode;
-        //                     taskCodeAssignCell.classList.add('task-code');
-
-
-        //                     const taskIdAssignCell = document.createElement('td');
-        //                     taskIdAssignCell.textContent = taskTargetId;
-        //                     taskIdAssignCell.classList.add('task-id');
-        //                     taskIdAssignCell.style.display = 'none';
-
-        //                     // Mã công việc
-        //                     const codeCell = document.createElement('td');
-        //                     codeCell.textContent = task.code;
-        //                     codeCell.classList.add('organization-code');
-
-        //                     // Tên công việc
-        //                     const nameCell = document.createElement('td');
-        //                     nameCell.textContent = task.name;
-        //                     nameCell.classList.add('organization-name');
-        //                     // Tên công việc
-        //                     const emailCell = document.createElement('td');
-        //                     emailCell.textContent = task.email;
-        //                     emailCell.classList.add('organization-email');
-
-        //                     // Tên công việc
-        //                     const phoneCell = document.createElement('td');
-        //                     phoneCell.textContent = task.phone;
-        //                     phoneCell.classList.add('organization-phone');
-
-        //                     row.appendChild(checkboxCell);
-        //                     row.appendChild(taskCodeAssignCell);
-        //                     row.appendChild(taskIdAssignCell);
-        //                     row.appendChild(codeCell);
-        //                     row.appendChild(nameCell);
-        //                     row.appendChild(emailCell);
-        //                     row.appendChild(phoneCell);
-
-
-        //                     tasksTableBody.appendChild(row);
-        //                 });
-        //     }
-
-        //     function fetchOrSearchName(query = '') {
-        //         fetch(`{{ route('organization.search.name') }}?query=${encodeURIComponent(query)}`)
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 const taskTargetId = document.getElementById('task-target-id').value;
-        //                 const taskTargetCode = document.getElementById('task-target-code').value;
-        //                 const tasksTableBody = document.getElementById('existing-organizations');
-        //                 tasksTableBody.innerHTML = ''; // Xóa nội dung hiện tại
-
-        //                 // Kiểm tra xem có dữ liệu không
-        //                 if (!data.organizations || data.organizations.length === 0) {
-        //                     const row = document.createElement('tr');
-        //                     const cell = document.createElement('td');
-        //                     cell.colSpan = 4; // Chiếm toàn bộ số cột
-        //                     cell.textContent = 'Không có đầu việc nào';
-        //                     row.appendChild(cell);
-        //                     tasksTableBody.appendChild(row);
-        //                     return;
-        //                 }
-
-        //                 data.organizations.forEach(task => {
-        //                     const row = document.createElement('tr');
-
-        //                     // Checkbox
-        //                     const checkboxCell = document.createElement('td');
-        //                     const checkbox = document.createElement('input');
-        //                     checkbox.type = 'checkbox';
-        //                     checkbox.id = `organization-${taskTargetId}`;
-        //                     checkbox.value = taskTargetId;
-        //                     checkbox.classList.add('organization-checkbox');
-        //                     checkboxCell.appendChild(checkbox);
-
-        //                     // Tên công việc
-        //                     const taskCodeAssignCell = document.createElement('td');
-        //                     taskCodeAssignCell.textContent = taskTargetCode;
-        //                     taskCodeAssignCell.classList.add('task-code');
-
-
-        //                     const taskIdAssignCell = document.createElement('td');
-        //                     taskIdAssignCell.textContent = taskTargetId;
-        //                     taskIdAssignCell.classList.add('task-id');
-        //                     taskIdAssignCell.style.display = 'none';
-
-        //                     // Mã công việc
-        //                     const codeCell = document.createElement('td');
-        //                     codeCell.textContent = task.code;
-        //                     codeCell.classList.add('organization-code');
-
-        //                     // Tên công việc
-        //                     const nameCell = document.createElement('td');
-        //                     nameCell.textContent = task.name;
-        //                     nameCell.classList.add('organization-name');
-
-        //                     // Tên công việc
-        //                     const emailCell = document.createElement('td');
-        //                     emailCell.textContent = task.email;
-        //                     emailCell.classList.add('organization-email');
-
-        //                     // Tên công việc
-        //                     const phoneCell = document.createElement('td');
-        //                     phoneCell.textContent = task.phone;
-        //                     phoneCell.classList.add('organization-phone');
-
-        //                     row.appendChild(checkboxCell);
-        //                     row.appendChild(taskCodeAssignCell);
-        //                     row.appendChild(taskIdAssignCell);
-        //                     row.appendChild(codeCell);
-        //                     row.appendChild(nameCell);
-        //                     row.appendChild(emailCell);
-        //                     row.appendChild(phoneCell);
-        //                     // row.appendChild(dataResultCell);
-
-
-        //                     tasksTableBody.appendChild(row);
-        //                 });
-        //             })
-        //             .catch(error => console.error('Error fetching tasks:', error));
-        //     }
-
-        //     document.getElementById('assign-organizations-save').addEventListener('click', function() {
-        //         const organizations = [];
-        //         const selectedCheckboxes = document.querySelectorAll('#existing-organizations input[type="checkbox"]:checked');
-
-        //         selectedCheckboxes.forEach(checkbox => {
-        //             const row = checkbox.closest('tr'); // Lấy hàng chứa checkbox
-        //             const organizationCode = row.querySelector('.organization-code').textContent;
-        //             const organizationName = row.querySelector('.organization-name').textContent;
-        //             const taskId = row.querySelector('.task-id').textContent;
-        //             const organizationEmail = row.querySelector('.organization-email').textContent;
-        //             const organizationPhone = row.querySelector('.organization-phone').textContent;
-        //             const taskCode = row.querySelector('.task-code').textContent;
-
-        //             organizations.push({
-        //                 code: organizationCode,
-        //                 name: organizationName,
-        //                 email: organizationEmail,
-        //                 phone: organizationPhone,
-        //                 task_code: taskCode,
-        //                 task_id: taskId
-        //             });
-        //         });
-
-        //         // Gọi API một lần sau khi thu thập tất cả dữ liệu
-        //         fetch('/save-assign-organizations', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        //             },
-        //             body: JSON.stringify({ organizations: organizations })
-        //         })
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             console.log(data);
-        //             if (data.success) {
-        //               window.location.href = "{{ route('tasks.index') }}?success=" + encodeURIComponent(data.message);
-        //             } else {
-        //                 alert('Đã xảy ra lỗi!');
-        //             }
-        //         })
-        //         .catch(error => {
-        //             console.error('Lỗi:', error);
-        //             alert('Đã xảy ra lỗi!');
-        //         });
-        //     });
-        // });
     </script>
 @endsection

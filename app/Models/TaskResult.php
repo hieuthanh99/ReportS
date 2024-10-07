@@ -17,16 +17,19 @@ class TaskResult extends Model
         'description',
         'number_type',
         'type',
-        'type_save', 'isDelete'
+        'type_save', 'isDelete', 'organization_id', 'status', 'process_code'
     ];
+
     public function taskTarget()
     {
         return $this->belongsTo(TaskTarget::class, 'id_task_criteria');
     }
+
     public function taskDocument()
     {
         return $this->belongsTo(TaskDocument::class, 'id_task_criteria')->where('type', 1);
     }
+
     public static function getCycleTypes()
     {
         return [
@@ -43,6 +46,7 @@ class TaskResult extends Model
         $cycleTypes = self::getCycleTypes();
         return $cycleTypes[$this->type] ?? 'Không xác định';
     }
+    
     /**
      * Get the criteria task that owns the task result.
      */
@@ -56,5 +60,9 @@ class TaskResult extends Model
         return $this->belongsTo(Document::class, 'document_id');
     }
 
-    
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
 }

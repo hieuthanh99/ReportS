@@ -50,46 +50,72 @@ class TaskTarget extends Model
     ];
 
 
-    public function getCurrentCycle(){
+    public function getCurrentCycle()
+    {
         return TimeHelper::getTimeParameters((int)$this->cycle_type);
     }
 
-    public function hasCompletedTask(){
+    public function hasCompletedTask()
+    {
         return $this->contains('status', 'staff_complete');
     }
 
     public function getUnitName()
     {
         $typeTask = Unit::where('id', $this->unit)->first();
-        return $typeTask->name??'';
+        return $typeTask->name ?? '';
     }
     public function getGroupName()
     {
-       
-    
+
+
         $typeTask = IndicatorGroup::where('isDelete', 0)->where('id', $this->type_id)->first();
-        if($this->type == 'task'){
-           $typeTask =  TaskGroup::where('isDelete', 0)->where('id', $this->type_id)->first();
+        if ($this->type == 'task') {
+            $typeTask =  TaskGroup::where('isDelete', 0)->where('id', $this->type_id)->first();
         }
-        return $typeTask->name??'';
-    }
-    
-    public function taskResults()
-    {
-        return $this->hasMany(TaskResult::class, 'id_task_criteria');
+        return $typeTask->name ?? '';
     }
 
+    public function taskResults()
+    {
+
+        if (isset($this->id)) {
+            return TaskResult::where('id_task_criteria', $this->id)->count();
+        }
+        return 0;
+    }
+
+    public function countOrganization()
+    {
+        return TaskResult::where('id_task_criteria', $this->id)->count();
+    }
     public function latestTaskResult()
     {
         $currentYear = now()->year;
         return TaskResult::where('id_task_criteria', $this->id)->where('type_save', self::getType())
-                    ->whereYear('created_at', $currentYear)
-                    ->orderBy('created_at', 'desc')->first();
-
+            ->whereYear('created_at', $currentYear)
+            ->orderBy('created_at', 'desc')->first();
+    }
+    public function getProcessCode()
+    {
+        $now = now();
+        if ($this->is_completed) {
+            if ($this->end_date >= $now) {
+                return TaskStatus::COMPLETED_IN_TIME->value;
+            } else {
+                return TaskStatus::COMPLETED_OVERDUE->value;
+            }
+        } else {
+            if ($this->end_date >= $now) {
+                return TaskStatus::IN_PROGRESS_IN_TIME->value;
+            } else {
+                return TaskStatus::IN_PROGRESS_OVERDUE->value;
+            }
+        }
     }
     public function getTaskStatusDescription()
     {
-   
+
         // Chuyển đổi giá trị status_code thành enum
         $status = TaskStatus::tryFrom($this->status_code);
 
@@ -105,19 +131,19 @@ class TaskTarget extends Model
     {
         if ($searchTerm) {
             $query
-                  ->select('task_target.*')
-                  ->where(function($q) use ($searchTerm) {
-                      $q->where('task_target.name', 'like', '%' . $searchTerm . '%')
+                ->select('task_target.*')
+                ->where(function ($q) use ($searchTerm) {
+                    $q->where('task_target.name', 'like', '%' . $searchTerm . '%')
                         ->where('isDelete', 0)
                         ->orWhere('task_target.code', 'like', '%' . $searchTerm . '%');
-                        // ->orWhere('documents.name', 'like', '%' . $searchTerm . '%')
-                        // ->orWhere('organizations.name', 'like', '%' . $searchTerm . '%');
-                  });
+                    // ->orWhere('documents.name', 'like', '%' . $searchTerm . '%')
+                    // ->orWhere('organizations.name', 'like', '%' . $searchTerm . '%');
+                });
         }
 
         return $query;
     }
-    
+
 
     public function getStatusLabelAttributeTaskTarget()
     {
@@ -152,9 +178,9 @@ class TaskTarget extends Model
     }
     public function getFilePath()
     {
-        if($this->type == 'target') $type = 2;
+        if ($this->type == 'target') $type = 2;
         else $type = 1;
-       return File::where('document_id', $this->id)->where('type', $type)->orderBy('created_at', 'desc')->first();
+        return File::where('document_id', $this->id)->where('type', $type)->orderBy('created_at', 'desc')->first();
     }
     public function taskResultsById($numberType)
     {
@@ -170,13 +196,13 @@ class TaskTarget extends Model
         return TaskResult::where('id_task_criteria', $this->id)->where('type_save', self::getType())->where('type', $this->cycle_type)->orderBy('created_at', 'desc')->first();
     }
 
-//TaskApprovalHistory
+    //TaskApprovalHistory
 
     public function getTaskApprovalHistory()
     {
         $timeParams = TimeHelper::getTimeParameters($this->cycle_type);
         $taskResult = TaskResult::where('id_task_criteria', $this->id)->where('type', $this->cycle_type)->where('number_type', (int)$timeParams)->first();
-        if($taskResult){
+        if ($taskResult) {
 
             $data = TaskApprovalHistory::where('task_target_id', $this->id)->where('task_result_id', $taskResult->id)->orderBy('created_at', 'desc')->first();
             // dd($data);
@@ -184,37 +210,18 @@ class TaskTarget extends Model
         return $data ?? null;
     }
 
-
-    public function getOrganization()
-    {
-     
-        $organization = Organization::where('id', $this->organization_id)->first();
-        return $organization;
-    }
     public function hasOrganizationAppro()
     {
         $user = Auth::user();
         $organizationId = $user->organization_id;
-        if($organizationId == null) return false;
+        if ($organizationId == null) return false;
 
         $organizationTaskId = $this->organization_id;
 
         if ($organizationTaskId === $organizationId) {
 
-            if($user->role == 'sub_admin') return true;
+            if ($user->role == 'sub_admin') return true;
         }
-        //$organizationChild = Organization::where('id', $organizationTaskId)->first();
-
-        // $organizationParent = Organization::where('id', $organizationId)->first();
-        // $currentOrganization = $organizationChild->parent;
-
-        // while ($currentOrganization) {
-        //     if ($currentOrganization->id === $organizationParent->id) {
-        //         return true;
-        //     }
-        //     $currentOrganization = $currentOrganization->parent;
-        // }
-
         return false;
     }
 
@@ -223,9 +230,9 @@ class TaskTarget extends Model
         // dd($id);
         $currentYear = Carbon::now()->year;
         $taskResult =  TaskResult::where('type_save', self::getType())->where('number_type', $numberType)->where('type', $this->cycle_type)->whereYear('created_at', $currentYear)->first();
-        if($taskResult){
-           return  File::where('document_id', $taskResult->id_task_criteria)->where('type', 1)->first();
-           // dd($file);
+        if ($taskResult) {
+            return  File::where('document_id', $taskResult->id_task_criteria)->where('type', 1)->first();
+            // dd($file);
         }
         return null;
     }
@@ -236,6 +243,11 @@ class TaskTarget extends Model
         // dd($id);
         return TaskResult::where('type_save', self::getType())->where('number_type', $numberType)->where('type', $this->cycle_type)->whereYear('created_at', $currentYear)->first();
     }
+    public function unit()
+    {
+        return Unit::where('id', $this->unit)->first();
+    }
+
 
     public function document()
     {
@@ -256,6 +268,14 @@ class TaskTarget extends Model
     public function issuingDepartment()
     {
         return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
+    public function getGroupTaskTarget()
+    {
+        if($this->type == 'task'){
+            return TaskGroup::where('id', $this->type_id)->where('isDelete', 0)->first();
+        } 
+        return IndicatorGroup::where('id', $this->type_id)->where('isDelete', 0)->first();
     }
 
     public static function getCycleTypes()
@@ -317,7 +337,7 @@ class TaskTarget extends Model
     // Phương thức để lấy giá trị type dưới dạng văn bản
     public function getTypeTextAttributeTime()
     {
-        
+
         $types = self::getTypesSomes();
         return $types[$this->task_type] ?? '';
     }
@@ -333,7 +353,7 @@ class TaskTarget extends Model
     // Phương thức để lấy giá trị type dưới dạng văn bản
     public function getTypeTextAttributeTarget()
     {
-        
+
         $types = self::getTypesTarget();
         return $types[$this->target_type] ?? '';
     }

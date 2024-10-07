@@ -36,37 +36,38 @@
         </button> --}}
 
         <!-- Search Form type-->
-        <form method="GET" action="{{ route('tasks.byType', $type) }}" id="filterForm">
+        <form method="GET" action="{{ route('tasks.byType.approved', $type) }}" id="filterForm">
 
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
-                    <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
+                    <label for="document_id" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản:</label>
                     <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="">Chọn văn bản thực hiện</option>
+                        <option value="">Chọn số hiệu văn bản</option>
 
                         @foreach($documents as $item)
                            
                             <option value="{{ $item->id }}" {{ request('document_id') == $item->id ? 'selected' : '' }}>
-                                {{ $item->document_name }}
+                                {{ $item->document_code }}
                             </option>
                         @endforeach
                     </select>
                 </div>
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Loại cơ quan:</label>
-                    <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="">Chọn loại cơ quan thực hiện</option>
-                        @foreach($organizationsType as $organization)
-                            <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->type_name }}
-                            </option>
-                        @endforeach
+                    <label for="status_code" class="block text-gray-700 font-medium mb-2">Trạng thái báo cáo:</label>
+                    <select id="status_code" name="status_code" class="border border-gray-300 rounded-lg p-2 w-full">
+                        <option value="">Chọn trạng thái báo cáo</option>
+                        
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px] hidden" id = "organization_id">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tên cơ quan:</label>
+                <div class="flex-1 min-w-[200px]" id = "organization_id">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
                     <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
+                        <option value="">Chọn cơ quan ban hành</option>
+                        @foreach($organizations as $organization)
+                            <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -85,13 +86,12 @@
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                     @if( $type == 'target')
                     <tr>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
-                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Đơn vị tính</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Chỉ tiêu</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Loại</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
+                    <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
+                        <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên chỉ tiêu</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan ban hành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày hoàn thành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Cập nhật phê duyệt
                          </th>
@@ -103,11 +103,10 @@
                     <tr>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
                         <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên nhiệm vụ</th>
-                        <th style="width: 100px" class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhóm nhiệm vụ</th>
-                        <th  style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium">Có thời hạn/thường xuyên</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày bắt đầu - kết thúc</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Giao việc</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan ban hành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày hoàn thành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Cập nhật phê duyệt
                          </th>
@@ -124,25 +123,21 @@
                         <tr class="border-b border-gray-200">
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
                             <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
-                            <td class="py-3 border border-gray-300 px-6">
-                                {{ $item->getUnitName() }}
-                            </td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->target }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTarget() }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item->issuing_organization_id }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item->getEndDate() }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getTaskStatusDescription() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                 onclick="window.location.href='{{ route('tasks.edit.approved',['code' => $item->code, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
                             </td>
-
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
                                     data-task-id="{{ $item->code }}"
                                     class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
-                                      <i class="fa fa-history"></i>
+                                    <i class="fa fa-history"></i>
                                 </button>
                             </td>
                             
@@ -151,39 +146,28 @@
                     @else
                     @foreach ($taskTargets as $index => $item)
                   
-                    <tr class="border-b border-gray-200">
-                        <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
-                        <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
-                        <td style="width: 100px;" class="py-3 border border-gray-300 px-6"> 
-                        @foreach ($workResultTypes as $idx => $result_type)
-                            @continue($type != 'task' && $idx == 4)
-                            @if($item->result_type == $result_type->key)
-                                {{ $result_type->value }}
-                            @endif
-                        @endforeach
-                        </td>
-                        <td class="py-3 border border-gray-300 px-6">
-                                 {{  $item->getGroupName() }}
-                       
-                        </td>
-                        <td style="width: 80px" class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTime() }}</td>
-                        <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
-                        <td class="py-3 border border-gray-300 px-6"> {{ $item->organization_count }}</td>
-                        <td class="py-3 border border-gray-300 px-6 text-center">
-                            <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                            onclick="window.location.href='{{ route('tasks.edit.approved',['code' => $item->code, 'type' => $item->type]) }}'">
-                            <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
-                        </button>
-                        </td>
-                        <td class="py-3 border border-gray-300 px-6 text-center">
-                            <button data-document-id="{{ $item->document_id }}"
-                                data-task-id="{{ $item->code }}"
-                                class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
-                                  <i class="fa fa-history"></i>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
+                            <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item->issuing_organization_id }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item->getEndDate() }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getTaskStatusDescription() }}</td>
+                            <td class="py-3 border border-gray-300 px-6 text-center">
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                                onclick="window.location.href='{{ route('tasks.edit.approved',['code' => $item->code, 'type' => $item->type]) }}'">
+                                <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
-                        </td>
-                        
-                    </tr>
+                            </td>
+                            <td class="py-3 border border-gray-300 px-6 text-center">
+                                <button data-document-id="{{ $item->document_id }}"
+                                    data-task-id="{{ $item->code }}"
+                                    class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                    <i class="fa fa-history"></i>
+                                </button>
+                            </td>
+                            
+                        </tr>
                 @endforeach
                     @endif
                 </tbody>
@@ -242,8 +226,8 @@
                 }
             });
         }
-         document.getElementById('organization_type_id').addEventListener('change', function () {
-            var organizationTypeId = this.value;
+        //  document.getElementById('organization_type_id').addEventListener('change', function () {
+        //     var organizationTypeId = this.value;
             
             // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
             fetch(`/get-organizations/${organizationTypeId}`)
@@ -251,20 +235,20 @@
                 .then(data => {
                     // Làm rỗng danh sách `parent_id`
                     var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
+                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
 
-                    // Thêm các tùy chọn mới
-                    data.forEach(function (organization) {
-                        var option = document.createElement('option');
-                        option.value = organization.id;
-                        option.text = organization.name;
-                        parentSelect.appendChild(option);
-                    });
-                    var customInput = document.getElementById('organization_id');
-                customInput.classList.remove('hidden');
-                })
-                .catch(error => console.error('Error:', error));
-        });
+        //             // Thêm các tùy chọn mới
+        //             data.forEach(function (organization) {
+        //                 var option = document.createElement('option');
+        //                 option.value = organization.id;
+        //                 option.text = organization.name;
+        //                 parentSelect.appendChild(option);
+        //             });
+        //             var customInput = document.getElementById('organization_id');
+        //         customInput.classList.remove('hidden');
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // });
         
           document.addEventListener('DOMContentLoaded', function() {
                 //============================== Lich su ==========================

@@ -116,8 +116,11 @@ class DocumentController extends Controller
                 $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
                 $taskDocuments = $taskDocuments->whereNotNull('organization_id');
 
+                $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
+                $hasComplete = TaskResult::where('id_task_criteria', $taskTarget->id)->where('status', '!=', 'complete')->count() === 0;
+                
                 $units = Unit::all();
-                return view('documents.viewApprovedReportTarget', compact('units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
+                return view('documents.viewApprovedReportTarget', compact('hasComplete','units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
             } else {
 
 
@@ -131,10 +134,11 @@ class DocumentController extends Controller
                 $groupTask =  TaskGroup::where('isDelete', 0)->get();
                 $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
                 $workResultTypes = MasterWorkResultTypeService::index();
+                $hasComplete = TaskResult::where('id_task_criteria', $taskTarget->id)->where('status', '!=', 'complete')->count() === 0;
                 $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
                 $taskDocuments = $taskDocuments->whereNotNull('organization_id');
-
-                return view('documents.viewApprovedReportTask', compact('document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
+                dd($hasComplete);
+                return view('documents.viewApprovedReportTask', compact('hasComplete','document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
             }
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());

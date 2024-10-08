@@ -368,9 +368,27 @@
                             </button>
                         @endif
                     </div>
-                    <div class="mt-4 flex" style="justify-content: space-between">
+                    {{-- <div class="mt-4 flex" style="justify-content: space-between">
                         <a href="{{ route('tasks.byType.approved', $type) }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
                     </div>
+                     --}}
+                     <div class="gap-6 p-6 bg-white flex justify-content: space-between">
+                        <div class="mb-4 ">
+                            {{-- <div class="mt-4 flex" style="justify-content: space-between"> --}}
+                            <button type="button" onclick="window.location.href='{{ route('tasks.byType.approved', $type) }}'"
+                                class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">
+                                Quay lại
+                            </button>
+                    </div>
+                    @if (!$hasComplete)
+                    <div class="mb-4 ">
+                        <button data-id="{{ $taskResult->id }}" id="button-apprrover-all-{{ $taskResult->id }}" style="margin-right: 20px"
+                        type="button" 
+                            class="button-approved bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 mt-4">
+                            Duyệt
+                        </button>
+                    </div>
+                    @endif
                 </form>
             </div>
 

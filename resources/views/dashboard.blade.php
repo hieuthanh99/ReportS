@@ -63,7 +63,7 @@
                                         <tr class="border-b border-gray-200">
                                             <td class="px-4 py-2">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2">{{ $task->name }}</td>
-                                            <td class="px-4 py-2">{{ $task->getStatusTaskTarget() }}</td>
+                                            <td class="px-4 py-2">{{ $task->getStatusLabel() }}</td>
                                             <td>
                                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                                 <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
@@ -123,7 +123,7 @@
                                         <tr class="border-b border-gray-200">
                                             <td class="px-4 py-2">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2">{{ $target->name }}</td>
-                                            <td class="px-4 py-2">{{ $target->getStatusTaskTarget() }}</td>
+                                            <td class="px-4 py-2">{{ $target->getStatusLabel() }}</td>
                                             <td>
                                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                                 <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
@@ -184,7 +184,7 @@
                     title: {
                         display: true,
                         text: 'Biểu đồ trạng thái nhiệm vụ'
-                    }
+                    },
                 }
             }
         });

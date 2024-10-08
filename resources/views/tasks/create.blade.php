@@ -169,7 +169,7 @@
                     <input type="text" id="custom_unit" name="custom_unit" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập đơn vị khác...">
                 </div>
                 <div class="mb-4">
-                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày hoàn thành <span class="text-red-500">*</span></label>
+                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Thời hạn hoàn thành <span class="text-red-500">*</span></label>
                     <input type="date"  placeholder="dd-mm-yyyy"
                     min="1997-01-01" max="2100-12-31" id="end_date" name="end_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('end_date') }}" required>
                 </div>

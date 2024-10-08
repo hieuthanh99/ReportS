@@ -19,7 +19,111 @@
                 <input type="hidden" name="type" id="type" value="{{ $type }}" />
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
                     <!-- Cột trái -->
-                    <div class="flex items-center mb-4">
+                    @if ($type == 'task')
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Tên {{ $text }}:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Nhóm {{ $text }}:</span>
+                            <span class="text-gray-900 w-2/3">
+                                @foreach ($typeTask as $item)
+                                    @if ($taskTarget->type_id == $item->id)
+                                        {{ $item->name }}
+                                    @endif
+                                @endforeach
+                            </span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Chu kỳ báo cáo:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Kết quả yêu cầu:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->request_results_task }}</span>
+                  
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Kiểu dữ kiệu báo cáo:</span>
+                            <span class="text-gray-900 w-2/3"></span>
+                  
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Loại nhiệm vụ:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->getTypeTextAttributeTime() }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Số hiệu văn bản:</label>
+                            <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Văn bản giao việc:</span>
+                            <span class="text-gray-900 w-2/3">
+                                @foreach ($documents as $item)
+                                    @if ($item->id == $taskTarget->document_id)
+                                        {{ $item->document_name }}
+                                    @endif
+                                @endforeach
+                            </span>
+                        </div>
+                    @else
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Tên {{ $text }}:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->name }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Đơn vị tính:</span>
+                            <span class="text-gray-900 w-2/3">
+
+                                @foreach ($units as $item)
+                                    @if ($taskTarget->unit == $item->id)
+                                        {{ $item->name }}
+                                    @endif
+                                @endforeach
+                            </span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Chỉ tiêu:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->target }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Nhóm {{ $text }}:</span>
+                            <span class="text-gray-900 w-2/3">
+                                @foreach ($typeTask as $item)
+                                    @if ($taskTarget->type_id == $item->id)
+                                        {{ $item->name }}
+                                    @endif
+                                @endforeach
+                            </span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Chu kỳ báo cáo:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Số hiệu văn bản:</label>
+                            <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Văn bản giao việc:</span>
+                            <span class="text-gray-900 w-2/3">
+                                @foreach ($documents as $item)
+                                    @if ($item->id == $taskTarget->document_id)
+                                        {{ $item->document_name }}
+                                    @endif
+                                @endforeach
+                            </span>
+                        </div>
+                    @endif
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
+                        </div>   
+                    <!-- <div class="flex items-center mb-4">
                         <span class="text-gray-700 font-medium w-1/3">Mã {{ $text }}:</span>
                         <span class="text-gray-900 w-2/3">{{ $taskTarget->code }}</span>
                     </div>
@@ -37,7 +141,7 @@
                         </span>
                     </div>
                     <div class="flex items-center mb-4">
-                        <span class="text-gray-700 font-medium w-1/3">Loại chu kì:</span>
+                        <span class="text-gray-700 font-medium w-1/3">Chu kỳ:</span>
                         <span class="text-gray-900 w-2/3">{{ $taskTarget->getCycleTypeTextAttribute() }}</span>
                     </div>
                     <div class="flex items-center mb-4">
@@ -88,20 +192,48 @@
 
                         </div>
                     @endif
-                    <div class="flex items-center mb-4">
-                        <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
-                        <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
-                        <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
-                    </div>
-                    @foreach ($organizationTypes as $organizationType)
-                    <div class="flex items-center mb-4">
-                        <span class="text-gray-700 font-medium w-1/3">{{ $organizationType->type_name }}:</span>
-                        <span class="text-gray-900 w-2/3">{{ $organizationType->organizations_count }}</span>
-                    </div>
-                    @endforeach
+
+                        {{-- <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Kết quả:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->request_results }}</span>
+                        </div> --}}
+
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <span class="text-gray-700 font-medium w-1/3">Ngày hoàn thành:</span>
+                            <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
+                        </div>
+                        @php
+                            // Khởi tạo mảng để lưu trữ số lượng của từng type_name
+                            $typeCounts = [];
+
+                            // Duyệt qua các kết quả và đếm số lượng mỗi loại type_name
+                            foreach ($mappedResults as $item) {
+                                if ($item['organization'] && $item['organization']->organizationType) {
+                                    // Chuyển đổi type_name thành chữ thường và chỉ viết hoa chữ cái đầu
+                                    $typeName = ucwords(strtolower($item['organization']->organizationType->type_name));
+
+                                    if ($typeName) {
+                                        // Tăng số lượng cho type_name
+                                        if (!isset($typeCounts[$typeName])) {
+                                            $typeCounts[$typeName] = 0;
+                                        }
+                                        $typeCounts[$typeName]++;
+                                    }
+                                }
+                            }
+                        @endphp
+
+                        <!-- Hiển thị kết quả -->
+                        @foreach ($typeCounts as $typeName => $count)
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">{{ $typeName }}:</span>
+                                <span class="text-gray-900 w-2/3">{{ $count }}</span>
+                            </div>
+                        @endforeach
                 </div>
                 <table class="min-w-full bg-white border border-gray-300">
                     <thead class="bg-gray-100 border-b border-gray-300">

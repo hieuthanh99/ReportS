@@ -312,9 +312,9 @@
                                 <span class="text-gray-700 font-medium w-1/3">Báo cáo kết quả:</span>
                                 @if ($isEditable && Auth::user()->role === 'staff')
                                         <textarea id="issuing_department" style="height: 62px" name="request_results"
-                                            class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" onclick="clearText(this)" rows="4">{{$result  }}</textarea>
+                                            class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" onclick="clearText(this)" rows="4">{{ $taskResult->result  }}</textarea>
                                 @else
-                                    <span>{{ $result }}</span>
+                                    <span>{{ $taskResult->result }}</span>
                                 @endif
                             </div>
                             <div class="flex items-center mb-4">

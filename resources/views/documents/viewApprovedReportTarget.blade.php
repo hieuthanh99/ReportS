@@ -510,6 +510,48 @@
             });
         });
     });
+    document.querySelectorAll('.button-approved-all').forEach(button => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-id'); 
+            const url = `/update-status-approved-all/${itemId}`; 
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    status: 'completed'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                                console.log(data.message)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Duyệt thành công!',
+                                    text: data.message,
+                                    confirmButtonText: 'OK'
+                                });
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Có lỗi xảy ra!',
+                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
+                                    confirmButtonText: 'Đóng'
+                                });
+                            }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert('Có lỗi xảy ra trong quá trình gửi yêu cầu.');
+            });
+        });
+    });
 });
                document.addEventListener('DOMContentLoaded', function() {
                 //============================== Lich su ==========================

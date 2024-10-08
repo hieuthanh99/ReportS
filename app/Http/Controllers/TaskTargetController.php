@@ -29,6 +29,7 @@ use App\Models\TaskGroup;
 use App\Models\IndicatorGroup;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use App\Enums\TaskTargetStatus;
 
 class TaskTargetController extends Controller
 {
@@ -190,7 +191,7 @@ class TaskTargetController extends Controller
                     'type_id.required' => 'Loại mục tiêu là bắt buộc.',
                     'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
                     'unit.required' => 'Đơn vị là bắt buộc',   // Đơn vị
-                    'target_type.required' => 'Loại chỉ tiêu là bắt buộc',
+                    // 'target_type.required' => 'Loại chỉ tiêu là bắt buộc',
                     'target.required' => 'Chỉ tiêu là bắt buộc',
                 ]);
             } else {
@@ -319,6 +320,7 @@ class TaskTargetController extends Controller
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
+        $statuses = TaskTargetStatus::cases();
 
         if ($type == 'task') {
             $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->orderBy('id', 'desc');
@@ -337,7 +339,10 @@ class TaskTargetController extends Controller
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
         }
         if ($request->filled('organization_id')) {
-            $taskTargets->where('organization_id', $request->organization_id);
+            $taskTargets->where('issuing_organization_id', $request->organization_id);
+        }
+        if ($request->filled('status_code')) {
+            $taskTargets = $taskTargets->where('status_code', $request->status_code);
         }
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');
@@ -367,9 +372,9 @@ class TaskTargetController extends Controller
         }
         $workResultTypes = MasterWorkResultTypeService::index();
         $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
+        
 
-
-        return view('documents.indexApprovedReport', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes'));
+        return view('documents.indexApprovedReport', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes', 'statuses'));
     }
 
     public function indexView(Request $request, $type, $text = null)
@@ -396,9 +401,18 @@ class TaskTargetController extends Controller
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
         }
         if ($request->filled('organization_id')) {
-            $taskTargets->where('organization_id', $request->organization_id);
+            $taskTargets->where('issuing_organization_id', $request->organization_id);
         }
-        $executionTimeFrom = $request->input('execution_time_from');
+        if ($request->filled('status')) {
+            $taskTargets =  $taskTargets->where('status', $request->status);
+        }
+        if ($request->filled('task_type')) {
+            $taskTargets =  $taskTargets->where('task_type', $request->task_type);
+        }
+        if ($request->filled('type_id')) {
+            $taskTargets =  $taskTargets->where('type_id', $request->type_id);
+        }
+        $executionTimeFrom = $request->input('completion_date');
         $executionTimeTo = $request->input('execution_time_to');
         if ($executionTimeFrom && $executionTimeTo) {
             try {
@@ -414,7 +428,15 @@ class TaskTargetController extends Controller
             }
         }
         if ($executionTimeFrom) {
-            $taskTargets->whereDate('end_date', '>=', $executionTimeFrom);
+            // Thêm ngày đầu tiên của tháng để tạo thành một chuỗi ngày đầy đủ
+            $startOfMonth = $executionTimeFrom . '-01';
+            
+            // Tính ngày cuối cùng của tháng
+            $endOfMonth = date("Y-m-t", strtotime($startOfMonth)); // 'Y-m-t' trả về ngày cuối cùng của tháng
+
+            // Sử dụng whereDate để lọc các bản ghi có end_date nằm trong tháng đó
+            $taskTargets->whereDate('end_date', '>=', $startOfMonth)
+                        ->whereDate('end_date', '<=', $endOfMonth);
         }
 
         if ($executionTimeTo) {
@@ -526,6 +548,7 @@ class TaskTargetController extends Controller
                     'type' => 'required|in:task,target',
                     'type_id' => 'required',
                     'unit' => 'required',   // Đơn vị
+                    // 'target_type' => 'required',
                     'target' => 'required',
                 ], [
                     'document_id.required' => 'Văn bản là bắt buộc.',
@@ -543,6 +566,7 @@ class TaskTargetController extends Controller
                     'type_id.required' => 'Loại mục tiêu là bắt buộc.',
                     'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
                     'unit.required' => 'Đơn vị là bắt buộc',   // Đơn vị
+                    // 'target_type.required' => 'Loại chỉ tiêu là bắt buộc',
                     'target.required' => 'Chỉ tiêu là bắt buộc',
                 ]);
             } else {

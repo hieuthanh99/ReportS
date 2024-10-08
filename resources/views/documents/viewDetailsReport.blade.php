@@ -341,12 +341,14 @@
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
                                 <div class="flex items-center mb-4"></div>
+                                @if(!empty($file->id))
                                 <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
                                     data-file-type="{{ $fileType }}">
                                     <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
                                     <a href="{{ route('file.view', ['id' => $file->id]) }}"
                                         class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
                                 </div>
+                                @endif
                             </div>
                         </div>
 

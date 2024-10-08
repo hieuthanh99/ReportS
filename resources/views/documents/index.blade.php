@@ -95,23 +95,23 @@
                     </div> -->
                     <!-- Các trường khác -->
                     <div class="flex-1 min-w-[200px]">
-                        <label for="organization_type_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
-                        <select id="organization_type_id" name="organization_type_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
+                        <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                             <option value="">Chọn cơ quan ban hành</option>
-                            @foreach($organizationsType as $organization)
-                                <option value="{{ $organization->id }}" {{ request('organization_type_id') == $organization->id ? 'selected' : '' }}>
-                                    {{ $organization->type_name }}
+                            @foreach($organizations as $organization)
+                                <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
+                                    {{ $organization->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="flex-1 min-w-[200px] hidden" id="organization_id">
+                    <!-- <div class="flex-1 min-w-[200px] hidden" id="organization_id">
                         <label for="organization_id" class="block text-gray-700 font-medium mb-2">&nbsp; </label>
                         <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
                             <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
                         </select>
-                    </div>
+                    </div> -->
             </div>
 
         <div class="flex justify-end gap-4">
@@ -299,31 +299,31 @@
                 customInput.value = document_name;
             }
 
-           document.getElementById('organization_type_id').addEventListener('change', function () {
-                var organizationTypeId = this.value;
-                fetch(`/get-organizations/${organizationTypeId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Làm rỗng danh sách `parent_id`
-                    var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
+        //    document.getElementById('organization_type_id').addEventListener('change', function () {
+        //         var organizationTypeId = this.value;
+        //         fetch(`/get-organizations/${organizationTypeId}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // Làm rỗng danh sách `parent_id`
+        //             var parentSelect = document.getElementById('parent_id');
+        //             parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
 
-                    // Thêm các tùy chọn mới
-                    data.forEach(function (organization) {
-                        var option = document.createElement('option');
-                        option.value = organization.id;
-                        option.text = organization.name;
-                        parentSelect.appendChild(option);
-                        var customInput = document.getElementById('organization_id');
-                        customInput.classList.remove('hidden');
+        //             // Thêm các tùy chọn mới
+        //             data.forEach(function (organization) {
+        //                 var option = document.createElement('option');
+        //                 option.value = organization.id;
+        //                 option.text = organization.name;
+        //                 parentSelect.appendChild(option);
+        //                 var customInput = document.getElementById('organization_id');
+        //                 customInput.classList.remove('hidden');
                 
-                    });
-                })
-                .catch(error => console.error('Error:', error));
+        //             });
+        //         })
+        //         .catch(error => console.error('Error:', error));
                 
-                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-                fetchOrganizations(organizationTypeId);
-            });
+        //         // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+        //         fetchOrganizations(organizationTypeId);
+        //     });
 
             function fetchOrganizations(organizationTypeId) {
                 // Gửi yêu cầu AJAX đến server để lấy danh sách organizations

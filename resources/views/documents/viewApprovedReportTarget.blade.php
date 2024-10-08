@@ -214,10 +214,6 @@
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Thời hạn hoàn thành:</span>
-                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
-                            </div>
-                            <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Tiến độ:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabel() }}</span>
                             </div>

@@ -39,29 +39,28 @@
         <form method="GET" action="{{ route('tasks.byType.approved', $type) }}" id="filterForm">
 
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
-                <div class="flex-1 min-w-[200px]">
-                    <label for="document_id" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản:</label>
-                    <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
-                        <option value="">Chọn số hiệu văn bản</option>
-
-                        @foreach($documents as $item)
-                           
-                            <option value="{{ $item->id }}" {{ request('document_id') == $item->id ? 'selected' : '' }}>
-                                {{ $item->document_code }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="flex-1 min-w-[200px] relative">
+                    <label for="document_code" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản</label>
+                    <input type="text" id="document_code" name="document_code" placeholder="Số hiệu văn bản"
+                           class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                
+                    <!-- Kết quả tìm kiếm sẽ được hiển thị ngay bên dưới input -->
+                    <div id="search-results" class="absolute bg-white w-full border border-gray-300 rounded-lg shadow-lg mt-1 z-10 hidden">
+                        <ul class="list-none p-0 m-0"></ul>
+                    </div>
                 </div>
                 <div class="flex-1 min-w-[200px]">
                     <label for="status_code" class="block text-gray-700 font-medium mb-2">Trạng thái báo cáo:</label>
                     <select id="status_code" name="status_code" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái báo cáo</option>
-                        
+                        @foreach ($statuses as $status)
+                            <option value="{{ $status->value }}">{{ $status->label() }}</option>
+                        @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px]" id = "organization_id">
+                <div class="flex-1 min-w-[200px]">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
-                    <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                    <select name="organization_id" id="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn cơ quan ban hành</option>
                         @foreach($organizations as $organization)
                             <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
@@ -205,7 +204,49 @@
         </div>
     </div>
     <script>
-        
+        //============================ Search Input Code ====================================
+        $(document).ready(function() {
+        $('#document_code').on('keyup', function() {
+            var query = $(this).val();
+            if (query.length > 0) {
+                $.ajax({
+                    url: "{{ route('documents.search') }}",
+                    type: "GET",
+                    data: {'document_code': query},
+                    success: function(data) {
+                        $('#search-results ul').html(''); // Xóa kết quả cũ
+                        if (data.length > 0) {
+                            $.each(data, function(key, document) {
+                                $('#search-results ul').append('<li class="p-2 cursor-pointer hover:bg-gray-200" data-code="'+document.document_code+'">' + document.document_code + '</li>');
+                            });
+                            $('#search-results').removeClass('hidden');
+                        } else {
+                            $('#search-results ul').append('<li class="p-2">Không có kết quả.</li>');
+                            $('#search-results').removeClass('hidden');
+                        }
+                    }
+                });
+            } else {
+                $('#search-results').addClass('hidden');
+            }
+        });
+        $(document).on('click', function(event) {
+            var selectedCode = $(this).data('code');  // Lấy giá trị từ thuộc tính data-code
+            $('#document_code').value = selectedCode;    // Gán giá trị vào input
+            $('#search-results').addClass('hidden');  // Ẩn danh sách sau khi chọn
+        });
+        $(document).on('click', '#search-results li', function() {
+            $('#document_code').val($(this).text());
+            $('#search-results').addClass('hidden'); 
+        });
+    });
+     //============================End Search Input Code ====================================
+             $(document).ready(function() {
+        $('.select2').select2({
+
+            allowClear: true
+        });
+    });
         // document.getElementById('filterToggle').addEventListener('click', function() {
         //     const filterForm = document.getElementById('filterForm');
         //     filterForm.classList.toggle('hidden');
@@ -255,6 +296,20 @@
                 // history-change-cri-modal
                 const cancelHistoryBtn = document.getElementById('cancel-history-changes');
                 const assignHistoryModal = document.getElementById('history-change-modal');
+
+                var params = new URLSearchParams(window.location.search);
+                var document_code = params.get('document_code');
+                var status_code = params.get('status_code');
+
+                if(document_code !== null || document_code !== undefined || document_code !== ""){
+                    var customInput = document.getElementById('document_code');
+                    customInput.value = document_code;
+                }
+                if(status_code !== null || status_code !== undefined || status_code !== ""){
+                    var customInput = document.getElementById('status_code');
+                    customInput.value = status_code;
+                }
+
 
                 function hideModalHistory() {
                     assignHistoryModal.classList.add('hidden');

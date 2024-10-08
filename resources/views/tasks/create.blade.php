@@ -67,7 +67,7 @@
                     <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required 
                     oninvalid="this.setCustomValidity('Vui lòng chọn nhóm.')" 
                     oninput="setCustomValidity('')">
-                        <option value="" data-code="">Chọn loại {{ $text }}</option>
+                        <option value="" data-code="">Chọn nhóm {{ $text }}</option>
                         @foreach ($typeTask as $item)
                             <option value="{{ $item->id }}" {{ old('type_id') == $item->id ? 'selected' : '' }}>
                                 {{ $item->name }}
@@ -120,9 +120,6 @@
                     
                 </div> -->
                 @endif
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                 @if($type == 'target')
                 <div class="mb-4">
                     <label for="unit" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị tính<span class="text-red-500">*</span></label>
@@ -186,6 +183,10 @@
                     </select>
                 </div>
             </div>
+            
+            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                
+            </div> -->
             <div class="mt-4 text-right" style="justify-content: space-between; display: flex;">
                 <button type="button"  id="back" style="padding: 10px 20px" class="bg-gray-500 text-white px-10 py-2 rounded-lg shadow-lg hover:bg-gray-600 transition duration-300 mt-4">Quay lại</button>
                 <button  type="submit"  style="padding: 10px 20px" class="bg-blue-600 text-white px-10 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Lưu & sang giao việc</button>

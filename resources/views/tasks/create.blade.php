@@ -79,14 +79,15 @@
 
                 <div class="mb-4">
                     <label for="cycle_type" class="block text-gray-700 text-sm font-medium mb-2">Chu kỳ báo cáo <span class="text-red-500">*</span></label>
-                    <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2 select2"  required
+                    <!-- <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2"  required
                     oninvalid="this.setCustomValidity('Vui lòng chọn chu kỳ báo cáo.')" 
-                    oninput="setCustomValidity('')">
+                    oninput="setCustomValidity('')"> -->
                         <!-- <option value="1" {{ old('cycle_type') == '1' ? 'selected' : '' }}>Tuần</option> -->
-                        <option value="2" {{ old('cycle_type') == '2' ? 'selected' : '' }}>Tháng</option>
+                        <!-- <option value="2" {{ old('cycle_type') == '2' ? 'selected' : '' }}>Tháng</option> -->
                         <!-- <option value="3" {{ old('cycle_type') == '3' ? 'selected' : '' }}>Quý</option>
                         <option value="4" {{ old('cycle_type') == '4' ? 'selected' : '' }}>Năm</option> -->
-                    </select>
+                    <!-- </select> -->
+                    <input type="text" readonly id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="Tháng">
 
                 </div>
 

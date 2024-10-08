@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TaskTarget;
+use App\Models\TaskResult;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Enums\TaskStatus;
@@ -15,9 +16,40 @@ class DashboardController extends Controller
     public function index($text = null)
     {
         $user = User::find(Auth::id());
-        $tasks = TaskTarget::where('isDelete', 0);
+        $tasks = TaskTarget::where('isDelete', 0)->get();
         $today = Carbon::now();
-    
+
+       
+        if($user->role === 'supper_admin' || $user->role === 'admin'){
+            $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) {
+                $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
+            })->paginate(10);
+            $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) {
+                $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
+            })->paginate(10);
+        }
+        elseif($user->role === 'sub_admin'){
+            $tasks = TaskTarget::where('isDelete', 0)->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->where('organization_id', $user->organization_id);
+            })->get();
+            $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
+            })->paginate(10);
+            $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
+            })->paginate(10);
+        }
+        elseif($user->role === 'staff'){
+            $tasks = TaskTarget::where('isDelete', 0)->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->where('organization_id', $user->organization_id);
+            })->get();
+            $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
+            })->paginate(10);
+            $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
+            })->paginate(10);
+        }
         // Khởi tạo mảng để chứa số liệu cho từng role và type
         $stats = [
             'task' => [
@@ -35,10 +67,8 @@ class DashboardController extends Controller
                 'completedLate' => 0
             ]
         ];
-        $tableTask = $tasks->where('type', 'task')->paginate(10);
-        $tableTarget = $tasks->where('type', 'task')->paginate(10);
-        // Lặp qua các task/target và phân loại theo role và type
-        foreach ($tasks->get() as $task) {
+
+        foreach ($tasks as $task) {
             $startDate = Carbon::parse($task->start_date);
             $endDate = Carbon::parse($task->end_date);
     
@@ -62,12 +92,12 @@ class DashboardController extends Controller
                 $stats[$type]['upcoming']++;
             }
         }
-    
         return view('dashboard', [
             'taskStatus' => $stats['task'],
             'targetStatus' => $stats['target'],
             'tableTask' => $tableTask,
-            'tableTarget' => $tableTarget
+            'tableTarget' => $tableTarget,
+
         ]);
     }
     

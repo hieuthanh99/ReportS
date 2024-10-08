@@ -315,7 +315,7 @@
                     <input type="hidden" name="organization_id" id="organization_id" value="">
                     <div class="mb-4">
                         <label for="user_id" class="block text-gray-700">Chọn Người Dùng</label>
-                        <select name="user_id" id="user_id" class="w-full border rounded-lg px-3 py-2 mt-1">
+                        <select name="user_id" id="user_id" class="w-full border rounded-lg px-3 py-2 mt-1 select2">
                             <!-- User options will be populated here -->
                         </select>
                     </div>
@@ -349,7 +349,7 @@
                     </div>
                     <div class="mb-4">
                         <label for="organization_type_id" class="block text-gray-700">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                        <select name="organization_type_id" id="organization_type_id" class="w-full border rounded-lg px-3 py-2 mt-1">
+                        <select name="organization_type_id" id="organization_type_id" class="w-full border rounded-lg px-3 py-2 mt-1 select2">
                             <option value="" {{ old('organization_type_id') ? '' : 'selected' }}>Chọn loại cơ quan</option>
                             @foreach ($oranizationType as $category)
                                 <option value="{{ $category->id }}" {{ old('organization_type_id') == $category->id ? 'selected' : '' }}>
@@ -360,7 +360,7 @@
                     </div>
                     <div class="mb-4">
                         <label for="parent_id" class="block text-gray-700">Chọn Cơ quan, tổ chức cấp trên <span class="text-red-500">*</span></label>
-                        <select name="parent_id" id="parent_id" class="w-full border rounded-lg px-3 py-2 mt-1">
+                        <select name="parent_id" id="parent_id" class="w-full border rounded-lg px-3 py-2 mt-1 select2">
                             <option value="" {{ old('parent_id') ? '' : 'selected' }}>Chọn Cơ quan ban hành</option>
                         </select>
                     </div>

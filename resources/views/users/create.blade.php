@@ -71,7 +71,7 @@
         <div>
             <label for="role" class="block text-gray-700 font-medium mb-2">Role <span class="text-red-500">*</span></label>
             <select id="role" name="role"
-            class="form-select w-full border border-gray-300 rounded-lg p-2">
+            class="form-select w-full border border-gray-300 rounded-lg p-2 select2">
             <option value="supper_admin">Supper Admin</option>
             <option value="admin">Admin</option>
             <option value="sub_admin">Sub-Admin</option>
@@ -103,7 +103,7 @@
             </div>
             <div>
                 <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tổ chức</label>
-                <select id="organization_id" name="organization_id" class="w-full border border-gray-300 rounded-lg p-2">
+                <select id="organization_id" name="organization_id" class="w-full border border-gray-300 rounded-lg p-2 select2">
                     <option value="">Không có tổ chức</option>
                     @foreach($organizations as $organization)
                         <option value="{{ $organization->id }}">{{ $organization->name }}</option>
@@ -115,7 +115,7 @@
             </div>
             <div>
                 <label for="position_id" class="block text-gray-700 font-medium mb-2">Chức vụ</label>
-                <select id="position_id" name="position_id" class="w-full border border-gray-300 rounded-lg p-2">
+                <select id="position_id" name="position_id" class="w-full border border-gray-300 rounded-lg p-2 select2">
                     <option value="">Không có chức vụ</option>
                     @foreach($positions as $position)
                         <option value="{{ $position->id }}">{{ $position->name }}</option>

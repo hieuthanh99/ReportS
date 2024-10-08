@@ -63,7 +63,7 @@
                 <div class="mb-4">
                     <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
                         <select name="organization_type_id" id="organization_type_id"
-                            class="form-input w-full border border-gray-300 rounded-lg p-2" require
+                            class="form-input w-full border border-gray-300 rounded-lg p-2 select2" require
                             oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan, tổ chức.')" 
                             oninput="setCustomValidity('')">
                             <option value="" disabled {{ old('organization_type_id') ? '' : 'selected' }}>Chọn loại cơ quan, tổ chức</option>
@@ -79,7 +79,7 @@
                 <div class="mb-4" style="display:none">
                     <label for="parent_id" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan, tổ chức cha:</label>
                         <select name="parent_id" id="parent_id"
-                            class="form-input w-full border border-gray-300 rounded-lg p-2" require
+                            class="form-input w-full border border-gray-300 rounded-lg p-2 select2" require
                             oninvalid="this.setCustomValidity('Vui lòng chọn cơ quan, tổ chức.')" 
                             oninput="setCustomValidity('')">
                             <option value="" disabled {{ old('parent_id') ? '' : 'selected' }}>Chọn cơ quan, tổ chức</option>

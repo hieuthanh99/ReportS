@@ -94,7 +94,7 @@
         <div class="flex gap-6 mb-4">
             <div class="mb-4 flex-1">
                 <label for="role" class="block text-gray-700">Vai trò:</label>
-                <select id="role" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <select id="role" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
                     <option value="supper_admin" {{ old('role', $user->role) == 'supper_admin' ? 'selected' : '' }}>Supper Admin</option>
                     <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="sub_admin" {{ old('role', $user->role) == 'sub_admin' ? 'selected' : '' }}>Sub-Admin</option>
@@ -107,7 +107,7 @@
             </div>
             <div class="mb-4 flex-1">
                 <label for="organization_id" class="block text-gray-700">Tổ chức:</label>
-                <select id="organization_id" name="organization_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <select id="organization_id" name="organization_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
                     <option value="">Không có tổ chức</option>
                     @foreach($organizations as $organization)
                         <option value="{{ $organization->id }}" {{ $user->organization_id == $organization->id ? 'selected' : '' }}>
@@ -121,7 +121,7 @@
             </div>
             <div class="mb-4 flex-1">
                 <label for="position_id" class="block text-gray-700">Chức vụ:</label>
-                <select id="position_id" name="position_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                <select id="position_id" name="position_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
                     <option value="">Không có chức vụ</option>
                     @foreach($positions as $position)
                         <option value="{{ $position->id }}" {{ $user->position_id == $position->id ? 'selected' : '' }}>

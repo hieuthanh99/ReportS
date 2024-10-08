@@ -315,7 +315,7 @@ class DocumentController extends Controller
         if ($request->filled('status')) {
             $taskDocuments =  $taskDocuments->where('status', $request->status);
         }
-        $taskDocuments = $taskDocuments->paginate(10);
+        $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10);
         $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
@@ -365,7 +365,7 @@ class DocumentController extends Controller
         if ($request->filled('status')) {
             $taskDocuments =  $taskDocuments->where('status', $request->status);
         }
-        $taskDocuments = $taskDocuments->paginate(10);
+        $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10);
         $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
@@ -627,7 +627,16 @@ class DocumentController extends Controller
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
     }
-
+    public function reportViewUpdateRole(string $id, string $type)
+    {
+        $user = User::find(Auth::id());
+        $taskResult = TaskResult::where('id_task_criteria', $id)->where('organization_id', $user->organization_id)->first();
+        if($type == 'task'){
+            return $this->reportViewUpdate($taskResult->id);
+        }else{
+            return $this->reportViewUpdateTarget($taskResult->id); 
+        }
+    }
     public function reportViewUpdate(string $id)
     {
         try {

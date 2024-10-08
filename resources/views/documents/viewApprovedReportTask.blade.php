@@ -264,7 +264,7 @@
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tệp</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Lịch sử</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Hoàn thành</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Duyệt</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ghi nhận</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -318,7 +318,7 @@
                                                   <i class="fa fa-history"></i>
                                             </button>
                                         </td>
-                                        <td class="py-3 border border-gray-300 px-6">
+                                        <td class="py-3 border border-gray-300 px-6 text-center">
                                             @if (($item->status == 'sub_admin_complete' || $item->status == 'admin_approves')  &&
                                                     (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
                                                 <button data-id="{{ $item->id }}" id="button-apprrover-{{ $item->id }}"

@@ -23,7 +23,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+        {{-- @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin') --}}
             <div class="flex -mx-2">
 
                 <div class="w-1/2 px-2">
@@ -32,7 +32,12 @@
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="taskChart" width="200" height="200"></canvas>
                             <div class="task-link" style="text-align: center">
-                                <a style="color: blue; text-align: center" href="">Xem chi tiết</a>
+                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+                                <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'task')}}">Xem chi tiết</a>
+                                @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                <a style="color: blue; text-align: center" href="{{route('documents.report')}}">Xem chi tiết</a>
+                              
+                                @endif
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
@@ -43,33 +48,41 @@
                                         <th class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left">Tên nhiệm vụ</th>
                                         <th class="px-4 py-2 text-left">Trạng thái báo cáo</th>
+                                        @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                         <th class="px-4 py-2 text-left">Phê duyệt</th>
+                                        @elseif(Auth::user()->role === 'staff')
+                                        <th class="px-4 py-2 text-left">Báo cáo</th>
+                                      
+                                        @endif
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($tableTask as $index => $task)
-                                        @php
-                                            // Xác định màu sắc dựa trên status_code
-                                            $bgColor = match ($task->status_code) {
-                                                'not_completed' => 'rgba(153, 102, 255, 0.3)', // Tím nhạt
-                                                'in_progress_in_time' => 'rgba(0, 123, 255, 0.3)', // Xanh da trời nhạt
-                                                'in_progress_overdue' => 'rgba(255, 69, 0, 0.3)', // Đỏ nhạt
-                                                'completed_in_time' => 'rgba(0, 123, 255, 0.3)', // Xanh nhạt
-                                                'completed_overdue' => 'rgba(255, 193, 7, 0.3)', // Vàng nhạt
-                                                default => 'rgba(255, 255, 255, 1)', // Trắng
-                                            };
-                                        @endphp
-                                        <tr class="border-b border-gray-200" style="background-color: {{ $bgColor }}">
-                                            <td class="px-4 py-2"></td>
+                     
+                                        <tr class="border-b border-gray-200">
+                                            <td class="px-4 py-2">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2">{{ $task->name }}</td>
                                             <td class="px-4 py-2">{{ $task->getStatusTaskTarget() }}</td>
-                                            {{-- <td class="px-4 py-2 text-center">
-                                                <a onclick="window.location.href='{{ route('tasks.show-details', ['code' => $task->code, 'type' => $task->type]) }}'"
-                                                    class="text-blue-500 hover:text-blue-700">
-                                                    <i class="fas fa-chevron-right"></i>
-                                                </a>
-
-                                            </td> --}}
+                                            <td>
+                                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $task->id, 'type' => $task->type]) }}'">
+                                                Phê duyệt
+                                                </button>
+                                                @elseif(Auth::user()->role === 'staff')
+                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $task->id, 'type' => $task->type]) }}'">
+                                                Báo cáo
+                                                </button>
+                                                @elseif(Auth::user()->role === 'sub_admin')
+                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $task->id, 'type' => $task->type]) }}'">
+                                                Phê duyệt
+                                                </button>
+                                                @endif
+                                       
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -86,7 +99,11 @@
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="targetChart" width="400" height="400"></canvas>
                             <div class="task-link" style="text-align: center">
-                                <a style="color: blue; text-align: center" href="">Xem chi tiết</a>
+                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+                                <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
+                                @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                <a style="color: blue; text-align: center" href="{{route('documents.report.target')}}">Xem chi tiết</a>
+                                @endif
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
@@ -100,90 +117,43 @@
                                         <th class="px-4 py-2 text-left">Phê duyệt</th>
                                     </tr>
                                 </thead>
-                                {{-- <tbody>
-                            @foreach ($targetsTable as $index => $task)
-                            @php
-                            // Xác định màu sắc dựa trên status_code
-                            $bgColor = match ($task->status_code) {
-                                'not_completed' => 'rgba(153, 102, 255, 0.3)', // Tím nhạt
-                                'in_progress_in_time' => 'rgba(0, 123, 255, 0.3)', // Xanh da trời nhạt
-                                'in_progress_overdue' => 'rgba(255, 69, 0, 0.3)', // Đỏ nhạt
-                                'completed_in_time' => 'rgba(0, 123, 255, 0.3)', // Xanh nhạt
-                                'completed_overdue' => 'rgba(255, 193, 7, 0.3)', // Vàng nhạt
-                                default => 'rgba(255, 255, 255, 1)', // Trắng
-                            };
-                        @endphp
-                                <tr class="border-b border-gray-200" style="background-color: {{ $bgColor }}">
-                                    <td class="px-4 py-2">{{ $index + 1 }}</td>
-                                    <td class="px-4 py-2">{{ $task->name }}</td>
-                                    <td class="px-4 py-2">{{ $task->getDateFromToTextAttribute() }}</td>
-                                    <td class="px-4 py-2 text-center">
-                                        <a  onclick="window.location.href='{{ route('tasks.show-details', ['code' => $task->code, 'type' => $task->type]) }}'" class="text-blue-500 hover:text-blue-700">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody> --}}
+                                <tbody>
+                                    @foreach ($tableTarget as $index => $target)
+                     
+                                        <tr class="border-b border-gray-200">
+                                            <td class="px-4 py-2">{{ $index + 1 }}</td>
+                                            <td class="px-4 py-2">{{ $target->name }}</td>
+                                            <td class="px-4 py-2">{{ $target->getStatusTaskTarget() }}</td>
+                                            <td>
+                                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $target->id, 'type' => $target->type]) }}'">
+                                                Phê duyệt
+                                                </button>
+                                                @elseif(Auth::user()->role === 'staff')
+                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $target->id, 'type' => $target->type]) }}'">
+                                                Báo cáo
+                                                </button>
+                                                @elseif(Auth::user()->role === 'sub_admin')
+                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $target->id, 'type' => $target->type]) }}'">
+                                                Phê duyệt
+                                                </button>
+                                                @endif
+                                       
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
                             </table>
-                            {{-- <div class="mt-4">
-                        {{ $targetsTable->links() }} <!-- Render pagination links -->
-                    </div> --}}
+                            <div class="mt-4">
+                                {{ $tableTarget->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        @else
-            <div class="flex -mx-2">
-                <div class="">
-                    <div class=" bg-gray-200 p-4 mb-2">
-
-                    </div>
-                    <div class="bg-gray-200 p-4">
-                        <!-- Bảng dữ liệu -->
-                        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                            <thead class="bg-gray-300">
-                                <tr class="border-b border-gray-300" style="background-color: #D3D4CF">
-                                    <th class="px-4 py-2 text-left">STT</th>
-                                    <th class="px-4 py-2 text-left">Tên văn bản</th>
-                                    <th class="px-4 py-2 text-left">Thời gian thực hiện</th>
-                                    <th class="px-4 py-2 text-left">Thao tác</th>
-                                </tr>
-                            </thead>
-                            {{-- <tbody>
-                        @foreach ($staffTable as $index => $task)
-                        @php
-                        // Xác định màu sắc dựa trên status_code
-                        $bgColor = match ($task->status_code) {
-                            'not_completed' => 'rgba(153, 102, 255, 0.3)', // Tím nhạt
-                            'in_progress_in_time' => 'rgba(0, 123, 255, 0.3)', // Xanh da trời nhạt
-                            'in_progress_overdue' => 'rgba(255, 69, 0, 0.3)', // Đỏ nhạt
-                            'completed_in_time' => 'rgba(0, 123, 255, 0.3)', // Xanh nhạt
-                            'completed_overdue' => 'rgba(255, 193, 7, 0.3)', // Vàng nhạt
-                            default => 'rgba(255, 255, 255, 1)', // Trắng
-                        };
-                    @endphp
-                            <tr class="border-b border-gray-200" style="background-color: {{ $bgColor }}">
-                                <td class="px-4 py-2">{{ $index + 1 }}</td>
-                                <td class="px-4 py-2">{{ $task->name }}</td>
-                                <td class="px-4 py-2">{{ $task->getDateFromToTextAttribute() }}</td>
-                                <td class="px-4 py-2 text-center">
-                                    <a  onclick="window.location.href='{{ route('tasks.show-details', ['code' => $task->code, 'type' => $task->type]) }}'" class="text-blue-500 hover:text-blue-700">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                  
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody> --}}
-                        </table>
-                        {{-- <div class="mt-4">
-                    {{ $staffTable->links() }} <!-- Render pagination links -->
-                </div> --}}
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
     <script>
         // Biểu đồ Task
@@ -193,7 +163,7 @@
             data: {
                 labels: ['Quá hạn', 'Sắp tới hạn', 'Đang thực hiện', 'Hoàn thành đúng hạn', 'Hoàn thành quá hạn'],
                 datasets: [{
-                    label: 'Trạng thái Task',
+                    label: 'Trạng thái nhiệm vụ',
                     data: [
                         {{ $taskStatus['overdue'] }},
                         {{ $taskStatus['upcoming'] }},
@@ -226,7 +196,7 @@
             data: {
                 labels: ['Quá hạn', 'Sắp tới hạn', 'Đang thực hiện', 'Hoàn thành đúng hạn', 'Hoàn thành quá hạn'],
                 datasets: [{
-                    label: 'Trạng thái Target',
+                    label: 'Trạng thái chỉ tiêu',
                     data: [
                         {{ $targetStatus['overdue'] }},
                         {{ $targetStatus['upcoming'] }},

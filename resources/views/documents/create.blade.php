@@ -74,7 +74,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản <span class="text-red-500">*</span></label>
-                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required
+                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required
                     oninvalid="this.setCustomValidity('Vui lòng chọn loại văn bản.')" 
                     oninput="setCustomValidity('')">
                         <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Chọn văn bản</option>
@@ -114,7 +114,7 @@
                 
                 <div class="mb-4">
                     <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan ban hành<span class="text-red-500">*</span></label>
-                    <select id="organization_type_id" name="organization_type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" require
+                    <select id="organization_type_id" name="organization_type_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" require
                     oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan ban hành.')" 
                     oninput="setCustomValidity('')">
                         <option value="">Chọn loại cơ quan ban hành</option>
@@ -127,7 +127,7 @@
                 </div>
                 <div class="mb-4">
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban hành <span class="text-red-500">*</span></label>
-                    <select name="issuing_department" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full" require
+                    <select name="issuing_department" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full select2" require
                     oninvalid="this.setCustomValidity('Vui lòng chọn cơ quan ban hành.')" 
                     oninput="setCustomValidity('')">
                         <option value="" {{ old('issuing_department') ? '' : 'selected' }}>Chọn cơ quan ban hành</option>
@@ -158,29 +158,31 @@
         
     
         <script>
-             document.getElementById('organization_type_id').addEventListener('change', function () {
-                var organizationTypeId = this.value;
-                
-                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-                fetch(`/get-organizations/${organizationTypeId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Làm rỗng danh sách `parent_id`
-                        var parentSelect = document.getElementById('parent_id');
-                        parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
+            $(document).ready(function() {
+    $('.select2').select2();
 
-                        // Thêm các tùy chọn mới
-                        data.forEach(function (organization) {
-                            var option = document.createElement('option');
-                            option.value = organization.id;
-                            option.text = organization.name;
-                            parentSelect.appendChild(option);
-                        });
+    // Lắng nghe sự kiện select2:select
+    $('#organization_type_id').on('select2:select', function (e) {
+        var organizationTypeId = e.params.data.id; // Lấy id của tùy chọn đã chọn
 
-       
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
+        // Gửi yêu cầu AJAX
+        fetch(`/get-organizations/${organizationTypeId}`)
+            .then(response => response.json())
+            .then(data => {
+                var parentSelect = document.getElementById('parent_id');
+                parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
+
+                data.forEach(function (organization) {
+                    var option = document.createElement('option');
+                    option.value = organization.id;
+                    option.text = organization.name;
+                    parentSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    });
+});
+
              document.getElementById('document-form').addEventListener('submit', function() {
                 // Hiển thị loader khi form được gửi
                 document.getElementById('loading').classList.remove('hidden');

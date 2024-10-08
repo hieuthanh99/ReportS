@@ -49,7 +49,10 @@ class TaskTarget extends Model
         'issuing_organization_id',
         'slno'
     ];
-
+    public function taskResultsRelation()
+    {
+        return $this->hasMany(TaskResult::class, 'id_task_criteria'); 
+    }
     public function getStatusLabel()
     {
         $today = Carbon::now();

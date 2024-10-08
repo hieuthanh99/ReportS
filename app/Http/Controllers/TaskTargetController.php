@@ -320,6 +320,7 @@ class TaskTargetController extends Controller
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
+        $statuses = TaskTargetStatus::cases();
 
         if ($type == 'task') {
             $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->orderBy('id', 'desc');
@@ -339,6 +340,9 @@ class TaskTargetController extends Controller
         }
         if ($request->filled('organization_id')) {
             $taskTargets->where('issuing_organization_id', $request->organization_id);
+        }
+        if ($request->filled('status_code')) {
+            $taskTargets = $taskTargets->where('status_code', $request->status_code);
         }
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');
@@ -368,7 +372,7 @@ class TaskTargetController extends Controller
         }
         $workResultTypes = MasterWorkResultTypeService::index();
         $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
-        $statuses = TaskTargetStatus::cases();
+        
 
         return view('documents.indexApprovedReport', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes', 'statuses'));
     }

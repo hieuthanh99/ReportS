@@ -350,11 +350,7 @@
                 @yield('content')
             </main>
             <script>
-                $(document).ready(function() {
-            $('.select2').select2({
-                allowClear: true
-            });
-        });
+               
                document.addEventListener('DOMContentLoaded', (event) => {
                     const messageElement = document.getElementById('success-message');
                     if (messageElement) {
@@ -425,7 +421,11 @@
                         }
                     });
                 });
-
+                $(document).ready(function() {
+            $('.select2').select2({
+                allowClear: true
+            });
+        });
             </script>
         </div>
     </body>

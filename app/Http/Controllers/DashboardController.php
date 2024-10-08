@@ -21,12 +21,34 @@ class DashboardController extends Controller
 
        
         if($user->role === 'supper_admin' || $user->role === 'admin'){
-            $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) {
+            $tableTask = TaskTarget::where('isDelete', 0)
+            ->where('type', 'task')
+            ->whereHas('taskResultsRelation', function($query) {
                 $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
-            })->paginate(10);
-            $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) {
+            })
+            ->orWhere(function ($query) {
+                $query->where('status','processing')
+                      ->whereDoesntHave('taskResultsRelation', function($query) {
+                          $query->where('status', '!=', 'complete');
+                      });
+            })
+            ->paginate(10);
+            // $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) {
+            //     $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
+            // })->where('status', 'complete')->paginate(10);
+
+            $tableTarget = TaskTarget::where('isDelete', 0)
+            ->where('type', 'target')
+            ->whereHas('taskResultsRelation', function($query) {
                 $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
-            })->paginate(10);
+            })
+            ->orWhere(function ($query) {
+                $query->where('status','processing')
+                      ->whereDoesntHave('taskResultsRelation', function($query) {
+                          $query->where('status', '!=', 'complete');
+                      });
+            })
+            ->paginate(10);
         }
         elseif($user->role === 'sub_admin'){
             $tasks = TaskTarget::where('isDelete', 0)->whereHas('taskResultsRelation', function($query) use ($user) {

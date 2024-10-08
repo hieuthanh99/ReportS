@@ -189,8 +189,7 @@
                     <thead>
                         <tr>
                             <th class="py-2 px-4 border-b">STT</th>
-                            <th class="py-2 px-4 border-b">Tiến độ</th>
-                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">chi tiết</th>
                             <th class="py-2 px-4 border-b">Thời gian</th>
                             <th class="py-2 px-4 border-b">Chu kỳ</th>
                         </tr>
@@ -362,10 +361,10 @@
                         }
                         const text_result_cycle = cycle_text + ' ' + history.number_cycle;
                         // Các cột khác
-                        const mappingIdCell = document.createElement('td');
-                        mappingIdCell.classList.add('py-2', 'px-4', 'border-b');
-                        mappingIdCell.textContent = history.result;
-                        row.appendChild(mappingIdCell);
+                        // const mappingIdCell = document.createElement('td');
+                        // mappingIdCell.classList.add('py-2', 'px-4', 'border-b');
+                        // mappingIdCell.textContent = history.result;
+                        // row.appendChild(mappingIdCell);
 
                         const typeSaveCell = document.createElement('td');
                         typeSaveCell.classList.add('py-2', 'px-4', 'border-b');

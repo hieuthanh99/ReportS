@@ -36,21 +36,16 @@ class TaskTargetController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Lấy dữ liệu từ yêu cầu
             $taskId = $request->input("taskId");
             $remarks = $request->input("remarks");
             $type = $request->input("type");
-            $task = TaskTarget::find($taskId);
-
-            $taskResult = TaskResult::where('id_task_criteria', $task->id)->where('isDelete', 0)->where("document_id", $task->document_id)->where("type_save", $task->getType())->first();
-
-            // $table->enum('status', ['approved', 'rejected
+            $taskResult = TaskResult::find($taskId);
             $status = 'rejected';
             if ($type == 'Approval') $status = 'approved';
-            if ($task && $taskResult) {
+            if ($taskResult) {
 
                 TaskApprovalHistory::create([
-                    'task_target_id' => $taskId,
+                    'task_target_id' => $taskResult->id_task_criteria,
                     'approver_id' => Auth::id(),
                     'status' => $status,
                     'remarks' => $remarks,
@@ -59,16 +54,13 @@ class TaskTargetController extends Controller
                     'task_result_id' => $taskResult->id,
                 ]);
                 if ($status == 'rejected') {
-                    $task->status = 'reject';
-                    $task->is_completed = 0;
-                    $task->results =  "Đang thực hiện";
+                    $taskResult->status = 'reject';
+            
                 } else {
-                    $task->status = "sub_admin_complete";
-                    $task->results =  "Hoàn thành";
+                    $taskResult->status = "sub_admin_complete";
                 }
-                $task->save();
+                $taskResult->save();
                 DB::commit();
-                // Trả về phản hồi thành công
                 return response()->json(['success' => true, 'message' => 'Thành công.']);
             } else {
                 return response()->json(['success' => false, 'message' => 'Task not found.'], 404);
@@ -81,37 +73,36 @@ class TaskTargetController extends Controller
     }
     public function assignOrganizations(Request $request, $taskTargetId)
     {
-        // dd($request);
         $organizationsType = OrganizationType::where('isDelete', 0)->get();
-        // $taskTargetId = $request->query('taskTargetId');
         $taskTarget = TaskTarget::find($taskTargetId);
         return view('tasks.assign', compact('taskTarget', 'organizationsType'));
     }
-    public function destroyTaskTarget($code, $type)
+    public function destroyTaskTarget($id, $type)
     {
-        //  dd($type);
-        $check  = true;
-        // Tìm nhiệm vụ theo mã code và type
-        $taskTargets = TaskTarget::where('code', $code)->where('type', $type)->where('isDelete', 0)->get();
+        $check = true;
         try {
-            foreach ($taskTargets as $item) {
+            $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->firstOrFail();
+            $taskResults = TaskResult::where('id_task_criteria', $id)->get();
+            foreach ($taskResults as $item) {
                 $item->delete();
             }
+            $taskTarget->isDelete = 1;
+            $taskTarget->save();
+    
         } catch (\Exception $e) {
             $check = false;
+            \Log::error('Error deleting task target: ' . $e->getMessage());
         }
-
         if ($check) {
-
             return redirect()->route('tasks.byType', ['type' => $type])->with('success', 'Xóa thành công!');
         } else {
             return redirect()->route('tasks.byType', ['type' => $type])->with('error', 'Đã xảy ra lỗi!');
         }
     }
+    
 
     public function getOrganizationsByTaskTargetId($idTaskTarget)
     {   
-        // dd( $idTaskTarget);
         $organizationIds = TaskResult::where('id_task_criteria', $idTaskTarget)->select('organization_id')->where('isDelete', 0)->get();
 
         $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->get();
@@ -329,63 +320,20 @@ class TaskTargetController extends Controller
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
 
-        $taskDocumentsQuery = TaskDocument::query();
-
-
         if ($type == 'task') {
-            $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->select(
-                'name',
-                'code',
-                'document_id',
-                'cycle_type',
-                'type_id',
-                'task_type',
-                'request_results_task',
-                'result_type',
-                'category_id',
-                'request_results',
-                'start_date',
-                'end_date',
-                'type',
-                'isDelete',
-                'issuing_organization_id',
-                'status_code',
-                \DB::raw('COUNT(organization_id) as organization_count')
-            )
-
-                ->distinct('code')
-                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'task_type', 'request_results_task', 'result_type', 'isDelete', 'issuing_organization_id', 'status_code')
-                ->orderBy('id', 'desc');
+            $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->orderBy('id', 'desc');
         } else {
-            $taskTargets = TaskTarget::where('type', 'target')->where('isDelete', 0)->select(
-                'name',
-                'code',
-                'document_id',
-                'cycle_type',
-                'type_id',
-                'unit',      // Đơn vị
-                'target_type', // Loại chỉ tiêu
-                'target',      // Chỉ tiêu
-                'category_id',
-                'request_results',
-                'start_date',
-                'end_date',
-                'type',
-                'isDelete',
-                'issuing_organization_id',
-                'status_code',
-                \DB::raw('COUNT(organization_id) as organization_count')
-            )
-
-                ->distinct('code')
-                ->groupBy('name', 'code', 'document_id', 'cycle_type', 'category_id', 'request_results', 'start_date', 'end_date', 'type', 'type_id', 'unit', 'target_type', 'target', 'isDelete', 'issuing_organization_id', 'status_code')
-                ->orderBy('id', 'desc');
+            $taskTargets = TaskTarget::where('type', 'target')->where('isDelete', 0)->orderBy('id', 'desc');
         }
         if ($text) {
             $taskTargets->where('name', 'like', '%' . $text . '%');
         }
+        if ($request->filled('document_code')) {
+            $documentsSearch = Document::where('isDelete', 0)->where('document_code', 'like', '%' . $request->document_code . '%')->pluck('id');
+            $taskTargets = $taskTargets->whereIn('document_id', $documentsSearch);
+        }
         if ($request->filled('document_id')) {
-            // Chắc chắn rằng $documents là mảng phẳng trước khi sử dụng
+
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
         }
         if ($request->filled('organization_id')) {
@@ -393,15 +341,10 @@ class TaskTargetController extends Controller
         }
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');
-
-        // Kiểm tra nếu cả hai thời gian đều có giá trị
         if ($executionTimeFrom && $executionTimeTo) {
             try {
-                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
                 $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
                 $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
-
-                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
                 if ($executionTimeFrom->gt($executionTimeTo)) {
                     return redirect()->back()->withErrors([
                         'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
@@ -424,6 +367,8 @@ class TaskTargetController extends Controller
         }
         $workResultTypes = MasterWorkResultTypeService::index();
         $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
+
+
         return view('documents.indexApprovedReport', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes'));
     }
 
@@ -644,6 +589,7 @@ class TaskTargetController extends Controller
                     $unit = $request->unit;
                 }
             }
+       
             $exitItem = TaskTarget::where('isDelete', 0)->where('code', $request->code)->first();
             if ($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             // Lấy tất cả các giá trị từ request
@@ -659,13 +605,21 @@ class TaskTargetController extends Controller
             ]);
             $user = Auth::user();
             $document = Document::findOrFail($request->input("document_id"));
+            $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $request->input("end_date"));
+            $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $document->release_date);
+
+            if ($executionTimeFrom->gt($executionTimeTo)) {
+                return redirect()->back()->withErrors([
+                    'error' => "Thời gian kết thúc phải lớn hơn thời gian kết thúc."
+                ]);
+            }
             $result = $request->input("request_results");
             $type_id = $request->input('type_id');
             $result_type = $request->input('result_type');
             $organizationId = $user->organization_id;
 
             $data['creator'] = Auth::id();
-            $data['status'] = 'new';
+            $data['status'] = "new";
             // $data['organization_id'] = $organizationId;
             $data['request_results'] = $result;
             $data['start_date'] = $document->release_date;

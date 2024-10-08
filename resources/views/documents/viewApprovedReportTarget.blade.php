@@ -210,74 +210,37 @@
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getStartDate() }}</span>
                             </div> -->
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Thời gian hoàn thành:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Thời hạn hoàn thành:</span>
                                 <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
                             </div>
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Trạng thái báo cáo:</span>
-                                <span class="text-gray-900 w-2/3"></span>
+                                <span class="text-gray-700 font-medium w-1/3">Thời hạn hoàn thành:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getEndDate() }}</span>
                             </div>
-                            
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white ">
-                            <!-- Cột trái -->
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Tiến độ:</span>
+                                <span class="text-gray-900 w-2/3">{{ $taskTarget->getStatusLabel() }}</span>
+                            </div>
                             <div class="flex items-center mb-4">
                                 <label for="document_code" class="text-gray-700 font-medium w-1/3">Số hiệu văn bản:</label>
                                 <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
                             </div>
                             <div class="flex items-center mb-4">
                                 <label for="document_name" class="text-gray-700 font-medium w-1/3">Văn bản giao việc:</label>
-                                <span class="text-gray-900 w-2/3"></span>
+                                <span class="text-gray-900 w-2/3">{{ $document->document_name }}</span>
 
                             </div>
                             <div class="flex items-center mb-4">
                                 <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</label>
-                                <span class="text-gray-900 w-2/3"></span>
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <label for="release_date" class="text-gray-700 font-medium w-1/3">Kết quả báo cáo:</label>
-                                <span class="text-gray-900 w-2/3"></span>
-                            </div>
-                        </div>
-
-                        <!-- Hàng upload file -->
-                        <div class="mb-4 gap-6 p-6 bg-white" style="margin: 20px 0; padding-top: 0">
-                            <label for="issuing_department" class="text-gray-700 font-medium w-1/3">Danh sách
-                                tệp tin:</label>
-                            <div id="file-list-data-document" class="mt-2 file-list-data-document">
-                                @if (!$document->files->isEmpty())
-                                    @foreach ($document->files as $file)
-                                        @php
-                                            $filePath = storage_path('app/public/' . $file->file_path);
-                                            $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
-                                        @endphp
-                                        <div class="file-item flex items-center mb-2" data-file-id="{{ $file->id }}"
-                                            data-file-type="{{ $fileType }}">
-                                            <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
-                                            <a href="{{ route('file.view', ['id' => $file->id]) }}"
-                                                class="text-blue-500 hover:underline"
-                                                target="_blank">{{ $file->file_name }}</a>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <span>Không có tệp nào</span>
-                                @endif
+                                <span class="text-gray-900 w-2/3">{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
 
                             </div>
                         </div>
-                        
                     </div>
-                    <!-- <hr class="mb-6">
-                    
-                    
                     <div class="bg-white p-6 ">
-                        <h5 class="text-xl font-semibold mb-4">Thông tin văn bản</h5>
-
-                        
-                    </div>
-                    <hr class="mb-6"> -->
-                    <div class="bg-white p-6 ">
-                        
+                        @php
+                        $taskResults = $taskTarget->getListResults();
+                    @endphp
                         <h5 class="text-xl font-semibold mb-4">Danh sách cơ quan thực hiện</h5>
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
@@ -285,11 +248,11 @@
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Cơ quan thực hiện</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Trạng thái</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Hoàn thành</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Nhận xét báo cáo</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Báo cáo kết quả</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tệp</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Lịch sử</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Hoàn thành</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Duyệt</th>
                                 </tr>
                             </thead>
@@ -297,61 +260,59 @@
                                 @php
                                     $stt = 1;
                                 @endphp
-                                @foreach ($taskDocuments as $index => $item)
+                                @foreach ($taskResults as $index => $item)
                                     @php
+                                        // $taskApproval = $item->getTaskApprovalHistory();
+                                        // $result = $item->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
+                                        // $hasOrganization = $item->hasOrganizationAppro();
                                         $taskApproval = $item->getTaskApprovalHistory();
-                                        $result = $item->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
-                                        $hasOrganization = $item->hasOrganizationAppro();
+
                                     @endphp
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $index + $taskResults->firstItem() }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->organization->name??'' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
-                                            @if ($item->is_completed)
-                                            <span class="text-gray-900 w-2/3"> Hoàn thành</span>
-                                        @else
-                                        <span class="text-gray-900 w-2/3">Chưa hoàn thành</span>
-                                        @endif
+                                            {{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}
                                         </td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $result  }}</td>
-                                        <td class="py-3 border border-gray-300 px-6" style="word-wrap:break-word">
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? "Chưa báo cáo kết quả"}}</td>
+                                        
+                                        <td class="py-3 border border-gray-300 px-6" >
                                     @php
                                         $file = $item->getFilePath() ?? null;
                                     @endphp
                                     @if ($file && !empty($file->file_path))
-
-                                    @php
+                                            @php
                                                 $filePath = storage_path('app/public/' . $file->file_path);
                                                 $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
                                             @endphp
 
-                                            <div class="file-item flex items-center mb-2" 
+                                            <div class="file-item flex items-center mb-2 text-center"  
                                                 data-file-id="{{ $file->id }}" data-file-type="{{ $fileType }}"
                                                 style="margin-top: 20px; word-wrap:break-word">
+                                               
                                                 <a href="{{ route('file.view', ['id' => $file->id]) }}"
                                                     class="text-blue-500 hover:underline"
-                                                    target="_blank">                                          <i style="text-align: center; margin-right: 0; " class="fa-2x fas fa-download"></i>
-                                                </a>
+                                                    target="_blank"> <i style="text-align: center; margin-right: 0" class="fa-2x fas fa-download"></i></a>
                                             </div>
-                                    @else
+
+                                            @else
                                         <label class="text-gray-900 w-2/3">&nbsp;</label>
                                     @endif
                                         </td>
                                         <td class="py-3 border border-gray-300 px-6 text-center">
                                             <button data-document-id="{{ $item->id }}"
-                                                data-task-id="{{ $item->code }}" type="button"
+                                                data-task-id="{{ $item->id }}" type="button"
                                                 class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                   <i class="fa fa-history"></i>
                                             </button>
                                         </td>
                                         <td class="py-3 border border-gray-300 px-6">
-                                            @if ($item->status == 'sub_admin_complete' &&
+                                            @if (($item->status == 'sub_admin_complete' || $item->status == 'admin_approves')  &&
                                                     (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
                                                 <button data-id="{{ $item->id }}" id="button-apprrover-{{ $item->id }}"
                                                     style="margin:  10px 0" type="button"
-                                                    class="button-approved bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
+                                                    class="button-complete bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
                                                     Hoàn thành
                                                 </button>
                                             @elseif($item->status == 'complete')
@@ -359,10 +320,25 @@
 
                                             @endif
                                         </td>
+                                        <td class="py-3 border border-gray-300 px-6">
+                                            @if ($item->status == 'sub_admin_complete' &&
+                                            (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
+                                        <button data-id="{{ $item->id }}" id="button-apprrover-{{ $item->id }}"
+                                            style="margin:  10px 0" type="button"
+                                            class="button-approved bg-blue-500 text-white px-2 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                           Ghi nhận
+                                        </button>
+                                    @elseif($item->status == 'admin_approves')
+                                    Đã duyệt
+                                    @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="mt-4">
+                            {{ $taskResults->links() }} <!-- Render pagination links -->
+                        </div>
                     </div>
                 
                     <div class="gap-6 p-6 bg-white ">
@@ -430,9 +406,9 @@
     </div>
     <script>
               //============================== Hoàn thành ==========================
-    document.addEventListener('DOMContentLoaded', function () {
+              document.addEventListener('DOMContentLoaded', function () {
     // Lắng nghe sự kiện click cho tất cả các nút hoàn thành
-    document.querySelectorAll('.button-approved').forEach(button => {
+    document.querySelectorAll('.button-complete').forEach(button => {
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-id'); 
             const url = `/update-status/${itemId}`; 
@@ -474,8 +450,49 @@
             });
         });
     });
+    document.querySelectorAll('.button-approved').forEach(button => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-id'); 
+            const url = `/update-status-approved/${itemId}`; 
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    status: 'completed'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                                console.log(data.message)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Duyệt thành công!',
+                                    text: data.message,
+                                    confirmButtonText: 'OK'
+                                });
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Có lỗi xảy ra!',
+                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
+                                    confirmButtonText: 'Đóng'
+                                });
+                            }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert('Có lỗi xảy ra trong quá trình gửi yêu cầu.');
+            });
+        });
+    });
 });
-
                document.addEventListener('DOMContentLoaded', function() {
                 //============================== Lich su ==========================
                 // history-change-cri-modal

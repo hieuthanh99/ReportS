@@ -55,17 +55,6 @@
                         <ul class="list-none p-0 m-0"></ul>
                     </div>
                 </div>
-                {{-- <div class="flex-1 min-w-[200px]">
-                    <label for="document_id" class="block text-gray-700 font-medium mb-2">Tên văn bản:</label>
-                    <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="">Chọn văn bản thực hiện</option>
-                        @foreach ($documents as $item)
-                            <option value="{{ $item->id }}" {{ request('document_id') == $item->id ? 'selected' : '' }}>
-                                {{ $item->document_name }}
-                            </option>
-                        @endforeach
-                    </select>               
-                </div> --}}
                 <div class="flex-1 min-w-[200px]">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
                     <select id="organization_id" name="organization_id"
@@ -92,6 +81,24 @@
                 </div>
             </div>
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Ngày hoàn thành:</label>
+                    <input type="month" id="completion_date" name="completion_date"  placeholder="Chọn tháng/năm"
+                    class="border border-gray-300 rounded-lg p-2 w-full">
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
+       
+                        <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                            <option value="">Chọn trạng thái</option>
+                            <option value="complete_on_time">Hoàn thành đúng hạn</option>
+                            <option value="complete_late">Hoàn thành quá hạn</option>
+                            <option value="processing">Đang thực hiện</option>
+                            <option value="overdue">Quá hạn</option>
+                            <option value="upcoming_due">Sắp tới hạn</option>
+                        </select>
+                 
+                </div>
                 @if ($type == 'task')
                     <div class="flex-1 min-w-[200px]">
                         <label for="task_type" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
@@ -104,47 +111,10 @@
                     </div>
                 @else
                     <div class="flex-1 min-w-[200px]">
-                        <label for="target_type" class="block text-gray-700 font-medium mb-2">Loại chỉ tiêu:</label>
-                        <select id="target_type" name="target_type"
-                            class="border border-gray-300 rounded-lg p-2 w-full select2">
-                            <option value="" disabled selected>Chọn loại chỉ tiêu</option>
-                            <option value="single">Đơn</option> <!-- "Đơn" -> "single" -->
-                            <option value="aggregate">Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
-                        </select>
+                      
                     </div>
                 @endif
-                <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Ngày hoàn thành:</label>
-                    <select id="organization_id" name="organization_id"
-                        class="border border-gray-300 rounded-lg p-2 w-full select2">
-                        <option value="">Chọn cơ quan ban hành</option>
-                        @foreach ($organizations as $organization)
-                            <option value="{{ $organization->id }}"
-                                {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
-                    <select id="organization_id" name="organization_id"
-                        class="border border-gray-300 rounded-lg p-2 w-full select2">
-                        <option value="">Chọn cơ quan ban hành</option>
-                        @foreach ($organizations as $organization)
-                            <option value="{{ $organization->id }}"
-                                {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
-                                {{ $organization->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                {{-- <div class="flex-1 min-w-[200px] hidden" id="organization_id">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">&nbsp; </label>
-                    <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
-                        <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
-                    </select>
-                </div> --}}
+               
             </div>
 
             <div class="flex justify-end gap-4">
@@ -170,11 +140,13 @@
                                 chỉ tiêu</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Đơn vị tính</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Chỉ tiêu</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày bắt đầu - kết thúc
+                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày hoàn thành
                             </th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Loại</th>
-                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số
+                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số hiệu văn bản</th>
+                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                                 đơn vị được giao</th>
+                                <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                                   Tiến độ</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                                 Chi tiết
                             </th>
@@ -194,14 +166,16 @@
                             <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên
                                 nhiệm vụ</th>
                             <th style="width: 100px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Kết
-                                quả</th>
+                                quả yêu cầu</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Nhóm nhiệm vụ</th>
-                            <th style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Có
-                                thời hạn/thường xuyên</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày bắt đầu - kết thúc
+                            <th style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Loại nhiệm vụ</th>
+                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày hoàn thành
                             </th>
-                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số
+                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số hiệu văn bản
+                            </th>
+                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                                 đơn vị được giao</th>
+                                <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tiến độ</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                                 Chi tiết
                             </th>
@@ -229,12 +203,14 @@
                                     {{ $item->getUnitName() }}
                                 </td>
                                 <td class="py-3 border border-gray-300 px-6"> {{ $item->target }}</td>
-                                <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}
+                                <td class="py-3 border border-gray-300 px-6"> {{ $item->getEndDate() }}
                                 </td>
-                                <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttributeTarget() }}
+                                <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code ?? '' }}
                                 </td>
                                 <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
                                     {{ $item->countOrganization() }}</td>
+                                    <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
+                                        {{ $item->getStatusLabel() }}</td>
                                 <td class="py-3 border border-gray-300 px-6 text-center">
                                     <button
                                         class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
@@ -253,7 +229,7 @@
 
 
                                     <form id="delete-form-{{ $index + $taskTargets->firstItem() }}"
-                                        action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}"
+                                        action="{{ route('tasks.destroy.tasktarget', ['id' => $item->id, 'type' => $item->type]) }}"
                                         method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -296,10 +272,14 @@
                                 </td>
                                 <td style="width: 80px" class="py-3 border border-gray-300 px-6">
                                     {{ $item->getTypeTextAttributeTime() }}</td>
-                                <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}
+                                <td class="py-3 border border-gray-300 px-6"> {{ $item->getEndDate() }}
                                 </td>
+                                <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code ?? '' }}
+
                                 <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
                                     {{ $item->countOrganization() }}</td>
+                                    <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
+                                        {{ $item->getStatusLabel() }}</td>
                                 <td class="py-3 border border-gray-300 px-6 text-center">
                                     <button
                                         class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
@@ -316,7 +296,7 @@
                                 </td>
                                 <td class="py-3 border border-gray-300 px-6 text-center">
                                     <form id="delete-form-{{ $index + $taskTargets->firstItem() }}"
-                                        action="{{ route('tasks.destroy.tasktarget', ['code' => $item->code, 'type' => $item->type]) }}"
+                                        action="{{ route('tasks.destroy.tasktarget', ['id' => $item->id, 'type' => $item->type]) }}"
                                         method="POST">
                                         @csrf
                                         @method('DELETE')

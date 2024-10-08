@@ -39,6 +39,12 @@ class Document extends Model
         return $this->hasMany(TaskTarget::class);
     }
 
+
+    public function taskResult()
+    {
+        return $this->hasMany(TaskResult::class);
+    }
+
     public function taskDocuments()
     {
         return $this->hasMany(TaskDocument::class);

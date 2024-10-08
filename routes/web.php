@@ -68,12 +68,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/export-Unit', [ReportController::class, 'exportUnit'])->middleware('check.organization');
 
     Route::get('/search', [SearchController::class, 'search'])->name('search')->middleware('check.organization');
-    Route::delete('/tasks/{code}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget')->middleware('check.organization');
+    Route::delete('/tasks/{id}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget')->middleware('check.organization');
     Route::get('/tasks/details/{id}/{type}', [TaskTargetController::class, 'showDetails'])->name('tasks.show-details')->middleware('check.organization');
     Route::get('/tasks/edit/{id}/{type}', [TaskTargetController::class, 'editTaskTarget'])->name('tasks.edit.taskTarget')->middleware('check.organization');
 
 
-    Route::get('/tasks/edit/approved/{code}/{type}', [DocumentController::class, 'approvedTaskTarget'])->name('tasks.edit.approved')->middleware('check.organization');
+    Route::get('/tasks/edit/approved/{id}/{type}', [DocumentController::class, 'approvedTaskTarget'])->name('tasks.edit.approved')->middleware('check.organization');
 
 
     Route::delete('/tasks/delete-organization/{id_task_criteria}/{type}/{id}', [TaskTargetController::class, 'deleteOrganization'])->name('tasks.delete.organization')->middleware('check.organization');
@@ -124,6 +124,8 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/update-status/{id}', [DocumentController::class, 'changeComplete'])->middleware('check.organization');
 
+    Route::put('/update-status-approved/{id}', [DocumentController::class, 'changeApproved'])->middleware('check.organization');
+    
 
     Route::resource('users', UserController::class)->middleware('check.organization');
     // Route để kiểm tra mã công việc

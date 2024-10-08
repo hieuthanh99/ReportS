@@ -49,7 +49,36 @@ class TaskTarget extends Model
         'slno'
     ];
 
+    public function getStatusLabel()
+    {
+        $today = Carbon::now();
+        $startDate = Carbon::parse($this->start_date);
+        $endDate = Carbon::parse($this->end_date);
+        if ($this->status === 'complete') {
+            if ($endDate->gt($today)) {
+                return "Hoàn thành đúng hạn";
+            } else {
+                return "Hoàn thành quá hạn";
+            }
+        }
 
+        // Nếu trạng thái là "new", "reject", "staff_complete", "sub_admin_complete", "assign"
+        if ($this->status === 'processing') {
+            if ($today->between($startDate, $endDate)) {
+                return "Đang thực hiện";
+            } elseif ($today->gt($endDate)) {
+                return "Quá hạn";
+            }
+        }
+
+        if ($this->status === 'new') {
+           if ($endDate->diffInDays($today) <= 30) {
+                return "Sắp tới hạn";
+            }
+        }
+
+        return "Trạng thái không xác định";
+    }
     public function getCurrentCycle()
     {
         return TimeHelper::getTimeParameters((int)$this->cycle_type);
@@ -253,6 +282,12 @@ class TaskTarget extends Model
     {
         return $this->belongsTo(Document::class);
     }
+    
+
+    public function getListResults(){
+        return TaskResult::where('type_save', $this->type)->where('id_task_criteria', $this->id)->paginate(10);
+    }
+    
 
     public function category()
     {

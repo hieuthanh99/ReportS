@@ -58,10 +58,8 @@ class DocumentController extends Controller
         try {
             $user = User::find(Auth::id());
 
-            $task = TaskTarget::where('isDelete', 0)->find($id);
-            if ($task->status == 'sub_admin_complete' && ($user->role == 'admin' || $user->role == 'supper_admin')) {
-
-                $task->is_completed = $request->is_completed ?? 0;
+            $task = TaskResult::find($id);
+            if (($task->status == 'sub_admin_complete' || $task->status == 'admin_approves' ) && ($user->role == 'admin' || $user->role == 'supper_admin')) {
                 $task->status = 'complete';
                 $task->save();
                 DB::commit();
@@ -75,19 +73,40 @@ class DocumentController extends Controller
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
         }
     }
-    public function approvedTaskTarget($code, $type)
+    public function changeApproved(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::find(Auth::id());
+
+            $task = TaskResult::find($id);
+            if ($task->status == 'sub_admin_complete' && ($user->role == 'admin' || $user->role == 'supper_admin')) {
+                $task->status = 'admin_approves';
+                $task->save();
+                DB::commit();
+                return response()->json(['success' => true, 'message' => 'Thành công.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Task not found.'], 404);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error creating task/target: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
+        }
+    }
+    public function approvedTaskTarget($id, $type)
     {
         try {
-            $taskTarget = TaskTarget::where('code', $code)->where('isDelete', 0)->first();
+            $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
             $document = Document::findOrFail($taskTarget->document_id);
             $userId = Auth::id();
             $user = User::find($userId);
 
             if ($type == 'target') {
                 if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                    $taskDocuments = $document->taskTarget->where('code', $code)->where('type', 'target')->where('isDelete', 0);
+                    $taskDocuments = $document->taskTarget->where('id', $id)->where('type', 'target')->where('isDelete', 0);
                 } else {
-                    $taskDocuments = $document->taskTarget->where('code', $code)->filter(function ($task) use ($user) {
+                    $taskDocuments = $document->taskTarget->where('id', $id)->filter(function ($task) use ($user) {
                         return $task->organization_id == $user->organization_id;
                     })->where('isDelete', 0);
                 }
@@ -103,9 +122,9 @@ class DocumentController extends Controller
 
 
                 if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                    $taskDocuments = $document->taskTarget->where('code', $code)->where('type', 'task')->where('isDelete', 0);
+                    $taskDocuments = $document->taskTarget->where('id', $id)->where('type', 'task')->where('isDelete', 0);
                 } else {
-                    $taskDocuments = $document->taskTarget->where('code', $code)->filter(function ($task) use ($user) {
+                    $taskDocuments = $document->taskTarget->where('id', $id)->filter(function ($task) use ($user) {
                         return $task->organization_id == $user->organization_id;
                     })->where('isDelete', 0);
                 }
@@ -125,95 +144,47 @@ class DocumentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $user = User::find(Auth::id());
+            $taskResult = TaskResult::find($id);
+            //dd($taskResult);
+            $task = TaskTarget::where('isDelete', 0)->find($taskResult->id_task_criteria);
 
-            $task = TaskTarget::where('isDelete', 0)->find($id);
-            $document = Document::findOrFail($task->document_id);
-            $currentNumber = $task->getCurrentCycle();
-            $currentType = $task->cycle_type;
-            $typeFile = '1';
-            if ($task->type == 'target') $typeFile = '2';
-            if ($task->status == 'sub_admin_complete' && ($user->role == 'admin' || $user->role == 'supper_admin')) {
-                $checkbox = isset($request->is_completed) ? $request->is_completed : 0;
-                $task->is_completed = $request->is_completed ?? 0;
-                $task->status = $checkbox ? 'complete' : $task->status;
-                $task->save();
-                DB::commit();
-                return redirect()->route('documents.report')->with('success', 'Cập nhật báo cáo thành công!');
-            } else {
-                // Xử lý file upload
-                if ($request->hasFile('files')) {
-                    foreach ($request->file('files') as $file) {
-                        $fileName = time() . '_' . $file->getClientOriginalName();
-                        $filePath = $file->storeAs('tasks', $fileName, 'public');
-                        File::create([
-                            'document_id' => $task->id,
-                            'file_name' => $fileName,
-                            'file_path' => $filePath,
-                            'number_type' => $currentNumber,
-                            'cycle_type' => $currentType,
-                            'type' => $typeFile
-                        ]);
-                    }
-                }
-                $hasComplete = ($task->status == 'sub_admin_complete' || $task->status == 'complete') ? true : false;
-
-                if ($task && !$hasComplete) {
-                    $task->description = $task->getStatus();
-                    $task->is_completed = 0;
-                    $task->status = "staff_complete";
-
-                    $record = TaskResult::where('id_task_criteria', $task->id)->where('isDelete', 0)->where("document_id", $document->id)->where("type_save", $task->getType())->first();
-                    if ($record) {
-                        $record->result =  isset($request->request_results) ? $request->request_results : '';
-                        $record->description =  'ok';
-                        $record->number_type =  $currentNumber;
-                        $record->type =  $currentType;
-                        $record->save();
-                    } else {
-                        $record = TaskResult::create([
-                            'id_task_criteria' => $task->id,
-                            'document_id' => $document->id,
-                            'result' => isset($request->request_results) ? $request->request_results : '',
-                            'description' => 'ok',
-                            'number_type' => $currentNumber,
-                            'type' => $currentType,
-                            'type_save' => $task->getType()
-                        ]);
-                    }
-
-                    HistoryChangeDocument::create([
-                        'mapping_id' => $task->id,
-                        'type_save' => 1,
-                        'result' => $record->result,
-                        'description' => $record->description,
-                        'number_cycle' => $record->number_type,
-                        'type_cycle' => $record->type,
-                        'update_date' => Carbon::now(),
-                        'update_user' => Auth::id()
+            // Xử lý file upload
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('tasks', $fileName, 'public');
+                    File::create([
+                        'document_id' => $taskResult->id,
+                        'file_name' => $fileName,
+                        'file_path' => $filePath,
+                        'number_type' => $taskResult->number_type,
+                        'cycle_type' => $taskResult->type,
+                        'type' => $taskResult->type_save
                     ]);
-                    $now = now();
-                    if ($task->is_completed) {
-                        if ($task->end_date >= $now) {
-                            $task->status_code = TaskStatus::COMPLETED_IN_TIME->value;
-                        } else {
-                            $task->status_code = TaskStatus::COMPLETED_OVERDUE->value;
-                        }
-                    } else {
-                        if ($task->end_date >= $now) {
-                            $task->status_code = TaskStatus::IN_PROGRESS_IN_TIME->value;
-                        } else {
-                            $task->status_code = TaskStatus::IN_PROGRESS_OVERDUE->value;
-                        }
-                    }
-                    $task->results =  "Đang thực hiện";
-                    $task->save();
                 }
-                DB::commit();
-
-                if ($task->type == 'target') return redirect()->route('documents.report.target')->with('success', 'Cập nhật báo cáo thành công!');
-                else return redirect()->route('documents.report')->with('success', 'Cập nhật báo cáo thành công!');
             }
+            $result = isset($request->request_results) ? $request->request_results : '';
+            if ($taskResult) {
+                HistoryChangeDocument::create([
+                    'mapping_id' => $taskResult->id,
+                    'type_save' => $taskResult->type_save == 'task'?1:2,
+                    'result' => $result,
+                    'description' => $result,
+                    'number_cycle' => $taskResult->number_type,
+                    'type_cycle' => $taskResult->type,
+                    'update_date' => Carbon::now(),
+                    'update_user' => Auth::id()
+                ]);
+                $taskResult->result = $result;
+                $taskResult->description =  $result;
+                $taskResult->process_code = $task->getProcessCode();
+                $taskResult->status =  "staff_complete";
+                $taskResult->save();
+            }
+            DB::commit();
+
+            if ($taskResult->type_save == 'target') return redirect()->route('documents.report.target')->with('success', 'Cập nhật báo cáo thành công!');
+            else return redirect()->route('documents.report')->with('success', 'Cập nhật báo cáo thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error creating task/target: ' . $e->getMessage());
@@ -241,7 +212,8 @@ class DocumentController extends Controller
                         continue;
                     }
                     $taskTarget = TaskTarget::where('isDelete', 0)->find($taskId);
-
+                    $taskTarget->status = 'processing';
+                    $taskTarget->save();
                     $organization = Organization::where('id', $id)->where('isDelete', 0)->first();
                     if ($organization) {
                         $typeRecord = $taskTarget->type === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
@@ -287,7 +259,7 @@ class DocumentController extends Controller
         $user = User::find($userId);
         $query = Document::query();
 
-        $taskTargetQuery = TaskTarget::query();
+        $taskTargetQuery = TaskResult::query();
         if ($request->filled('document_name')) {
             $query->where('document_name', 'like', '%' . $request->document_name . '%')->where('isDelete', 0);
         }
@@ -295,57 +267,30 @@ class DocumentController extends Controller
         if ($request->filled('organization_id')) {
             $query->where('issuing_department', $request->organization_id)->where('isDelete', 0);
         }
-
-        $executionTimeFrom = $request->input('execution_time_from');
-        $executionTimeTo = $request->input('execution_time_to');
-
-        // Kiểm tra nếu cả hai thời gian đều có giá trị
-        if ($executionTimeFrom && $executionTimeTo) {
-            try {
-                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
-                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
-                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
-
-                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
-                if ($executionTimeFrom->gt($executionTimeTo)) {
-                    return redirect()->back()->withErrors([
-                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
-                    ]);
-                }
-            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
-                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
-            }
-        }
-        if ($executionTimeFrom) {
-            $query->whereDate('release_date', '>=', $executionTimeFrom);
-        }
-
-        if ($executionTimeTo) {
-            $query->whereDate('release_date', '<=', $executionTimeTo);
-        }
         if ($text) {
             $query->where('document_name', 'like', '%' . $text . '%');
         }
         if ($user->role == 'staff' || $user->role == 'sub_admin') {
-            $documents = Document::whereHas('taskTarget', function ($query) use ($user) {
-                $query->where('organization_id', $user->organization_id)->where('isDelete', 0);
+            $documents = Document::whereHas('taskResult', function ($query) use ($user) {
+                $query->where('organization_id', $user->organization_id);
             })->with('issuingDepartment')->orderBy('created_at', 'desc')->get();
 
             if ($documents && method_exists($documents, 'pluck')) {
-                $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))
+                $taskDocuments = TaskResult::whereIn('document_id', $documents->pluck('id'))
                     ->where('organization_id', $user->organization->id)
-                    ->where('isDelete', 0)
-                    ->where('type', 'target')
-                    ->paginate(10);
+                    ->where('type_save', 'target');
             } else {
                 $taskDocuments = collect();
             }
         } else if ($user->role == 'admin' || $user->role == 'supper_admin') {
             $documents = $query->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc')->get();
 
-            $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->where('type', 'target')->paginate(10);
+            $taskDocuments = TaskResult::whereIn('document_id', $documents->pluck('id'))->where('type_save', 'target');
         }
-
+        if ($request->filled('status')) {
+            $taskDocuments =  $taskDocuments->where('status', $request->status);
+        }
+        $taskDocuments = $taskDocuments->paginate(10);
         $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
@@ -362,63 +307,40 @@ class DocumentController extends Controller
         $user = User::find($userId);
         $query = Document::query();
 
-        $taskTargetQuery = TaskTarget::query();
-        if ($request->filled('document_name')) {
-            $query->where('document_name', 'like', '%' . $request->document_name . '%')->where('isDelete', 0);
+        $taskTargetQuery = TaskResult::query();
+        if ($request->filled('document_code')) {
+            $query->where('document_code', 'like', '%' . $request->document_code . '%')->where('isDelete', 0);
         }
 
         if ($request->filled('organization_id')) {
             $query->where('issuing_department', $request->organization_id)->where('isDelete', 0);
         }
 
-        $executionTimeFrom = $request->input('execution_time_from');
-        $executionTimeTo = $request->input('execution_time_to');
-
-        // Kiểm tra nếu cả hai thời gian đều có giá trị
-        if ($executionTimeFrom && $executionTimeTo) {
-            try {
-                // Chuyển đổi thời gian thành đối tượng Carbon để dễ so sánh
-                $executionTimeFrom = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeFrom);
-                $executionTimeTo = \Carbon\Carbon::createFromFormat('Y-m-d', $executionTimeTo);
-
-                // Kiểm tra nếu thời gian từ lớn hơn thời gian đến
-                if ($executionTimeFrom->gt($executionTimeTo)) {
-                    return redirect()->back()->withErrors([
-                        'error' => "Thời gian từ ({$executionTimeFrom->format('d-m-Y')}) không được lớn hơn thời gian đến ({$executionTimeTo->format('d-m-Y')})."
-                    ]);
-                }
-            } catch (\Carbon\Exceptions\InvalidFormatException $e) {
-                return redirect()->back()->withErrors(['error' => 'Định dạng thời gian không hợp lệ. Vui lòng nhập đúng định dạng ngày: dd-mm-yyyy.']);
-            }
-        }
-        if ($executionTimeFrom) {
-            $query->whereDate('release_date', '>=', $executionTimeFrom);
-        }
-
-        if ($executionTimeTo) {
-            $query->whereDate('release_date', '<=', $executionTimeTo);
-        }
         if ($text) {
             $query->where('document_name', 'like', '%' . $text . '%');
         }
         if ($user->role == 'staff' || $user->role == 'sub_admin') {
-            $documents = Document::whereHas('taskTarget', function ($query) use ($user) {
-                $query->where('organization_id', $user->organization_id)->where('isDelete', 0);
+            $documents = Document::whereHas('taskResult', function ($query) use ($user) {
+                $query->where('organization_id', $user->organization_id);
             })->with('issuingDepartment')->orderBy('created_at', 'desc')->get();
 
             if ($documents && method_exists($documents, 'pluck')) {
-                $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))
+                $taskDocuments = TaskResult::whereIn('document_id', $documents->pluck('id'))
                     ->where('organization_id', $user->organization->id)
-                    ->where('isDelete', 0)->where('type', 'task')->paginate(10);
+                    ->where('type_save', 'task');
+   
             } else {
                 $taskDocuments = collect();
             }
         } else if ($user->role == 'admin' || $user->role == 'supper_admin') {
             $documents = $query->with('issuingDepartment')->where('isDelete', 0)->orderBy('created_at', 'desc')->get();
 
-            $taskDocuments = TaskTarget::whereIn('document_id', $documents->pluck('id'))->where('isDelete', 0)->where('type', 'task')->paginate(10);
+            $taskDocuments = TaskResult::whereIn('document_id', $documents->pluck('id'))->where('type_save', 'task');
         }
-
+        if ($request->filled('status')) {
+            $taskDocuments =  $taskDocuments->where('status', $request->status);
+        }
+        $taskDocuments = $taskDocuments->paginate(10);
         $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
@@ -501,11 +423,11 @@ class DocumentController extends Controller
         return response()->json(['exists' => $exists]);
     }
 
-    public function getHistory($code)
+    public function getHistory($id)
     {
         // \DB::enableQueryLog();
-        $taskTargetIds = TaskTarget::where('code', $code)->where('isDelete', 0)
-            ->pluck('id'); // Lấy danh sách các ID dưới dạng mảng
+        $taskTargetIds = TaskResult::where('id_task_criteria', $id)->pluck('id');
+             // Lấy danh sách các ID dưới dạng mảng
 
         // Kiểm tra nếu không có ID nào được tìm thấy
         if ($taskTargetIds->isEmpty()) {
@@ -524,7 +446,7 @@ class DocumentController extends Controller
     public function getHistoryById($id)
     {
 
-        $taskTargetId = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
+        $taskTargetId = TaskResult::where('id', $id)->first();
 
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId->id)
@@ -657,24 +579,25 @@ class DocumentController extends Controller
     public function reportViewUpdateTarget(string $id)
     {
         try {
-            $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
+            $taskResult = TaskResult::where('id', $id)->where('isDelete', 0)->first();
+            $taskTarget = TaskTarget::where('id', $taskResult->id_task_criteria)->where('isDelete', 0)->first();            
             $document = Document::findOrFail($taskTarget->document_id);
             $userId = Auth::id();
             $user = User::find($userId);
 
             if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                $taskDocuments = $document->taskTarget->where('isDelete', 0);
+                $taskDocuments = $document->taskResult;
             } else {
-                $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
+                $taskDocuments = $document->taskResult->filter(function ($task) use ($user) {
                     return $task->organization_id == $user->organization_id;
-                })->where('isDelete', 0);
+                });
             }
             $groupTarget =  IndicatorGroup::where('isDelete', 0)->get();
             $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
             $units = Unit::all();
-            return view('documents.reportUpdateTaskget', compact('units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
+            return view('documents.reportUpdateTaskget', compact('taskResult','units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
@@ -683,24 +606,25 @@ class DocumentController extends Controller
     public function reportViewUpdate(string $id)
     {
         try {
-            $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
+            $taskResult = TaskResult::where('id', $id)->where('isDelete', 0)->first();
+            $taskTarget = TaskTarget::where('id', $taskResult->id_task_criteria)->where('isDelete', 0)->first();
             $document = Document::findOrFail($taskTarget->document_id);
             $userId = Auth::id();
             $user = User::find($userId);
 
             if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                $taskDocuments = $document->taskTarget->where('isDelete', 0);
+                $taskDocuments = $document->taskResult;
             } else {
-                $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
+                $taskDocuments = $document->taskResult->filter(function ($task) use ($user) {
                     return $task->organization_id == $user->organization_id;
-                })->where('isDelete', 0);
+                });
             }
             $groupTask =  TaskGroup::where('isDelete', 0)->get();
             $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
 
-            return view('documents.reportUpdate', compact('document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
+            return view('documents.reportUpdate', compact('taskResult', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
@@ -732,24 +656,25 @@ class DocumentController extends Controller
     public function detailsReport(string $id)
     {
         try {
-            $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
-            $document = Document::findOrFail($taskTarget->document_id);
+            $taskResult = TaskResult::where('id', $id)->where('isDelete', 0)->first();
+            $taskTarget = TaskTarget::where('id', $taskResult->id_task_criteria)->where('isDelete', 0)->first();
+            $document = Document::findOrFail($taskResult->document_id);
             $userId = Auth::id();
             $user = User::find($userId);
 
             if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                $taskDocuments = $document->taskTarget->where('isDelete', 0);
+                $taskDocuments = $document->taskResult;
             } else {
-                $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
+                $taskDocuments = $document->taskResult->filter(function ($task) use ($user) {
                     return $task->organization_id == $user->organization_id;
-                })->where('isDelete', 0);
+                });
             }
             $groupTask =  TaskGroup::where('isDelete', 0)->get();
             $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
 
-            return view('documents.viewDetailsReport', compact('document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
+            return view('documents.viewDetailsReport', compact('taskResult', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
@@ -760,17 +685,18 @@ class DocumentController extends Controller
     {
 
         try {
-            $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->first();
-            $document = Document::findOrFail($taskTarget->document_id);
+            $taskResult = TaskResult::where('id', $id)->where('isDelete', 0)->first();
+            $taskTarget = TaskTarget::where('id', $taskResult->id_task_criteria)->where('isDelete', 0)->first();
+            $document = Document::findOrFail($taskResult->document_id);
             $userId = Auth::id();
             $user = User::find($userId);
 
             if ($user->role == 'admin' || $user->role == 'supper_admin') {
-                $taskDocuments = $document->taskTarget->where('isDelete', 0);
+                $taskDocuments = $document->taskResult;
             } else {
-                $taskDocuments = $document->taskTarget->filter(function ($task) use ($user) {
+                $taskDocuments = $document->taskResult->filter(function ($task) use ($user) {
                     return $task->organization_id == $user->organization_id;
-                })->where('isDelete', 0);
+                });
             }
             $groupTarget =  IndicatorGroup::where('isDelete', 0)->get();
             $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
@@ -778,7 +704,7 @@ class DocumentController extends Controller
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
 
             $units = Unit::all();
-            return view('documents.viewDetailsReportTarget', compact('units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
+            return view('documents.viewDetailsReportTarget', compact('taskResult','units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }

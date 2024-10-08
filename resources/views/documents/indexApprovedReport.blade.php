@@ -106,7 +106,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan ban hành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày hoàn thành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Cập nhật phê duyệt
                          </th>
@@ -123,19 +123,19 @@
                         <tr class="border-b border-gray-200">
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
                             <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $item->issuing_organization_id }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item->document->issuingDepartment->name ?? "" }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $item->getEndDate() }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getTaskStatusDescription() }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                                onclick="window.location.href='{{ route('tasks.edit.approved',['code' => $item->code, 'type' => $item->type]) }}'">
+                                onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
-                                    data-task-id="{{ $item->code }}"
+                                    data-task-id="{{ $item->id }}"
                                     class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                     <i class="fa fa-history"></i>
                                 </button>
@@ -149,19 +149,19 @@
                         <tr class="border-b border-gray-200">
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $index + $taskTargets->firstItem() }}</td>
                             <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $item->issuing_organization_id }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $item->document->issuingDepartment->name ?? "" }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $item->getEndDate() }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getTaskStatusDescription() }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                                onclick="window.location.href='{{ route('tasks.edit.approved',['code' => $item->code, 'type' => $item->type]) }}'">
+                                onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
-                                    data-task-id="{{ $item->code }}"
+                                    data-task-id="{{ $item->id }}"
                                     class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                     <i class="fa fa-history"></i>
                                 </button>
@@ -229,13 +229,13 @@
         //  document.getElementById('organization_type_id').addEventListener('change', function () {
         //     var organizationTypeId = this.value;
             
-            // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-            fetch(`/get-organizations/${organizationTypeId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Làm rỗng danh sách `parent_id`
-                    var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
+        //     // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+        //     fetch(`/get-organizations/${organizationTypeId}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // Làm rỗng danh sách `parent_id`
+        //             var parentSelect = document.getElementById('parent_id');
+        //             parentSelect.innerHTML = '<option value="" disabled selected>Chọn cơ quan tổ chức cấp trên</option>';
 
         //             // Thêm các tùy chọn mới
         //             data.forEach(function (organization) {

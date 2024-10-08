@@ -26,7 +26,7 @@
     @if(Auth::user()->role !== 'staff')
     <div class="flex -mx-2">
 
-        <div class="w-1/2 px-2">
+        {{-- <div class="w-1/2 px-2">
             <!-- Nội dung của cột 2 chia làm 2 row -->
             <div class="flex flex-col h-full">
                 <div class="flex-1 bg-gray-200 p-4 mb-2">
@@ -75,10 +75,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="w-1/2 px-2">
              <!-- Nội dung của cột 3 chia làm 2 row -->
-             <div class="flex flex-col h-full">
+             {{-- <div class="flex flex-col h-full">
                 <div class="flex-1 bg-gray-200 p-4 mb-2">
                     <canvas id="barChart3" width="400" height="200"></canvas>
                 </div>
@@ -123,7 +123,7 @@
                         {{ $targetsTable->links() }} <!-- Render pagination links -->
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     @else

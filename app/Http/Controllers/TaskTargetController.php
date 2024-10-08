@@ -526,7 +526,6 @@ class TaskTargetController extends Controller
                     'type' => 'required|in:task,target',
                     'type_id' => 'required',
                     'unit' => 'required',   // Đơn vị
-                    'target_type' => 'required',
                     'target' => 'required',
                 ], [
                     'document_id.required' => 'Văn bản là bắt buộc.',
@@ -544,7 +543,6 @@ class TaskTargetController extends Controller
                     'type_id.required' => 'Loại mục tiêu là bắt buộc.',
                     'type.in' => 'Loại mục tiêu phải là "task" hoặc "target".',
                     'unit.required' => 'Đơn vị là bắt buộc',   // Đơn vị
-                    'target_type.required' => 'Loại chỉ tiêu là bắt buộc',
                     'target.required' => 'Chỉ tiêu là bắt buộc',
                 ]);
             } else {

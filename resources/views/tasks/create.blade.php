@@ -47,7 +47,7 @@
                 <div class="mb-4">
                     <label for="document_id" class="block text-gray-700 text-sm font-medium mb-2">Văn bản <span class="text-red-500">*</span></label>
 
-                    <select name="document_id" id="document_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required 
+                    <select name="document_id" id="document_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required 
                     oninvalid="this.setCustomValidity('Vui lòng chọn văn bản.')" 
                     oninput="setCustomValidity('')">
                         <option value="" data-code="">Chọn văn bản
@@ -64,7 +64,7 @@
                 <div class="mb-4">
                     <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Nhóm {{ $text }} <span class="text-red-500">*</span></label>
                  
-                    <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required 
+                    <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required 
                     oninvalid="this.setCustomValidity('Vui lòng chọn nhóm.')" 
                     oninput="setCustomValidity('')">
                         <option value="" data-code="">Chọn loại {{ $text }}</option>
@@ -79,7 +79,7 @@
 
                 <div class="mb-4">
                     <label for="cycle_type" class="block text-gray-700 text-sm font-medium mb-2">Chu kỳ báo cáo <span class="text-red-500">*</span></label>
-                    <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2" required
+                    <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2 select2"  required
                     oninvalid="this.setCustomValidity('Vui lòng chọn chu kỳ báo cáo.')" 
                     oninput="setCustomValidity('')">
                         <!-- <option value="1" {{ old('cycle_type') == '1' ? 'selected' : '' }}>Tuần</option> -->
@@ -100,7 +100,7 @@
                 <div class="mb-4">
                     
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Loại nhiệm vụ<span class="text-red-500">*</span></label>
-                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px">
                         <option value="" disabled selected>-- Chọn loại nhiệm vụ --</option>
                         <option value="timed">Có thời hạn</option> <!-- Giá trị tiếng Anh: "timed" -->
                         <option value="regular">Thường xuyên</option> <!-- Giá trị tiếng Anh: "regular" -->
@@ -126,7 +126,7 @@
                 @if($type == 'target')
                 <div class="mb-4">
                     <label for="unit" class="block text-gray-700 text-sm font-medium mb-2">Đơn vị tính<span class="text-red-500">*</span></label>
-                    <select id="unit" name="unit" class="w-full p-2 border border-gray-300 rounded-md" onchange="toggleCustomInput(this)">
+                    <select id="unit" name="unit" class="w-full p-2 border border-gray-300 rounded-md select2" onchange="toggleCustomInput(this)">
                         @foreach ($units as $item)
                             <option value="{{ $item->id }}" {{ old('unit') == $item->id ? 'selected' : '' }}>
                                 {{ $item->name }}
@@ -145,7 +145,7 @@
                 <div class="mb-4">
                     {{-- onchange="changeResultType(this.value)" --}}
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
-                    <select name="result_type" id="result_type"  class="form-input w-full border border-gray-300 rounded-lg p-2" style="margin-bottom: 10px">
+                    <select name="result_type" id="result_type"  class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px">
                         @foreach ($workResultTypes as $idx => $item)
                             <option value="{{ $item->key }}">
                                 {{ $item->value }}
@@ -177,7 +177,7 @@
                 </div>
                 <div class="mb-4" style="display: none">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Phân loại <span class="text-red-500">*</span></label>
-                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2" required>
+                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required>
                         @foreach ($categories as $item)
                             <option value="{{ $item->CategoryID }}" {{ old('category_id') == $item->CategoryID ? 'selected' : '' }}>
                                 {{ $item->CategoryName }}
@@ -201,25 +201,33 @@
                 customInput.classList.add('hidden');
             }
         }
-            document.getElementById('document_id').addEventListener('change', generateTaskCode);
+        $(document).ready(function() {
+    // Khởi tạo Select2
+    $('#document_id').select2();
 
-                function generateTaskCode() {
-                    const documentSelect = document.getElementById('document_id');
-                    const selectedOption = documentSelect.options[documentSelect.selectedIndex];
-                    const documentCode = selectedOption.getAttribute('data-code');
-                    const selectType = document.getElementById("type").value;
-                    const randomNum = Math.floor(1000000 + Math.random() * 9000000);
-                    let s = "";
-                    if (selectType === "task") {
-                        s = "NV";
-                    } else if (selectType === "target") {
-                        s = "CT";
-                    }
-                    const taskCode = `${documentCode}-${s}-${randomNum}`;
-                    
-                    // Gán mã nhiệm vụ vào input hidden
-                    document.getElementById('code').value = taskCode;
-                }
+    // Sử dụng sự kiện change của Select2
+    $('#document_id').on('change', generateTaskCode);
+});
+
+function generateTaskCode() {
+    const documentSelect = document.getElementById('document_id');
+    const selectedOption = documentSelect.options[documentSelect.selectedIndex];
+    const documentCode = selectedOption.getAttribute('data-code');
+    const selectType = document.getElementById("type").value;
+    const randomNum = Math.floor(1000000 + Math.random() * 9000000);
+    let s = "";
+    
+    if (selectType === "task") {
+        s = "NV";
+    } else if (selectType === "target") {
+        s = "CT";
+    }
+    
+    const taskCode = `${documentCode}-${s}-${randomNum}`;
+    
+    // Gán mã nhiệm vụ vào input hidden
+    document.getElementById('code').value = taskCode;
+}
             document.querySelector('form').addEventListener('submit', function() {
                 const selectType = document.getElementById("type").value;
                 const hiddenField = document.getElementById("request_results");

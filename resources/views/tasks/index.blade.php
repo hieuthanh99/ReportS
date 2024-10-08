@@ -83,7 +83,7 @@
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Ngày hoàn thành:</label>
-                    <input type="month" id="completion_date" name="completion_date"  placeholder="Chọn tháng/năm"
+                    <input type="month" id="completion_date" name="completion_date" placeholder="Chọn tháng/năm" 
                     class="border border-gray-300 rounded-lg p-2 w-full">
                 </div>
                 <div class="flex-1 min-w-[200px]">
@@ -356,6 +356,7 @@
         </div>
     </div>
     <script>
+
         $(document).ready(function() {
             $('.select2').select2({
                 allowClear: true

@@ -111,7 +111,7 @@
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Loại văn bản:</label>
 
                     <select name="category_id" id="category_id" required
-                            class="form-input w-full border border-gray-300 rounded-lg p-2"
+                            class="form-input w-full border border-gray-300 rounded-lg p-2 select2"
                             oninvalid="this.setCustomValidity('Vui lòng chọn loại văn bản.')" 
                     oninput="setCustomValidity('')">
                         @foreach ($documentCategory as $item)
@@ -150,7 +150,7 @@
                     <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan:</label>
 
                     <select name="organization_type_id" id="organization_type_id" required
-                            class="form-input w-full border border-gray-300 rounded-lg p-2"
+                            class="form-input w-full border border-gray-300 rounded-lg p-2 select2"
                             oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan.')" 
                     oninput="setCustomValidity('')">
 
@@ -168,7 +168,7 @@
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan:</label>
                     <select id="parent_id" name="issuing_department" required
 
-                            class="form-input w-full border border-gray-300 rounded-lg p-2"
+                            class="form-input w-full border border-gray-300 rounded-lg p-2 select2"
                             oninvalid="this.setCustomValidity('Vui lòng chọn cơ quan.')" 
                     oninput="setCustomValidity('')">
                         @foreach ($organizations as $organization)
@@ -230,37 +230,43 @@
            fetchOrganizations(organizationTypeId);
 
 
-            document.getElementById('organization_type_id').addEventListener('change', function () {
-                var organizationTypeId = this.value;
-                
-                // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-                fetchOrganizations(organizationTypeId);
+// Đảm bảo rằng bạn đã khởi tạo Select2 cho phần tử
+$(document).ready(function() {
+    $('#organization_type_id').select2();
+
+    // Sử dụng Select2 để lắng nghe sự kiện change
+    $('#organization_type_id').on('change', function() {
+        var organizationTypeId = $(this).val(); // Lấy giá trị đã chọn
+        
+        // Gửi yêu cầu AJAX để lấy danh sách organizations
+        fetchOrganizations(organizationTypeId);
+    });
+});
+
+function fetchOrganizations(organizationTypeId) {
+    // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
+    fetch(`/get-organizations/${organizationTypeId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Làm rỗng danh sách `parent_id`
+            var parentSelect = $('#parent_id'); // Sử dụng jQuery để chọn phần tử
+            parentSelect.empty().append('<option value="" disabled selected>Chọn Cơ quan ban hành</option>');
+            
+            // Thêm các tùy chọn mới
+            data.forEach(function (organization) {
+                var option = new Option(organization.name, organization.id, false, false); // Tạo đối tượng option
+                parentSelect.append(option); // Thêm option vào select
             });
 
-            function fetchOrganizations(organizationTypeId) {
-        // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-        fetch(`/get-organizations/${organizationTypeId}`)
-            .then(response => response.json())
-            .then(data => {
-                // Làm rỗng danh sách `parent_id`
-                var parentSelect = document.getElementById('parent_id');
-                parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
-                // Thêm các tùy chọn mới
-                data.forEach(function (organization) {
-                    var option = document.createElement('option');
-                    option.value = organization.id;
-                    option.text = organization.name;
-                    parentSelect.appendChild(option);
+            // Đặt giá trị đã chọn nếu có
+            var selectedIssuingDepartment = "{{ $document->issuing_department }}"; // Lấy giá trị từ Laravel
+            if (selectedIssuingDepartment) {
+                parentSelect.val(selectedIssuingDepartment).trigger('change'); // Đặt giá trị cho select và kích hoạt change
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
-                    var selectedIssuingDepartment = "{{ $document->issuing_department }}"; // Lấy giá trị từ Laravel
-                if (selectedIssuingDepartment) {
-                    parentSelect.value = selectedIssuingDepartment;
-                }
-                
-                });
-            })
-            .catch(error => console.error('Error:', error));
-    }
             const fileInput = document.getElementById('files');
             const fileList = document.getElementById('file-list');
             const fileListData = document.querySelectorAll('.file-item');

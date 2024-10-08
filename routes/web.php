@@ -43,20 +43,38 @@ Route::middleware(['auth', 'roles:staff,sub_admin'])->group(function () {
    
 });
 Route::middleware('auth')->group(function () {
+    Route::get('/report-update-view-role/{id}/{type}', [DocumentController::class, 'reportViewUpdateRole'])->name('documents.report.update.role')->middleware('check.organization');
+
+    Route::get('/api/check-task-code/{taskCode}', [TaskController::class, 'checkTaskCode'])->middleware('check.organization');
+    Route::get('/api/check-document-code/{documentCode}', [DocumentController::class, 'checkDocumentCode'])->name('check.document.code')->middleware('check.organization');
+    Route::get('/api/get-history/{code}', [DocumentController::class, 'getHistory'])->name('document.history')->middleware('check.organization');
+    Route::get('/api/get-history/byId/{code}', [DocumentController::class, 'getHistoryById'])->name('document.history.byId')->middleware('check.organization');
+    Route::post('/documents/{document}/task/update-cycle', [DocumentController::class, 'updateTaskCycle'])->name('documents.task.update.cycle')->middleware('check.organization');
+    Route::get('/api/check-criteria-code/{criteriaCode}', [CriteriaController::class, 'checkCriteriaCode'])->name('check.criteria.code')->middleware('check.organization');
+    Route::delete('/delete-file/{id}', [FileController::class, 'destroy'])->middleware('check.organization');
+    Route::post('/upload', [FileController::class, 'upload'])->name('upload')->middleware('check.organization');
+    Route::get('/download/{id}/{type}', [FileController::class, 'download'])->name('file.download')->middleware('check.organization');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/file/view/{id}', [FileController::class, 'view'])->name('file.view')->middleware('check.organization');
+    Route::post('/tasks/update-remarks', [TaskTargetController::class, 'updateRemarks'])->name('tasks.updateRemarks')->middleware('check.organization');
+    Route::resource('organization_types', OrganizationTypeController::class)->middleware('check.organization');
+    Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update')->middleware('check.organization');
+    Route::get('/report-update-view-target/{document}', [DocumentController::class, 'reportViewUpdateTarget'])->name('documents.report.update.target')->middleware('check.organization');
+    Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report')->middleware('check.organization');
+    Route::get('/report-target', [DocumentController::class, 'reportTargetView'])->name('documents.report.target')->middleware('check.organization');
+    Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details')->middleware('check.organization');
+    Route::get('/report-details-view-target/{document}', [DocumentController::class, 'detailsReportTarget'])->name('documents.report.details.target')->middleware('check.organization');
+})->middleware('check.organization');
+
+Route::group(['middleware' => ['admin_or_supper_admin']], function () {
     Route::get('/search-documents', [DocumentController::class, 'searchDocuments'])->name('documents.search');
 
     Route::get('/search-documents-name', [DocumentController::class, 'searchDocumentsName'])->name('documents.search.name');
 
-    Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report')->middleware('check.organization');
-    Route::get('/report-target', [DocumentController::class, 'reportTargetView'])->name('documents.report.target')->middleware('check.organization');
+ 
 
-    Route::get('/report-update-view-role/{id}/{type}', [DocumentController::class, 'reportViewUpdateRole'])->name('documents.report.update.role')->middleware('check.organization');
 
-    Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update')->middleware('check.organization');
-    Route::get('/report-update-view-target/{document}', [DocumentController::class, 'reportViewUpdateTarget'])->name('documents.report.update.target')->middleware('check.organization');
-
-    Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details')->middleware('check.organization');
-    Route::get('/report-details-view-target/{document}', [DocumentController::class, 'detailsReportTarget'])->name('documents.report.details.target')->middleware('check.organization');
+  
 
     Route::get('/reports', [ReportController::class, 'showReportDocument'])->name('reports.withDocument')->middleware('check.organization');
     Route::get('/reports-with-unit', [ReportController::class, 'showReportUnit'])->name('reports.withUnit')->middleware('check.organization');
@@ -94,13 +112,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/get-organizations/{organization_type_id}', [OrganizationController::class, 'getOrganizationsByType'])->middleware('check.organization');
     Route::get('/get-organization-id/{taskTargetCode}', [TaskTargetController::class, 'getOrganizationIdByCode'])->middleware('check.organization');
     Route::resource('task_groups', TaskGroupController::class)->middleware('check.organization');
-    Route::get('/file/view/{id}', [FileController::class, 'view'])->name('file.view')->middleware('check.organization');
     Route::resource('positions', PositionController::class)->middleware('check.organization');
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/tasks/assign-organizations/{taskTargetId}', [TaskTargetController::class, 'assignOrganizations'])->name('tasks.assign-organizations')->middleware('check.organization');
     Route::resource('document_categories', DocumentCategoryController::class)->middleware('check.organization');
-    Route::post('/tasks/update-remarks', [TaskTargetController::class, 'updateRemarks'])->name('tasks.updateRemarks')->middleware('check.organization');
-    Route::resource('organization_types', OrganizationTypeController::class)->middleware('check.organization');
+   
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit')->middleware('check.organization');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('check.organization');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy')->middleware('check.organization');
@@ -110,9 +125,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/user/search', [UserController::class, 'searchUser'])->name('users.search')->middleware('check.organization');
 
     Route::get('/get-assigned-organizations', [OrganizationController::class, 'getAssignedOrganizations'])->middleware('check.organization');
-    Route::delete('/delete-file/{id}', [FileController::class, 'destroy'])->middleware('check.organization');
-    Route::post('/upload', [FileController::class, 'upload'])->name('upload')->middleware('check.organization');
-    Route::get('/download/{id}/{type}', [FileController::class, 'download'])->name('file.download')->middleware('check.organization');
+
 
     Route::get('/task-target/{id}/organizations', [TaskTargetController::class, 'getOrganizationsByTaskTargetId'])->middleware('check.organization');
 
@@ -132,17 +145,14 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('users', UserController::class)->middleware('check.organization');
     // Route để kiểm tra mã công việc
-    Route::get('/api/check-task-code/{taskCode}', [TaskController::class, 'checkTaskCode'])->middleware('check.organization');
-    Route::get('/api/check-document-code/{documentCode}', [DocumentController::class, 'checkDocumentCode'])->name('check.document.code')->middleware('check.organization');
-    Route::get('/api/get-history/{code}', [DocumentController::class, 'getHistory'])->name('document.history')->middleware('check.organization');
-    Route::get('/api/get-history/byId/{code}', [DocumentController::class, 'getHistoryById'])->name('document.history.byId')->middleware('check.organization');
+  
     Route::post('/save-assign-organizations', [DocumentController::class, 'assignOrganizations'])->middleware('check.organization');
 
     // Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report')->middleware('check.organization');
     // Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update')->middleware('check.organization');
     // Route::get('/report-details-view/{document}', [DocumentController::class, 'detailsReport'])->name('documents.report.details')->middleware('check.organization');
 
-    Route::post('/documents/{document}/task/update-cycle', [DocumentController::class, 'updateTaskCycle'])->name('documents.task.update.cycle')->middleware('check.organization');
+   
 
     Route::post('/save-assigned-users', [UserController::class, 'saveAssignedUsers'])->name('saveAssignedUsers')->middleware('check.organization');
     Route::post('/assign-users', [UserController::class, 'assignUsers'])->name('users.assign')->middleware('check.organization');
@@ -168,7 +178,6 @@ Route::middleware('auth')->group(function () {
     //Route::post('/users/assign', [UserController::class, 'assignUser'])->name('users.assign')->middleware('check.organization');
 
 
-    Route::get('/api/check-criteria-code/{criteriaCode}', [CriteriaController::class, 'checkCriteriaCode'])->name('check.criteria.code')->middleware('check.organization');
 
 })->middleware('check.organization');
 

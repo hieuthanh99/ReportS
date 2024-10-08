@@ -41,7 +41,7 @@
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_id" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản:</label>
-                    <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                    <select id="document_id" name="document_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn số hiệu văn bản</option>
 
                         @foreach($documents as $item)
@@ -54,14 +54,14 @@
                 </div>
                 <div class="flex-1 min-w-[200px]">
                     <label for="status_code" class="block text-gray-700 font-medium mb-2">Trạng thái báo cáo:</label>
-                    <select id="status_code" name="status_code" class="border border-gray-300 rounded-lg p-2 w-full">
+                    <select id="status_code" name="status_code" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái báo cáo</option>
                         
                     </select>
                 </div>
                 <div class="flex-1 min-w-[200px]" id = "organization_id">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
-                    <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full">
+                    <select name="organization_id" id="parent_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn cơ quan ban hành</option>
                         @foreach($organizations as $organization)
                             <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>

@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/report', [DocumentController::class, 'reportView'])->name('documents.report')->middleware('check.organization');
     Route::get('/report-target', [DocumentController::class, 'reportTargetView'])->name('documents.report.target')->middleware('check.organization');
 
+    Route::get('/report-update-view-role/{id}/{type}', [DocumentController::class, 'reportViewUpdateRole'])->name('documents.report.update.role')->middleware('check.organization');
+
     Route::get('/report-update-view/{document}', [DocumentController::class, 'reportViewUpdate'])->name('documents.report.update')->middleware('check.organization');
     Route::get('/report-update-view-target/{document}', [DocumentController::class, 'reportViewUpdateTarget'])->name('documents.report.update.target')->middleware('check.organization');
 

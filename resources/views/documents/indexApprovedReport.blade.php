@@ -57,7 +57,7 @@
                             <option value="{{ $status->value }}">{{ $status->label() }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div>  
                 <div class="flex-1 min-w-[200px]">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
                     <select name="organization_id" id="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
@@ -88,7 +88,7 @@
                     <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
                         <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên chỉ tiêu</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan ban hành</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày hoàn thành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời hạn hoàn thành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
@@ -103,7 +103,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
                         <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium">Tên nhiệm vụ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan ban hành</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày hoàn thành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời hạn hoàn thành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">

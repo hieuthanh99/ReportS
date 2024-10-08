@@ -82,7 +82,7 @@
             </div>
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
-                    <label for="completion_date" class="block text-gray-700 font-medium mb-2">Ngày hoàn thành:</label>
+                    <label for="completion_date" class="block text-gray-700 font-medium mb-2">Thời hạn hoàn thành:</label>
                     <input type="month" id="completion_date" name="completion_date"  placeholder="Chọn tháng/năm"
                     class="border border-gray-300 rounded-lg p-2 w-full">
                 </div>
@@ -140,7 +140,7 @@
                                 chỉ tiêu</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Đơn vị tính</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Chỉ tiêu</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày hoàn thành
+                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Thời hạn hoàn thành
                             </th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số hiệu văn bản</th>
                             <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
@@ -169,7 +169,7 @@
                                 quả yêu cầu</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Nhóm nhiệm vụ</th>
                             <th style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Loại nhiệm vụ</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Ngày hoàn thành
+                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Thời hạn hoàn thành
                             </th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số hiệu văn bản
                             </th>

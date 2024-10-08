@@ -118,7 +118,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Tên chỉ tiêu</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan ban hành</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Ngày hoàn thành</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời hạn hoàn thành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chi tiết</th>

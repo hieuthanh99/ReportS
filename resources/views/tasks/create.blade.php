@@ -79,14 +79,15 @@
 
                 <div class="mb-4">
                     <label for="cycle_type" class="block text-gray-700 text-sm font-medium mb-2">Chu kỳ báo cáo <span class="text-red-500">*</span></label>
-                    <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2 select2"  required
+                    <!-- <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2"  required
                     oninvalid="this.setCustomValidity('Vui lòng chọn chu kỳ báo cáo.')" 
-                    oninput="setCustomValidity('')">
+                    oninput="setCustomValidity('')"> -->
                         <!-- <option value="1" {{ old('cycle_type') == '1' ? 'selected' : '' }}>Tuần</option> -->
-                        <option value="2" {{ old('cycle_type') == '2' ? 'selected' : '' }}>Tháng</option>
+                        <!-- <option value="2" {{ old('cycle_type') == '2' ? 'selected' : '' }}>Tháng</option> -->
                         <!-- <option value="3" {{ old('cycle_type') == '3' ? 'selected' : '' }}>Quý</option>
                         <option value="4" {{ old('cycle_type') == '4' ? 'selected' : '' }}>Năm</option> -->
-                    </select>
+                    <!-- </select> -->
+                    <input type="text" readonly id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="Tháng">
 
                 </div>
 
@@ -168,7 +169,7 @@
                     <input type="text" id="custom_unit" name="custom_unit" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập đơn vị khác...">
                 </div>
                 <div class="mb-4">
-                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày hoàn thành <span class="text-red-500">*</span></label>
+                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Thời hạn hoàn thành <span class="text-red-500">*</span></label>
                     <input type="date"  placeholder="dd-mm-yyyy"
                     min="1997-01-01" max="2100-12-31" id="end_date" name="end_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('end_date') }}" required>
                 </div>

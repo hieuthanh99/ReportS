@@ -44,7 +44,9 @@ Route::middleware(['auth', 'roles:staff,sub_admin'])->group(function () {
 });
 Route::middleware('auth')->group(function () {
     Route::get('/report-update-view-role/{id}/{type}', [DocumentController::class, 'reportViewUpdateRole'])->name('documents.report.update.role')->middleware('check.organization');
+    Route::get('/search-documents', [DocumentController::class, 'searchDocuments'])->name('documents.search');
 
+    Route::get('/search-documents-name', [DocumentController::class, 'searchDocumentsName'])->name('documents.search.name');
     Route::get('/api/check-task-code/{taskCode}', [TaskController::class, 'checkTaskCode'])->middleware('check.organization');
     Route::get('/api/check-document-code/{documentCode}', [DocumentController::class, 'checkDocumentCode'])->name('check.document.code')->middleware('check.organization');
     Route::get('/api/get-history/{code}', [DocumentController::class, 'getHistory'])->name('document.history')->middleware('check.organization');
@@ -67,9 +69,7 @@ Route::middleware('auth')->group(function () {
 })->middleware('check.organization');
 
 Route::group(['middleware' => ['admin_or_supper_admin']], function () {
-    Route::get('/search-documents', [DocumentController::class, 'searchDocuments'])->name('documents.search');
 
-    Route::get('/search-documents-name', [DocumentController::class, 'searchDocumentsName'])->name('documents.search.name');
 
  
 

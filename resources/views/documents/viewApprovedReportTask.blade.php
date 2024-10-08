@@ -351,9 +351,23 @@
                             {{ $taskResults->links() }} <!-- Render pagination links -->
                         </div>
                     </div>
-                    <div class="mt-4 flex" style="justify-content: space-between">
-                        <a href="{{ route('tasks.byType.approved', $type) }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
+                    <div class="gap-6 p-6 bg-white flex justify-content: space-between">
+                        <div class="mb-4 ">
+                            {{-- <div class="mt-4 flex" style="justify-content: space-between"> --}}
+                            <button type="button" onclick="window.location.href='{{ route('tasks.byType.approved', $type) }}'"
+                                class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">
+                                Quay lại
+                            </button>
                     </div>
+                    @if ($hasComplete && $taskTarget->status == 'processing')
+                    <div class="mb-4 ">
+                        <button data-id="{{ $taskTarget->id }}" id="button-apprrover-all-{{ $taskTarget->id }}" style="margin-right: 20px"
+                        type="button" 
+                            class="button-approved-all bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 mt-4">
+                            Duyệt
+                        </button>
+                    </div>
+                    @endif
                 </form>
             </div>
 
@@ -436,6 +450,48 @@
         button.addEventListener('click', function () {
             const itemId = this.getAttribute('data-id'); 
             const url = `/update-status-approved/${itemId}`; 
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    status: 'completed'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                                console.log(data.message)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Duyệt thành công!',
+                                    text: data.message,
+                                    confirmButtonText: 'OK'
+                                });
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Có lỗi xảy ra!',
+                                    text: 'Đã xảy ra lỗi trong quá trình thực hiện.',
+                                    confirmButtonText: 'Đóng'
+                                });
+                            }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert('Có lỗi xảy ra trong quá trình gửi yêu cầu.');
+            });
+        });
+    });
+    document.querySelectorAll('.button-approved-all').forEach(button => {
+        button.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-id'); 
+            const url = `/update-status-approved-all/${itemId}`; 
             fetch(url, {
                 method: 'PUT',
                 headers: {

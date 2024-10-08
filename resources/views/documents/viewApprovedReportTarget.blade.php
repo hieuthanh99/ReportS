@@ -380,11 +380,11 @@
                                 Quay lại
                             </button>
                     </div>
-                    @if (!$hasComplete)
+                    @if ($hasComplete && $taskTarget->status == 'processing')
                     <div class="mb-4 ">
-                        <button data-id="{{ $taskResult->id }}" id="button-apprrover-all-{{ $taskResult->id }}" style="margin-right: 20px"
+                        <button data-id="{{ $taskTarget->id }}" id="button-apprrover-all-{{ $taskTarget->id }}" style="margin-right: 20px"
                         type="button" 
-                            class="button-approved bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 mt-4">
+                            class="button-approved-all bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 mt-4">
                             Duyệt
                         </button>
                     </div>

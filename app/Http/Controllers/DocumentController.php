@@ -73,6 +73,27 @@ class DocumentController extends Controller
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
         }
     }
+    
+    public function changeApprovedAll(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::find(Auth::id());
+            $task = TaskTarget::find($id);
+            if ($task->status == 'processing' && ($user->role == 'admin' || $user->role == 'supper_admin')) {
+                $task->status = 'complete';
+                $task->save();
+                DB::commit();
+                return response()->json(['success' => true, 'message' => 'Thành công.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Task not found.'], 404);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error creating task/target: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
+        }
+    }
     public function changeApproved(Request $request, $id)
     {
         DB::beginTransaction();
@@ -137,7 +158,7 @@ class DocumentController extends Controller
                 $hasComplete = TaskResult::where('id_task_criteria', $taskTarget->id)->where('status', '!=', 'complete')->count() === 0;
                 $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
                 $taskDocuments = $taskDocuments->whereNotNull('organization_id');
-                dd($hasComplete);
+                //dd($hasComplete);
                 return view('documents.viewApprovedReportTask', compact('hasComplete','document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
             }
         } catch (\Exception $e) {

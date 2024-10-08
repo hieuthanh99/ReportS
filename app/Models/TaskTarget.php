@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helpers\TimeHelper;
 use App\Enums\TaskStatus;
 use App\Enums\TaskTargetStatus;
+use App\Enums\TaskTargetStatusChange;
 
 
 
@@ -179,7 +180,12 @@ class TaskTarget extends Model
 
         return TaskTargetStatus::tryFrom($this->status)?->label() ?? '';
     }
+    public function getStatusTaskTarget()
+    {
 
+        return TaskTargetStatusChange::tryFrom($this->status)?->label() ?? '';
+    }
+    
     public function getStatusLabelAttribute()
     {
         return TaskStatus::tryFrom($this->status_code)?->label() ?? '';
@@ -392,4 +398,7 @@ class TaskTarget extends Model
         $types = self::getTypesTarget();
         return $types[$this->target_type] ?? '';
     }
+
+
+    
 }

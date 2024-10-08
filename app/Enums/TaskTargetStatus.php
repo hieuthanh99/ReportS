@@ -17,7 +17,7 @@ enum TaskTargetStatus: string
     public function label(): string
     {
         return match($this) {
-            self::NEW => 'Chưa giao việc',
+            self::NEW => 'Báo cáo chưa giao việc',
             self::COMPLETE => 'Admin đánh giá hoàn thành',
             self::ASSIGN => 'Báo cáo đã giao việc',
             self::REJECT => 'Sub-Admin từ chối kết quả',

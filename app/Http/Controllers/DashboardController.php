@@ -8,107 +8,68 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Enums\TaskStatus;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index($text=null)
+    public function index($text = null)
     {
         $user = User::find(Auth::id());
-        $tasksTable = TaskTarget::where('type', 'task')->where('isDelete', 0);
-        $targetsTable = TaskTarget::where('type', 'target')->where('isDelete', 0);
-
-        $taskList = DB::table('task_target')
-            ->selectRaw('
-                MONTH(created_at) as month, 
-                status_code, 
-                COUNT(*) as total
-            ')->where('type', 'task')
-            ->where('isDelete', 0);
-
-        $tagertList = DB::table('task_target')
-            ->selectRaw('
-                MONTH(created_at) as month, 
-                status_code, 
-                COUNT(*) as total
-            ')->where('type', 'target')
-            ->where('isDelete', 0);
-
-        if($text){
-            $tasksTable = $tasksTable->where('name', 'like', '%' . $text . '%');
-            $targetsTable = $targetsTable->where('name', 'like', '%' . $text . '%');
-            $taskList = $taskList->where('name', 'like', '%' . $text . '%');
-            $tagertList = $tagertList->where('name', 'like', '%' . $text . '%');
-        }
-        $tasksTable = $tasksTable->paginate(10);
-        $targetsTable = $targetsTable->paginate(10);
-
-        $taskList = $taskList
-        ->groupBy('month', 'status_code')
-        ->orderBy('month')->get();
-
-        $tagertList = $tagertList
-        ->groupBy('month', 'status_code')
-        ->orderBy('month')->get();
-            
-        $chartDataTask = $this->getJson($taskList);
-        $chartDataTarget =  $this->getJson($tagertList);
-
-        $dataStaff = DB::table('task_target')
-        ->selectRaw('
-            MONTH(created_at) as month, 
-            status_code, 
-            COUNT(*) as total
-        ')
-        ->where('isDelete', 0)
-        ->where('organization_id', $user->organization_id)
-        ->groupBy('month', 'status_code')
-        ->orderBy('month')->get();
-
-        $chartDataStaff =  $this->getJson($dataStaff);
-
-        $chartDataJson = json_encode($chartDataTask);
-        $chartDataTargetJson = json_encode($chartDataTarget);
-        $chartDataStaffJson = json_encode($chartDataStaff);
-        $staffTable = TaskTarget::where('organization_id', $user->organization_id)->where('isDelete', 0)->paginate(10);
-       // dd($staffTable);
-        return view('dashboard', compact('chartDataJson', 'chartDataTargetJson', 'tasksTable', 'targetsTable', 'chartDataStaffJson', 'staffTable'));
-    }
-
-
-    function getJson($data){
-        $chartData = [
-            'months' => [],
-            'not_completed' => [],
-            'in_progress_in_time' => [],
-            'in_progress_overdue' => [],
-            'completed_in_time' => [],
-            'completed_overdue' => []
+        $tasks = TaskTarget::where('isDelete', 0);
+        $today = Carbon::now();
+    
+        // Khởi tạo mảng để chứa số liệu cho từng role và type
+        $stats = [
+            'task' => [
+                'overdue' => 0,
+                'upcoming' => 0,
+                'inProgress' => 0,
+                'completedOnTime' => 0,
+                'completedLate' => 0
+            ],
+            'target' => [
+                'overdue' => 0,
+                'upcoming' => 0,
+                'inProgress' => 0,
+                'completedOnTime' => 0,
+                'completedLate' => 0
+            ]
         ];
-
-        foreach ($data as $task) {
-            $month = 'Tháng ' . $task->month;
-            if (!in_array($month, $chartData['months'])) {
-                $chartData['months'][] = $month;
-            }
-            
-            switch ($task->status_code) {
-                case TaskStatus::NOT_COMPLETED->value:
-                    $chartData['not_completed'][] = $task->total;
-                    break;
-                case TaskStatus::IN_PROGRESS_IN_TIME->value:
-                    $chartData['in_progress_in_time'][] = $task->total;
-                    break;
-                case TaskStatus::IN_PROGRESS_OVERDUE->value:
-                    $chartData['in_progress_overdue'][] = $task->total;
-                    break;
-                case TaskStatus::COMPLETED_IN_TIME->value:
-                    $chartData['completed_in_time'][] = $task->total;
-                    break;
-                case TaskStatus::COMPLETED_OVERDUE->value:
-                    $chartData['completed_overdue'][] = $task->total;
-                    break;
+        $tableTask = $tasks->where('type', 'task')->paginate(10);
+        $tableTarget = $tasks->where('type', 'task')->paginate(10);
+        // Lặp qua các task/target và phân loại theo role và type
+        foreach ($tasks->get() as $task) {
+            $startDate = Carbon::parse($task->start_date);
+            $endDate = Carbon::parse($task->end_date);
+    
+            // Xác định loại (task hoặc target)
+            $type = $task->type;
+    
+            // Sử dụng logic chung cho cả task và target
+            if ($task->status === 'complete') {
+                if ($endDate->gt($today)) {
+                    $stats[$type]['completedOnTime']++;
+                } else {
+                    $stats[$type]['completedLate']++;
+                }
+            } elseif ($task->status === 'processing') {
+                if ($today->between($startDate, $endDate)) {
+                    $stats[$type]['inProgress']++;
+                } elseif ($today->gt($endDate)) {
+                    $stats[$type]['overdue']++;
+                }
+            } elseif ($task->status === 'new' && $endDate->diffInDays($today) <= 30) {
+                $stats[$type]['upcoming']++;
             }
         }
-        return $chartData;
+    
+        return view('dashboard', [
+            'taskStatus' => $stats['task'],
+            'targetStatus' => $stats['target'],
+            'tableTask' => $tableTask,
+            'tableTarget' => $tableTarget
+        ]);
     }
+    
+    
 }

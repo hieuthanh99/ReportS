@@ -53,7 +53,7 @@
                     <label for="status" class="block text-gray-700 font-medium mb-2">Trạng thái:</label>
                     <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái</option>
-                        <option value="new">Chưa báo cáo</option>
+                        <option value="new">Báo cáo chưa giao việc</option>
                         <option value="complete">Admin đánh giá hoàn thành</option>
                         <option value="assign">Báo cáo đã giao việc</option>
                         <option value="reject">Sub-Admin từ chối kết quả</option>

@@ -125,6 +125,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/update-status/{id}', [DocumentController::class, 'changeComplete'])->middleware('check.organization');
 
     Route::put('/update-status-approved/{id}', [DocumentController::class, 'changeApproved'])->middleware('check.organization');
+    Route::put('/update-status-approved-all/{id}', [DocumentController::class, 'changeApprovedAll'])->middleware('check.organization');
     
 
     Route::resource('users', UserController::class)->middleware('check.organization');

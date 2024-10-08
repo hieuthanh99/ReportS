@@ -53,7 +53,7 @@
                     <label for="status" class="block text-gray-700 font-medium mb-2">Trạng thái:</label>
                     <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái</option>
-                        <option value="new">Chưa báo cáo</option>
+                        <option value="new">Báo cáo chưa giao việc</option>
                         <option value="complete">Admin đánh giá hoàn thành</option>
                         <option value="assign">Báo cáo đã giao việc</option>
                         <option value="reject">Sub-Admin từ chối kết quả</option>
@@ -225,32 +225,7 @@
             allowClear: true
         });
     });
-        document.getElementById('organization_type_id').addEventListener('change', function () {
-            var organizationTypeId = this.value;
-            
-            // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
-            fetch(`/get-organizations/${organizationTypeId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Làm rỗng danh sách `parent_id`
-                    var parentSelect = document.getElementById('parent_id');
-                    parentSelect.innerHTML = '<option value="" disabled selected>Chọn Cơ quan ban hành</option>';
-
-                    // Thêm các tùy chọn mới
-                    data.forEach(function (organization) {
-                        var option = document.createElement('option');
-                        option.value = organization.id;
-                        option.text = organization.name;
-                        parentSelect.appendChild(option);
-                        
-                    });
-                    var customInput = document.getElementById('organization_id');
-                customInput.classList.remove('hidden');
-                var customInput = document.getElementById('organization_id_hidden');
-                customInput.classList.add('hidden');
-                })
-                .catch(error => console.error('Error:', error));
-        });
+      
         // document.getElementById('filterToggle').addEventListener('click', function() {
         //     const filterForm = document.getElementById('filterForm');
         //     filterForm.classList.toggle('hidden');

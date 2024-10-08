@@ -66,7 +66,7 @@
                 <!-- Các trường khác -->
                 <div class="flex-1 min-w-[200px]">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
-                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full  select2">
+                    <select id="organization_id" name="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn cơ quan ban hành</option>
                         @foreach($organizations as $organization)
                             <option value="{{ $organization->id }}" {{ request('organization_id') == $organization->id ? 'selected' : '' }}>
@@ -222,7 +222,7 @@
              $(document).ready(function() {
         $('.select2').select2({
 
-            allowClear: true
+            // allowClear: true
         });
     });
       

@@ -73,7 +73,7 @@
                     <select id="type_id" name="type_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="" data-code="">Chọn loại {{ $text }}</option>
                         @foreach ($typeTask as $item)
-                            <option value="{{ $item->id }}" {{ old('type_id') == $item->id ? 'selected' : '' }}>
+                            <option value="{{ $item->id }}" {{ request('type_id') == $item->id ? 'selected' : '' }}>
                                 {{ $item->name }}
                             </option>
                         @endforeach
@@ -82,12 +82,12 @@
             </div>
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Ngày hoàn thành:</label>
+                    <label for="completion_date" class="block text-gray-700 font-medium mb-2">Ngày hoàn thành:</label>
                     <input type="month" id="completion_date" name="completion_date"  placeholder="Chọn tháng/năm"
                     class="border border-gray-300 rounded-lg p-2 w-full">
                 </div>
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
+                    <label for="status" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
        
                         <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
                             <option value="">Chọn trạng thái</option>
@@ -104,7 +104,7 @@
                         <label for="task_type" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
                         <select id="task_type" name="task_type"
                             class="border border-gray-300 rounded-lg p-2 w-full select2">
-                            <option value="" disabled selected>Chọn loại chỉ tiêu</option>
+                            <option value="" disabled selected>Chọn loại nhiệm vụ</option>
                             <option value="timed">Có thời hạn</option> <!-- Giá trị tiếng Anh: "timed" -->
                             <option value="regular">Thường xuyên</option> <!-- Giá trị tiếng Anh: "regular" -->
                         </select>
@@ -453,6 +453,29 @@
             // history-change-cri-modal
             const cancelHistoryBtn = document.getElementById('cancel-history-changes');
             const assignHistoryModal = document.getElementById('history-change-modal');
+
+            var params = new URLSearchParams(window.location.search);
+            var document_code = params.get('document_code');
+            var completion_date = params.get('completion_date');
+            var status = params.get('status');
+            var task_type = params.get('task_type');
+
+            if(document_code !== null || document_code !== undefined || document_code !== ""){
+                var customInput = document.getElementById('document_code');
+                customInput.value = document_code;
+            }
+            if(completion_date !== null || completion_date !== undefined || completion_date !== ""){
+                var customInput = document.getElementById('completion_date');
+                customInput.value = completion_date;
+            }
+            if(status !== null || status !== undefined || status !== ""){
+                var customInput = document.getElementById('status');
+                customInput.value = status;
+            }
+            if(task_type !== null || task_type !== undefined || task_type !== ""){
+                var customInput = document.getElementById('task_type');
+                customInput.value = task_type;
+            }
 
             function hideModalHistory() {
                 assignHistoryModal.classList.add('hidden');

@@ -87,7 +87,7 @@
                         <!-- <option value="3" {{ old('cycle_type') == '3' ? 'selected' : '' }}>Quý</option>
                         <option value="4" {{ old('cycle_type') == '4' ? 'selected' : '' }}>Năm</option> -->
                     <!-- </select> -->
-                    <input type="text" readonly id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="Tháng">
+                    <input type="text" readonly id="cycle_type" name="cycle_type" class="form-input w-full border border-gray-300 rounded-lg p-2" value="Tháng">
 
                 </div>
 

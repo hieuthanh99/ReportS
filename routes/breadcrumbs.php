@@ -269,13 +269,13 @@ Breadcrumbs::for('THCT', function ($trail) {
 //Tổng hợp, thống kê
 Breadcrumbs::for('DSBC', function ($trail) {
     $trail->parent('BCKQ');
-    $trail->push('Danh sách báo cáo phê duyệt nhiệm vụ', route('documents.report'));
+    $trail->push('Danh sách báo cáo phê duyệt nhiệm vụ', null );
 });
 
 //Tổng hợp, thống kê
 Breadcrumbs::for('DSBCTG', function ($trail) {
     $trail->parent('BCKQ');
-    $trail->push('Danh sách báo cáo phê duyệt chỉ tiêu', route('documents.report.target'));
+    $trail->push('Danh sách báo cáo phê duyệt chỉ tiêu', null);
 });
 
 Breadcrumbs::for('CTBC', function ($trail, $document) {

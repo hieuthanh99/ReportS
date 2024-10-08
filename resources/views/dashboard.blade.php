@@ -114,7 +114,13 @@
                                         <th class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left">Tên chỉ tiêu</th>
                                         <th class="px-4 py-2 text-left">Trạng thái báo cáo</th>
+                                        @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                         <th class="px-4 py-2 text-left">Phê duyệt</th>
+                                        @elseif(Auth::user()->role === 'staff')
+                                        <th class="px-4 py-2 text-left">Báo cáo</th>
+                                      
+                                        @endif
+
                                     </tr>
                                 </thead>
                                 <tbody>

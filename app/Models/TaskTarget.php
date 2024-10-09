@@ -65,7 +65,6 @@ class TaskTarget extends Model
                 return "Hoàn thành quá hạn";
             }
         }
-
         // Nếu trạng thái là "new", "reject", "staff_complete", "sub_admin_complete", "assign"
         if ($this->status === 'processing') {
             if ($today->between($startDate, $endDate)) {
@@ -74,13 +73,11 @@ class TaskTarget extends Model
                 return "Quá hạn";
             }
         }
-
         if ($this->status === 'new') {
            if ($endDate->diffInDays($today) <= 30) {
                 return "Sắp tới hạn";
             }
         }
-
         return "Trạng thái không xác định";
     }
     public function getCurrentCycle()

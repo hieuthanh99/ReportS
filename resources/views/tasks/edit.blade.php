@@ -180,10 +180,12 @@
             <div class="mt-4 flex" style="justify-content: space-between">
                 <button type="button"  id="back"  class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">Quay lại</button>
                 <div>
+                    @if($isAssignOrganizations)
                     <a href="{{ route('tasks.assign-organizations', ['taskTargetId' => $taskTarget->id]) }}" style="margin: 0 20px; padding: 10px"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">
                          Giao việc
                      </a>
+                     @endif
                     <button type="submit" id="save-button"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Lưu
                     </button>

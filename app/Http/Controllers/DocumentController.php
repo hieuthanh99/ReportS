@@ -241,7 +241,7 @@ class DocumentController extends Controller
                         $type = $taskTarget->type;
                         $hasOrganization = TaskResult::where('organization_id', $organization->id)->where('isDelete', 0)->where('id_task_criteria', $taskTarget->id)->first();
                         \Log::error('Error taskTarget: ' . $taskTarget->getCurrentCycle());
-                        dd("123");
+
                         if (!$hasOrganization) {
                             TaskResult::create([
                                 'id_task_criteria' => $taskTarget->id,
@@ -424,7 +424,7 @@ class DocumentController extends Controller
         $documents = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
         $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
 
-        dd($organizations);
+       // dd($organizations);
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         return view('documents.index', compact('documents', 'organizations', 'organizationsType'));

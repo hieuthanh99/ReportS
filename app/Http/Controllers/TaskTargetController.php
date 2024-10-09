@@ -137,7 +137,12 @@ class TaskTargetController extends Controller
         if ($type == 'task') {
             $typeTask =  TaskGroup::where('isDelete', 0)->get();;
         }
-        return view('tasks.edit', compact('taskTarget', 'type', 'taskResult', 'documents', 'categories', 'typeTask', 'workResultTypes', 'keyConstants', 'units'));
+        $isAssignOrganizations = true;
+        $isAssign = $taskTarget->document->release_date;
+        if (Carbon::parse($isAssign)->greaterThan(Carbon::today())) {
+            $isAssignOrganizations = false;
+        }
+        return view('tasks.edit', compact('isAssignOrganizations', 'taskTarget', 'type', 'taskResult', 'documents', 'categories', 'typeTask', 'workResultTypes', 'keyConstants', 'units'));
     }
 
     public function deleteOrganization($idTaskCriteria, $type, $id)
@@ -534,7 +539,7 @@ class TaskTargetController extends Controller
         DB::beginTransaction();
         //dd($request);
         try {
-            $typeRecord = $request->input("type") === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
+            $typeRecord = $request->input("type") === 'target' ? "chỉ tiêu" : "nhiệm vụ";
 
 
             if ($request->input("type") === 'target') {
@@ -635,6 +640,13 @@ class TaskTargetController extends Controller
                     'error' => "Thời gian kết thúc phải lớn hơn thời gian kết thúc."
                 ]);
             }
+            $isAssign = $document->release_date;
+            if (Carbon::parse($isAssign)->greaterThan(Carbon::today())) {
+                return redirect()->back()->withErrors([
+                    'error' => "Văn bản chưa phát hành. Bạn không thể tạo ". $typeRecord
+                ]);
+            }
+            
             $result = $request->input("request_results");
             $type_id = $request->input('type_id');
             $result_type = $request->input('result_type');

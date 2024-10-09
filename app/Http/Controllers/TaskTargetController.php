@@ -397,14 +397,28 @@ class TaskTargetController extends Controller
             $taskTargets = $taskTargets->whereIn('document_id', $documentsSearch);
         }
         if ($request->filled('document_id')) {
-
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
         }
         if ($request->filled('organization_id')) {
             $taskTargets->where('issuing_organization_id', $request->organization_id);
         }
         if ($request->filled('status')) {
-            $taskTargets =  $taskTargets->where('status', $request->status);
+            if($request->status === 'complete_on_time'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '>', Carbon::now());
+            }
+            elseif($request->status === 'complete_late'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '<', Carbon::now());
+            }
+            elseif($request->status === 'processing'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '>', Carbon::now())->where('start_date', '<', Carbon::now());
+            }
+            elseif($request->status === 'overdue'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '<', Carbon::now())->where('start_date', '>', Carbon::now());
+            }
+            elseif($request->status === 'upcoming_due'){
+                $taskTargets =  $taskTargets->where('status', 'new');
+            }
+            // $taskTargets =  $taskTargets->where('status', $request->status);
         }
         if ($request->filled('task_type')) {
             $taskTargets =  $taskTargets->where('task_type', $request->task_type);

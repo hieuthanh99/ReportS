@@ -88,7 +88,9 @@
 .menu-tree ul li:last-child {
     border-color: transparent;
 }
-
+.w-1\/3 {
+    width: 32.333333%;
+}
 
             /* public/css/app.css */
             .breadcrumb {

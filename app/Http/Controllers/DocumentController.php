@@ -32,22 +32,17 @@ class DocumentController extends Controller
 {
     public function searchDocuments(Request $request)
     {
-        $query = $request->input('query');
-
-        // Tìm kiếm các document_code chứa từ khóa tìm kiếm (có thể điều chỉnh logic tìm kiếm)
-        $documents = Document::where('document_code', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->orderBy('created_at', 'desc')->take(10)->get();
-
-        // Trả về kết quả dưới dạng JSON
+        $query = $request->input('document_code');
+        $documents = Document::where('document_code', 'LIKE', '%'. $query . '%')
+        ->where('isDelete', 0)
+        ->take(10)
+        ->get();
         return response()->json($documents);
     }
     public function searchDocumentsName(Request $request)
     {
-        $query = $request->input('query');
-
-        // Tìm kiếm các document_code chứa từ khóa tìm kiếm (có thể điều chỉnh logic tìm kiếm)
-        $documents = Document::where('document_name', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->orderBy('created_at', 'desc')->take(10)->get();
-
-        // Trả về kết quả dưới dạng JSON
+        $query = $request->input('document_name');
+        $documents = Document::where('document_name', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->take(10)->get();
         return response()->json($documents);
     }
 

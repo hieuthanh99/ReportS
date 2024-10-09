@@ -83,10 +83,10 @@
                     <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2 select2" required
                     oninvalid="this.setCustomValidity('Vui lòng chọn chu kỳ báo cáo.')" 
                     oninput="setCustomValidity('')">
-                        <option value="1" {{ $taskTarget->cycle_type == '1' ? 'selected' : '' }}>Tuần</option>
+                        {{-- <option value="1" {{ $taskTarget->cycle_type == '1' ? 'selected' : '' }}>Tuần</option> --}}
                         <option value="2" {{ $taskTarget->cycle_type == '2' ? 'selected' : '' }}>Tháng</option>
-                        <option value="3" {{ $taskTarget->cycle_type == '3' ? 'selected' : '' }}>Quý</option>
-                        <option value="4" {{ $taskTarget->cycle_type == '4' ? 'selected' : '' }}>Năm</option>
+                        {{-- <option value="3" {{ $taskTarget->cycle_type == '3' ? 'selected' : '' }}>Quý</option>
+                        <option value="4" {{ $taskTarget->cycle_type == '4' ? 'selected' : '' }}>Năm</option> --}}
                     </select>
                 </div>
                 <div class="mb-4">

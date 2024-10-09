@@ -116,7 +116,7 @@ class ReportController extends Controller
             ->where('isDelete', 0)
             ->count();
         }
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         return [$datas, $organizationsType, $organizations];
@@ -299,7 +299,7 @@ class ReportController extends Controller
 
     public function dataReportUnit(Request $request, $text=null){
           // Lấy dữ liệu từ database hoặc từ một nguồn khác
-          $datas = Organization::query()->where('isDelete', 0)->orderBy('name', 'asc');
+          $datas = Organization::query()->where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc');
           $dataDocuments = Document::query()->where('isDelete', 0);
           $executionTimeFrom = $request->input('execution_time_from');
           $executionTimeTo = $request->input('execution_time_to');
@@ -643,7 +643,7 @@ class ReportController extends Controller
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');
         $datas = Document::query()->where('isDelete', 0);
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         if ($executionTimeFrom && $executionTimeTo) {
@@ -918,7 +918,7 @@ class ReportController extends Controller
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');
         $datas = Document::query()->where('isDelete', 0);
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         if ($executionTimeFrom && $executionTimeTo) {

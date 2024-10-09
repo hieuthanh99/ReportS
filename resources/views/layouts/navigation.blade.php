@@ -70,15 +70,16 @@
                                         <summary>Tổng hợp, báo cáo</summary>
                                 <ul>
                                     @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
-
-                                    <li><a href="#" title="">Tổng hợp, thống kê</a>
-                                        <ul>
-                                            <li><a href="{{route('reports.withDocument')}}" title="">Báo cáo tổng hợp theo văn bản</a></li>
+                                    <li><a href="{{route('reports.withDocument')}}" title="">Báo cáo tổng hợp theo văn bản</a></li>
                                             <li><a href="{{route('reports.withUnit')}}" title="">Báo cáo tổng hợp theo đơn vị</a></li>
                                             <li><a href="{{route('reports.withPeriod')}}" title="">Báo cáo tổng hợp theo chu kỳ</a></li>
                                             <li><a href="{{route('reports.withDetails')}}" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>
+
+                                    <!-- <li><a href="#" title="">Tổng hợp, thống kê</a>
+                                        <ul>
+                                            
                                         </ul>
-                                    </li>
+                                    </li> -->
                                     @endif
                                  
                                     @if(Auth::user()->role == 'staff' || Auth::user()->role == 'sub_admin')

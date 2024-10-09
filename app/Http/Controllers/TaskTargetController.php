@@ -106,7 +106,7 @@ class TaskTargetController extends Controller
     {   
         $organizationIds = TaskResult::where('id_task_criteria', $idTaskTarget)->select('organization_id')->where('isDelete', 0)->get();
 
-        $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         if ($organizations->isEmpty()) {
             return response()->json([
                 'success' => false,
@@ -316,7 +316,7 @@ class TaskTargetController extends Controller
 
     public function indexViewApproved(Request $request, $type, $text = null)
     {
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
@@ -379,7 +379,7 @@ class TaskTargetController extends Controller
 
     public function indexView(Request $request, $type, $text = null)
     {
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
@@ -453,7 +453,7 @@ class TaskTargetController extends Controller
 
     public function index($type)
     {
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
 
@@ -500,7 +500,7 @@ class TaskTargetController extends Controller
 
     public function createView($type)
     {
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
 
         $categories = Category::where('isDelete', 0)->get();
@@ -519,7 +519,7 @@ class TaskTargetController extends Controller
 
     public function create()
     {
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
 
         $units = Unit::all();
@@ -682,7 +682,7 @@ class TaskTargetController extends Controller
         $taskTarget = TaskTarget::where('code', $code)->first();
         $organizationIds = TaskTarget::where('code', $code)->where('isDelete', 0)
             ->pluck('organization_id');
-        $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         return view('tasks.show', compact('taskTarget', 'organizations', 'documents'));
     }
 

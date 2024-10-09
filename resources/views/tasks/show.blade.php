@@ -160,10 +160,10 @@
                             <span class="text-gray-700 font-medium w-1/3">Số liệu văn bản:</span>
                             <span class="text-gray-900 w-2/3">{{ $taskTarget->document->document_code }}</span>
                         </div>
-                        <div class="flex items-center mb-4">
+                        <!-- <div class="flex items-center mb-4">
                             <span class="text-gray-700 font-medium w-1/3">Văn bản giao việc:</span>
                             <span class="text-gray-900 w-2/3">{{ $taskTarget->document->document_name }}</span>
-                        </div>
+                        </div> -->
                     @endif
                     <div class="flex items-center mb-4">
                         <span class="text-gray-700 font-medium w-1/3">Ngày bắt đầu:</span>

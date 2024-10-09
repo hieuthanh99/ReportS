@@ -15,7 +15,7 @@
                                             <details close>
                                                 <summary>Văn bản</summary>
                                             <ul>
-                                                <li><a href="{{route('documents.index')}}" title="">Danh mục văn bản</a></li>
+                                                <li><a href="{{route('documents.index')}}" class="hover:bg-gray-400" title="">Danh mục văn bản</a></li>
                                                 <li><a href="{{route('document_categories.index')}}" title="">Phân loại văn bản</a></li>
                                             </ul>
                                             </details>

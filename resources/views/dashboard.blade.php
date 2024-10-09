@@ -45,13 +45,13 @@
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
                                     <tr class="border-b border-gray-300" style="background-color: #D3D4CF">
-                                        <th class="px-4 py-2 text-left">STT</th>
+                                        <th style="width: 50px;" class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left">Tên nhiệm vụ</th>
                                         <th class="px-4 py-2 text-left">Trạng thái báo cáo</th>
                                         @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                        <th class="px-4 py-2 text-left">Phê duyệt</th>
+                                        <th style="width: 120px;" class="px-4 py-2 text-left">Phê duyệt</th>
                                         @elseif(Auth::user()->role === 'staff')
-                                        <th class="px-4 py-2 text-left">Báo cáo</th>
+                                        <th style="width: 120px;" class="px-4 py-2 text-left">Báo cáo</th>
                                       
                                         @endif
 
@@ -61,7 +61,7 @@
                                     @foreach ($tableTask as $index => $task)
                      
                                         <tr class="border-b border-gray-200">
-                                            <td class="px-4 py-2">{{ $index + 1 }}</td>
+                                            <td style="width: 50px;" class="px-4 py-2">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2">{{ $task->name }}</td>
                                             <td class="px-4 py-2">{{ $task->getStatusLabel() }}</td>
                                             <td>
@@ -111,13 +111,13 @@
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
                                     <tr class="border-b border-gray-300" style="background-color: #D3D4CF">
-                                        <th class="px-4 py-2 text-left">STT</th>
+                                        <th style="width: 50px;" class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left">Tên chỉ tiêu</th>
                                         <th class="px-4 py-2 text-left">Trạng thái báo cáo</th>
                                         @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                        <th class="px-4 py-2 text-left">Phê duyệt</th>
+                                        <th style="width: 120px;" class="px-4 py-2 text-left">Phê duyệt</th>
                                         @elseif(Auth::user()->role === 'staff')
-                                        <th class="px-4 py-2 text-left">Báo cáo</th>
+                                        <th style="width: 120px;" class="px-4 py-2 text-left">Báo cáo</th>
                                       
                                         @endif
 

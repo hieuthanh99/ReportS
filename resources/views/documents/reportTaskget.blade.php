@@ -249,7 +249,9 @@
             });
             $(document).on('click', '#search-results li', function() {
                 console.log($(this).text());
-                $('#document_code').value = ($(this).text());
+                var customInput = document.getElementById('document_code');
+                customInput.value = ($(this).text());
+                // $('#document_code').value = ($(this).text());
                 $('#search-results').addClass('hidden');
             });
             

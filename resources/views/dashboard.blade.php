@@ -30,7 +30,7 @@
                     <!-- Nội dung của cột 2 chia làm 2 row -->
                     <div class="flex flex-col h-full">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
-                            <canvas id="taskChart" width="200" height="200"></canvas>
+                            <canvas id="taskChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
                             <div class="task-link" style="text-align: center">
                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                 <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'task')}}">Xem chi tiết</a>
@@ -97,7 +97,7 @@
                     <!-- Nội dung của cột 3 chia làm 2 row -->
                     <div class="flex flex-col h-full">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
-                            <canvas id="targetChart" width="400" height="400"></canvas>
+                            <canvas id="targetChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
                             <div class="task-link" style="text-align: center">
                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                 <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
@@ -227,6 +227,7 @@
                 }
             }
         });
+
     </script>
 
 

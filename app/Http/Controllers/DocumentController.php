@@ -422,9 +422,9 @@ class DocumentController extends Controller
             $query->where('document_name', 'like', '%' . $text . '%');
         }
         $documents = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
 
-        // dd($organizations);
+        dd($organizations);
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         return view('documents.index', compact('documents', 'organizations', 'organizationsType'));

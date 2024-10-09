@@ -231,13 +231,17 @@
             }
         });
         $(document).on('click', function(event) {
-            var selectedCode = $(this).data('code');  
+            var selectedCode = $(this).data('code');
+            // var customInput = document.getElementById('document_code');
+            // customInput.value = selectedCode;  
             $('#document_code').value = selectedCode;   
             $('#search-results').addClass('hidden'); 
         });
         $(document).on('click', '#search-results li', function() {
             console.log($(this).text());
-            $('#document_code').value = ($(this).text());
+            var customInput = document.getElementById('document_code');
+            customInput.value = ($(this).text());
+            // $('#document_code').value = ($(this).text());
             $('#search-results').addClass('hidden'); 
         });
     });

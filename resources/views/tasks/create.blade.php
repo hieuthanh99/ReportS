@@ -142,7 +142,7 @@
                 
                 <div class="mb-4">
                     {{-- onchange="changeResultType(this.value)" --}}
-                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kiểu dữ liệu báo cáo:</label>
                     <select name="result_type" id="result_type"  class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px">
                         @foreach ($workResultTypes as $idx => $item)
                             <option value="{{ $item->key }}">

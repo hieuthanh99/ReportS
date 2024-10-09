@@ -374,7 +374,9 @@
                         
                         const descriptionCell = document.createElement('td');
                         descriptionCell.classList.add('py-2', 'px-4', 'border-b');
-                        descriptionCell.textContent = history.update_date;
+                        const updateDate = new Date(history.update_date);
+                        const formattedDate = updateDate.toLocaleDateString('en-GB').replace(/\//g, '-');
+                        descriptionCell.textContent = formattedDate;
                         row.appendChild(descriptionCell);
 
                         const resultCell = document.createElement('td');

@@ -336,7 +336,7 @@
                                             (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
                                         <button data-id="{{ $item->id }}" id="button-apprrover-{{ $item->id }}"
                                             style="margin:  10px 0" type="button"
-                                            class="button-approved bg-blue-400 text-white px-2 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                            class="button-approved bg-blue-500 text-white px-2 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                            Ghi nhận
                                         </button>
                                     @elseif($item->status == 'admin_approves')

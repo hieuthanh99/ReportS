@@ -121,7 +121,7 @@
     <div class="container mx-auto px-4 py-6">
 
         @if ($errors->any())
-            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -131,7 +131,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -209,7 +209,7 @@
                                                 class="text-blue-500 hover:underline"
                                                 target="_blank">{{ $file->file_name }}</a>
                                             {{-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                                class="remove-button remove-file-button ml-2 bg-yellow-300 text-white px-2 py-1 rounded">×</button> --}}
+                                                class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> --}}
                                         </div>
                                     @endforeach
                                 @else
@@ -439,7 +439,7 @@
                         <!-- Nút Reject -->
                         <button data-id="{{ $taskResult->id }}" id="button-reject-{{ $taskResult->id }}"
                         type="button"
-                            class="button-reject bg-yellow-300 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
+                            class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
                             Từ chối
                         </button>
                     </div>

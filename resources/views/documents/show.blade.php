@@ -2077,7 +2077,7 @@
             </table>
         </div>
 
-        <button type="button" id="assign-organizations-save" class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán</button>
+        <button type="button" id="assign-organizations-save" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán</button>
         <button type="button" id="cancel-organizations-criteria" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy</button>
     </div>
 </div>

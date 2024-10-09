@@ -129,7 +129,7 @@
                 </thead>
                 <tbody>
                     @foreach ($taskDocuments as $index => $document)
-                    
+             
                         <tr class="border-b border-gray-200">
                             <td class="py-3 border border-gray-300 px-6">{{ $index + $taskDocuments->firstItem() }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $document->taskTarget->name ?? ''}}</td>
@@ -182,6 +182,27 @@
         </div>
     </div>
     <script>
+          $(document).ready(function() {
+            var currentUrl = window.location.href;
+            var params = new URLSearchParams(window.location.search);
+            var organizationId = parseInt(params.get('organization_id'));
+
+            var document_code = params.get('document_code');
+            var status = params.get('status');
+
+            if (!isNaN(organizationId)) {
+                var customInput = document.getElementById('organization_id');
+                customInput.classList.remove('hidden');
+            }
+            if (document_code !== null || document_code !== undefined || document_code !== "") {
+                var customInput = document.getElementById('document_code');
+                customInput.value = document_code;
+            }
+            if (status !== null || status !== undefined || status !== "") {
+                var customInput = document.getElementById('status');
+                customInput.value = status;
+            }
+        });
                 //============================ Search Input Code ====================================
                 $(document).ready(function() {
         $('#document_code').on('keyup', function() {
@@ -192,7 +213,8 @@
                     type: "GET",
                     data: {'document_code': query},
                     success: function(data) {
-                        $('#search-results ul').html(''); // Xóa kết quả cũ
+                        console.log(data);
+                        $('#search-results ul').html('');
                         if (data.length > 0) {
                             $.each(data, function(key, document) {
                                 $('#search-results ul').append('<li class="p-2 cursor-pointer hover:bg-gray-200" data-code="'+document.document_code+'">' + document.document_code + '</li>');
@@ -209,12 +231,13 @@
             }
         });
         $(document).on('click', function(event) {
-            var selectedCode = $(this).data('code');  // Lấy giá trị từ thuộc tính data-code
-            $('#document_code').value = selectedCode;    // Gán giá trị vào input
-            $('#search-results').addClass('hidden');  // Ẩn danh sách sau khi chọn
+            var selectedCode = $(this).data('code');  
+            $('#document_code').value = selectedCode;   
+            $('#search-results').addClass('hidden'); 
         });
         $(document).on('click', '#search-results li', function() {
-            $('#document_code').val($(this).text());
+            console.log($(this).text());
+            $('#document_code').value = ($(this).text());
             $('#search-results').addClass('hidden'); 
         });
     });

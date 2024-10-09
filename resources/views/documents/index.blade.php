@@ -191,12 +191,12 @@
         </div>
     </div>
     <script>
-          $(document).ready(function() {
-        $('.select2').select2({
-            placeholder: "Chọn cơ quan",
-            allowClear: true
-        });
-    });
+    //       $(document).ready(function() {
+    //     $('.select2').select2({
+    //         placeholder: "Chọn cơ quan",
+    //         allowClear: true
+    //     });
+    // });
         //============================ Search Input Code ====================================
         $(document).ready(function() {
         $('#document_code').on('keyup', function() {

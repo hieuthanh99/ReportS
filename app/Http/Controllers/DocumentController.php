@@ -32,22 +32,17 @@ class DocumentController extends Controller
 {
     public function searchDocuments(Request $request)
     {
-        $query = $request->input('query');
-
-        // Tìm kiếm các document_code chứa từ khóa tìm kiếm (có thể điều chỉnh logic tìm kiếm)
-        $documents = Document::where('document_code', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->orderBy('created_at', 'desc')->take(10)->get();
-
-        // Trả về kết quả dưới dạng JSON
+        $query = $request->input('document_code');
+        $documents = Document::where('document_code', 'LIKE', '%'. $query . '%')
+        ->where('isDelete', 0)
+        ->take(10)
+        ->get();
         return response()->json($documents);
     }
     public function searchDocumentsName(Request $request)
     {
-        $query = $request->input('query');
-
-        // Tìm kiếm các document_code chứa từ khóa tìm kiếm (có thể điều chỉnh logic tìm kiếm)
-        $documents = Document::where('document_name', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->orderBy('created_at', 'desc')->take(10)->get();
-
-        // Trả về kết quả dưới dạng JSON
+        $query = $request->input('document_name');
+        $documents = Document::where('document_name', 'LIKE', '%' . $query . '%')->where('isDelete', 0)->take(10)->get();
         return response()->json($documents);
     }
 
@@ -280,15 +275,16 @@ class DocumentController extends Controller
     /// reportTargetView
     public function reportTargetView(Request $request, $text = null)
     {
+     
         $userId = Auth::id();
         $user = User::find($userId);
         $query = Document::query();
-
+        //dd($request->document_code);
         $taskTargetQuery = TaskResult::query();
-        if ($request->filled('document_name')) {
-            $query->where('document_name', 'like', '%' . $request->document_name . '%')->where('isDelete', 0);
+        if ($request->filled('document_code')) {
+            $query->where('document_code', 'like', '%'.$request->document_code.'%')->where('isDelete', 0);
         }
-
+        //dd($query->get());
         if ($request->filled('organization_id')) {
             $query->where('issuing_department', $request->organization_id)->where('isDelete', 0);
         }
@@ -296,7 +292,7 @@ class DocumentController extends Controller
             $query->where('document_name', 'like', '%' . $text . '%');
         }
         if ($user->role == 'staff' || $user->role == 'sub_admin') {
-            $documents = Document::whereHas('taskResult', function ($query) use ($user) {
+            $documents = $query->whereHas('taskResult', function ($query) use ($user) {
                 $query->where('organization_id', $user->organization_id);
             })->with('issuingDepartment')->orderBy('created_at', 'desc')->get();
 
@@ -328,13 +324,14 @@ class DocumentController extends Controller
 
     public function reportView(Request $request, $text = null)
     {
+        //dd($request);
         $userId = Auth::id();
         $user = User::find($userId);
         $query = Document::query();
 
         $taskTargetQuery = TaskResult::query();
         if ($request->filled('document_code')) {
-            $query->where('document_code', 'like', '%' . $request->document_code . '%')->where('isDelete', 0);
+            $query->where('document_code', $request->document_code)->where('isDelete', 0);
         }
 
         if ($request->filled('organization_id')) {
@@ -345,7 +342,7 @@ class DocumentController extends Controller
             $query->where('document_name', 'like', '%' . $text . '%');
         }
         if ($user->role == 'staff' || $user->role == 'sub_admin') {
-            $documents = Document::whereHas('taskResult', function ($query) use ($user) {
+            $documents = $query->whereHas('taskResult', function ($query) use ($user) {
                 $query->where('organization_id', $user->organization_id);
             })->with('issuingDepartment')->orderBy('created_at', 'desc')->get();
 

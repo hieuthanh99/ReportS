@@ -50,7 +50,7 @@
                 </div>
                 <!-- Các trường khác -->
                 <div class="flex-1 min-w-[200px]">
-                    <label for="status" class="block text-gray-700 font-medium mb-2">Trạng thái:</label>
+                    <label for="status" class="block text-gray-700 font-medium mb-2">Trạng thái báo cáo:</label>
                     <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái</option>
                         <option value="new">Báo cáo chưa giao việc</option>
@@ -246,6 +246,20 @@
         $('.select2').select2({
 
             // allowClear: true
+        });
+        // Xử lý tìm kiếm
+        $('.select2').on('select2:open', function() {
+            let searchField = $('.select2-search__field');
+            
+            // Lắng nghe sự kiện khi người dùng nhập vào ô tìm kiếm
+            searchField.on('input', function() {
+                let searchTerm = $(this).val();
+
+                // Nếu search term chỉ là dấu cách, xóa dấu cách
+                if (searchTerm.trim() === "") {
+                    $(this).val(''); // Xóa chuỗi chỉ chứa khoảng trắng
+                }
+            });
         });
     });
       

@@ -198,7 +198,7 @@
                                 <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
                                 <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
                                 <!-- <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                    class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button> -->
+                                    class="remove-button remove-file-button ml-2 bg-yellow-300 text-white px-2 py-1 rounded">×</button> -->
                             </div>
                         @endforeach
                     @else
@@ -365,7 +365,7 @@
 
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -373,7 +373,7 @@
                                                 <span class="text-red-500"></span>
                                             @endif
                                             {{-- <button type="button" onclick="downloadFile('{{ $file->file_name }}')"
-                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
+                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300">
                                                 <i class="fas fa-download"></i>
                                             </button> --}}
                                         </td>
@@ -397,7 +397,7 @@
 
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -424,7 +424,7 @@
                                             @endphp
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -441,7 +441,7 @@
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
-                                                        class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="assign-task open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
                                                     </button>
                                                 @else
@@ -449,7 +449,7 @@
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
-                                                        class="assign-task-organization open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="assign-task-organization open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
                                                     </button>
                                                 @endif
@@ -460,7 +460,7 @@
                                                 data-task-id="{{ $task->id }}"
                                                 data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                 data-cycle="{{$timeParamsWeek['current']}}"
-                                                class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                   <i class="fa fa-history"></i>
                                             </button>
                                         </td>
@@ -539,7 +539,7 @@
 
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -565,7 +565,7 @@
 
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -594,7 +594,7 @@
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -609,7 +609,7 @@
                                                         data-task-id="{{ $criterion->id }}"
                                                           data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                             data-cycle="{{$timeParamsWeek['current']}}"
-                                                        class="history-criterion bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="history-criterion bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                           <i class="fa fa-history"></i>
                                                     </button>
 
@@ -783,7 +783,7 @@
 
                                         @if ($file && !empty($file->file_path))
                                             <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                 download>
                                                 <i class="fas fa-download"></i>
                                             </a>
@@ -791,7 +791,7 @@
                                             <span class="text-red-500"></span>
                                         @endif
                                         {{-- <button type="button" onclick="downloadFile('{{ $file->file_name }}')"
-                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
+                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300">
                                             <i class="fas fa-download"></i>
                                         </button> --}}
                                     </td>
@@ -815,7 +815,7 @@
 
                                         @if ($file && !empty($file->file_path))
                                             <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                 download>
                                                 <i class="fas fa-download"></i>
                                             </a>
@@ -843,7 +843,7 @@
                                         @endphp
                                         @if ($file && !empty($file->file_path))
                                             <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                 download>
                                                 <i class="fas fa-download"></i>
                                             </a>
@@ -859,7 +859,7 @@
                                                     data-status = "{{ $task->status }}"
                                                     data-task-code="{{ $task->task_code }}"
                                                     data-task-id="{{ $task->id }}"
-                                                    class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                    class="assign-task open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                     <i class="fa fa-tasks"></i>
                                                 </button>
                                             @else
@@ -867,7 +867,7 @@
                                                     data-status = "{{ $task->status }}"
                                                     data-task-code="{{ $task->task_code }}"
                                                     data-task-id="{{ $task->id }}"
-                                                    class="open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                    class="open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                     <i class="fa fa-tasks"></i>
                                                 </button>
                                             @endif
@@ -878,7 +878,7 @@
                                             data-task-id="{{ $task->id }}"
                                               data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                 data-cycle="{{$timeParamsMonth['current']}}"
-                                            class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                            class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                               <i class="fa fa-history"></i>
                                         </button>
                                     </td>
@@ -952,7 +952,7 @@
 
                                                 @if ($file && !empty($file->file_path))
                                                     <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                        class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                        class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                         download>
                                                         <i class="fas fa-download"></i>
                                                     </a>
@@ -978,7 +978,7 @@
 
                                                 @if ($file && !empty($file->file_path))
                                                     <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                        class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                        class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                         download>
                                                         <i class="fas fa-download"></i>
                                                     </a>
@@ -1007,7 +1007,7 @@
                                                 @endphp
                                                 @if ($file && !empty($file->file_path))
                                                     <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                        class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                        class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                         download>
                                                         <i class="fas fa-download"></i>
                                                     </a>
@@ -1022,7 +1022,7 @@
                                                     data-task-id="{{ $criterion->id }}"
                                                       data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                         data-cycle="{{$timeParamsWeek['current']}}"
-                                                    class="history-criterion bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                    class="history-criterion bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                       <i class="fa fa-history"></i>
                                                 </button>
 
@@ -1198,7 +1198,7 @@
 
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -1206,7 +1206,7 @@
                                                 <span class="text-red-500"></span>
                                             @endif
                                             {{-- <button type="button" onclick="downloadFile('{{ $file->file_name }}')"
-                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
+                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300">
                                                 <i class="fas fa-download"></i>
                                             </button> --}}
                                         </td>
@@ -1230,7 +1230,7 @@
 
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -1258,7 +1258,7 @@
                                             @endphp
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -1272,7 +1272,7 @@
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
-                                                        class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="assign-task open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
                                                     </button>
                                                 @else
@@ -1280,7 +1280,7 @@
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
-                                                        class="open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
                                                     </button>
                                                 @endif
@@ -1291,7 +1291,7 @@
                                                 data-task-id="{{ $task->id }}"
                                                 data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                 data-cycle="{{$timeParamsQuarter['current']}}"
-                                                class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                   <i class="fa fa-history"></i>
                                             </button>
                                         </td>
@@ -1366,7 +1366,7 @@
 
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -1392,7 +1392,7 @@
 
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -1420,7 +1420,7 @@
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -1435,7 +1435,7 @@
                                                         data-task-id="{{ $criterion->id }}"
                                                           data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                             data-cycle="{{$timeParamsWeek['current']}}"
-                                                        class="history-criterion bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="history-criterion bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                           <i class="fa fa-history"></i>
                                                     </button>
 
@@ -1613,7 +1613,7 @@
 
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -1621,7 +1621,7 @@
                                                 <span class="text-red-500"></span>
                                             @endif
                                             {{-- <button type="button" onclick="downloadFile('{{ $file->file_name }}')"
-                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
+                                                class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300">
                                                 <i class="fas fa-download"></i>
                                             </button> --}}
                                         </td>
@@ -1645,7 +1645,7 @@
 
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -1673,7 +1673,7 @@
                                             @endphp
                                             @if ($file && !empty($file->file_path))
                                                 <a href="{{ route('file.download', ['id' => $file->id, 'type' => 1]) }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -1689,7 +1689,7 @@
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
-                                                        class="assign-task open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="assign-task open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
                                                     </button>
                                                 @else
@@ -1697,7 +1697,7 @@
                                                         data-status = "{{ $task->status }}"
                                                         data-task-code="{{ $task->task_code }}"
                                                         data-task-id="{{ $task->id }}"
-                                                        class="open-popup-button bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="open-popup-button bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                         <i class="fa fa-tasks"></i>
                                                     </button>
                                                 @endif
@@ -1708,7 +1708,7 @@
                                                 data-task-id="{{ $task->id }}"
                                                 data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                 data-cycle="{{$timeParamsYear['current']}}"
-                                                class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                   <i class="fa fa-history"></i>
                                             </button>
                                         </td>
@@ -1783,7 +1783,7 @@
 
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -1809,7 +1809,7 @@
 
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -1837,7 +1837,7 @@
                                                     @endphp
                                                     @if ($file && !empty($file->file_path))
                                                         <a href="{{ route('file.download', ['id' => $file->id, 'type' => 2]) }}"
-                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                            class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                             download>
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -1852,7 +1852,7 @@
                                                         data-task-id="{{ $criterion->id }}"
                                                           data-task-reporting_cycle="{{ $task->reporting_cycle }}"
                                                             data-cycle="{{$timeParamsWeek['current']}}"
-                                                        class="history-criterion bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                                        class="history-criterion bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                                           <i class="fa fa-history"></i>
                                                     </button>
 
@@ -2077,7 +2077,7 @@
             </table>
         </div>
 
-        <button type="button" id="assign-organizations-save" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán</button>
+        <button type="button" id="assign-organizations-save" class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán</button>
         <button type="button" id="cancel-organizations-criteria" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy</button>
     </div>
 </div>
@@ -2231,7 +2231,7 @@
 
                     const removeButton = document.createElement('button');
                     removeButton.type = 'button';
-                    removeButton.className = 'remove-button ml-2 bg-red-500 text-white px-2 py-1 rounded';
+                    removeButton.className = 'remove-button ml-2 bg-yellow-300 text-white px-2 py-1 rounded';
                     removeButton.textContent = '×';
                     removeButton.addEventListener('click', () => removeFile(index));
                     fileItem.appendChild(removeButton);

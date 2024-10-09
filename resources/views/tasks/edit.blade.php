@@ -7,7 +7,7 @@
             {!! Breadcrumbs::render('update.tasks.byType', $type) !!}
         </ol>
     @if ($errors->any())
-        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+        <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -17,7 +17,7 @@
     @endif
 
     @if (session('error'))
-        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+        <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
             {{ session('error') }}
         </div>
     @endif
@@ -234,7 +234,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button"
-                                    class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                    class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                     onclick="confirmDelete({{ $item->id }})">
                                     <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                 </button>

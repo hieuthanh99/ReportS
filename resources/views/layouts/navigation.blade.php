@@ -15,8 +15,8 @@
                                             <details close>
                                                 <summary>Văn bản</summary>
                                             <ul>
-                                                <li><a href="{{route('documents.index')}}" class="hover:bg-gray-400" title="">Danh mục văn bản</a></li>
-                                                <li><a href="{{route('document_categories.index')}}" title="">Phân loại văn bản</a></li>
+                                                <li><a href="{{route('documents.index')}}" class="menu-sub" title="">Danh mục văn bản</a></li>
+                                                <li><a href="{{route('document_categories.index')}}" class="menu-sub" title="">Phân loại văn bản</a></li>
                                             </ul>
                                             </details>
                                         </li>
@@ -24,8 +24,8 @@
                                             <details close>
                                                 <summary>Cơ quan,tổ chức</summary>
                                             <ul>
-                                                <li><a href="{{route('organization_types.index')}}" title="">Phân loại cơ quan, tổ chức</a></li>
-                                                <li><a href="{{route('organizations.index')}}" title="">Danh mục cơ quan, tổ chức</a></li>
+                                                <li><a href="{{route('organization_types.index')}}" class="menu-sub" title="">Phân loại cơ quan, tổ chức</a></li>
+                                                <li><a href="{{route('organizations.index')}}" class="menu-sub" title="">Danh mục cơ quan, tổ chức</a></li>
                                             </ul>
                                             </details>
                                         </li>
@@ -34,8 +34,8 @@
                                             <details close>
                                                 <summary>Người dùng</summary>
                                             <ul>
-                                                <li><a href="{{route('positions.index')}}" title="">Danh mục chức vụ</a></li>
-                                                <li><a href="{{route('users.index')}}" title="">Danh mục người dùng</a></li>
+                                                <li><a href="{{route('positions.index')}}" class="menu-sub" title="">Danh mục chức vụ</a></li>
+                                                <li><a href="{{route('users.index')}}" class="menu-sub" title="">Danh mục người dùng</a></li>
                                             </ul>
                                             </details>
                                         </li>
@@ -44,8 +44,8 @@
                                             <details close>
                                                 <summary>Nhóm nhiệm vụ/chỉ tiêu</summary>
                                             <ul>
-                                                <li><a href="{{route('task_groups.index')}}" title="">Nhóm nhiệm vụ</a></li>
-                                                <li><a href="{{route('indicator_groups.index')}}" title="">Nhóm chỉ tiêu</a></li>
+                                                <li><a href="{{route('task_groups.index')}}" class="menu-sub" title="">Nhóm nhiệm vụ</a></li>
+                                                <li><a href="{{route('indicator_groups.index')}}" class="menu-sub" title="">Nhóm chỉ tiêu</a></li>
                                             </ul>
                                             </details>
                                         </li>
@@ -57,10 +57,10 @@
                                         <summary>Quản lý công việc</summary>
                                 <ul>
                                     {{-- tasks.byType.approved --}}
-                                    <li><a href="{{ route('tasks.byType', 'task') }}" title="">Nhiệm vụ</a></li>
-                                    <li><a href="{{route('tasks.byType.approved', 'task')}}" title="">Phê duyệt báo cáo nhiệm vụ</a></li>
-                                    <li><a href="{{ route('tasks.byType', 'target') }}" title="">Chỉ tiêu</a></li>
-                                    <li><a href="{{route('tasks.byType.approved', 'target')}}" title="">Phê duyệt báo cáo chỉ tiêu</a></li>
+                                    <li><a href="{{ route('tasks.byType', 'task') }}" class="menu-sub" title="">Nhiệm vụ</a></li>
+                                    <li><a href="{{route('tasks.byType.approved', 'task')}}" class="menu-sub" title="">Phê duyệt báo cáo nhiệm vụ</a></li>
+                                    <li><a href="{{ route('tasks.byType', 'target') }}" class="menu-sub" title="">Chỉ tiêu</a></li>
+                                    <li><a href="{{route('tasks.byType.approved', 'target')}}" class="menu-sub" title="">Phê duyệt báo cáo chỉ tiêu</a></li>
                                 </ul>
                                     </details>
                             </li>
@@ -70,10 +70,10 @@
                                         <summary>Tổng hợp, báo cáo</summary>
                                 <ul>
                                     @if(Auth::user()->role !== 'staff' && Auth::user()->role !== 'sub_admin')
-                                    <li><a href="{{route('reports.withDocument')}}" title="">Báo cáo tổng hợp theo văn bản</a></li>
-                                            <li><a href="{{route('reports.withUnit')}}" title="">Báo cáo tổng hợp theo đơn vị</a></li>
-                                            <li><a href="{{route('reports.withPeriod')}}" title="">Báo cáo tổng hợp theo chu kỳ</a></li>
-                                            <li><a href="{{route('reports.withDetails')}}" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>
+                                    <li><a href="{{route('reports.withDocument')}}" class="menu-sub" title="">Báo cáo tổng hợp theo văn bản</a></li>
+                                            <li><a href="{{route('reports.withUnit')}}" class="menu-sub" title="">Báo cáo tổng hợp theo đơn vị</a></li>
+                                            <li><a href="{{route('reports.withPeriod')}}" class="menu-sub" title="">Báo cáo tổng hợp theo chu kỳ</a></li>
+                                            <li><a href="{{route('reports.withDetails')}}" class="menu-sub" title="">Báo cáo chi tiết nhiệm vụ/chỉ tiêu</a></li>
 
                                     <!-- <li><a href="#" title="">Tổng hợp, thống kê</a>
                                         <ul>
@@ -84,7 +84,7 @@
                                  
                                     @if(Auth::user()->role == 'staff' || Auth::user()->role == 'sub_admin')
 
-                                    <li><a href="{{route('documents.report')}}" title="">
+                                    <li><a href="{{route('documents.report')}}" class="menu-sub" title="">
                                         @if(Auth::user()->role == 'staff')
                                         Báo cáo nhiệm vụ
                                         @else
@@ -92,7 +92,7 @@
                                         @endif
                                  
                                     </a></li>
-                                    <li><a href="{{route('documents.report.target')}}" title="">
+                                    <li><a href="{{route('documents.report.target')}}" class="menu-sub" title="">
                                         @if(Auth::user()->role == 'staff')
                                         Báo cáo chỉ tiêu
                                         @else
@@ -251,6 +251,9 @@
     details[open] summary::before {
         content: '\23F7'; /* Mũi tên xuống (icon khi mở) */
     }
+    .menu-sub:hover{
+        background-color: #9ca3af
+    }
 </style>
 <script>
 
@@ -332,6 +335,6 @@
         <input type="hidden" name="search_type" id="searchType" value="">
 
         <input type="text" placeholder="Tìm kiếm..." id="searchInput" name="query" value="{{ old('query') }}">
-        <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Tìm kiếm</button>
+        <button type="submit" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Tìm kiếm</button>
     </form>
 </div>

@@ -9,7 +9,7 @@
         </ol>
     </nav>
     @if ($errors->any())
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -19,7 +19,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -32,7 +32,7 @@
     <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
         <div class="mb-6 flex justify-end gap-4 mb-4">
-            <a href="{{ route('users.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+            <a href="{{ route('users.create') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                     Tạo người dùng
             </a>
         </div>
@@ -81,7 +81,7 @@
                             @endif
                         </td>
                         <td class="py-3 border border-gray-300 px-6 text-center">   
-                            <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                            <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                             onclick="window.location.href='{{ route('users.edit', $category->id) }}'">
                             <i class="fas fa-edit"></i>
                             </button>
@@ -91,7 +91,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button"
-                                    class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                    class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                     onclick="confirmDelete({{ $index + $users->firstItem() }})">
                                     <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                 </button>
@@ -135,7 +135,7 @@
     });
 });
 // <td class="py-3 border border-gray-300 px-6 flex items-center text-center">
-//                             <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+//                             <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
 //                                 onclick="window.location.href='{{ route('users.edit', $category->id) }}'">
 //                                 <i class="fas fa-edit"></i>
 //                             </button>
@@ -146,7 +146,7 @@
 //                                 @csrf
 //                                 @method('DELETE')
 //                                 <button type="submit"
-//                                 class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+//                                 class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
 
 //                                     onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
 //                                     <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->

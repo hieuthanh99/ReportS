@@ -8,7 +8,7 @@
         </ol>
     </nav>
     @if ($errors->any())
-        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+        <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -18,7 +18,7 @@
     @endif
 
     @if (session('error'))
-        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+        <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
             {{ session('error') }}
         </div>
     @endif
@@ -136,7 +136,7 @@
         </div>
             <div class="mt-4 flex" style="justify-content: space-between">
                 <a href="{{route('users.index')}}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
-                <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Cập nhật</button>
+                <button type="submit" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Cập nhật</button>
             </div>
     </form>
 </div>

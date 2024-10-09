@@ -34,7 +34,7 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getTypeTextAttribute() }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getDateFromToTextAttribute() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
+                                <button class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                     onclick="window.location.href='{{ route('tasks.show-details', ['code' => $item->code, 'type' => $item->type]) }}'">
                                     <i class="fas fa-info-circle"></i> <!-- Biểu tượng cho "Chi tiết" -->
                                 </button>
@@ -43,7 +43,7 @@
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
                                     data-task-id="{{ $item->code }}"
-                                    class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                    class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                       <i class="fa fa-history"></i>
                                 </button>
                             

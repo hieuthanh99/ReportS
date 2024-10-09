@@ -118,7 +118,7 @@
     <div class="container mx-auto">
 
         @if ($errors->any())
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -128,7 +128,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -149,7 +149,7 @@
         <!-- Tree View -->
         <div class="pr-4" style="width: 40%">
             <div class="flex justify-between items-center mb-6">
-                <a href="{{ route('organizations.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới cơ quan</a>
+                <a href="{{ route('organizations.create') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới cơ quan</a>
             </div>
             <div style="padding: 10px 0;">Tổng số lượng: {{ $organizationsCount }} bản ghi</div>
             <div class="overflow-x-auto bg-white p-6 border rounded-lg shadow-lg">
@@ -229,13 +229,13 @@
                         class="hidden bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mt-2">Gán
                         nhân viên</button>
                     <button type="button" id="update-button"
-                        class="hidden bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mt-2">Cập nhật</button>
+                        class="hidden bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mt-2">Cập nhật</button>
                     <form id="delete-form" method="POST" style="display: none;">
                         @csrf
                         @method('DELETE')
                     </form>
                     <button type="button" id="delete-button"
-                    class="hidden bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
+                    class="hidden bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
                 </div>
             </div>
         </div>
@@ -260,7 +260,7 @@
                     </div>
                     <!-- Thêm các trường khác nếu cần -->
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Lưu</button>
+                        <button type="submit" class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Lưu</button>
                         <button type="button" id="close-edit-modal" class="ml-4 bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Đóng</button>
                     </div>
                 </form>
@@ -299,7 +299,7 @@
                     </table>
                 </div>
                 <button type="button" id="assign-user"
-                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán
+                    class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán
                 </button>
                 <button type="button" id="cancel-assign-user"
                     class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy
@@ -531,7 +531,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="bg-blue-500 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300"
+                                    class="bg-blue-400 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300"
                                     onclick="return confirm('Bạn có chắc chắn rằng muốn xóa nhân viên khỏi tổ chức này?');">
                                     Xóa
                                 </button>

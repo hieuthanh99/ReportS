@@ -219,7 +219,7 @@
 
                                     <button data-document-id="{{ $item->id }}" data-task-id="{{ $item->code }}"
                                         type="button"
-                                        class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                        class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                         <i class="fa fa-history"></i>
                                     </button>
 

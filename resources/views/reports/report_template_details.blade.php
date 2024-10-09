@@ -8,7 +8,7 @@
             </ol>
         </nav> 
         @if ($errors->any())
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -18,7 +18,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -31,7 +31,7 @@
         @php
         session(['success' => null])
         @endphp
-        <!-- <a href="{{ route('task-documents.export-details') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a> -->
+        <!-- <a href="{{ route('task-documents.export-details') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a> -->
 
         <form method="GET" action="{{ route('reports.withDetails') }}"  id="filterForm">
             <div class="mb-6 flex flex-wrap gap-4 mb-4">
@@ -71,9 +71,9 @@
             </div>
 
             <div class="flex justify-end gap-4">
-                <a onclick="exportExcel()" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
+                <a onclick="exportExcel()" target="_blank" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Xuất Excel</a>
                     <button type="submit"
-                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+                    class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tìm kiếm
                     </button>
             

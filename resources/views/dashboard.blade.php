@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
         @if ($errors->any())
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -13,7 +13,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -66,17 +66,17 @@
                                             <td class="px-4 py-2">{{ $task->getStatusLabel() }}</td>
                                             <td>
                                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $task->id, 'type' => $task->type]) }}'">
                                                 Phê duyệt
                                                 </button>
                                                 @elseif(Auth::user()->role === 'staff')
-                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $task->id, 'type' => $task->type]) }}'">
                                                 Báo cáo
                                                 </button>
                                                 @elseif(Auth::user()->role === 'sub_admin')
-                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $task->id, 'type' => $task->type]) }}'">
                                                 Phê duyệt
                                                 </button>
@@ -132,17 +132,17 @@
                                             <td class="px-4 py-2">{{ $target->getStatusLabel() }}</td>
                                             <td>
                                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $target->id, 'type' => $target->type]) }}'">
                                                 Phê duyệt
                                                 </button>
                                                 @elseif(Auth::user()->role === 'staff')
-                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $target->id, 'type' => $target->type]) }}'">
                                                 Báo cáo
                                                 </button>
                                                 @elseif(Auth::user()->role === 'sub_admin')
-                                                <button class="bg-blue-500 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $target->id, 'type' => $target->type]) }}'">
                                                 Phê duyệt
                                                 </button>

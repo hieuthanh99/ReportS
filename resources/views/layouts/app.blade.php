@@ -324,6 +324,15 @@
                     display: none;
                 }
             }
+            .bg-yellow-300{
+                background-color: rgb(253, 224, 71);
+            }
+            .bg-blue-400{
+                background-color: rgb(96, 165, 250);
+            }
+            .bg-red-400{
+                background-color: rgb(248, 113, 113);
+            }
         </style>
     </head>
     <body class="font-sans antialiased">

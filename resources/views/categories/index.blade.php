@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-6 bg-white p-6 rounded-lg shadow-lg" style="margin-top: 10px;">
     @if ($errors->any())
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -13,7 +13,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -25,7 +25,7 @@
         @endif
     <div class="flex justify-between items-center ">
         <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
-        <a href="{{ route('categories.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
+        <a href="{{ route('categories.create') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
     </div>
   
    
@@ -48,7 +48,7 @@
                         <td class="py-3 border border-gray-300 px-6">{{ $category->CategoryName }}</td>
                       
                         <td class="py-3 border border-gray-300 px-6 flex items-center space-x-2">
-                            <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                            <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                     onclick="window.location.href='{{ route('categories.edit', $category->CategoryID) }}'">
                                     <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                 </button>
@@ -57,7 +57,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                    class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                    class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                         onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
 

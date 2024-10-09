@@ -63,7 +63,7 @@
         </ol>
     </nav>
     @if ($errors->any())
-        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+        <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -73,7 +73,7 @@
     @endif
 
     @if (session('error'))
-        <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+        <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
             {{ session('error') }}
         </div>
     @endif
@@ -204,7 +204,7 @@
                             <img class="file-icon w-12 h-12 mr-2" src="" alt="File icon">
                             <a href="{{ route('file.view', ['id' => $file->id]) }}" class="text-blue-500 hover:underline" target="_blank">{{ $file->file_name }}</a>
                             <button type="button" @if ($document->creator != auth()->user()->id) disabled @endif
-                                class="remove-button remove-file-button ml-2 bg-red-500 text-white px-2 py-1 rounded">×</button>
+                                class="remove-button remove-file-button ml-2 bg-yellow-300 text-white px-2 py-1 rounded">×</button>
                         </div>
                     @endforeach
                 </div>
@@ -322,7 +322,7 @@ function fetchOrganizations(organizationTypeId) {
                     fileItem.appendChild(fileName);
     const removeButton = document.createElement('button');
                     removeButton.type = 'button';
-                    removeButton.className = 'remove-button ml-2 bg-red-500 text-white px-2 py-1 rounded remove-file-button';
+                    removeButton.className = 'remove-button ml-2 bg-yellow-300 text-white px-2 py-1 rounded remove-file-button';
                     removeButton.textContent = '×';
                     removeButton.addEventListener('click', () => removeFile(index));
                     fileItem.appendChild(removeButton);

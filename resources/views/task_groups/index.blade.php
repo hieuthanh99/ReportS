@@ -8,7 +8,7 @@
             </ol>
         </nav>
         @if ($errors->any())
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -18,7 +18,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -76,13 +76,13 @@
 
             <div class="flex justify-end gap-4">
                 <button type="submit"
-                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+                    class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tìm kiếm
                 </button>
             </div>
         </form> --}}
         <div class="mb-6 flex justify-end gap-4 mb-4">
-            <a href="{{ route('task_groups.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
+            <a href="{{ route('task_groups.create') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
         </div>
    
         <div class="overflow-x-auto">
@@ -108,7 +108,7 @@
                             <td class="py-3 border border-gray-300 px-6 text-center">{{ $item->name }}</td>
                           
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                                <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                     onclick="window.location.href='{{ route('task_groups.edit', $item) }}'">
                                     <i class="fas fa-edit"></i> 
                                 </button>
@@ -118,7 +118,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="button"
-                                        class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                         onclick="confirmDelete({{ $index + $taskGroups->firstItem() }})">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>

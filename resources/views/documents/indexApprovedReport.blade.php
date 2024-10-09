@@ -8,7 +8,7 @@
             </ol>
         </nav>
         @if ($errors->any())
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -18,7 +18,7 @@
         @endif
 
         @if (session('error'))
-            <div class="error-message bg-red-500 text-white p-4 rounded-lg mb-4">
+            <div class="error-message bg-yellow-300 text-white p-4 rounded-lg mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -73,7 +73,7 @@
 
         <div class="flex justify-end gap-4">
             <button type="submit"
-            class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+            class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
         </button>
 
@@ -127,7 +127,7 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                                <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
@@ -135,7 +135,7 @@
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
                                     data-task-id="{{ $item->id }}"
-                                    class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                    class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                     <i class="fa fa-history"></i>
                                 </button>
                             </td>
@@ -153,7 +153,7 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                                <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
@@ -161,7 +161,7 @@
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
                                     data-task-id="{{ $item->id }}"
-                                    class="history-task bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                                    class="history-task bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                     <i class="fa fa-history"></i>
                                 </button>
                             </td>

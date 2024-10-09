@@ -224,6 +224,19 @@
 
             allowClear: true
         });
+        $('.select2').on('select2:open', function() {
+            let searchField = $('.select2-search__field');
+            
+            // Lắng nghe sự kiện khi người dùng nhập vào ô tìm kiếm
+            searchField.on('input', function() {
+                let searchTerm = $(this).val();
+
+                // Nếu search term chỉ là dấu cách, xóa dấu cách
+                if (searchTerm.trim() === "") {
+                    $(this).val(''); // Xóa chuỗi chỉ chứa khoảng trắng
+                }
+            });
+        });
     });
         document.getElementById('organization_type_id').addEventListener('change', function () {
             var organizationTypeId = this.value;

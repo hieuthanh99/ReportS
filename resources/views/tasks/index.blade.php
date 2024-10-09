@@ -143,7 +143,8 @@
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Thời hạn hoàn thành
                             </th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số hiệu văn bản</th>
-                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số đơn vị được giao</th>
+                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                                Số đơn vị được giao</th>
                                 <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                                    Tiến độ</th>
                             <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">

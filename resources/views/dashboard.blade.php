@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
-                            <a class="font-bold">Nhiệm vụ cần báo cáo: {{ $tableTask->count() }}</a>
+                            <a class="font-bold">Nhiệm vụ cần báo cáo: {{ $tableTaskCount->count() }}</a>
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
-                            <a class="font-bold">Chỉ tiêu cần báo cáo: {{ $tableTarget->count() }}</a>
+                            <a class="font-bold">Chỉ tiêu cần báo cáo: {{ $tableTargetCount->count() }}</a>
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">

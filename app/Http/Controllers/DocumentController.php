@@ -462,7 +462,18 @@ class DocumentController extends Controller
         }
 
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
-        $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)->get();
+        $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
+        ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
+        ->select('history_change_document.*', 'task_target.status' , 'task_target.id as task_target_id')
+        ->get();
+        
+        $lstHistory = $lstHistory->map(function ($history) {
+            // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
+            // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
+            $taskTarget = TaskTarget::find($history->task_target_id); // Thay đổi phương thức lấy đối tượng nếu cần
+            $history->status_label = $taskTarget ? $taskTarget->getStatusLabel() : null;
+            return $history;
+        });
         //dd($taskTargetIds);
         // return $lstHistory; // Trả về danh sách các bản ghi
         // dd(\DB::getQueryLog());

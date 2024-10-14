@@ -326,8 +326,8 @@
                                 <div class="flex items-center mb-4">
 
 
-                                    <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo
-                                        cáo</label>
+                                    <!-- <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo
+                                        cáo</label> -->
                                     @php
                                         $file = $taskResult->getFilePath() ?? null;
                                     @endphp
@@ -355,7 +355,7 @@
                         {{-- <hr class="mb-6">
                     <div class="bg-white p-6 ">
                         
-                        <h5 class="text-xl font-semibold mb-4">Lịch sử chu kỳ</h5>
+                        <h5 class="text-xl font-semibold mb-4">Lịch sử báo cáo</h5>
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                                 <tr>

@@ -106,6 +106,7 @@
 
 
             <div class="flex justify-end gap-4">
+                <a class="fa fa-filter" style="margin-top: 13px;cursor: pointer;" onclick="window.location.href='{{ route('documents.report.target') }}'"></a>
                 <button type="submit"
                     class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tìm kiếm
@@ -124,6 +125,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời hạn hoàn thành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chi tiết</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Báo cáo</th>
 
@@ -142,6 +144,7 @@
                             <td class="py-3 border border-gray-300 px-6">{{ $document->document->document_code ?? '' }}</td>
                             <td class="py-3 border border-gray-300 px-6">
                                 {{ $document->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
+                                <td class="py-3 border border-gray-300 px-6"> {{ $document->taskTarget->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6">
                                 <button
                                     class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
@@ -150,11 +153,13 @@
                                 </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6">
+                            @if ($document->getStatusLabelAttributeTaskTarget() !== 'Đã phê duyệt')
                                 <button
                                     class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                     onclick="window.location.href='{{ route('documents.report.update.target', $document) }}'">
                                     <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                 </button>
+                            @endif
                             </td>
                             {{-- @if (Auth::user()->role !== 'staff')
                             <td class="py-3 border border-gray-300 px-6">

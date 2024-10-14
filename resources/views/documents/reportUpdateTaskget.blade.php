@@ -288,20 +288,9 @@
                                     class="text-gray-900 w-2/3"> {{ $taskResult->getStatusLabelAttributeTaskTarget() }}
                                 </span>
                             </div>
-                            @if (Auth::user()->role === 'sub_admin')
-                            <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
-                                <span class="text-gray-900 w-2/3">
-                                    @if ($taskResult->status == 'staff_complete' && Auth::user()->role === 'sub_admin')
-                                        <textarea required name="remarks" id="remarks" placeholder="Nhập kết quả" rows="3"
-                                        class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" onclick="clearText(this)" cols="30">{{ $taskApproval->remarks ?? '' }}</textarea>
-                                    @else
-                                        <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
-                                    @endif
-                                </span>
-                            </div>
+                            
                         </div>
-                    @endif
+                    
                         </div>
                         
                        
@@ -329,8 +318,8 @@
                                    
                                 @else
                        
-                                        <label class="text-gray-700 font-medium w-1/3">Tệp báo
-                                            cáo</label>
+                                        <!-- <label class="text-gray-700 font-medium w-1/3">Tệp báo
+                                            cáo</label> -->
                                         @php
                                             $file = $taskResult->getFilePath() ?? null;
                                         @endphp
@@ -354,7 +343,19 @@
                                 @endif
 
                             </div>
-                           
+                            @if (Auth::user()->role === 'sub_admin')
+                            <div class="flex items-center mb-4">
+                                <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
+                                <span class="text-gray-900 w-2/3">
+                                    @if ($taskResult->status == 'staff_complete' && Auth::user()->role === 'sub_admin')
+                                        <textarea required name="remarks" id="remarks" placeholder="Nhập kết quả" rows="3"
+                                        class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" onclick="clearText(this)" cols="30">{{ $taskApproval->remarks ?? '' }}</textarea>
+                                    @else
+                                        <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
+                                    @endif
+                                </span>
+                            </div>
+                            @endif
                            
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
@@ -370,14 +371,17 @@
                     <hr class="mb-6">
                     <div class="bg-white p-6 ">
                         
-                        <h5 class="text-xl font-semibold mb-4">Lịch sử chu kỳ</h5>
+                        <h5 class="text-xl font-semibold mb-4">Lịch sử báo cáo</h5>
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                                 <tr>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Mô tả chi tiết</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời gian</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th>
+                                    <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -386,10 +390,13 @@
                                 @endphp
                                 @foreach ($lstResult as $index => $item)
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td> 
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->status_label }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->description }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->update_date }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>
+                                        <!-- <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             @php
                                                 $file = $taskTarget->getFilePath() ?? null;
@@ -403,7 +410,7 @@
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                             @endif
-                                        </td>
+                                        </td> -->
 
                                     </tr>
                                 @endforeach
@@ -413,7 +420,7 @@
                     <div class="gap-6 p-6 bg-white flex justify-content: space-between">
                         <div class="mb-4 ">
                             {{-- <div class="mt-4 flex" style="justify-content: space-between"> --}}
-                            <button type="button" onclick="window.location.href='{{ route('documents.report') }}'"
+                            <button type="button" onclick="window.history.back()"
                                 class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">
                                 Quay lại
                             </button>

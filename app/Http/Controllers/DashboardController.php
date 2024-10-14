@@ -33,6 +33,17 @@ class DashboardController extends Controller
                       });
             })
             ->paginate(10);
+            $tableTaskCount = TaskTarget::where('isDelete', 0)
+            ->where('type', 'task')
+            ->whereHas('taskResultsRelation', function($query) {
+                $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
+            })
+            ->orWhere(function ($query) {
+                $query->where('status','processing')
+                      ->whereDoesntHave('taskResultsRelation', function($query) {
+                          $query->where('status', '!=', 'complete');
+                      });
+            })->get();
             // $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) {
             //     $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
             // })->where('status', 'complete')->paginate(10);
@@ -49,6 +60,17 @@ class DashboardController extends Controller
                       });
             })
             ->paginate(10);
+            $tableTargetCount = TaskTarget::where('isDelete', 0)
+            ->where('type', 'target')
+            ->whereHas('taskResultsRelation', function($query) {
+                $query->whereIn('status', ['admin_approves', 'sub_admin_complete']);
+            })
+            ->orWhere(function ($query) {
+                $query->where('status','processing')
+                      ->whereDoesntHave('taskResultsRelation', function($query) {
+                          $query->where('status', '!=', 'complete');
+                      });
+            })->get();
         }
         elseif($user->role === 'sub_admin'){
             $tasks = TaskTarget::where('isDelete', 0)->whereHas('taskResultsRelation', function($query) use ($user) {
@@ -57,9 +79,15 @@ class DashboardController extends Controller
             $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
             })->paginate(10);
+            $tableTaskCount = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
+            })->get();
             $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
             })->paginate(10);
+            $tableTargetCount = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
+            })->get();
         }
         elseif($user->role === 'staff'){
             $tasks = TaskTarget::where('isDelete', 0)->whereHas('taskResultsRelation', function($query) use ($user) {
@@ -68,9 +96,15 @@ class DashboardController extends Controller
             $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
             })->paginate(10);
+            $tableTaskCount = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
+            })->get();
             $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
             })->paginate(10);
+            $tableTargetCount = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
+                $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
+            })->get();
         }
         // Khởi tạo mảng để chứa số liệu cho từng role và type
         $stats = [
@@ -119,6 +153,8 @@ class DashboardController extends Controller
             'targetStatus' => $stats['target'],
             'tableTask' => $tableTask,
             'tableTarget' => $tableTarget,
+            'tableTaskCount' => $tableTaskCount,
+            'tableTargetCount' => $tableTargetCount,
 
         ]);
     }

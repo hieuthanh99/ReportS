@@ -127,7 +127,7 @@ class DocumentController extends Controller
                     })->where('isDelete', 0);
                 }
                 $groupTarget =  IndicatorGroup::where('isDelete', 0)->get();
-                $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+                $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
                 $workResultTypes = MasterWorkResultTypeService::index();
                 $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
                 $taskDocuments = $taskDocuments->whereNotNull('organization_id');
@@ -148,7 +148,7 @@ class DocumentController extends Controller
                     })->where('isDelete', 0);
                 }
                 $groupTask =  TaskGroup::where('isDelete', 0)->get();
-                $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+                $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
                 $workResultTypes = MasterWorkResultTypeService::index();
                 $hasComplete = TaskResult::where('id_task_criteria', $taskTarget->id)->where('status', '!=', 'complete')->count() === 0;
                 $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
@@ -235,7 +235,7 @@ class DocumentController extends Controller
                     $taskTarget = TaskTarget::where('isDelete', 0)->find($taskId);
                     $taskTarget->status = 'processing';
                     $taskTarget->save();
-                    $organization = Organization::where('id', $id)->where('isDelete', 0)->first();
+                    $organization = Organization::where('id', $id)->whereNotNull('organization_type_id')->where('isDelete', 0)->first();
                     if ($organization) {
                         $typeRecord = $taskTarget->type === 'target' ? "Chỉ tiêu" : "Nhiệm vụ";
                         $type = $taskTarget->type;
@@ -315,7 +315,7 @@ class DocumentController extends Controller
             $taskDocuments =  $taskDocuments->where('status', $request->status);
         }
         $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10);
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         // dd($taskDocuments);
@@ -366,7 +366,7 @@ class DocumentController extends Controller
             $taskDocuments =  $taskDocuments->where('status', $request->status);
         }
         $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10);
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         // dd($taskDocuments);
@@ -435,7 +435,7 @@ class DocumentController extends Controller
      */
     public function create()
     {
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $documentCategory = DocumentCategory::where('isDelete', 0)->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
@@ -607,7 +607,7 @@ class DocumentController extends Controller
         $timeParamsQuarter = TimeHelper::getTimeParameters(3);
         $timeParamsYear = TimeHelper::getTimeParameters(4);
 
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         return view('documents.show', compact(
             'document',
             'taskDocuments',
@@ -640,7 +640,7 @@ class DocumentController extends Controller
                 });
             }
             $groupTarget =  IndicatorGroup::where('isDelete', 0)->get();
-            $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+            $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
             $units = Unit::all();
@@ -676,7 +676,7 @@ class DocumentController extends Controller
                 });
             }
             $groupTask =  TaskGroup::where('isDelete', 0)->get();
-            $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+            $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
 
@@ -726,7 +726,7 @@ class DocumentController extends Controller
                 });
             }
             $groupTask =  TaskGroup::where('isDelete', 0)->get();
-            $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+            $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
 
@@ -755,7 +755,7 @@ class DocumentController extends Controller
                 });
             }
             $groupTarget =  IndicatorGroup::where('isDelete', 0)->get();
-            $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+            $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
 
@@ -802,7 +802,7 @@ class DocumentController extends Controller
         $timeParamsQuarter = TimeHelper::getTimeParameters(3);
         $timeParamsYear = TimeHelper::getTimeParameters(4);
 
-        $organizations = Organization::where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $documentCategory = DocumentCategory::where('isDelete', 0)->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 

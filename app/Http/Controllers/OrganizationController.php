@@ -106,7 +106,7 @@ class OrganizationController extends Controller
     }
     public function getOrganizationsByType($organization_type_id)
     {
-        $organizations = Organization::where('organization_type_id', $organization_type_id)->where('isDelete', 0)->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('organization_type_id', $organization_type_id)->whereNotNull('organization_type_id')->where('isDelete', 0)->orderBy('name', 'asc')->get();
         return response()->json($organizations);
     }
 

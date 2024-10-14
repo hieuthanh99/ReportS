@@ -141,7 +141,7 @@
         @php
             $type = 'task';
             $isEditable = $taskTarget->status == 'assign' || $taskTarget->status == 'reject';
-            $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
+            $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? '';
             $hasOrganization = $taskTarget->hasOrganizationAppro();
             $taskApproval = $taskTarget->getTaskApprovalHistory();
         @endphp
@@ -274,7 +274,7 @@
                                 @foreach ($taskResults as $index => $item)
                                     @php
                                         // $taskApproval = $item->getTaskApprovalHistory();
-                                        // $result = $item->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
+                                        // $result = $item->taskResultsByIdTaskTarget()->result ?? '';
                                         // $hasOrganization = $item->hasOrganizationAppro();
                                         $taskApproval = $item->getTaskApprovalHistory();
 

@@ -770,8 +770,8 @@ class ReportController extends Controller
             $sheet->setCellValue('C' . $row, $data->document->document_name);
             $sheet->setCellValue('D' . $row, $data->code);
             $sheet->setCellValue('E' . $row, $data->name);
-            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name);
-            $sheet->setCellValue('G' . $row, $data->organization->name);
+            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name ?? '');
+            $sheet->setCellValue('G' . $row, $data->organization->name ?? '');
             $sheet->setCellValue('H' . $row, $data->results);
             $sheet->setCellValue('I' . $row, $data->getTaskStatusDescription());
             $sheet->setCellValue('J' . $row, $this->formatCycleType($type, $numberType));
@@ -871,8 +871,8 @@ class ReportController extends Controller
             $sheet->setCellValue('C' . $row, $data->document->document_name);
             $sheet->setCellValue('D' . $row, $data->code);
             $sheet->setCellValue('E' . $row, $data->name);
-            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name);
-            $sheet->setCellValue('G' . $row, $data->organization->name);
+            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name ?? '');
+            $sheet->setCellValue('G' . $row, $data->organization->name ?? '');
             $sheet->setCellValue('H' . $row, $data->results);
             $sheet->setCellValue('I' . $row, $data->getTaskStatusDescription());
             $sheet->setCellValue('J' . $row, $this->formatCycleType($type, $numberType));
@@ -1048,8 +1048,8 @@ class ReportController extends Controller
             $sheet->setCellValue('C' . $row, $data->document->document_name);
             $sheet->setCellValue('D' . $row, $data->code);
             $sheet->setCellValue('E' . $row, $data->name);
-            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name);
-            $sheet->setCellValue('G' . $row, $data->organization->name);
+            $sheet->setCellValue('F' . $row, $data->organization->organizationType->type_name ?? '');
+            $sheet->setCellValue('G' . $row, $data->organization->name ?? '');
             $sheet->setCellValue('H' . $row, $data->results);
             $sheet->setCellValue('I' . $row, $data->getTaskStatusDescription());
             $sheet->setCellValue('J' . $row, $this->formatCycleType($type, $numberType));

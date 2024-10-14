@@ -293,12 +293,7 @@
                                         việc:</label>
                                     <span class="text-gray-900 w-2/3">{{ $document->document_name }}</span>
                                 </div>
-                                <div class="flex items-center mb-4">
-                                    <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
-                                    <span class="text-gray-900 w-2/3">
-                                        <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
-                                    </span>
-                                </div>
+                                
                             </div>
 
                             {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">
@@ -337,6 +332,12 @@
                                             $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
                                         @endphp
                                     @endif
+                                </div>
+                                <div class="flex items-center mb-4">
+                                    <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
+                                    <span class="text-gray-900 w-2/3">
+                                        <span>{{ $taskApproval->remarks ?? 'Chưa nhận xét kết quả' }}</span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white " style="padding-top: 0">

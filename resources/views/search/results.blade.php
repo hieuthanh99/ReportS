@@ -187,7 +187,7 @@
                         // Các cột khác
                         const mappingIdCell = document.createElement('td');
                         mappingIdCell.classList.add('py-2', 'px-4', 'border-b');
-                        mappingIdCell.textContent = history.result;
+                        mappingIdCell.textContent = history.status_label;
                         row.appendChild(mappingIdCell);
 
                         const typeSaveCell = document.createElement('td');

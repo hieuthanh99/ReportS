@@ -31,11 +31,11 @@
                     <div class="flex flex-col h-full">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="taskChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
-                            <div class="flex justify-between items-center text-sm">
+                            <div class="flex justify-between items-center text-sm mt-2">
                                 <div>
-                                    <a class="text-red-500">Tổng số nhiệm vụ: {{ $taskStatus['overdue'] + $taskStatus['upcoming'] + $taskStatus['inProgress'] + $taskStatus['completedOnTime'] + $taskStatus['completedLate']}}</a>
+                                    <a class="font-bold ml-20">Tổng số nhiệm vụ: {{ $taskStatus['overdue'] + $taskStatus['upcoming'] + $taskStatus['inProgress'] + $taskStatus['completedOnTime'] + $taskStatus['completedLate']}}</a>
                                 </div>
-                                <div class="task-link">
+                                <div class="task-link mr-20">
                                     @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                     <a class="text-blue-500" href="{{route('tasks.byType.approved', 'task')}}">Xem chi tiết</a>
                                     @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
-                            <a class="text-red-500">Nhiệm vụ cần báo cáo: {{ $tableTask->count() }}</a>
+                            <a class="font-bold">Nhiệm vụ cần báo cáo: {{ $tableTask->count() }}</a>
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
@@ -103,11 +103,11 @@
                     <div class="flex flex-col h-full">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="targetChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
-                            <div class="flex justify-between items-center text-sm">
+                            <div class="flex justify-between items-center text-sm mt-2">
                                 <div>
-                                    <a class="text-red-500">Tổng số chỉ tiêu: {{ $targetStatus['overdue'] + $targetStatus['upcoming'] + $targetStatus['inProgress'] + $targetStatus['completedOnTime'] + $targetStatus['completedLate']}}</a>
+                                    <a class="font-bold ml-20">Tổng số chỉ tiêu: {{ $targetStatus['overdue'] + $targetStatus['upcoming'] + $targetStatus['inProgress'] + $targetStatus['completedOnTime'] + $targetStatus['completedLate']}}</a>
                                 </div>
-                                <div class="task-link">
+                                <div class="task-link mr-20">
                                     @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                     <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
                                     @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
-                            <a class="text-red-500">Chỉ tiêu cần báo cáo: {{ $tableTarget->count() }}</a>
+                            <a class="font-bold">Chỉ tiêu cần báo cáo: {{ $tableTarget->count() }}</a>
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
@@ -194,25 +194,29 @@
             },
             options: {
                 responsive: true,
+                events: [],
                 plugins: {
                     legend: {
                         position: 'bottom'
                     },
                     title: {
                         display: true,
-                        text: 'Biểu đồ trạng thái nhiệm vụ'
+                        text: 'Biểu đồ tiến độ nhiệm vụ'
                     },
                     datalabels: {
                         display: true,
                         color: 'black',
                         font: {
                             weight: 'bold',
-                            size: 14
+                            size: 16
                         },
                         formatter: (value, ctx) => {
                             return value > 0 ? value : null;
                         }
                     },
+                },
+                hover: {
+                    mode: null // Tắt hiệu ứng hover
                 }
             },
             plugins: [ChartDataLabels]
@@ -239,25 +243,29 @@
             },
             options: {
                 responsive: true,
+                events: [],
                 plugins: {
                     legend: {
                         position: 'bottom'
                     },
                     title: {
                         display: true,
-                        text: 'Biểu đồ trạng thái chỉ tiêu'
+                        text: 'Biểu đồ tiến độ chỉ tiêu'
                     },
                     datalabels: {
                         display: true,
                         color: 'black',
                         font: {
                             weight: 'bold',
-                            size: 14
+                            size: 16
                         },
                         formatter: (value, ctx) => {
                             return value > 0 ? value : null;
                         }
                     },
+                },
+                hover: {
+                    mode: null // Tắt hiệu ứng hover
                 }
             },
             plugins: [ChartDataLabels]

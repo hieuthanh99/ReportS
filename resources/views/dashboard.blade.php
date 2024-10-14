@@ -31,19 +31,21 @@
                     <div class="flex flex-col h-full">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="taskChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
-                            <div style="text-align: center; font-size: 14px;">
-                                <a>Tổng số nhiệm vụ: {{ $taskStatus['overdue'] + $taskStatus['upcoming'] + $taskStatus['inProgress'] + $taskStatus['completedOnTime'] + $taskStatus['completedLate']}}</a>
-                            </div>
-                            <div class="task-link" style="text-align: center">
-                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'task')}}">Xem chi tiết</a>
-                                @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
-                                <a style="color: blue; text-align: center" href="{{route('documents.report')}}">Xem chi tiết</a>
-                              
-                                @endif
+                            <div class="flex justify-between items-center text-sm">
+                                <div>
+                                    <a class="text-red-500">Tổng số nhiệm vụ: {{ $taskStatus['overdue'] + $taskStatus['upcoming'] + $taskStatus['inProgress'] + $taskStatus['completedOnTime'] + $taskStatus['completedLate']}}</a>
+                                </div>
+                                <div class="task-link">
+                                    @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+                                    <a class="text-blue-500" href="{{route('tasks.byType.approved', 'task')}}">Xem chi tiết</a>
+                                    @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                    <a class="text-blue-500" href="{{route('documents.report')}}">Xem chi tiết</a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
+                            <a class="text-red-500">Nhiệm vụ cần báo cáo: {{ $tableTask->count() }}</a>
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
@@ -101,18 +103,21 @@
                     <div class="flex flex-col h-full">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="targetChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
-                            <div style="text-align: center; font-size: 14px;">
-                                <a>Tổng số chỉ tiêu: {{ $targetStatus['overdue'] + $targetStatus['upcoming'] + $targetStatus['inProgress'] + $targetStatus['completedOnTime'] + $targetStatus['completedLate']}}</a>
-                            </div>
-                            <div class="task-link" style="text-align: center">
-                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
-                                @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
-                                <a style="color: blue; text-align: center" href="{{route('documents.report.target')}}">Xem chi tiết</a>
-                                @endif
+                            <div class="flex justify-between items-center text-sm">
+                                <div>
+                                    <a class="text-red-500">Tổng số chỉ tiêu: {{ $targetStatus['overdue'] + $targetStatus['upcoming'] + $targetStatus['inProgress'] + $targetStatus['completedOnTime'] + $targetStatus['completedLate']}}</a>
+                                </div>
+                                <div class="task-link">
+                                    @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+                                    <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
+                                    @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                    <a style="color: blue; text-align: center" href="{{route('documents.report.target')}}">Xem chi tiết</a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
+                            <a class="text-red-500">Chỉ tiêu cần báo cáo: {{ $tableTarget->count() }}</a>
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
@@ -197,8 +202,20 @@
                         display: true,
                         text: 'Biểu đồ trạng thái nhiệm vụ'
                     },
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: (value, ctx) => {
+                            return value > 0 ? value : null;
+                        }
+                    },
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // Biểu đồ Target
@@ -229,9 +246,21 @@
                     title: {
                         display: true,
                         text: 'Biểu đồ trạng thái chỉ tiêu'
-                    }
+                    },
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: (value, ctx) => {
+                            return value > 0 ? value : null;
+                        }
+                    },
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
     </script>

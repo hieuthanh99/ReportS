@@ -228,8 +228,8 @@
                             <div class="flex items-center mb-4">
 
 
-                                <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo
-                                    cáo</label>
+                                <!-- <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo
+                                    cáo</label> -->
                                 @php
                                     $file = $taskResult->getFilePath() ?? null;
                                 @endphp

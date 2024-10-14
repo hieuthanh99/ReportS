@@ -12,7 +12,7 @@
             oninvalid="this.setCustomValidity('Vui lòng nhập tên danh mục.')" 
                     oninput="setCustomValidity('')">
         </div>
-        <button type="submit" class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Cập nhật</button>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Cập nhật</button>
     </form>
 </div>
 @endsection

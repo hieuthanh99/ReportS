@@ -33,7 +33,7 @@
     </nav>
     <div class="mb-6 flex gap-4 mb-4" style="justify-content: space-between">
         <span style="padding: 10px 0;">Tổng số lượng: {{ $countsl }} bản ghi</span>
-        <a href="{{ route('document_categories.create') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
+        <a href="{{ route('document_categories.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
     </div>
     
         <div class="overflow-x-auto">

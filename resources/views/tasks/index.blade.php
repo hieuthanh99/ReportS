@@ -119,11 +119,11 @@
 
             <div class="flex justify-end gap-4">
                 <a href="{{ route('tasks.create.byType', ['type' => $type]) }}"
-                    class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Thêm mới</a>
 
                 <button type="submit"
-                    class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tìm kiếm
                 </button>
 
@@ -219,7 +219,7 @@
                                 </td>
                                 <td class="py-3 border border-gray-300 px-6 text-center">
                                     <button
-                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-500 transition duration-300 ml-2"
+                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                         onclick="window.location.href='{{ route('tasks.edit.taskTarget', ['id' => $item->id, 'type' => $item->type]) }}'">
                                         <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                     </button>
@@ -233,7 +233,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="button"
-                                            class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition duration-300 ml-2"
+                                            class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                             onclick="confirmDelete({{ $index + $taskTargets->firstItem() }})">
                                             <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                         </button>
@@ -288,7 +288,7 @@
                                 </td>
                                 <td class="py-3 border border-gray-300 px-6 text-center">
                                     <button
-                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-500 transition duration-300 ml-2"
+                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                         onclick="window.location.href='{{ route('tasks.edit.taskTarget', ['id' => $item->id, 'type' => $item->type]) }}'">
                                         <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                     </button>
@@ -300,7 +300,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="button"
-                                            class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition duration-300 ml-2"
+                                            class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                             onclick="confirmDelete({{ $index + $taskTargets->firstItem() }})">
                                             <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                         </button>

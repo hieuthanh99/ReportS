@@ -25,7 +25,7 @@
         @endif
     <div class="flex justify-between items-center ">
         <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
-        <a href="{{ route('categories.create') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
+        <a href="{{ route('categories.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> <i class="fas fa-plus"></i></a>
     </div>
   
    

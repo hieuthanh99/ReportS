@@ -444,7 +444,7 @@
                                                 <a style="width: 49px;"
                                                     href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $taskTarget->cycle_type, 'numberType' => $item->number_type]) }}"
                                                     id="button-file-task-{{ $taskTarget->id }}"
-                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
                                                     download>
                                                     <i class="fas fa-download"></i>
                                                 </a>

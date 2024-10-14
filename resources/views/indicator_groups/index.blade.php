@@ -76,13 +76,13 @@
 
         <div class="flex justify-end gap-4">
             <button type="submit"
-            class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+            class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
         </button>
         </div>
     </form> --}}
     <div class="mb-6 flex justify-end gap-4 mb-4">
-        <a href="{{ route('indicator_groups.create') }}" class="inline-block bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
+        <a href="{{ route('indicator_groups.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
     </div>
    
         <div class="overflow-x-auto">

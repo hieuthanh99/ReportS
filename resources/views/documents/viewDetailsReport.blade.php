@@ -291,7 +291,7 @@
                                 <div class="flex items-center mb-4">
                                     <label for="document_code" class="text-gray-700 font-medium w-1/3">Văn bản giao
                                         việc:</label>
-                                    <span class="text-gray-900 w-2/3">{{ $document->document_name }}</span>
+                                    <span class="text-gray-900 w-2/3">{{ $document->document_code }}</span>
                                 </div>
                                 
                             </div>

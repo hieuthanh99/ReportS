@@ -118,15 +118,15 @@
             </div>
 
             <div class="flex justify-end gap-4">
-                <a href="{{ route('tasks.create.byType', ['type' => $type]) }}"
-                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
-                    Thêm mới</a>
+                
                     <a class="fa fa-filter" style="margin-top: 13px;cursor: pointer;" onclick="window.location.href='{{ route('tasks.byType', $type) }}'"></a>
                 <button type="submit"
                     class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tìm kiếm
                 </button>
-
+                <a href="{{ route('tasks.create.byType', ['type' => $type]) }}"
+                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
+                    Thêm mới</a>
             </div>
         </form>
 

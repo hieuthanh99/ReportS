@@ -110,9 +110,9 @@
                                 </div>
                                 <div class="task-link" style="margin-right: 5rem;">
                                     @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                    <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
+                                    <a class="text-blue-500" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
                                     @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
-                                    <a style="color: blue; text-align: center" href="{{route('documents.report.target')}}">Xem chi tiết</a>
+                                    <a class="text-blue-500" href="{{route('documents.report.target')}}">Xem chi tiết</a>
                                     @endif
                                 </div>
                             </div>

@@ -54,12 +54,12 @@
                     <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái</option>
                         <option value="new">Báo cáo chưa giao việc</option>
-                        <option value="complete">Admin đánh giá hoàn thành</option>
-                        <option value="assign">Báo cáo đã giao việc</option>
-                        <option value="reject">Sub-Admin từ chối kết quả</option>
-                        <option value="admin_approves">Admin duyệt kết quả</option>
-                        <option value="staff_complete">Nhân viên hoàn thành báo cáo</option>
-                        <option value="sub_admin_complete">Sub-Admin duyệt kết quả</option>
+                        <option value="complete">Hoàn thành</option>
+                        <option value="assign">Chưa báo cáo</option>
+                        <option value="reject">Bị từ chối</option>
+                        <option value="admin_approves">Đã phê duyệt</option>
+                        <option value="staff_complete">Chờ phê duyệt</option>
+                        <option value="sub_admin_complete">Đã báo cáo</option>
                     </select>
                 </div>
                 

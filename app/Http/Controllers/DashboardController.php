@@ -32,7 +32,7 @@ class DashboardController extends Controller
                           $query->where('status', '!=', 'complete');
                       });
             })
-            ->paginate(10);
+            ->paginate(10, ['*'], 'task_pagging');
             $tableTaskCount = TaskTarget::where('isDelete', 0)
             ->where('type', 'task')
             ->whereHas('taskResultsRelation', function($query) {
@@ -59,7 +59,7 @@ class DashboardController extends Controller
                           $query->where('status', '!=', 'complete');
                       });
             })
-            ->paginate(10);
+            ->paginate(10, ['*'], 'target_pagging');
             $tableTargetCount = TaskTarget::where('isDelete', 0)
             ->where('type', 'target')
             ->whereHas('taskResultsRelation', function($query) {
@@ -78,13 +78,13 @@ class DashboardController extends Controller
             })->get();
             $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
-            })->paginate(10);
+            })->paginate(10, ['*'], 'task_pagging');
             $tableTaskCount = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
             })->get();
             $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
-            })->paginate(10);
+            })->paginate(10, ['*'], 'target_pagging');
             $tableTargetCount = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['staff_complete'])->where('organization_id', $user->organization_id);
             })->get();
@@ -95,13 +95,13 @@ class DashboardController extends Controller
             })->get();
             $tableTask = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
-            })->paginate(10);
+            })->paginate(10, ['*'], 'task_pagging');
             $tableTaskCount = TaskTarget::where('isDelete', 0)->where('type', 'task')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
             })->get();
             $tableTarget = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
-            })->paginate(10);
+            })->paginate(10, ['*'], 'target_pagging');
             $tableTargetCount = TaskTarget::where('isDelete', 0)->where('type', 'target')->whereHas('taskResultsRelation', function($query) use ($user) {
                 $query->whereIn('status', ['assign', 'reject'])->where('organization_id', $user->organization_id);
             })->get();

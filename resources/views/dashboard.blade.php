@@ -93,7 +93,8 @@
                                 </tbody>
                             </table>
                             <div class="mt-4">
-                                {{ $tableTask->links() }} <!-- Render pagination links -->
+                                {{ $tableTask->appends(['pageName' => 'target_pagging'])->links() }}
+                                {{-- {{ $tableTask->links('pagination::bootstrap-4', ['pageName' => 'task_pagging']) }} <!-- Render pagination links --> --}}
                             </div>
                         </div>
                     </div>
@@ -165,7 +166,7 @@
                                 </tbody>
                             </table>
                             <div class="mt-4">
-                                {{ $tableTarget->links() }}
+                                {{ $tableTarget->appends(['pageName' => 'target_pagging'])->links() }}
                             </div>
                         </div>
                     </div>

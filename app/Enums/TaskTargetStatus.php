@@ -23,7 +23,7 @@ enum TaskTargetStatus: string
             self::REJECT => 'Bị từ chối',
             self::ADMIN_APPROVES => 'Đã phê duyệt',
             self::STAFF_COMPLETE => 'Chờ phê duyệt',
-            self::SUB_ADMIN_COMPLETE => 'Chờ phê duyệt',
+            self::SUB_ADMIN_COMPLETE => 'Đã báo cáo',
         };
     }
 }

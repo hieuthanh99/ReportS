@@ -88,7 +88,7 @@
         </div>
 
         <div class="flex justify-end mt-4" style="justify-content: space-between">
-            <a href="{{ route('organizations.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
+            <a onclick="window.history.back()" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
 
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Lưu</button>
         </div>

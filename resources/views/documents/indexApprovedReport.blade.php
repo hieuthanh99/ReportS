@@ -59,7 +59,18 @@
                     </select>
                 </div>  
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
+                    <label for="issuing_organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
+                    <select name="issuing_organization_id" id="issuing_organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="">Chọn cơ quan ban hành</option>
+                        @foreach($organizations as $organization)
+                            <option value="{{ $organization->id }}" {{ request('issuing_organization_id') == $organization->id ? 'selected' : '' }}>
+                                {{ $organization->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan thực hiện:</label>
                     <select name="organization_id" id="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn cơ quan ban hành</option>
                         @foreach($organizations as $organization)

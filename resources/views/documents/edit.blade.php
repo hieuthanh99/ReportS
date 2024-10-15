@@ -211,7 +211,7 @@
                 <div id="file-list" class="mt-2 file-list"></div>
             </div>
             <div class="mt-4 flex" style="justify-content: space-between">
-                <a href="{{ route('documents.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">Quay lại</a>
+                <a onclick="window.history.back()" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">Quay lại</a>
 
                 <button type="submit" id="save-button"
                     class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Lưu

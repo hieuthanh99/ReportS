@@ -343,11 +343,15 @@ class TaskTargetController extends Controller
 
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
         }
-        if ($request->filled('organization_id')) {
-            $taskTargets->where('issuing_organization_id', $request->organization_id);
+        if ($request->filled('issuing_organization_id')) {
+            $taskTargets->where('issuing_organization_id', $request->issuing_organization_id);
         }
         if ($request->filled('status_code')) {
             $taskTargets = $taskTargets->where('status_code', $request->status_code);
+        }
+        if ($request->filled('organization_id')) {
+            $taskResultSearch = TaskResult::where('isDelete', 0)->where('organization_id', $request->organization_id)->pluck('id_task_criteria');
+            $taskTargets = $taskTargets->whereIn('id', $taskResultSearch);
         }
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');

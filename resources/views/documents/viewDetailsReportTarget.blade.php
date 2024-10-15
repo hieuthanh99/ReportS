@@ -220,11 +220,11 @@
                                 <span class="text-gray-900 w-2/3">{{ $taskResult->result }}</span>
 
                             </div>
-                            <div class="flex items-center mb-4">
+                            <!-- <div class="flex items-center mb-4">
 
 
-                                <!-- <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo
-                                    cáo</label> -->
+                                <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo
+                                    cáo</label>
                                 @php
                                     $file = $taskResult->getFilePath() ?? null;
                                 @endphp
@@ -234,7 +234,7 @@
                                         $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
                                     @endphp
                                 @endif
-                            </div>
+                            </div> -->
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
                                 <span class="text-gray-900 w-2/3">
@@ -275,10 +275,10 @@
                                 @endphp
                                 @foreach ($lstResult as $index => $item)
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->status_label }}</td>
+                                    <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabel() ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->description }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->update_date }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getEndDate() ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>
                                         <!-- <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>

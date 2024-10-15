@@ -33,9 +33,9 @@
                             <canvas id="taskChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
                             <div class="flex justify-between items-center text-sm mt-2">
                                 <div>
-                                    <a class="font-bold ml-20">Tổng số nhiệm vụ: {{ $taskStatus['overdue'] + $taskStatus['upcoming'] + $taskStatus['inProgress'] + $taskStatus['completedOnTime'] + $taskStatus['completedLate']}}</a>
+                                    <a class="font-bold" style="margin-left: 5rem;">Tổng số nhiệm vụ: {{ $taskStatus['overdue'] + $taskStatus['upcoming'] + $taskStatus['inProgress'] + $taskStatus['completedOnTime'] + $taskStatus['completedLate']}}</a>
                                 </div>
-                                <div class="task-link mr-20">
+                                <div class="task-link" style="margin-right: 5rem;">
                                     @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                     <a class="text-blue-500" href="{{route('tasks.byType.approved', 'task')}}">Xem chi tiết</a>
                                     @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
@@ -106,9 +106,9 @@
                             <canvas id="targetChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
                             <div class="flex justify-between items-center text-sm mt-2">
                                 <div>
-                                    <a class="font-bold ml-20">Tổng số chỉ tiêu: {{ $targetStatus['overdue'] + $targetStatus['upcoming'] + $targetStatus['inProgress'] + $targetStatus['completedOnTime'] + $targetStatus['completedLate']}}</a>
+                                    <a class="font-bold" style="margin-left: 5rem;">Tổng số chỉ tiêu: {{ $targetStatus['overdue'] + $targetStatus['upcoming'] + $targetStatus['inProgress'] + $targetStatus['completedOnTime'] + $targetStatus['completedLate']}}</a>
                                 </div>
-                                <div class="task-link mr-20">
+                                <div class="task-link" style="margin-right: 5rem;">
                                     @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                     <a style="color: blue; text-align: center" href="{{route('tasks.byType.approved', 'target')}}">Xem chi tiết</a>
                                     @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')

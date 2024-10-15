@@ -141,7 +141,7 @@
             </div>
         </div>
         <div class="mt-6 flex" style="justify-content: space-between">
-            <a href="{{route('users.index')}}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
+            <a onclick="window.history.back()" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
 
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Tạo người dùng</button>
         </div>

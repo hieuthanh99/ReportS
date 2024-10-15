@@ -283,6 +283,7 @@ class TaskTargetController extends Controller
             }
 
             session()->flash('success', 'Cập nhật thành công!');
+            // dd($request);
             return $this->indexView($request, $type);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -343,11 +344,15 @@ class TaskTargetController extends Controller
 
             $taskTargets = $taskTargets->where('document_id', $request->document_id);
         }
-        if ($request->filled('organization_id')) {
-            $taskTargets->where('issuing_organization_id', $request->organization_id);
+        if ($request->filled('issuing_organization_id')) {
+            $taskTargets->where('issuing_organization_id', $request->issuing_organization_id);
         }
         if ($request->filled('status_code')) {
             $taskTargets = $taskTargets->where('status_code', $request->status_code);
+        }
+        if ($request->filled('organization_id')) {
+            $taskResultSearch = TaskResult::where('isDelete', 0)->where('organization_id', $request->organization_id)->pluck('id_task_criteria');
+            $taskTargets = $taskTargets->whereIn('id', $taskResultSearch);
         }
         $executionTimeFrom = $request->input('execution_time_from');
         $executionTimeTo = $request->input('execution_time_to');
@@ -401,9 +406,9 @@ class TaskTargetController extends Controller
             $documentsSearch = Document::where('isDelete', 0)->where('document_code', 'like', '%' . $request->document_code . '%')->pluck('id');
             $taskTargets = $taskTargets->whereIn('document_id', $documentsSearch);
         }
-        if ($request->filled('document_id')) {
-            $taskTargets = $taskTargets->where('document_id', $request->document_id);
-        }
+        // if ($request->filled('document_id')) {
+        //     $taskTargets = $taskTargets->where('document_id', $request->document_id);
+        // }
         if ($request->filled('organization_id')) {
             $taskTargets->where('issuing_organization_id', $request->organization_id);
         }
@@ -425,11 +430,11 @@ class TaskTargetController extends Controller
             }
             // $taskTargets =  $taskTargets->where('status', $request->status);
         }
-        if ($request->filled('task_type')) {
-            $taskTargets =  $taskTargets->where('task_type', $request->task_type);
+        if ($request->filled('tasktype')) {
+            $taskTargets =  $taskTargets->where('task_type', $request->tasktype);
         }
-        if ($request->filled('type_id')) {
-            $taskTargets =  $taskTargets->where('type_id', $request->type_id);
+        if ($request->filled('typeid')) {
+            $taskTargets =  $taskTargets->where('type_id', $request->typeid);
         }
         $executionTimeFrom = $request->input('completion_date');
         $executionTimeTo = $request->input('execution_time_to');
@@ -467,6 +472,7 @@ class TaskTargetController extends Controller
         }
         $workResultTypes = MasterWorkResultTypeService::index();
         $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
+        dd($taskTargets);
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes'));
     }
 

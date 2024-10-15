@@ -69,11 +69,11 @@
                     </select>
                 </div>
                 <div class="flex-1 min-w-[200px]">
-                    <label for="type_id" class="block text-gray-700 font-medium mb-2">Nhóm {{ $text }}:</label>
-                    <select id="type_id" name="type_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                    <label for="typeid" class="block text-gray-700 font-medium mb-2">Nhóm {{ $text }}:</label>
+                    <select id="typeid" name="typeid" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="" data-code="">Chọn loại {{ $text }}</option>
                         @foreach ($typeTask as $item)
-                            <option value="{{ $item->id }}" {{ request('type_id') == $item->id ? 'selected' : '' }}>
+                            <option value="{{ $item->id }}" {{ request('typeid') == $item->id ? 'selected' : '' }}>
                                 {{ $item->name }}
                             </option>
                         @endforeach
@@ -101,8 +101,8 @@
                 </div>
                 @if ($type == 'task')
                     <div class="flex-1 min-w-[200px]">
-                        <label for="task_type" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
-                        <select id="task_type" name="task_type"
+                        <label for="tasktype" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
+                        <select id="tasktype" name="tasktype"
                             class="border border-gray-300 rounded-lg p-2 w-full select2">
                             <option value="" disabled selected>Chọn loại nhiệm vụ</option>
                             <option value="timed">Có thời hạn</option> <!-- Giá trị tiếng Anh: "timed" -->

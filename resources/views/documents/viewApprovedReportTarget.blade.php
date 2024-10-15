@@ -371,7 +371,7 @@
                      <div class="gap-6 p-6 bg-white flex justify-content: space-between">
                         <div class="mb-4 ">
                             {{-- <div class="mt-4 flex" style="justify-content: space-between"> --}}
-                            <button type="button" onclick="window.location.href='{{ route('tasks.byType.approved', $type) }}'"
+                            <button type="button" onclick="window.history.back()"
                                 class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">
                                 Quay lại
                             </button>

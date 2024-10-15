@@ -148,7 +148,7 @@
         
             <!-- Nút lưu -->
             <div class="mt-4 flex" style="justify-content: space-between">
-                <a href="{{ route('documents.index') }}" class="inline-block bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Quay lại</a>
+                <a onclick="window.history.back()" class="inline-block bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Quay lại</a>
 
                 <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Lưu</button>
             </div>

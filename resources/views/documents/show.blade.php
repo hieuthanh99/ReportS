@@ -209,7 +209,7 @@
             
            
             <div class="mt-4 flex" style="justify-content: space-between">
-                <a href="{{ route('documents.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>            </div>
+                <a onclick="window.history.back()" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>            </div>
             {{-- Danh sách công việc --}}
             <div class="mt-6">
                 {{-- <h5 class="text-xl font-semibold mb-4">Danh sách đầu công việc:</h5> --}}

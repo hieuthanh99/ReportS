@@ -125,7 +125,7 @@
                             <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $item->document->issuingDepartment->name ?? "" }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $item->getEndDate() }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
+                            <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code ?? "" }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"

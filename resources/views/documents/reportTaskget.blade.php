@@ -161,7 +161,7 @@
                                 </button>
                             @else
                                 <button
-                                    class="bg-yellow-600 text-white px-4 py-2 rounded-lg shadow transition duration-300 ml-2"
+                                    class="text-white px-4 py-2 rounded-lg shadow transition duration-300 ml-2" style="background-color: rgb(202, 138, 4);"
                                     onclick="window.location.href='{{ route('documents.report.update.target', $document) }}'" disabled>
                                     <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                 </button>

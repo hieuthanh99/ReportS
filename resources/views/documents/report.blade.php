@@ -131,58 +131,60 @@
                 </thead>
                 <tbody>
                     @foreach ($taskDocuments as $index => $document)
-             
-                        <tr class="border-b border-gray-200">
-                            <td class="py-3 border border-gray-300 px-6">{{ $index + $taskDocuments->firstItem() }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $document->taskTarget->name ?? ''}}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $document->document->issuingDepartment->name ?? '' }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $document->taskTarget->getEndDate() ?? '' }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $document->document->document_code ?? '' }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $document->getStatusLabelAttributeTaskTarget() ?? ''  }}</td>
-                            <td class="py-3 border border-gray-300 px-6"> {{ $document->taskTarget->getStatusLabel() }}</td>
-                            <td class="py-3 border border-gray-300 px-6">
-                                <button class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
-                                onclick="window.location.href='{{ route('documents.report.details', $document->id) }}'">
-                                <i class="fas fa-info-circle"></i> <!-- Biểu tượng cho "Chi tiết" -->
+                       @if($document->taskTarget)
+                       <tr class="border-b border-gray-200">
+                        <td class="py-3 border border-gray-300 px-6">{{ $index + $taskDocuments->firstItem() }}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ $document->taskTarget->name ?? ''}}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ $document->document->issuingDepartment->name ?? '' }}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ $document->taskTarget->getEndDate() ?? '' }}</td>
+                        <td class="py-3 border border-gray-300 px-6">{{ $document->document->document_code ?? '' }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $document->getStatusLabelAttributeTaskTarget() ?? ''  }}</td>
+                        <td class="py-3 border border-gray-300 px-6"> {{ $document->taskTarget->getStatusLabel() }}</td>
+                        <td class="py-3 border border-gray-300 px-6">
+                            <button class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
+                            onclick="window.location.href='{{ route('documents.report.details', $document->id) }}'">
+                            <i class="fas fa-info-circle"></i> <!-- Biểu tượng cho "Chi tiết" -->
+                            </button>
+                        </td>
+                        <td class="py-3 border border-gray-300 px-6">
+                            @if ($document->getStatusLabelAttributeTaskTarget() !== 'Đã phê duyệt')
+                                <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                                    onclick="window.location.href='{{ route('documents.report.update', $document) }}'">
+                                    <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                 </button>
-                            </td>
-                            <td class="py-3 border border-gray-300 px-6">
-                                @if ($document->getStatusLabelAttributeTaskTarget() !== 'Đã phê duyệt')
-                                    <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
-                                        onclick="window.location.href='{{ route('documents.report.update', $document) }}'">
-                                        <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
-                                    </button>
-                                @else
-                                    <button class="text-white px-4 py-2 rounded-lg shadow transition duration-300 ml-2" style="background-color: rgb(202, 138, 4);"
-                                        onclick="window.location.href='{{ route('documents.report.update', $document) }}'" disabled>
-                                        <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
-                                    </button>
-                                @endif    
-                            </td>
-                            {{-- @if(Auth::user()->role !== 'staff')
-                            <td class="py-3 border border-gray-300 px-6">
+                            @else
+                                <button class="text-white px-4 py-2 rounded-lg shadow transition duration-300 ml-2" style="background-color: rgb(202, 138, 4);"
+                                    onclick="window.location.href='{{ route('documents.report.update', $document) }}'" disabled>
+                                    <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
+                                </button>
+                            @endif    
+                        </td>
+                        {{-- @if(Auth::user()->role !== 'staff')
+                        <td class="py-3 border border-gray-300 px-6">
+                           
+                            <form id="delete-form-{{ $document->id }}" action="{{ route('documents.destroy', $document) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                    class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                    onclick="confirmDelete({{ $document->id }})">
+                                    <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
+                                </button>
+                            </form>
+                        </td>
+                        @endif --}}
+                        {{-- <td class="py-3 border border-gray-300 px-6" style="display: flex;text-align: center;"></td>
+                        <td class="py-3 border border-gray-300 px-6" style="display: flex;text-align: center;">
+                           
+                        </td>
+                        <td class="py-3 border border-gray-300 px-6" style="    display: flex;
+                        text-align: center;">
                                
-                                <form id="delete-form-{{ $document->id }}" action="{{ route('documents.destroy', $document) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button"
-                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete({{ $document->id }})">
-                                        <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
-                                    </button>
-                                </form>
-                            </td>
-                            @endif --}}
-                            {{-- <td class="py-3 border border-gray-300 px-6" style="display: flex;text-align: center;"></td>
-                            <td class="py-3 border border-gray-300 px-6" style="display: flex;text-align: center;">
-                               
-                            </td>
-                            <td class="py-3 border border-gray-300 px-6" style="    display: flex;
-                            text-align: center;">
-                                   
-                            </td> --}}
-                            
-                        </tr>
+                        </td> --}}
+                        
+                    </tr>
+                       @endif
+                      
                     @endforeach
                 </tbody>
             </table>

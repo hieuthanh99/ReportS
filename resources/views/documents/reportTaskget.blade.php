@@ -133,6 +133,7 @@
                 </thead>
                 <tbody>
                     @foreach ($taskDocuments as $index => $document)
+                      @if($document->taskTarget)
                         <tr class="border-b border-gray-200">
                             <td class="py-3 border border-gray-300 px-6">{{ $index + $taskDocuments->firstItem() }}</td>
 
@@ -191,6 +192,7 @@
                             </td> --}}
 
                         </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>

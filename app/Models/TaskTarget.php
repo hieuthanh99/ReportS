@@ -55,11 +55,11 @@ class TaskTarget extends Model
     }
     public function getStatusLabel()
     {
-        $today = Carbon::now();
-        $startDate = Carbon::parse($this->start_date);
-        $endDate = Carbon::parse($this->end_date);
+        $today = Carbon::now()->startOfDay();
+        $startDate = Carbon::parse($this->start_date)->startOfDay();
+        $endDate = Carbon::parse($this->end_date)->startOfDay();
         if ($this->status === 'complete') {
-            if ($endDate->gt($today)) {
+            if ($endDate->gte($today)) {
                 return "Hoàn thành đúng hạn";
             } else {
                 return "Hoàn thành quá hạn";
@@ -71,6 +71,8 @@ class TaskTarget extends Model
                 return "Đang thực hiện";
             } elseif ($today->gt($endDate)) {
                 return "Quá hạn";
+            }elseif ($endDate->diffInDays($today) <= 30) {
+                return "Sắp tới hạn";
             }
         }
         if ($this->status === 'new') {

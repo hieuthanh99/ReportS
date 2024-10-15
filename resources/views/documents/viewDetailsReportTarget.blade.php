@@ -110,7 +110,7 @@
         @php
             $type = 'task';
             $isEditable = $taskTarget->status == 'assign' || $taskTarget->status == 'reject';
-            $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? 'Nhân viên chưa báo cáo';
+            $result = $taskTarget->taskResultsByIdTaskTarget()->result ?? '';
             $hasOrganization = $taskTarget->hasOrganizationAppro();
             $taskApproval = $taskTarget->getTaskApprovalHistory();
 

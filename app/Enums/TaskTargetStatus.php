@@ -18,12 +18,12 @@ enum TaskTargetStatus: string
     {
         return match($this) {
             self::NEW => 'Báo cáo chưa giao việc',
-            self::COMPLETE => 'Admin đánh giá hoàn thành',
-            self::ASSIGN => 'Báo cáo đã giao việc',
-            self::REJECT => 'Sub-Admin từ chối kết quả',
-            self::ADMIN_APPROVES => 'Admin duyệt kết quả',
-            self::STAFF_COMPLETE => 'Nhân viên hoàn thành báo cáo',
-            self::SUB_ADMIN_COMPLETE => 'Sub-Admin duyệt kết quả',
+            self::COMPLETE => 'Hoàn thành',
+            self::ASSIGN => 'Chưa báo cáo',
+            self::REJECT => 'Bị từ chối',
+            self::ADMIN_APPROVES => 'Đã phê duyệt',
+            self::STAFF_COMPLETE => 'Chờ phê duyệt',
+            self::SUB_ADMIN_COMPLETE => 'Đã báo cáo',
         };
     }
 }

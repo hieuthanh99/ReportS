@@ -108,9 +108,9 @@
                             <td class="py-3 border border-gray-300 px-6">{{ $data->document->document_name }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->code }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->name }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $data->organization->organizationType->type_name }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $data->organization->organizationType->type_name ?? '' }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->getCycleTypeTextAttribute() }}</td>
-                            <td class="py-3 border border-gray-300 px-6">{{ $data->organization->name }}</td>
+                            <td class="py-3 border border-gray-300 px-6">{{ $data->organization->name ?? '' }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->results }}</td>
                             <td class="py-3 border border-gray-300 px-6">{{ $data->getTaskStatusDescription() }}</td>
                            

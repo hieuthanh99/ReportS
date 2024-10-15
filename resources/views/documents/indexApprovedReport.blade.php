@@ -72,6 +72,7 @@
             </div>
 
         <div class="flex justify-end gap-4">
+            <a class="fa fa-filter" style="margin-top: 13px;cursor: pointer;" onclick="window.location.href='{{ route('tasks.byType.approved', $type) }}'"></a>
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm
@@ -90,7 +91,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Cơ quan ban hành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời hạn hoàn thành</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
-                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Cập nhật phê duyệt
                          </th>

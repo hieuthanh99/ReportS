@@ -254,6 +254,54 @@
                             @endif
                         </div>
                     </div>
+                    <div class="bg-white p-6 ">
+                        
+                        <h5 class="text-xl font-semibold mb-4">Lịch sử báo cáo</h5>
+                        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+                            <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
+                                <tr>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Mô tả chi tiết</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời gian</th>
+                                    <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th> -->
+                                    <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th> -->
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $stt = 1;
+                                @endphp
+                                @foreach ($lstResult as $index => $item)
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->status_label }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->description }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->update_date }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">
+                                            {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>
+                                        <!-- <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">
+                                            @php
+                                                $file = $taskTarget->getFilePath() ?? null;
+                                            @endphp
+                                            @if ($file && !empty($file->file_path))
+                                                <a style="width: 49px;"
+                                                    href="{{ route('file.download', ['id' => $file->id, 'type' => 1, 'cycleType' => $taskTarget->cycle_type, 'numberType' => $item->number_type]) }}"
+                                                    id="button-file-task-{{ $taskTarget->id }}"
+                                                    class="flex items-center space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-600 transition duration-300 hover:underline"
+                                                    download>
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            @endif
+                                        </td> -->
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="mt-4 flex" style="justify-content: space-between">
                         <a href="{{ route('documents.report.target') }}"
                             class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay

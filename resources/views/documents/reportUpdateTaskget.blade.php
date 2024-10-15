@@ -446,7 +446,7 @@
                         <!-- Nút Reject -->
                         <button data-id="{{ $taskResult->id }}" id="button-reject-{{ $taskResult->id }}"
                         type="button"
-                            class="button-reject bg-red-500 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
+                            class="button-reject bg-red-400 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
                             Từ chối
                         </button>
                     </div>

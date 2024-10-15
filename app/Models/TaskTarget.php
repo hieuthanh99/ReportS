@@ -295,7 +295,7 @@ class TaskTarget extends Model
     
 
     public function getListResults(){
-        return TaskResult::where('type_save', $this->type)->where('id_task_criteria', $this->id)->paginate(10);
+        return TaskResult::where('type_save', $this->type)->where('id_task_criteria', $this->id)->orderByRaw("CASE WHEN status = 'staff_complete' THEN 0 ELSE 1 END")->orderBy('status')->paginate(10);
     }
     
 

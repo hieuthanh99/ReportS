@@ -84,8 +84,8 @@ class TaskTarget extends Model
     }
     public function getCurrentCycle()
     {
-        // dd($this->cycle_type);
-        $data=  TimeHelper::getTimeParameters((int)$this->cycle_type);
+
+        return TimeHelper::getTimeParameters((int)$this->cycle_type);
 
     }
 

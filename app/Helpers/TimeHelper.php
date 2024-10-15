@@ -8,6 +8,7 @@ class TimeHelper
 {
     public static function getTimeParameters($type)
     {
+ 
         $today = Carbon::now();
         $result = [];
 
@@ -20,6 +21,7 @@ class TimeHelper
                 break;
 
             case 2: // Tháng
+
                 $result = $today->month;
                 // $result['previous'] = $today->copy()->subMonth()->month;
                 // $result['two_previous'] = $today->copy()->subMonths(2)->month;

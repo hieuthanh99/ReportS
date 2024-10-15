@@ -691,22 +691,28 @@ class DocumentController extends Controller
         $currentYear = Carbon::now()->year;
         $currentMonth = Carbon::now()->month;
         $currentWeek = Carbon::now()->weekOfYear;
-
         $weeksToFetch = [];
         if ($currentMonth === 1) {
             $weeksToFetch = [11, 12];
             $yearToFetch = $currentYear - 1;
-        } else {
-            $weeksToFetch[] = $currentWeek;
-            $yearToFetch = $currentYear;
-        }
-        return TaskResult::where('type', $type)
+
+            $data = TaskResult::where('type', $type)
             ->where('id_task_criteria', $taskTargetId)
             ->whereYear('created_at', $yearToFetch)
             ->whereIn('number_type', $weeksToFetch)
             ->where('number_type', '!=', $currentNumberType)
             ->orderBy('number_type')
             ->get();
+        } else {
+            $data = TaskResult::where('type', $type)
+            ->where('id_task_criteria', $taskTargetId)
+            ->whereYear('created_at', $currentYear)
+            ->where('number_type', '!=', $currentNumberType)
+            ->orderBy('number_type')
+            ->get();
+        }
+
+        return $data;
     }
 
     public function detailsReport(string $id)
@@ -728,6 +734,7 @@ class DocumentController extends Controller
             $groupTask =  TaskGroup::where('isDelete', 0)->get();
             $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
+           // dd($taskTarget->getCurrentCycle());
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
 
             return view('documents.viewDetailsReport', compact('taskResult', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));

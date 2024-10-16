@@ -472,7 +472,7 @@ class TaskTargetController extends Controller
         }
         $workResultTypes = MasterWorkResultTypeService::index();
         $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
-        dd($taskTargets);
+        // dd($taskTargets);
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes'));
     }
 

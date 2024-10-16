@@ -314,7 +314,7 @@ class DocumentController extends Controller
         if ($request->filled('status')) {
             $taskDocuments =  $taskDocuments->where('status', $request->status);
         }
-        $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10);
+        $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
@@ -365,7 +365,7 @@ class DocumentController extends Controller
         if ($request->filled('status')) {
             $taskDocuments =  $taskDocuments->where('status', $request->status);
         }
-        $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10);
+        $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
@@ -421,7 +421,7 @@ class DocumentController extends Controller
         if ($text) {
             $query->where('document_name', 'like', '%' . $text . '%');
         }
-        $documents = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10);
+        $documents = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
 
        // dd($organizations);

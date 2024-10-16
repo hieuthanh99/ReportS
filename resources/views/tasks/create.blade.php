@@ -101,7 +101,8 @@
                 <div class="mb-4">
                     
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Loại nhiệm vụ<span class="text-red-500">*</span></label>
-                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px">
+                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn loại nhiện vụ.')" oninput="this.setCustomValidity('')">
                         <option value="" disabled selected>-- Chọn loại nhiệm vụ --</option>
                         <option value="timed">Có thời hạn</option> <!-- Giá trị tiếng Anh: "timed" -->
                         <option value="regular">Thường xuyên</option> <!-- Giá trị tiếng Anh: "regular" -->
@@ -136,7 +137,8 @@
                 <div class="mb-4">
                     <label for="target" class="block text-gray-700 text-sm font-medium mb-2">Chỉ tiêu <span class="text-red-500">*</span></label>
                     <input type="text"  placeholder="Nhập chỉ tiêu"
-                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('target') }}">
+                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('target') }}" required
+                     oninvalid="this.setCustomValidity('Vui lòng nhập chỉ tiêu.')" oninput="this.setCustomValidity('')">
                 </div>
                 @else
                 
@@ -160,7 +162,8 @@
                 </div>
                 <div class="mb-4">
                     <label for="request_results_task" class="block text-gray-700 text-sm font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>
-                    <input type="text" id="request_results_task" name="request_results_task" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả yêu cầu...">
+                    <input type="text" id="request_results_task" name="request_results_task" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả yêu cầu..." required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập kết quả yêu cầu.')" oninput="this.setCustomValidity('')">
                 </div>
                 @endif
                
@@ -171,11 +174,13 @@
                 <div class="mb-4">
                     <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Thời hạn hoàn thành <span class="text-red-500">*</span></label>
                     <input type="date"  placeholder="dd-mm-yyyy"
-                    min="1997-01-01" max="2100-12-31" id="end_date" name="end_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('end_date') }}" required>
+                    min="1997-01-01" max="2100-12-31" id="end_date" name="end_date" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('end_date') }}" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn thời gian hoàn thành.')" oninput="this.setCustomValidity('')">
                 </div>
                 <div class="mb-4" style="display: none">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Phân loại <span class="text-red-500">*</span></label>
-                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required>
+                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn phân loại.')" oninput="this.setCustomValidity('')">
                         @foreach ($categories as $item)
                             <option value="{{ $item->CategoryID }}" {{ old('category_id') == $item->CategoryID ? 'selected' : '' }}>
                                 {{ $item->CategoryName }}

@@ -91,13 +91,15 @@
                 </div>
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên {{ $text }}:</label>
-                    <textarea required id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4">{{ $taskTarget->name }}</textarea>
+                    <textarea required id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập tên.')" oninput="this.setCustomValidity('')">{{ $taskTarget->name }}</textarea>
                 </div>
                 @if($type == 'task')
                 <div class="mb-4">
                     
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Loại nhiệm vụ<span class="text-red-500">*</span></label>
-                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px">
+                    <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn loại nhiệm vụ.')" oninput="this.setCustomValidity('')">
                         <option value="timed" {{ $taskTarget->task_type == 'timed' ? 'selected' : '' }}>Có thời hạn</option>
                         <option value="regular" {{ $taskTarget->task_type == 'regular' ? 'selected' : '' }}>Thường xuyên</option>
                     </select>
@@ -108,7 +110,8 @@
                     
                     <label for="task_type" class="block text-gray-700 text-sm font-medium mb-2">Loại chỉ tiêu<span class="text-red-500">*</span></label>
                    
-                    <select id="target_type" name="target_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px">
+                    <select id="target_type" name="target_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn loại chỉ tiêu.')" oninput="this.setCustomValidity('')">
                         <option value="single" {{ $taskTarget->target_type == 'single' ? 'selected' : '' }}>Đơn</option> <!-- "Đơn" -> "single" -->
                         <option value="aggregate" {{ $taskTarget->target_type == 'aggregate' ? 'selected' : '' }}>Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
                     </select>
@@ -130,13 +133,15 @@
                 <div class="mb-4">
                     <label for="target" class="block text-gray-700 text-sm font-medium mb-2">Chỉ tiêu <span class="text-red-500">*</span></label>
                     <input type="text"  placeholder="Nhập chỉ tiêu"
-                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ $taskTarget->target }}">
+                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ $taskTarget->target }}" require
+                     oninvalid="this.setCustomValidity('Vui lòng nhập chỉ tiêu.')" oninput="this.setCustomValidity('')">
                 </div>
                 @else
                 <div class="mb-4">
                     {{-- onchange="changeResultType(this.value)" --}}
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Kết quả:</label>
-                    <select name="result_type" id="result_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px">
+                    <select name="result_type" id="result_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn kết quả.')" oninput="this.setCustomValidity('')">
                         @foreach ($workResultTypes as $idx => $item)
                             @continue($type != 'task' && $idx == 4)
                             <option value="{{ $item->key }}" {{ $taskTarget->result_type == $item->key ? 'selected' : '' }}>
@@ -148,7 +153,8 @@
                 </div>
                 <div class="mb-4">
                     <label for="request_results_task" class="block text-gray-700 text-sm font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>
-                    <input type="text" id="request_results_task" value="{{ $taskTarget->request_results_task }}" name="request_results_task" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả yêu cầu...">
+                    <input type="text" id="request_results_task" value="{{ $taskTarget->request_results_task }}" name="request_results_task" class="form-input w-full border border-gray-300 rounded-lg p-2" placeholder="Nhập kết quả yêu cầu..." required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập kết quả yêu cầu.')" oninput="this.setCustomValidity('')">
                 </div>
                 @endif
              
@@ -162,12 +168,14 @@
                     min="1997-01-01" max="2100-12-31"
                   required
                     value="{{ $taskTarget->end_date }}"
-                    class="form-input w-full border border-gray-300 rounded-lg p-2">
+                    class="form-input w-full border border-gray-300 rounded-lg p-2"
+                    oninvalid="this.setCustomValidity('Vui lòng chọn ngày kết thúc.')" oninput="this.setCustomValidity('')">
 
                 </div>
                 <div class="mb-4" style="display: none">
                     <label for="category_id" class="block text-gray-700 text-sm font-medium mb-2">Phân loại <span class="text-red-500">*</span></label>
-                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required>
+                    <select name="category_id" id="category_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn phân loại.')" oninput="this.setCustomValidity('')">
                         @foreach ($categories as $item)
                             <option value="{{ $item->CategoryID }}" {{ $taskTarget->category_id == $item->CategoryID ? 'selected' : '' }}>
                                 {{ $item->CategoryName }}

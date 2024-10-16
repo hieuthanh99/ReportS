@@ -381,7 +381,7 @@ class TaskTargetController extends Controller
             $typeTask =  TaskGroup::where('isDelete', 0)->get();
         }
         $workResultTypes = MasterWorkResultTypeService::index();
-        $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
+        $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         
 
         return view('documents.indexApprovedReport', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes', 'statuses'));
@@ -471,7 +471,7 @@ class TaskTargetController extends Controller
             $typeTask =  TaskGroup::where('isDelete', 0)->get();
         }
         $workResultTypes = MasterWorkResultTypeService::index();
-        $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10);
+        $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         // dd($taskTargets);
         return view('tasks.index', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes'));
     }

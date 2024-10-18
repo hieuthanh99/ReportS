@@ -405,7 +405,9 @@
                         <tr>
                             <th class="py-2 px-4 border-b">STT</th>
                             <th class="py-2 px-4 border-b">Tiến độ</th>
-                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">Kết quả báo cáo</th>
+                            <th class="py-2 px-4 border-b">Trạng thái báo cáo</th>
+                            <th class="py-2 px-4 border-b">Nhận xét</th>
                             <th class="py-2 px-4 border-b">Thời gian</th>
                             <th class="py-2 px-4 border-b">Chu kỳ</th>
                         </tr>
@@ -611,10 +613,25 @@
                         mappingIdCell.textContent = history.status_label;
                         row.appendChild(mappingIdCell);
 
-                        const typeSaveCell = document.createElement('td');
-                        typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
-                        typeSaveCell.textContent = history.description;
-                        row.appendChild(typeSaveCell);
+                        // const typeSaveCell = document.createElement('td');
+                        // typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
+                        // typeSaveCell.textContent = history.description;
+                        // row.appendChild(typeSaveCell);
+
+                        const resultsCell = document.createElement('td');
+                        resultsCell.classList.add('py-2', 'px-4', 'border-b');
+                        resultsCell.textContent = history.result;
+                        row.appendChild(resultsCell);
+                        
+                        const statusCodeCell = document.createElement('td');
+                        statusCodeCell.classList.add('py-2', 'px-4', 'border-b');
+                        statusCodeCell.textContent = history.task_result_status_label;
+                        row.appendChild(statusCodeCell);
+
+                        const remarkCell = document.createElement('td');
+                        remarkCell.classList.add('py-2', 'px-4', 'border-b');
+                        remarkCell.textContent = history.remarks;
+                        row.appendChild(remarkCell);
 
                         
                         const descriptionCell = document.createElement('td');

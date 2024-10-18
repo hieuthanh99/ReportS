@@ -49,7 +49,7 @@
                         <ul class="list-none p-0 m-0"></ul>
                     </div>
                 </div>
-                <div class="flex-1 min-w-[200px]">
+                <!-- <div class="flex-1 min-w-[200px]">
                     <label for="status_code" class="block text-gray-700 font-medium mb-2">Trạng thái báo cáo:</label>
                     <select id="status_code" name="status_code" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái báo cáo</option>
@@ -57,7 +57,18 @@
                             <option value="{{ $status->value }}">{{ $status->label() }}</option>
                         @endforeach
                     </select>
-                </div>  
+                </div>   -->
+                <div class="flex-1 min-w-[200px]">
+                    <label for="status" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
+                        <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                            <option value="">Chọn trạng thái</option>
+                            <option value="complete_on_time">Hoàn thành đúng hạn</option>
+                            <option value="complete_late">Hoàn thành quá hạn</option>
+                            <option value="processing">Đang thực hiện</option>
+                            <option value="overdue">Quá hạn</option>
+                            <option value="upcoming_due">Sắp tới hạn</option>
+                        </select>                
+                </div>
                 <div class="flex-1 min-w-[200px]">
                     <label for="issuing_organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
                     <select name="issuing_organization_id" id="issuing_organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
@@ -69,7 +80,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px]">
+                <!-- <div class="flex-1 min-w-[200px]">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan thực hiện:</label>
                     <select name="organization_id" id="organization_id" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn cơ quan ban hành</option>
@@ -79,7 +90,7 @@
                             </option>
                         @endforeach
                     </select>
-                </div>
+                </div> -->
             </div>
 
         <div class="flex justify-end gap-4">
@@ -104,7 +115,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                            Cập nhật phê duyệt
+                            Phê duyệt
                          </th>
                          <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Lịch sử phê duyệt
@@ -119,7 +130,7 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Số hiệu văn bản</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                            Cập nhật phê duyệt
+                            Phê duyệt
                          </th>
                          <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
                             Lịch sử phê duyệt
@@ -139,10 +150,17 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code ?? "" }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                            @if($item->status != 'complete')
+                            <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                             </button>
+                            @else
+                            <button class=" text-white px-4 py-2 rounded-lg shadow  transition duration-300 ml-2" style="background-color: rgb(202, 138, 4);"
+                                onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'" disabled>
+                                <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
+                            </button>
+                            @endif
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
                                 <button data-document-id="{{ $item->document_id }}"
@@ -165,9 +183,17 @@
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->document->document_code }}</td>
                             <td class="py-3 border border-gray-300 px-6"> {{ $item->getStatusLabel() }}</td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
+                            @if($item->status != 'complete')
+                            <button class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 ml-2"
                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'">
                                 <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
+                            </button>
+                            @else
+                            <button class=" text-white px-4 py-2 rounded-lg shadow  transition duration-300 ml-2" style="background-color: rgb(202, 138, 4);"
+                                onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $item->id, 'type' => $item->type]) }}'" disabled>
+                                <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
+                            </button>
+                            @endif
                             </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
@@ -202,7 +228,9 @@
                         <tr>
                             <th class="py-2 px-4 border-b">STT</th>
                             <th class="py-2 px-4 border-b">Tiến độ</th>
-                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">Kết quả báo cáo</th>
+                            <th class="py-2 px-4 border-b">Trạng thái báo cáo</th>
+                            <th class="py-2 px-4 border-b">Nhận xét</th>
                             <th class="py-2 px-4 border-b">Thời gian</th>
                             <th class="py-2 px-4 border-b">Chu kỳ</th>
                         </tr>
@@ -311,15 +339,15 @@
 
                 var params = new URLSearchParams(window.location.search);
                 var document_code = params.get('document_code');
-                var status_code = params.get('status_code');
+                var status = params.get('status');
 
                 if(document_code !== null || document_code !== undefined || document_code !== ""){
                     var customInput = document.getElementById('document_code');
                     customInput.value = document_code;
                 }
-                if(status_code !== null || status_code !== undefined || status_code !== ""){
-                    var customInput = document.getElementById('status_code');
-                    customInput.value = status_code;
+                if(status !== null || status !== undefined || status !== ""){
+                    var customInput = document.getElementById('status');
+                    customInput.value = status;
                 }
 
 
@@ -379,10 +407,25 @@
                         mappingIdCell.textContent = history.status_label;
                         row.appendChild(mappingIdCell);
 
-                        const typeSaveCell = document.createElement('td');
-                        typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
-                        typeSaveCell.textContent = history.description;
-                        row.appendChild(typeSaveCell);
+                        const resultsCell = document.createElement('td');
+                        resultsCell.classList.add('py-2', 'px-4', 'border-b');
+                        resultsCell.textContent = history.result;
+                        row.appendChild(resultsCell);
+                        
+                        const statusCodeCell = document.createElement('td');
+                        statusCodeCell.classList.add('py-2', 'px-4', 'border-b');
+                        statusCodeCell.textContent = history.task_result_status_label;
+                        row.appendChild(statusCodeCell);
+
+                        const remarkCell = document.createElement('td');
+                        remarkCell.classList.add('py-2', 'px-4', 'border-b');
+                        remarkCell.textContent = history.remarks;
+                        row.appendChild(remarkCell);
+
+                        // const typeSaveCell = document.createElement('td');
+                        // typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
+                        // typeSaveCell.textContent = history.description;
+                        // row.appendChild(typeSaveCell);
 
                         
                         const descriptionCell = document.createElement('td');

@@ -256,13 +256,19 @@
                     </div>
                     <div class="bg-white p-6 ">
                         
+                        @if(Auth::user()->role === 'staff')
                         <h5 class="text-xl font-semibold mb-4">Lịch sử báo cáo</h5>
+                        @else
+                        <h5 class="text-xl font-semibold mb-4">Lịch sử phê duyệt</h5>
+                        endif
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                                 <tr>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Mô tả chi tiết</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả báo cáo</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhận xét</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời gian</th>
                                     <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th> -->
                                     <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th> -->
@@ -275,9 +281,11 @@
                                 @endphp
                                 @foreach ($lstResult as $index => $item)
                                     <tr class="border-b border-gray-200">
-                                    <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabel() ?? '' }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->description }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->result }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $taskApproval->remarks }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getEndDate() ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>

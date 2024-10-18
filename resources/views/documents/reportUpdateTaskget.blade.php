@@ -375,7 +375,7 @@
                         <h5 class="text-xl font-semibold mb-4">Lịch sử báo cáo</h5>
                         @else
                         <h5 class="text-xl font-semibold mb-4">Lịch sử phê duyệt</h5>
-                        endif
+                        @endif
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                                 <tr>

@@ -267,7 +267,7 @@ function generateTaskCode() {
                     var selectedValue = type.value;
                     // Chuyển hướng đến URL tương ứng với giá trị được chọn
                     if (selectedValue) {
-                        window.location.href = window.history.back();
+                        window.history.back();
                     }
                 });
                 document.getElementById('task-create-form').addEventListener('submit', function() {

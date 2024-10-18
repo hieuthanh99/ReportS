@@ -357,7 +357,9 @@
 
                     const resultCell = document.createElement('td');
                     resultCell.classList.add('py-2', 'px-4', 'border-b');
-                    resultCell.textContent = text_result_cycle;
+                    if(history.number_cycle !== null ){
+                            resultCell.textContent = text_result_cycle;
+                        }
                     row.appendChild(resultCell);
 
 

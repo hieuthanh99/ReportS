@@ -45,19 +45,26 @@
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
-                            <a class="font-bold">Nhiệm vụ cần báo cáo: {{ $tableTaskCount->count() }}</a>
+                            @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
+                            <a class="font-bold">Nhiệm vụ có báo cáo cần xem: {{ $tableTaskCount->count() }}</a>
+                                @elseif(Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                <a class="font-bold">Nhiệm vụ cần phê duyệt: {{ $tableTaskCount->count() }}</a>
+                            @endif    
+                            
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
                                     <tr class="border-b border-gray-300" style="background-color: #D3D4CF">
                                         <th style="width: 50px;" class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left" style="width: 300px;">Tên nhiệm vụ</th>
-                                        <th class="px-4 py-2 text-left">Tiến độ báo cáo</th>
+                                        <th class="px-4 py-2 text-left">Tiến độ</th>
+                                        @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                            <th class="px-4 py-2 text-left whitespace-nowrap">Trạng thái</th>
+                                        @endif
                                         @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                         <th style="width: 120px;" class="px-4 py-2 text-left">Phê duyệt</th>
                                         @elseif(Auth::user()->role === 'staff')
-                                        <th style="width: 120px;" class="px-4 py-2 text-left">Báo cáo</th>
-                                      
+                                        <th style="width: 120px;" class="px-4 py-2 text-left whitespace-nowrap">Báo cáo</th>
                                         @endif
 
                                     </tr>
@@ -69,19 +76,22 @@
                                             <td style="width: 50px;" class="px-4 py-2">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2" style="width: 300px;">{{ $task->name }}</td>
                                             <td class="px-4 py-2">{{ $task->getStatusLabel() }}</td>
+                                            @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                                <td class="px-4 py-2">{{ $task->taskResultsRelation->first()->getStatusLabelAttributeTaskTarget() ?? null }}</td>
+                                            @endif
                                             <td>
                                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="whitespace-nowrap bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $task->id, 'type' => $task->type]) }}'">
                                                 Phê duyệt
                                                 </button>
                                                 @elseif(Auth::user()->role === 'staff')
-                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="whitespace-nowrap bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $task->id, 'type' => $task->type]) }}'">
                                                 Báo cáo
                                                 </button>
                                                 @elseif(Auth::user()->role === 'sub_admin')
-                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="whitespace-nowrap bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $task->id, 'type' => $task->type]) }}'">
                                                 Phê duyệt
                                                 </button>
@@ -125,7 +135,10 @@
                                     <tr class="border-b border-gray-300" style="background-color: #D3D4CF">
                                         <th style="width: 50px;" class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left" style="width: 300px;">Tên chỉ tiêu</th>
-                                        <th class="px-4 py-2 text-left">Tiến độ báo cáo</th>
+                                        <th class="px-4 py-2 text-left">Tiến độ</th>
+                                        @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                            <th class="px-4 py-2 text-left">Trạng thái</th>
+                                        @endif
                                         @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                         <th style="width: 120px;" class="px-4 py-2 text-left">Phê duyệt</th>
                                         @elseif(Auth::user()->role === 'staff')
@@ -141,20 +154,23 @@
                                         <tr class="border-b border-gray-200">
                                             <td class="px-4 py-2">{{ $index + 1 }}</td>
                                             <td class="px-4 py-2" style="width: 300px;">{{ $target->name }}</td>
-                                            <td class="px-4 py-2">{{ $target->getStatusLabel() }}</td>
+                                            <td class="px-4 py-2 whitespace-nowrap">{{ $target->getStatusLabel() }}</td>
+                                            @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
+                                                <td class="px-4 py-2">{{ $target->getStatusTaskTarget() ?? null }}</td>
+                                            @endif
                                             <td>
                                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
-                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="whitespace-nowrap bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('tasks.edit.approved',['id' => $target->id, 'type' => $target->type]) }}'">
                                                 Phê duyệt
                                                 </button>
                                                 @elseif(Auth::user()->role === 'staff')
-                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="whitespace-nowrap bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $target->id, 'type' => $target->type]) }}'">
                                                 Báo cáo
                                                 </button>
                                                 @elseif(Auth::user()->role === 'sub_admin')
-                                                <button class="bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
+                                                <button class="whitespace-nowrap bg-blue-400 text-white px-4 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300 ml-2"
                                                 onclick="window.location.href='{{ route('documents.report.update.role', ['id' => $target->id, 'type' => $target->type]) }}'">
                                                 Phê duyệt
                                                 </button>

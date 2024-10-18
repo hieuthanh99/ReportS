@@ -5,9 +5,6 @@ namespace App\Enums;
 
 enum TaskTargetStatus: string
 {
-
-    case NEW = 'new';
-    case COMPLETE = 'complete';
     case ASSIGN = 'assign';
     case REJECT = 'reject';
     case STAFF_COMPLETE = 'staff_complete';
@@ -17,8 +14,6 @@ enum TaskTargetStatus: string
     public function label(): string
     {
         return match($this) {
-            self::NEW => 'Báo cáo chưa giao việc',
-            self::COMPLETE => 'Hoàn thành',
             self::ASSIGN => 'Chưa báo cáo',
             self::REJECT => 'Bị từ chối',
             self::ADMIN_APPROVES => 'Đã phê duyệt',

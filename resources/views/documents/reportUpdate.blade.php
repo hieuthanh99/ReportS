@@ -303,7 +303,7 @@
                                     @endif
                                 </div>
                                 <div class="flex items-center mb-4">
-                                    <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
+                                    <span class="text-gray-700 font-medium w-1/3">Nhận xét:</span>
                                     <span class="text-gray-900 w-2/3">
                                         @if ($taskTarget->status == 'staff_complete' && Auth::user()->role === 'sub_admin')
                                             <textarea required class="styled-textarea" name="remarks" id="remarks" placeholder="Nhập kết quả" rows="5"
@@ -392,7 +392,7 @@
                             
                             @if (Auth::user()->role === 'sub_admin')
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Nhận xét:</span>
                                 <span class="text-gray-900 w-2/3">
                                     @if ($taskResult->status == 'staff_complete' && Auth::user()->role === 'sub_admin')
                                         <textarea required name="remarks" id="remarks" placeholder="Nhập kết quả" rows="3"

@@ -59,7 +59,7 @@
                                         <th class="px-4 py-2 text-left" style="width: 300px;">Tên nhiệm vụ</th>
                                         <th class="px-4 py-2 text-left">Tiến độ</th>
                                         @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
-                                            <th class="px-4 py-2 text-left whitespace-nowrap">Trạng thái</th>
+                                            <th class="px-4 py-2 text-left whitespace-nowrap">Trạng thái báo cáo</th>
                                         @endif
                                         @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                         <th style="width: 120px;" class="px-4 py-2 text-left">Phê duyệt</th>
@@ -128,7 +128,7 @@
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
-                            <a class="font-bold">Chỉ tiêu cần báo cáo: {{ $tableTargetCount->count() }}</a>
+                            <a class="font-bold">Chỉ tiêu có báo cáo cần  xem: {{ $tableTargetCount->count() }}</a>
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">
@@ -137,7 +137,7 @@
                                         <th class="px-4 py-2 text-left" style="width: 300px;">Tên chỉ tiêu</th>
                                         <th class="px-4 py-2 text-left">Tiến độ</th>
                                         @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
-                                            <th class="px-4 py-2 text-left">Trạng thái</th>
+                                            <th class="px-4 py-2 text-left">Trạng thái báo cáo</th>
                                         @endif
                                         @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                         <th style="width: 120px;" class="px-4 py-2 text-left">Phê duyệt</th>

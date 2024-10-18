@@ -128,7 +128,11 @@
                             </div>
                         </div>
                         <div class="flex-1 bg-gray-200 p-4">
-                            <a class="font-bold">Chỉ tiêu có báo cáo cần  xem: {{ $tableTargetCount->count() }}</a>
+                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin' || Auth::user()->role === 'staff')
+                                    <a class="font-bold">Chỉ tiêu có báo cáo cần  xem: {{ $tableTargetCount->count() }}</a>
+                                @elseif(Auth::user()->role === 'sub_admin')
+                                    <a class="font-bold">Chỉ tiêu cần phê duyệt: {{ $tableTargetCount->count() }}</a>
+                                @endif
                             <!-- Bảng dữ liệu -->
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-300">

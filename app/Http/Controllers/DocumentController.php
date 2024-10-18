@@ -326,7 +326,7 @@ class DocumentController extends Controller
                 $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '>', Carbon::now())->where('start_date', '<', Carbon::now());
             }
             elseif($request->status_result === 'overdue'){
-                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '<', Carbon::now())->where('start_date', '>', Carbon::now());
+                $taskTargets =  $taskTargets->where('status', 'processing')->whereDate('end_date', '<', Carbon::now());
             }
             elseif($request->status_result === 'upcoming_due'){
                 $taskTargets =  $taskTargets->where('status', 'new');
@@ -412,7 +412,7 @@ class DocumentController extends Controller
                 $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '>', Carbon::now())->where('start_date', '<', Carbon::now());
             }
             elseif($request->status_result === 'overdue'){
-                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '<', Carbon::now())->where('start_date', '>', Carbon::now());
+                $taskTargets =  $taskTargets->where('status', 'processing')->whereDate('end_date', '<', Carbon::now());
             }
             elseif($request->status_result === 'upcoming_due'){
                 $taskTargets =  $taskTargets->where('status', 'new');

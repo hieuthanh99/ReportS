@@ -387,6 +387,7 @@
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời gian</th>
                                     <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th> -->
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
                                 </tr>
                             </thead>
                             <tbody>

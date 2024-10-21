@@ -598,13 +598,13 @@
                                 
                         let cycle_text;
                         if(history.type_cycle == 1){
-                            cycle_text = 'Tuần';
+                            cycle_text = 'Chu kỳ tuần';
                         }else if(history.type_cycle == 2){
-                            cycle_text = 'Tháng';
+                            cycle_text = 'Chu kỳ tháng';
                         }else if(history.type_cycle == 3){
-                            cycle_text = 'Quý';
+                            cycle_text = 'Chu kỳ quý';
                         }else if(history.type_cycle == 4){
-                            cycle_text = 'Năm';
+                            cycle_text = 'Chu kỳ năm';
                         }
                         const text_result_cycle = cycle_text + ' ' + history.number_cycle;
                         // Các cột khác

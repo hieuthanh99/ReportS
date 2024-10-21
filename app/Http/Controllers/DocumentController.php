@@ -534,7 +534,10 @@ class DocumentController extends Controller
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
         ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
-        ->join('task_approval_history', 'task_target.id', '=', 'task_approval_history.task_target_id')
+        ->join('task_approval_history', function($join) {
+            $join->on('task_target.id', '=', 'task_approval_history.task_target_id')
+                 ->on('task_result.id', '=', 'task_approval_history.task_result_id');
+        })
         ->select('history_change_document.*', 'task_target.status as task_target_status' , 'task_target.id as task_target_id', 'task_result.status as task_result_status', 'task_approval_history.remarks', 'task_result.id as task_result_id')
         ->orderBy('update_date', 'desc')
         ->get();
@@ -568,7 +571,10 @@ class DocumentController extends Controller
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId->id)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
         ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
-        ->join('task_approval_history', 'task_target.id', '=', 'task_approval_history.task_target_id')
+        ->join('task_approval_history', function($join) {
+            $join->on('task_target.id', '=', 'task_approval_history.task_target_id')
+                 ->on('task_result.id', '=', 'task_approval_history.task_result_id');
+        })
         ->select('history_change_document.*', 'task_target.status as task_target_status' , 'task_target.id as task_target_id', 'task_result.status as task_result_status', 'task_approval_history.remarks', 'task_result.id as task_result_id')
         ->orderBy('update_date', 'desc')
         ->get();
@@ -587,7 +593,6 @@ class DocumentController extends Controller
             return $history;
         });
         // return $lstHistory; // Trả về danh sách các bản ghi
-
         return response()->json(['histories' => $lstHistory]);
     }
 

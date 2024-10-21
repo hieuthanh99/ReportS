@@ -112,7 +112,7 @@
                    
                     <select id="target_type" name="target_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px" required
                     oninvalid="this.setCustomValidity('Vui lòng chọn loại chỉ tiêu.')" oninput="this.setCustomValidity('')">
-                        <option value="single" {{ $taskTarget->target_type == 'single' ? 'selected' : '' }}>Đơn</option> <!-- "Đơn" -> "single" -->
+                        <option value="single" {{ $taskTarget->target_type == 'single' ? 'selected' : '' }}>Đơn</option> "Đơn" -> "single"
                         <option value="aggregate" {{ $taskTarget->target_type == 'aggregate' ? 'selected' : '' }}>Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
                     </select>
                     

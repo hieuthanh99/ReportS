@@ -1926,7 +1926,9 @@
                         <tr>
                             <th class="py-2 px-4 border-b">STT</th>
                             <th class="py-2 px-4 border-b">Tiến độ</th>
-                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">Kết quả báo cáo</th>
+                            <th class="py-2 px-4 border-b">Trạng thái báo cáo</th>
+                            <th class="py-2 px-4 border-b">Nhận xét</th>
                             <th class="py-2 px-4 border-b">Thời gian</th>
                             <th class="py-2 px-4 border-b">Chu kỳ</th>
                         </tr>
@@ -1977,7 +1979,9 @@
                         <tr>
                             <th class="py-2 px-4 border-b">STT</th>
                             <th class="py-2 px-4 border-b">Tiến độ</th>
-                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">Kết quả báo cáo</th>
+                            <th class="py-2 px-4 border-b">Trạng thái báo cáo</th>
+                            <th class="py-2 px-4 border-b">Nhận xét</th>
                             <th class="py-2 px-4 border-b">Thời gian</th>
                             <th class="py-2 px-4 border-b">Chu kỳ</th>
                         </tr>

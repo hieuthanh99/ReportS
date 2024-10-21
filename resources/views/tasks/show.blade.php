@@ -281,7 +281,8 @@
             var selectedValue = type.value;
             // Chuyển hướng đến URL tương ứng với giá trị được chọn
             if (selectedValue) {
-                window.location.href = `/tasks/type/${selectedValue}`;
+                // window.location.href = `/tasks/type/${selectedValue}`;
+                window.history.back();
             }
         });
         document.addEventListener('DOMContentLoaded', function() {

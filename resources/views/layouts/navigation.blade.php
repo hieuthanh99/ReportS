@@ -1,6 +1,6 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-200" style="padding: 10px; margin: 0">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-200 sticky top-0 z-[9999]" style="padding: 10px; margin: 0">
     <div class="container mx-auto">
-        <div class="flex items-center h-16 relative" style="z-index: 1000">
+        <div class="flex items-center h-16">
             <!-- Logo -->
             <nav>
                 <ul>

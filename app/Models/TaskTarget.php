@@ -240,7 +240,9 @@ class TaskTarget extends Model
     public function getTaskApprovalHistory()
     {
         $timeParams = TimeHelper::getTimeParameters($this->cycle_type);
-        $taskResult = TaskResult::where('id_task_criteria', $this->id)->where('type', $this->cycle_type)->where('number_type', (int)$timeParams)->first();
+        $userId = Auth::id();
+        $user = User::find($userId);
+        $taskResult = TaskResult::where('id_task_criteria', $this->id)->where('type', $this->cycle_type)->where('number_type', (int)$timeParams)->where('organization_id', $user->organization_id)->first();
         if ($taskResult) {
 
             $data = TaskApprovalHistory::where('task_target_id', $this->id)->where('task_result_id', $taskResult->id)->orderBy('created_at', 'desc')->first();

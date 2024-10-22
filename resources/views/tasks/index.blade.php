@@ -43,20 +43,24 @@
         <!-- Search Form type-->
         <form method="GET" action="{{ route('tasks.byType', $type) }}" id="filterForm">
 
-            <div class="mb-6 flex flex-wrap gap-4 mb-4">
-                <div class="flex-1 min-w-[200px] relative">
-                    <label for="document_code" class="block text-gray-700 font-medium mb-2">Số hiệu văn bản</label>
-                    <input type="text" id="document_code" name="document_code" placeholder="Số hiệu văn bản"
-                        class="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
-
-                    <!-- Kết quả tìm kiếm sẽ được hiển thị ngay bên dưới input -->
-                    <div id="search-results"
-                        class="absolute bg-white w-full border border-gray-300 rounded-lg shadow-lg mt-1 z-10 hidden">
-                        <ul class="list-none p-0 m-0"></ul>
-                    </div>
-                </div>
+            <div class="flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 font-medium mb-2">Cơ quan ban hành:</label>
+                    <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Số hiệu văn bản:</label>
+                    <select id="document_code" name="document_code"
+                        class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="" data-code="">Chọn số hiệu văn bản</option>
+                        @foreach ($documents as $item)
+                            <option value="{{ $item->document_code }}"
+                                {{ request('document_code') == $item->document_code ? 'selected' : '' }}>
+                                {{ $item->document_code }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex-1 min-w-[200px]">
+                    <label for="organization_id" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban
+                        hành:</label>
                     <select id="organization_id" name="organization_id"
                         class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn cơ quan ban hành</option>
@@ -80,30 +84,29 @@
                     </select>
                 </div>
             </div>
-            <div class="mb-6 flex flex-wrap gap-4 mb-4">
+            <div class="flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="completion_date" class="block text-gray-700 font-medium mb-2">Thời hạn hoàn thành:</label>
-                    <input type="month" id="completion_date" name="completion_date"  placeholder="Chọn tháng/năm"
-                    class="border border-gray-300 rounded-lg p-2 w-full">
+                    <input type="month" id="completion_date" name="completion_date" placeholder="Chọn tháng/năm"
+                        class="border border-gray-300 rounded-lg p-2 w-full">
                 </div>
                 <div class="flex-1 min-w-[200px]">
                     <label for="status" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
-       
-                        <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
-                            <option value="">Chọn trạng thái</option>
-                            <option value="complete_on_time">Hoàn thành đúng hạn</option>
-                            <option value="complete_late">Hoàn thành quá hạn</option>
-                            <option value="processing">Đang thực hiện</option>
-                            <option value="overdue">Quá hạn</option>
-                            <option value="upcoming_due">Sắp tới hạn</option>
-                        </select>
-                 
+
+                    <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <option value="">Chọn trạng thái</option>
+                        <option value="complete_on_time">Hoàn thành đúng hạn</option>
+                        <option value="complete_late">Hoàn thành quá hạn</option>
+                        <option value="processing">Đang thực hiện</option>
+                        <option value="overdue">Quá hạn</option>
+                        <option value="upcoming_due">Sắp tới hạn</option>
+                    </select>
+
                 </div>
                 @if ($type == 'task')
                     <div class="flex-1 min-w-[200px]">
                         <label for="tasktype" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
-                        <select id="tasktype" name="tasktype"
-                            class="border border-gray-300 rounded-lg p-2 w-full select2">
+                        <select id="tasktype" name="tasktype" class="border border-gray-300 rounded-lg p-2 w-full select2">
                             <option value="" disabled selected>Chọn loại nhiệm vụ</option>
                             <option value="timed">Có thời hạn</option> <!-- Giá trị tiếng Anh: "timed" -->
                             <option value="regular">Thường xuyên</option> <!-- Giá trị tiếng Anh: "regular" -->
@@ -111,15 +114,16 @@
                     </div>
                 @else
                     <div class="flex-1 min-w-[200px]">
-                      
+
                     </div>
                 @endif
-               
+
             </div>
 
             <div class="flex justify-end gap-4">
-                
-                    <a class="fa fa-filter" style="margin-top: 13px;cursor: pointer;" onclick="window.location.href='{{ route('tasks.byType', $type) }}'"></a>
+
+                <a class="fa fa-filter" style="margin-top: 13px;cursor: pointer;"
+                    onclick="window.location.href='{{ route('tasks.byType', $type) }}'"></a>
                 <button type="submit"
                     class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tìm kiếm
@@ -135,56 +139,60 @@
                 <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                     @if ($type == 'target')
                         <tr>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
-                            <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">STT</th>
+                            <th style="width: 290px;" class="py-3 px-6 text-gray-700 font-medium text-center">Tên
                                 chỉ tiêu</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Đơn vị tính</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Chỉ tiêu</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Thời hạn hoàn thành
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">Đơn vị tính</th>
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">Chỉ tiêu</th>
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">Thời hạn hoàn thành
                             </th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số hiệu văn bản</th>
-                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">Số hiệu văn bản</th>
+                            <th style="width: 100px;" class="py-3 px-6 text-gray-700 font-medium text-center">
                                 Số đơn vị được giao</th>
-                                <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">
-                                   Tiến độ</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            <th style="width: 100px;" class="py-3 px-6 text-gray-700 font-medium text-center">
+                                Tiến độ</th>
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">
                                 Chi tiết
                             </th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">
                                 Cập nhật
                             </th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">
                                 Xóa
                             </th>
-                            {{-- <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            {{-- <th class="py-3 px-6 text-gray-700 font-medium text-center">
                             Lịch sử 
                         </th> --}}
                         </tr>
                     @else
                         <tr>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">STT</th>
-                            <th style="width: 290px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tên
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">STT</th>
+                            <th style="width: 290px;" class="py-3 px-6 text-gray-700 font-medium text-center">
+                                Tên
                                 nhiệm vụ</th>
-                            <th style="width: 100px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Kết
+                            <th style="width: 100px" class="py-3 px-6 text-gray-700 font-medium text-center">Kết
                                 quả yêu cầu</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Nhóm nhiệm vụ</th>
-                            <th style="width: 80px" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Loại nhiệm vụ</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Thời hạn hoàn thành
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">Nhóm nhiệm vụ</th>
+                            <th style="width: 80px" class="py-3 px-6 text-gray-700 font-medium text-center">Loại
+                                nhiệm vụ</th>
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">Thời hạn hoàn thành
                             </th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số hiệu văn bản
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">Số hiệu văn bản
                             </th>
-                            <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Số đơn vị được giao</th>
-                                <th style="width: 100px;" class="py-3 px-6 text-left text-gray-700 font-medium text-center">Tiến độ</th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            <th style="width: 100px;" class="py-3 px-6 text-gray-700 font-medium text-center">Số
+                                đơn vị được giao</th>
+                            <th style="width: 100px;" class="py-3 px-6 text-gray-700 font-medium text-center">
+                                Tiến độ</th>
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">
                                 Chi tiết
                             </th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">
                                 Cập nhật
                             </th>
-                            <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            <th class="py-3 px-6 text-gray-700 font-medium text-center">
                                 Xóa
                             </th>
-                            {{-- <th class="py-3 px-6 text-left text-gray-700 font-medium text-center">
+                            {{-- <th class="py-3 px-6 text-gray-700 font-medium text-center">
                             Lịch sử 
                         </th> --}}
                         </tr>
@@ -208,8 +216,8 @@
                                 </td>
                                 <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
                                     {{ $item->countOrganization() }}</td>
-                                    <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
-                                        {{ $item->getStatusLabel() }}</td>
+                                <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
+                                    {{ $item->getStatusLabel() }}</td>
                                 <td class="py-3 border border-gray-300 px-6 text-center">
                                     <button
                                         class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-300"
@@ -277,8 +285,8 @@
 
                                 <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
                                     {{ $item->countOrganization() }}</td>
-                                    <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
-                                        {{ $item->getStatusLabel() }}</td>
+                                <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
+                                    {{ $item->getStatusLabel() }}</td>
                                 <td class="py-3 border border-gray-300 px-6 text-center">
                                     <button
                                         class="bg-blue-400 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-300"
@@ -357,54 +365,53 @@
         </div>
     </div>
     <script>
-
         $(document).ready(function() {
             $('.select2').select2({
                 allowClear: true
             });
         });
         //============================ Search Input Code ====================================
-        $(document).ready(function() {
-            $('#document_code').on('keyup', function() {
-                var query = $(this).val();
-                if (query.length > 0) {
-                    $.ajax({
-                        url: "{{ route('documents.search') }}",
-                        type: "GET",
-                        data: {
-                            'document_code': query
-                        },
-                        success: function(data) {
-                            $('#search-results ul').html('');
-                            if (data.length > 0) {
-                                $.each(data, function(key, document) {
-                                    $('#search-results ul').append(
-                                        '<li class="p-2 cursor-pointer hover:bg-gray-200" data-code="' +
-                                        document.document_code + '">' + document
-                                        .document_code + '</li>');
-                                });
-                                $('#search-results').removeClass('hidden');
-                            } else {
-                                $('#search-results ul').append(
-                                    '<li class="p-2">Không có kết quả.</li>');
-                                $('#search-results').removeClass('hidden');
-                            }
-                        }
-                    });
-                } else {
-                    $('#search-results').addClass('hidden');
-                }
-            });
-            $(document).on('click', function(event) {
-                var selectedCode = $(this).data('code'); // Lấy giá trị từ thuộc tính data-code
-                $('#document_code').value = selectedCode; // Gán giá trị vào input
-                $('#search-results').addClass('hidden'); // Ẩn danh sách sau khi chọn
-            });
-            $(document).on('click', '#search-results li', function() {
-                $('#document_code').val($(this).text());
-                $('#search-results').addClass('hidden');
-            });
-        });
+        // $(document).ready(function() {
+        //     $('#document_code').on('keyup', function() {
+        //         var query = $(this).val();
+        //         if (query.length > 0) {
+        //             $.ajax({
+        //                 url: "{{ route('documents.search') }}",
+        //                 type: "GET",
+        //                 data: {
+        //                     'document_code': query
+        //                 },
+        //                 success: function(data) {
+        //                     $('#search-results ul').html('');
+        //                     if (data.length > 0) {
+        //                         $.each(data, function(key, document) {
+        //                             $('#search-results ul').append(
+        //                                 '<li class="p-2 cursor-pointer hover:bg-gray-200" data-code="' +
+        //                                 document.document_code + '">' + document
+        //                                 .document_code + '</li>');
+        //                         });
+        //                         $('#search-results').removeClass('hidden');
+        //                     } else {
+        //                         $('#search-results ul').append(
+        //                             '<li class="p-2">Không có kết quả.</li>');
+        //                         $('#search-results').removeClass('hidden');
+        //                     }
+        //                 }
+        //             });
+        //         } else {
+        //             $('#search-results').addClass('hidden');
+        //         }
+        //     });
+        //     $(document).on('click', function(event) {
+        //         var selectedCode = $(this).data('code'); // Lấy giá trị từ thuộc tính data-code
+        //         $('#document_code').value = selectedCode; // Gán giá trị vào input
+        //         $('#search-results').addClass('hidden'); // Ẩn danh sách sau khi chọn
+        //     });
+        //     $(document).on('click', '#search-results li', function() {
+        //         $('#document_code').val($(this).text());
+        //         $('#search-results').addClass('hidden');
+        //     });
+        // });
         //============================End Search Input Code ====================================
         // document.getElementById('filterToggle').addEventListener('click', function() {
         //     const filterForm = document.getElementById('filterForm');
@@ -457,24 +464,19 @@
             const assignHistoryModal = document.getElementById('history-change-modal');
 
             var params = new URLSearchParams(window.location.search);
-            var document_code = params.get('document_code');
             var completion_date = params.get('completion_date');
             var status = params.get('status');
             var task_type = params.get('task_type');
 
-            if(document_code !== null || document_code !== undefined || document_code !== ""){
-                var customInput = document.getElementById('document_code');
-                customInput.value = document_code;
-            }
-            if(completion_date !== null || completion_date !== undefined || completion_date !== ""){
+            if (completion_date !== null || completion_date !== undefined || completion_date !== "") {
                 var customInput = document.getElementById('completion_date');
                 customInput.value = completion_date;
             }
-            if(status !== null || status !== undefined || status !== ""){
+            if (status !== null || status !== undefined || status !== "") {
                 var customInput = document.getElementById('status');
                 customInput.value = status;
             }
-            if(task_type !== null || task_type !== undefined || task_type !== ""){
+            if (task_type !== null || task_type !== undefined || task_type !== "") {
                 var customInput = document.getElementById('task_type');
                 customInput.value = task_type;
             }
@@ -487,7 +489,7 @@
             document.querySelectorAll('.history-task').forEach(button => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
-                    const documentIdRow = this.getAttribute('data-document-id');
+                    const documentIdRow = this.getAttribute('data-document-code');
                     const taskCodeRow = this.getAttribute('data-task-id');
                     document.getElementById('history-change-modal').classList.remove('hidden');
                     fetch(`/api/get-history/${taskCodeRow}`)
@@ -519,15 +521,15 @@
 
 
                     let cycle_text;
-                    if(history.type_cycle == 1){
-                            cycle_text = 'Chu kỳ tuần';
-                        }else if(history.type_cycle == 2){
-                            cycle_text = 'Chu kỳ tháng';
-                        }else if(history.type_cycle == 3){
-                            cycle_text = 'Chu kỳ quý';
-                        }else if(history.type_cycle == 4){
-                            cycle_text = 'Chu kỳ năm';
-                        }
+                    if (history.type_cycle == 1) {
+                        cycle_text = 'Chu kỳ tuần';
+                    } else if (history.type_cycle == 2) {
+                        cycle_text = 'Chu kỳ tháng';
+                    } else if (history.type_cycle == 3) {
+                        cycle_text = 'Chu kỳ quý';
+                    } else if (history.type_cycle == 4) {
+                        cycle_text = 'Chu kỳ năm';
+                    }
                     const text_result_cycle = cycle_text + ' ' + history.number_cycle;
                     // Các cột khác
                     const mappingIdCell = document.createElement('td');
@@ -536,24 +538,24 @@
                     row.appendChild(mappingIdCell);
 
                     const resultsCell = document.createElement('td');
-                        resultsCell.classList.add('py-2', 'px-4', 'border-b');
-                        resultsCell.textContent = history.result;
-                        row.appendChild(resultsCell);
-                        
-                        const statusCodeCell = document.createElement('td');
-                        statusCodeCell.classList.add('py-2', 'px-4', 'border-b');
-                        statusCodeCell.textContent = history.task_result_status_label;
-                        row.appendChild(statusCodeCell);
+                    resultsCell.classList.add('py-2', 'px-4', 'border-b');
+                    resultsCell.textContent = history.result;
+                    row.appendChild(resultsCell);
 
-                        const remarkCell = document.createElement('td');
-                        remarkCell.classList.add('py-2', 'px-4', 'border-b');
-                        remarkCell.textContent = history.remarks;
-                        row.appendChild(remarkCell);
+                    const statusCodeCell = document.createElement('td');
+                    statusCodeCell.classList.add('py-2', 'px-4', 'border-b');
+                    statusCodeCell.textContent = history.task_result_status_label;
+                    row.appendChild(statusCodeCell);
 
-                        // const typeSaveCell = document.createElement('td');
-                        // typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
-                        // typeSaveCell.textContent = history.description;
-                        // row.appendChild(typeSaveCell);
+                    const remarkCell = document.createElement('td');
+                    remarkCell.classList.add('py-2', 'px-4', 'border-b');
+                    remarkCell.textContent = history.remarks;
+                    row.appendChild(remarkCell);
+
+                    // const typeSaveCell = document.createElement('td');
+                    // typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
+                    // typeSaveCell.textContent = history.description;
+                    // row.appendChild(typeSaveCell);
 
 
                     const descriptionCell = document.createElement('td');
@@ -563,9 +565,9 @@
 
                     const resultCell = document.createElement('td');
                     resultCell.classList.add('py-2', 'px-4', 'border-b');
-                    if(history.number_cycle !== null ){
-                            resultCell.textContent = text_result_cycle;
-                        }
+                    if (history.number_cycle !== null) {
+                        resultCell.textContent = text_result_cycle;
+                    }
                     row.appendChild(resultCell);
 
 

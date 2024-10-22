@@ -45,16 +45,16 @@
                     <input type="text" readonly id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code') }}">
                 </div>
                 <div class="mb-4">
-                    <label for="document_id" class="block text-gray-700 text-sm font-medium mb-2">Văn bản <span class="text-red-500">*</span></label>
+                    <label for="document_id" class="block text-gray-700 text-sm font-medium mb-2">Số hiệu văn bản <span class="text-red-500">*</span></label>
 
                     <select name="document_id" id="document_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required 
                     oninvalid="this.setCustomValidity('Vui lòng chọn văn bản.')" 
                     oninput="setCustomValidity('')">
-                        <option value="" data-code="">Chọn văn bản
+                        <option value="" data-code="">Chọn số hiệu văn bản
                         </option>
                         @foreach ($documents as $item)
                             <option value="{{ $item->id }}" data-code="{{ $item->document_code }}" {{ old('document_id') == $item->id ? 'selected' : '' }}>
-                                {{ $item->document_name }}
+                                {{ $item->document_code }}
                             </option>
                         @endforeach
                     </select>

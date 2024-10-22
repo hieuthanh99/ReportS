@@ -35,7 +35,7 @@
                 <!-- Cột trái -->
                 <div class="mb-4">
                     <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                    <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code') }}" required>
+                    <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code') }}" required oninvalid="this.setCustomValidity('Vui lòng nhập mã loại cơ quan, tổ chức')" oninput="setCustomValidity('')">
                     @error('code')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
@@ -43,14 +43,14 @@
                 <div class="mb-4"></div>
                 <div class="mb-4">
                     <label for="type_name" class="block text-gray-700 text-sm font-medium mb-2">Tên loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                    <textarea id="type_name" name="type_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('type_name') }}</textarea>
+                    <textarea id="type_name" name="type_name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required oninvalid="this.setCustomValidity('Vui lòng nhập tên cơ quan, tổ chức')" oninput="setCustomValidity('')">{{ old('type_name') }}</textarea>
                     @error('type_name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-4">
                     <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Chi tiết loại cơ quan, tổ chức<span class="text-red-500">*</span></label>
-                    <textarea id="description" name="description" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('description') }}</textarea>
+                    <textarea id="description" name="description" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required oninvalid="this.setCustomValidity('Vui lòng nhập chi tiết cơ quan, tổ chức')" oninput="setCustomValidity('')">{{ old('description') }}</textarea>
                     @error('description')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror

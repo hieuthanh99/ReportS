@@ -228,11 +228,13 @@ class OrganizationController extends Controller
         } catch (\Exception $e) {
             // Rollback transaction nếu có lỗi xảy ra
             DB::rollBack();
+            
+            // Lấy toàn bộ các lỗi
+            $errors = $e->validator->errors()->all();
 
             // Ghi lỗi vào log (tùy chọn)
             \Log::error('Error creating document: ' . $e->getMessage());
-            return redirect()->back()->withErrors($e->getMessage())->withInput();
-
+            return redirect()->back()->withErrors($errors[0])->withInput();
         }
         
     }

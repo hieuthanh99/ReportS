@@ -471,39 +471,35 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="gap-6 p-6 bg-white flex justify-content: space-between">
-                        <div class="mb-4 ">
+                    <div class="gap-6 p-6 bg-white flex" style="justify-content: space-between">
+                        <div class="mb-4">
                             {{-- <div class="mt-4 flex" style="justify-content: space-between"> --}}
                             <button type="button" onclick="window.history.back()"
                                 class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">
                                 Quay lại
                             </button>
                             {{-- </div> --}}
-                            @if (
-                                ($isEditable && Auth::user()->role === 'staff') ||
-                                    ($taskTarget->status == 'sub_admin_complete' &&
-                                        (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')))
+                        </div>
+                        <div class="mb-4">
+                            @if (($isEditable && Auth::user()->role === 'staff') || ($taskTarget->status == 'sub_admin_complete' && (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')))
                                 <button type="submit" id="save-button"
                                     class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Lưu
                                 </button>
-                        </div>
-                        @endif
-                        @if ($hasOrganization && $taskResult->status == 'staff_complete')
-                            <div class="mb-4 ">
+                            @endif
+                            @if ($hasOrganization && $taskResult->status == 'staff_complete')
                                 <button data-id="{{ $taskResult->id }}" id="button-apprrover-{{ $taskResult->id }}" style="margin-right: 20px"
                                 type="button" 
                                     class="button-approved bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 mt-4">
                                     Duyệt
                                 </button>
-
                                 <!-- Nút Reject -->
                                 <button data-id="{{ $taskResult->id }}" id="button-reject-{{ $taskResult->id }}"
                                 type="button"
                                     class="button-reject bg-red-400 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
                                     Từ chối
                                 </button>
-                            </div>
-                        @endif
+                            @endif
+                        </div>
                     </div>
                     
             </div>

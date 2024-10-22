@@ -314,6 +314,41 @@ class DocumentController extends Controller
         if ($request->filled('status')) {
             $taskDocuments =  $taskDocuments->where('status', $request->status);
         }
+        if($request->filled('status_result')){
+            $taskTargets = TaskTarget::where('type', 'target')->where('isDelete', 0);
+            if($request->status_result === 'complete_on_time'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '>', Carbon::now());
+            }
+            elseif($request->status_result === 'complete_late'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '<', Carbon::now());
+            }
+            elseif($request->status_result === 'processing'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '>', Carbon::now())->where('start_date', '<', Carbon::now());
+            }
+            elseif($request->status_result === 'overdue'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->whereDate('end_date', '<', Carbon::now());
+            }
+            elseif($request->status_result === 'upcoming_due'){
+                $taskTargets =  $taskTargets->where('status', 'new');
+            }
+            $taskTargetIds = $taskTargets->pluck('id');
+            $taskDocuments = $taskDocuments->whereIn('id_task_criteria', $taskTargetIds);
+        }
+        $executionTimeFrom = $request->input('completion_date');
+        if ($executionTimeFrom) {
+            $taskTargets = TaskTarget::where('type', 'target')->where('isDelete', 0);
+            // Thêm ngày đầu tiên của tháng để tạo thành một chuỗi ngày đầy đủ
+            $startOfMonth = $executionTimeFrom . '-01';
+            
+            // Tính ngày cuối cùng của tháng
+            $endOfMonth = date("Y-m-t", strtotime($startOfMonth)); // 'Y-m-t' trả về ngày cuối cùng của tháng
+
+            // Sử dụng whereDate để lọc các bản ghi có end_date nằm trong tháng đó
+            $taskTargets->whereDate('end_date', '>=', $startOfMonth)
+                        ->whereDate('end_date', '<=', $endOfMonth);
+            $taskTargetIds = $taskTargets->pluck('id');
+            $taskDocuments = $taskDocuments->whereIn('id_task_criteria', $taskTargetIds);
+        }
         $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
@@ -364,6 +399,41 @@ class DocumentController extends Controller
         }
         if ($request->filled('status')) {
             $taskDocuments =  $taskDocuments->where('status', $request->status);
+        }
+        if($request->filled('status_result')){
+            $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0);
+            if($request->status_result === 'complete_on_time'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '>', Carbon::now());
+            }
+            elseif($request->status_result === 'complete_late'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '<', Carbon::now());
+            }
+            elseif($request->status_result === 'processing'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '>', Carbon::now())->where('start_date', '<', Carbon::now());
+            }
+            elseif($request->status_result === 'overdue'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->whereDate('end_date', '<', Carbon::now());
+            }
+            elseif($request->status_result === 'upcoming_due'){
+                $taskTargets =  $taskTargets->where('status', 'new');
+            }
+            $taskTargetIds = $taskTargets->pluck('id');
+            $taskDocuments = $taskDocuments->whereIn('id_task_criteria', $taskTargetIds);
+        }
+        $executionTimeFrom = $request->input('completion_date');
+        if ($executionTimeFrom) {
+            $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0);
+            // Thêm ngày đầu tiên của tháng để tạo thành một chuỗi ngày đầy đủ
+            $startOfMonth = $executionTimeFrom . '-01';
+            
+            // Tính ngày cuối cùng của tháng
+            $endOfMonth = date("Y-m-t", strtotime($startOfMonth)); // 'Y-m-t' trả về ngày cuối cùng của tháng
+
+            // Sử dụng whereDate để lọc các bản ghi có end_date nằm trong tháng đó
+            $taskTargets->whereDate('end_date', '>=', $startOfMonth)
+                        ->whereDate('end_date', '<=', $endOfMonth);
+            $taskTargetIds = $taskTargets->pluck('id');
+            $taskDocuments = $taskDocuments->whereIn('id_task_criteria', $taskTargetIds);
         }
         $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
@@ -464,7 +534,12 @@ class DocumentController extends Controller
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
         ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
-        ->select('history_change_document.*', 'task_target.status' , 'task_target.id as task_target_id')
+        ->join('task_approval_history', function($join) {
+            $join->on('task_target.id', '=', 'task_approval_history.task_target_id')
+                 ->on('task_result.id', '=', 'task_approval_history.task_result_id');
+        })
+        ->select('history_change_document.*', 'task_target.status as task_target_status' , 'task_target.id as task_target_id', 'task_result.status as task_result_status', 'task_approval_history.remarks', 'task_result.id as task_result_id')
+        ->orderBy('update_date', 'desc')
         ->get();
         
         $lstHistory = $lstHistory->map(function ($history) {
@@ -472,6 +547,13 @@ class DocumentController extends Controller
             // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
             $taskTarget = TaskTarget::find($history->task_target_id); // Thay đổi phương thức lấy đối tượng nếu cần
             $history->status_label = $taskTarget ? $taskTarget->getStatusLabel() : null;
+            return $history;
+        });
+        $lstHistory = $lstHistory->map(function ($history) {
+            // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
+            // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
+            $taskResult = TaskResult::find($history->task_result_id); // Thay đổi phương thức lấy đối tượng nếu cần
+            $history->task_result_status_label = $taskResult ? $taskResult->getStatusLabelAttributeTaskTarget() : null;
             return $history;
         });
         //dd($taskTargetIds);
@@ -489,7 +571,12 @@ class DocumentController extends Controller
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId->id)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
         ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
-        ->select('history_change_document.*', 'task_target.status' , 'task_target.id as task_target_id')
+        ->join('task_approval_history', function($join) {
+            $join->on('task_target.id', '=', 'task_approval_history.task_target_id')
+                 ->on('task_result.id', '=', 'task_approval_history.task_result_id');
+        })
+        ->select('history_change_document.*', 'task_target.status as task_target_status' , 'task_target.id as task_target_id', 'task_result.status as task_result_status', 'task_approval_history.remarks', 'task_result.id as task_result_id')
+        ->orderBy('update_date', 'desc')
         ->get();
         $lstHistory = $lstHistory->map(function ($history) {
             // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
@@ -498,8 +585,14 @@ class DocumentController extends Controller
             $history->status_label = $taskTarget ? $taskTarget->getStatusLabel() : null;
             return $history;
         });
+        $lstHistory = $lstHistory->map(function ($history) {
+            // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
+            // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
+            $taskResult = TaskResult::find($history->task_result_id); // Thay đổi phương thức lấy đối tượng nếu cần
+            $history->task_result_status_label = $taskResult ? $taskResult->getStatusLabelAttributeTaskTarget() : null;
+            return $history;
+        });
         // return $lstHistory; // Trả về danh sách các bản ghi
-
         return response()->json(['histories' => $lstHistory]);
     }
 

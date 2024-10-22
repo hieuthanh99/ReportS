@@ -208,7 +208,7 @@
                                                 class="remove-button remove-file-button ml-2 bg-yellow-300 text-white px-2 py-1 rounded">×</button> --}}
                                             </div>
     @endforeach
-@else
+    @else
     <span>Không có tệp nào</span>
     @endif
 
@@ -303,7 +303,7 @@
                                     @endif
                                 </div>
                                 <div class="flex items-center mb-4">
-                                    <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
+                                    <span class="text-gray-700 font-medium w-1/3">Nhận xét:</span>
                                     <span class="text-gray-900 w-2/3">
                                         @if ($taskTarget->status == 'staff_complete' && Auth::user()->role === 'sub_admin')
                                             <textarea required class="styled-textarea" name="remarks" id="remarks" placeholder="Nhập kết quả" rows="5"
@@ -392,7 +392,7 @@
                             
                             @if (Auth::user()->role === 'sub_admin')
                             <div class="flex items-center mb-4">
-                                <span class="text-gray-700 font-medium w-1/3">Nhận xét báo cáo:</span>
+                                <span class="text-gray-700 font-medium w-1/3">Nhận xét:</span>
                                 <span class="text-gray-900 w-2/3">
                                     @if ($taskResult->status == 'staff_complete' && Auth::user()->role === 'sub_admin')
                                         <textarea required name="remarks" id="remarks" placeholder="Nhập kết quả" rows="3"
@@ -418,17 +418,23 @@
                     <hr class="mb-6">
                     <div class="bg-white p-6 ">
 
+                        @if(Auth::user()->role === 'staff')
                         <h5 class="text-xl font-semibold mb-4">Lịch sử báo cáo</h5>
+                        @else
+                        <h5 class="text-xl font-semibold mb-4">Lịch sử phê duyệt</h5>
+                        @endif
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
                             <thead class="bg-gray-100 border-b border-gray-300" style="background: #D4D4CF;">
                                 <tr>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
+                                <th class="py-3 px-6 text-left text-gray-700 font-medium">STT</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Mô tả chi tiết</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả báo cáo</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Nhận xét</th>
                                     <th class="py-3 px-6 text-left text-gray-700 font-medium">Thời gian</th>
-                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
                                     <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Kết quả</th> -->
                                     <!-- <th class="py-3 px-6 text-left text-gray-700 font-medium">Tệp</th> -->
+                                    <th class="py-3 px-6 text-left text-gray-700 font-medium">Chu kỳ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -439,7 +445,9 @@
                                     <tr class="border-b border-gray-200">
                                     <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabel() ?? '' }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->description }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->result }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $taskApproval->remarks }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getEndDate() ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>

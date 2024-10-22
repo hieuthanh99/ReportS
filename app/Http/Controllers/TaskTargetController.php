@@ -350,6 +350,24 @@ class TaskTargetController extends Controller
         if ($request->filled('status_code')) {
             $taskTargets = $taskTargets->where('status_code', $request->status_code);
         }
+        if ($request->filled('status')) {
+            if($request->status === 'complete_on_time'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '>', Carbon::now());
+            }
+            elseif($request->status === 'complete_late'){
+                $taskTargets =  $taskTargets->where('status', 'complete')->where('end_date', '<', Carbon::now());
+            }
+            elseif($request->status === 'processing'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '>', Carbon::now())->where('start_date', '<', Carbon::now());
+            }
+            elseif($request->status === 'overdue'){
+                $taskTargets =  $taskTargets->where('status', 'processing')->whereDate('end_date', '<', Carbon::now());
+            }
+            elseif($request->status === 'upcoming_due'){
+                $taskTargets =  $taskTargets->where('status', 'new');
+            }
+            // $taskTargets =  $taskTargets->where('status', $request->status);
+        }
         if ($request->filled('organization_id')) {
             $taskResultSearch = TaskResult::where('isDelete', 0)->where('organization_id', $request->organization_id)->pluck('id_task_criteria');
             $taskTargets = $taskTargets->whereIn('id', $taskResultSearch);
@@ -423,7 +441,7 @@ class TaskTargetController extends Controller
                 $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '>', Carbon::now())->where('start_date', '<', Carbon::now());
             }
             elseif($request->status === 'overdue'){
-                $taskTargets =  $taskTargets->where('status', 'processing')->where('end_date', '<', Carbon::now())->where('start_date', '>', Carbon::now());
+                $taskTargets =  $taskTargets->where('status', 'processing')->whereDate('end_date', '<', Carbon::now());
             }
             elseif($request->status === 'upcoming_due'){
                 $taskTargets =  $taskTargets->where('status', 'new');

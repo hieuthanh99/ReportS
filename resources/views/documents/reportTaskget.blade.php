@@ -63,6 +63,17 @@
                         <option value="sub_admin_complete">Đã báo cáo</option>
                     </select>
                 </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="status_result" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
+                        <select id="status_result" name="status_result" class="border border-gray-300 rounded-lg p-2 w-full select2">
+                            <option value="">Chọn tiến độ</option>
+                            <option value="complete_on_time">Hoàn thành đúng hạn</option>
+                            <option value="complete_late">Hoàn thành quá hạn</option>
+                            <option value="processing">Đang thực hiện</option>
+                            <option value="overdue">Quá hạn</option>
+                            <option value="upcoming_due">Sắp tới hạn</option>
+                        </select>                
+                </div>
 
                 <!-- Các trường khác -->
                 <div class="flex-1 min-w-[200px]">
@@ -77,6 +88,11 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="completion_date" class="block text-gray-700 font-medium mb-2">Thời hạn hoàn thành:</label>
+                    <input type="month" id="completion_date" name="completion_date"  placeholder="Chọn tháng/năm"
+                    class="border border-gray-300 rounded-lg p-2 w-full">
                 </div>
                 {{-- <div class="flex-1 min-w-[200px] hidden" id="organization_id">
                     <label for="organization_id" class="block text-gray-700 font-medium mb-2">&nbsp; </label>
@@ -127,7 +143,11 @@
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Trạng thái báo cáo</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Tiến độ</th>
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Chi tiết</th>
+                        @if(Auth::user()->role === 'staff')
                         <th class="py-3 px-6 text-left text-gray-700 font-medium">Báo cáo</th>
+                        @else
+                        <th class="py-3 px-6 text-left text-gray-700 font-medium">Phê duyệt</th>
+                        @endif
 
                     </tr>
                 </thead>
@@ -209,6 +229,8 @@
 
             var document_code = params.get('document_code');
             var status = params.get('status');
+            var status_result = params.get('status_result');
+            var completion_date = params.get('completion_date');
 
             if (!isNaN(organizationId)) {
                 var customInput = document.getElementById('organization_id');
@@ -221,6 +243,14 @@
             if (status !== null || status !== undefined || status !== "") {
                 var customInput = document.getElementById('status');
                 customInput.value = status;
+            }
+            if (status_result !== null || status_result !== undefined || status_result !== "") {
+                var customInput = document.getElementById('status_result');
+                customInput.value = status_result;
+            }
+            if(completion_date !== null || completion_date !== undefined || completion_date !== ""){
+                var customInput = document.getElementById('completion_date');
+                customInput.value = completion_date;
             }
         });
         //============================ Search Input Code ====================================

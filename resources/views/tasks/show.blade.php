@@ -258,7 +258,9 @@
                         <tr>
                             <th class="py-2 px-4 border-b">STT</th>
                             <th class="py-2 px-4 border-b">Tiến độ</th>
-                            <th class="py-2 px-4 border-b">Mô tả chi tiết</th>
+                            <th class="py-2 px-4 border-b">Kết quả báo cáo</th>
+                            <th class="py-2 px-4 border-b">Trạng thái báo cáo</th>
+                            <th class="py-2 px-4 border-b">Nhận xét</th>
                             <th class="py-2 px-4 border-b">Thời gian</th>
                             <th class="py-2 px-4 border-b">Chu kỳ</th>
                         </tr>
@@ -279,7 +281,8 @@
             var selectedValue = type.value;
             // Chuyển hướng đến URL tương ứng với giá trị được chọn
             if (selectedValue) {
-                window.location.href = `/tasks/type/${selectedValue}`;
+                // window.location.href = `/tasks/type/${selectedValue}`;
+                window.history.back();
             }
         });
         document.addEventListener('DOMContentLoaded', function() {
@@ -328,15 +331,15 @@
 
 
                     let cycle_text;
-                    if (history.type_cycle == 1) {
-                        cycle_text = 'Tuần';
-                    } else if (history.type_cycle == 2) {
-                        cycle_text = 'Tháng';
-                    } else if (history.type_cycle == 3) {
-                        cycle_text = 'Quý';
-                    } else if (history.type_cycle == 4) {
-                        cycle_text = 'Năm';
-                    }
+                    if(history.type_cycle == 1){
+                            cycle_text = 'Chu kỳ tuần';
+                        }else if(history.type_cycle == 2){
+                            cycle_text = 'Chu kỳ tháng';
+                        }else if(history.type_cycle == 3){
+                            cycle_text = 'Chu kỳ quý';
+                        }else if(history.type_cycle == 4){
+                            cycle_text = 'Chu kỳ năm';
+                        }
                     const text_result_cycle = cycle_text + ' ' + history.number_cycle;
                     // Các cột khác
                     const mappingIdCell = document.createElement('td');
@@ -344,10 +347,25 @@
                     mappingIdCell.textContent = history.status_label;
                     row.appendChild(mappingIdCell);
 
-                    const typeSaveCell = document.createElement('td');
-                    typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
-                    typeSaveCell.textContent = history.description;
-                    row.appendChild(typeSaveCell);
+                    const resultsCell = document.createElement('td');
+                        resultsCell.classList.add('py-2', 'px-4', 'border-b');
+                        resultsCell.textContent = history.result;
+                        row.appendChild(resultsCell);
+                        
+                        const statusCodeCell = document.createElement('td');
+                        statusCodeCell.classList.add('py-2', 'px-4', 'border-b');
+                        statusCodeCell.textContent = history.task_result_status_label;
+                        row.appendChild(statusCodeCell);
+
+                        const remarkCell = document.createElement('td');
+                        remarkCell.classList.add('py-2', 'px-4', 'border-b');
+                        remarkCell.textContent = history.remarks;
+                        row.appendChild(remarkCell);
+
+                        // const typeSaveCell = document.createElement('td');
+                        // typeSaveCell.classList.add('py-2', 'px-4', 'border-b');
+                        // typeSaveCell.textContent = history.description;
+                        // row.appendChild(typeSaveCell);
 
 
                     const descriptionCell = document.createElement('td');
@@ -357,7 +375,9 @@
 
                     const resultCell = document.createElement('td');
                     resultCell.classList.add('py-2', 'px-4', 'border-b');
-                    resultCell.textContent = text_result_cycle;
+                    if(history.number_cycle !== null ){
+                            resultCell.textContent = text_result_cycle;
+                        }
                     row.appendChild(resultCell);
 
 

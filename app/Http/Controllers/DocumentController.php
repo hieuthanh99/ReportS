@@ -1044,6 +1044,7 @@ class DocumentController extends Controller
         }
 
         // Chuyển hướng về trang danh sách tài liệu
-        return redirect()->route('documents.index')->with('success', 'Xóa thành công văn bản.');
+        // return redirect()->route('documents.index')->with('success', 'Xóa thành công văn bản.');
+        return redirect()->back()->with('success', 'Xóa thành công văn bản.');
     }
 }

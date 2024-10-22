@@ -401,8 +401,6 @@
                 if (result.isConfirmed) {
                     document.getElementById('delete-form-' + id).submit();
                 }
-            }).then(data => {
-                window.location.reload();
             });
         }
     </script>

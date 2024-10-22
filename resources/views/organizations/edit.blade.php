@@ -35,15 +35,22 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->
                 <div class="mb-4">
-                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã cơ quan, tổ chức(Tối đa 5 ký tự) <span class="text-red-500">*</span></label>
-                    <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code', $organization->code) }}" required
-                    oninvalid="this.setCustomValidity('Vui lòng nhập mã cơ quan, tổ chức.')" 
-                    oninput="setCustomValidity('')"
-                    maxlength="5">
-                    @error('code')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
+                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
+                        <select name="organization_type_id" id="organization_type_id"
+                            class="form-input w-full border border-gray-300 rounded-lg p-2 select2" require
+                            oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan, tổ chức.')" 
+                            oninput="setCustomValidity('')">
+                            <option value="" disabled {{ old('organization_type_id') ? '' : 'selected' }}>Chọn loại cơ quan, tổ chức</option>
+
+                            @foreach ($organizationType as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ $item->id == $organization->organization_type_id ? 'selected' : '' }}>
+                                    {{ $item->type_name }}
+                                </option>
+                            @endforeach
+                        </select>
                 </div>
+                
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên cơ quan, tổ chức <span class="text-red-500">*</span></label>
                     <input type="text" id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('name', $organization->name) }}" required
@@ -61,20 +68,14 @@
                         </select>
                 </div> --}}
                 <div class="mb-4">
-                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                        <select name="organization_type_id" id="organization_type_id"
-                            class="form-input w-full border border-gray-300 rounded-lg p-2 select2" require
-                            oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan, tổ chức.')" 
-                            oninput="setCustomValidity('')">
-                            <option value="" disabled {{ old('organization_type_id') ? '' : 'selected' }}>Chọn loại cơ quan, tổ chức</option>
-
-                            @foreach ($organizationType as $item)
-                                <option value="{{ $item->id }}"
-                                    {{ $item->id == $organization->organization_type_id ? 'selected' : '' }}>
-                                    {{ $item->type_name }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã cơ quan, tổ chức(Tối đa 5 ký tự) <span class="text-red-500">*</span></label>
+                    <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code', $organization->code) }}" required
+                    oninvalid="this.setCustomValidity('Vui lòng nhập mã cơ quan, tổ chức.')" 
+                    oninput="setCustomValidity('')"
+                    maxlength="5">
+                    @error('code')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-4" style="display:none">
                     <label for="parent_id" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan, tổ chức cha:</label>
@@ -111,7 +112,7 @@
 
                 </div>
                 <div class="mb-4">
-                    <label for="website" class="block text-gray-700 text-sm font-medium mb-2">Website </label>
+                    <label for="website" class="block text-gray-700 text-sm font-medium mb-2">Địa chỉ website </label>
                     <input type="text" id="website" name="website" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('website', $organization->website) }}">
 
                 </div>

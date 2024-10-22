@@ -33,6 +33,13 @@
         @method('PUT')
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div class="mb-4">
+                <label for="code" class="block text-gray-700">Mã code <span class="text-red-500">*</span></label>
+                <input type="text" id="code" name="code" value="{{ old('code', $user->code) }}" class="w-full border border-gray-300 rounded-lg p-2" readonly>
+                <!-- @error('code')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror -->
+            </div>
+            <div class="mb-4">
                 <label for="name" class="block text-gray-700">Tên <span class="text-red-500">*</span>:</label>
                 <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required
                 oninvalid="this.setCustomValidity('Vui lòng nhập tên.')" 
@@ -48,6 +55,20 @@
                 oninvalid="this.setCustomValidity('Vui lòng nhập Email.')" 
                     oninput="setCustomValidity('')">
                 <!-- @error('email')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror -->
+            </div>
+
+            <div class="mb-4">
+                <label for="role" class="block text-gray-700">Role:</label>
+                <select id="role" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
+                    <option value="supper_admin" {{ old('role', $user->role) == 'supper_admin' ? 'selected' : '' }}>Supper Admin</option>
+                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="sub_admin" {{ old('role', $user->role) == 'sub_admin' ? 'selected' : '' }}>Sub-Admin</option>
+                    <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Nhân viên</option>
+
+                </select>
+                <!-- @error('role')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror -->
             </div>
@@ -73,7 +94,34 @@
                 @enderror -->
             </div>
 
-            
+            <div class="mb-4">
+                <label for="organization_id" class="block text-gray-700">Tổ chức:</label>
+                <select id="organization_id" name="organization_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
+                    <option value="">Không có tổ chức</option>
+                    @foreach($organizations as $organization)
+                        <option value="{{ $organization->id }}" {{ $user->organization_id == $organization->id ? 'selected' : '' }}>
+                            {{ $organization->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <!-- @error('organization_id')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror -->
+            </div>
+            <div class="mb-4">
+                <label for="position_id" class="block text-gray-700">Chức vụ:</label>
+                <select id="position_id" name="position_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
+                    <option value="">Không có chức vụ</option>
+                    @foreach($positions as $position)
+                        <option value="{{ $position->id }}" {{ $user->position_id == $position->id ? 'selected' : '' }}>
+                            {{ $position->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <!-- @error('position_id')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror -->
+            </div>
 
             <div class="mb-4">
                 <label for="phone" class="block text-gray-700">Số điện thoại:</label>
@@ -91,49 +139,7 @@
                 @enderror -->
             </div>
         </div>
-        <div class="flex gap-6 mb-4">
-            <div class="mb-4 flex-1">
-                <label for="role" class="block text-gray-700">Vai trò:</label>
-                <select id="role" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
-                    <option value="supper_admin" {{ old('role', $user->role) == 'supper_admin' ? 'selected' : '' }}>Supper Admin</option>
-                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="sub_admin" {{ old('role', $user->role) == 'sub_admin' ? 'selected' : '' }}>Sub-Admin</option>
-                    <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Nhân viên</option>
-
-                </select>
-                <!-- @error('role')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror -->
-            </div>
-            <div class="mb-4 flex-1">
-                <label for="organization_id" class="block text-gray-700">Tổ chức:</label>
-                <select id="organization_id" name="organization_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
-                    <option value="">Không có tổ chức</option>
-                    @foreach($organizations as $organization)
-                        <option value="{{ $organization->id }}" {{ $user->organization_id == $organization->id ? 'selected' : '' }}>
-                            {{ $organization->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <!-- @error('organization_id')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror -->
-            </div>
-            <div class="mb-4 flex-1">
-                <label for="position_id" class="block text-gray-700">Chức vụ:</label>
-                <select id="position_id" name="position_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg select2">
-                    <option value="">Không có chức vụ</option>
-                    @foreach($positions as $position)
-                        <option value="{{ $position->id }}" {{ $user->position_id == $position->id ? 'selected' : '' }}>
-                            {{ $position->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <!-- @error('position_id')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror -->
-            </div>
-        </div>
+        
             <div class="mt-4 flex" style="justify-content: space-between">
                 <a onclick="window.history.back()" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mr-2">Quay lại</a>
                 <button type="submit" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Cập nhật</button>

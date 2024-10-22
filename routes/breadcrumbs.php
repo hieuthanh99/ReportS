@@ -31,33 +31,33 @@ Breadcrumbs::for('BCKQ', function ($trail) {
 //nhiệm vu
 Breadcrumbs::for('tasks.byType', function ($trail, $type) {
     $trail->parent('QLCV');
-    if($type == 'task')     $trail->push('Danh sách nhiệm vụ', route('tasks.byType', $type));
-    else $trail->push('Danh sách chỉ tiêu', route('tasks.byType', $type));
+    if($type == 'task')     $trail->push('Danh sách nhiệm vụ', null);
+    else $trail->push('Danh sách chỉ tiêu', null);
 });
 
 Breadcrumbs::for('tasks.byType.approved', function ($trail, $type) {
     $trail->parent('QLCV');
-    if($type == 'task')     $trail->push('Phê duyệt báo cáo nhiệm vụ', route('tasks.byType.approved', $type));
-    else $trail->push('Phê duyệt báo cáo chỉ tiêu', route('tasks.byType.approved', $type));
+    if($type == 'task')     $trail->push('Phê duyệt báo cáo nhiệm vụ', null);
+    else $trail->push('Phê duyệt báo cáo chỉ tiêu', null);
 });
 
 
 Breadcrumbs::for('create.tasks.byType', function ($trail, $type) {
     $trail->parent('tasks.byType', $type);
-    if($type == 'task')     $trail->push('Thêm mới nhiệm vụ', route('tasks.byType', $type));
-    else $trail->push('Thêm mới chỉ tiêu', route('tasks.byType', $type));
+    if($type == 'task')     $trail->push('Thêm mới nhiệm vụ', null);
+    else $trail->push('Thêm mới chỉ tiêu', null);
 });
 
 Breadcrumbs::for('update.tasks.byType', function ($trail, $type) {
     $trail->parent('tasks.byType', $type);
-    if($type == 'task')     $trail->push('Cập nhật nhiệm vụ', route('tasks.byType', $type));
-    else $trail->push('Cập nhật chỉ tiêu', route('tasks.byType', $type));
+    if($type == 'task')     $trail->push('Cập nhật nhiệm vụ', null);
+    else $trail->push('Cập nhật chỉ tiêu', null);
 });
 
 Breadcrumbs::for('details.tasks.byType', function ($trail, $type) {
     $trail->parent('tasks.byType', $type);
-    if($type == 'task')     $trail->push('Chi tiết nhiệm vụ', route('tasks.byType', $type));
-    else $trail->push('Chi tiết chỉ tiêu', route('tasks.byType', $type));
+    if($type == 'task')     $trail->push('Chi tiết nhiệm vụ', null);
+    else $trail->push('Chi tiết chỉ tiêu', null);
 });
 
 
@@ -114,42 +114,42 @@ Breadcrumbs::for('THTK', function ($trail) {
 /// Loại văn bản
 Breadcrumbs::for('LVB', function ($trail) {
     $trail->parent('VB');
-    $trail->push('Danh sách loại văn bản', route('document_categories.index'));
+    $trail->push('Danh sách loại văn bản', null);
 });
 
 Breadcrumbs::for('CLVB', function ($trail) {
     $trail->parent('VB');
-    $trail->push('Thêm mới loại văn bản', route('document_categories.create'));
+    $trail->push('Thêm mới loại văn bản', null);
 });
 
 Breadcrumbs::for('ULVB', function ($trail, $documentCategory) {
     $trail->parent('VB');
-    $trail->push('Cập nhật loại văn bản', route('document_categories.update', $documentCategory));
+    $trail->push('Cập nhật loại văn bản', null);
 });
 Breadcrumbs::for('CTLVB', function ($trail) {
     $trail->parent('VB');
-    $trail->push('Chi tiết loại văn bản', route('document_categories.show'));
+    $trail->push('Chi tiết loại văn bản', null);
 });
 
 
 /// văn bản
 Breadcrumbs::for('DMVB', function ($trail) {
     $trail->parent('VB');
-    $trail->push('Danh sách văn bản', route('documents.index'));
+    $trail->push('Danh sách văn bản', null);
 });
 
 Breadcrumbs::for('CDMVB', function ($trail) {
     $trail->parent('VB');
-    $trail->push('Thêm mới văn bản', route('documents.create'));
+    $trail->push('Thêm mới văn bản', null);
 });
 
 Breadcrumbs::for('UDMVB', function ($trail, $document) {
     $trail->parent('VB');
-    $trail->push('Cập nhật văn bản', route('documents.update', $document));
+    $trail->push('Cập nhật văn bản', null);
 });
 Breadcrumbs::for('CTDMVB', function ($trail, $document) {
     $trail->parent('VB');
-    $trail->push('Chi tiết văn bản', route('documents.show', $document));
+    $trail->push('Chi tiết văn bản', null);
 });
 
 //Tổ chức
@@ -160,110 +160,110 @@ Breadcrumbs::for('CQTC', function ($trail) {
 
 Breadcrumbs::for('DSO', function ($trail) {
     $trail->parent('CQTC');
-    $trail->push('Danh sách cơ quan', route('organizations.index'));
+    $trail->push('Danh sách cơ quan', null);
 });
 
 Breadcrumbs::for('CO', function ($trail) {
     $trail->parent('DSO');
-    $trail->push('Thêm mới cơ quan', route('organizations.create'));
+    $trail->push('Thêm mới cơ quan', null);
 });
 
 Breadcrumbs::for('UO', function ($trail, $document) {
     $trail->parent('DSO');
-    $trail->push('Cập nhật cơ quan', route('organizations.update', $document));
+    $trail->push('Cập nhật cơ quan', null);
 });
 Breadcrumbs::for('CTO', function ($trail, $document) {
     $trail->parent('DSO');
-    $trail->push('Chi tiết cơ quan', route('organizations.show', $document));
+    $trail->push('Chi tiết cơ quan', null);
 });
 
 //Loại Tổ chức
 Breadcrumbs::for('DSLO', function ($trail) {
     $trail->parent('CQTC');
-    $trail->push('Danh sách phân loại cơ quan', route('organization_types.index'));
+    $trail->push('Danh sách phân loại cơ quan', null);
 });
 
 Breadcrumbs::for('CLO', function ($trail) {
     $trail->parent('QLDM');
-    $trail->push('Thêm mới loại cơ quan', route('organization_types.create'));
+    $trail->push('Thêm mới loại cơ quan', null);
 });
 
 Breadcrumbs::for('ULO', function ($trail, $document) {
     $trail->parent('QLDM');
-    $trail->push('Cập nhật loại cơ quan', route('organization_types.update', $document));
+    $trail->push('Cập nhật loại cơ quan', null);
 });
 Breadcrumbs::for('CTLO', function ($trail, $document) {
     $trail->parent('QLDM');
-    $trail->push('Chi tiết loại cơ quan', route('organization_types.show', $document));
+    $trail->push('Chi tiết loại cơ quan', null);
 });
 
 //Nhóm nhiệm vụ
 Breadcrumbs::for('DSNV', function ($trail) {
     $trail->parent('NNV');
-    $trail->push('Danh sách nhóm nhiệm vụ', route('task_groups.index'));
+    $trail->push('Danh sách nhóm nhiệm vụ', null);
 });
 
 Breadcrumbs::for('CLNV', function ($trail) {
     $trail->parent('NNV');
-    $trail->push('Thêm mới nhóm nhiệm vụ', route('task_groups.create'));
+    $trail->push('Thêm mới nhóm nhiệm vụ', null);
 });
 
 Breadcrumbs::for('ULNV', function ($trail, $document) {
     $trail->parent('NNV');
-    $trail->push('Cập nhật nhóm nhiệm vụ', route('task_groups.update', $document));
+    $trail->push('Cập nhật nhóm nhiệm vụ', null);
 });
 
 //Nhóm chỉ tiêu
 Breadcrumbs::for('DSCT', function ($trail) {
     $trail->parent('NCT');
-    $trail->push('Danh sách nhóm chỉ tiêu', route('indicator_groups.index'));
+    $trail->push('Danh sách nhóm chỉ tiêu', null);
 });
 
 Breadcrumbs::for('CLCT', function ($trail) {
     $trail->parent('NCT');
-    $trail->push('Thêm mới nhóm chỉ tiêu', route('indicator_groups.create'));
+    $trail->push('Thêm mới nhóm chỉ tiêu', null);
 });
 
 Breadcrumbs::for('ULCT', function ($trail, $document) {
     $trail->parent('NCT');
-    $trail->push('Cập nhật nhóm chỉ tiêu', route('indicator_groups.update', $document));
+    $trail->push('Cập nhật nhóm chỉ tiêu', null);
 });
 
 //Danh mục chức vụ
 Breadcrumbs::for('DSCV', function ($trail) {
     $trail->parent('ND');
-    $trail->push('Danh sách chức vụ', route('positions.index'));
+    $trail->push('Danh sách chức vụ', null);
 });
 
 Breadcrumbs::for('CCV', function ($trail) {
     $trail->parent('DSCV');
-    $trail->push('Thêm mới chức vụ', route('positions.create'));
+    $trail->push('Thêm mới chức vụ', null);
 });
 
 Breadcrumbs::for('UCV', function ($trail, $document) {
     $trail->parent('DSCV');
-    $trail->push('Cập nhật chức vụ', route('positions.update', $document));
+    $trail->push('Cập nhật chức vụ', null);
 });
 
 //Tổng hợp, thống kê
 Breadcrumbs::for('THTVB', function ($trail) {
     $trail->parent('THBC');
-    $trail->push('Báo cáo tổng hợp theo văn bản', route('reports.withDocument'));
+    $trail->push('Báo cáo tổng hợp theo văn bản', null);
 });
 
 Breadcrumbs::for('THTDV', function ($trail) {
     $trail->parent('THBC');
-    $trail->push('Báo cáo tổng hợp theo đơn vị', route('reports.withUnit'));
+    $trail->push('Báo cáo tổng hợp theo đơn vị', null);
 });
 
 Breadcrumbs::for('THTCK', function ($trail) {
     $trail->parent('THBC');
-    $trail->push('Báo cáo tổng hợp theo chu kỳ', route('reports.withUnit'));
+    $trail->push('Báo cáo tổng hợp theo chu kỳ', null);
 });
 
 Breadcrumbs::for('THCT', function ($trail) {
     $trail->parent('THBC');
-    $trail->push('Báo cáo tổng hợp chi tiết', route('reports.withUnit'));
+    $trail->push('Báo cáo tổng hợp chi tiết', null);
 });
 
 //Tổng hợp, thống kê
@@ -280,21 +280,21 @@ Breadcrumbs::for('DSBCTG', function ($trail) {
 
 Breadcrumbs::for('CTBC', function ($trail, $document) {
     $trail->parent('DSBC');
-    $trail->push('Chi tiết báo cáo', route('documents.report.details', $document));
+    $trail->push('Chi tiết báo cáo', null);
 });
 
 Breadcrumbs::for('UBC', function ($trail, $document) {
     $trail->parent('DSBC');
-    $trail->push('Báo cáo nhiệm vụ', route('documents.report.update', $document));
+    $trail->push('Báo cáo nhiệm vụ', null);
 });
 
 
 Breadcrumbs::for('CTBCTG', function ($trail, $document) {
     $trail->parent('DSBCTG');
-    $trail->push('Chi tiết báo cáo', route('documents.report.details', $document));
+    $trail->push('Chi tiết báo cáo', null);
 });
 
 Breadcrumbs::for('UBCTG', function ($trail, $document) {
     $trail->parent('DSBCTG');
-    $trail->push('Báo cáo chỉ tiêu', route('documents.report.update', $document));
+    $trail->push('Báo cáo chỉ tiêu', null);
 });

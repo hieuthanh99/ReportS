@@ -488,23 +488,24 @@
                                 </button>
                         </div>
                         @endif
-                    </div>
-                    @if ($hasOrganization && $taskResult->status == 'staff_complete')
-                    <div class="mb-4 ">
-                        <button data-id="{{ $taskResult->id }}" id="button-apprrover-{{ $taskResult->id }}" style="margin-right: 20px"
-                        type="button" 
-                            class="button-approved bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 mt-4">
-                            Duyệt
-                        </button>
+                        @if ($hasOrganization && $taskResult->status == 'staff_complete')
+                            <div class="mb-4 ">
+                                <button data-id="{{ $taskResult->id }}" id="button-apprrover-{{ $taskResult->id }}" style="margin-right: 20px"
+                                type="button" 
+                                    class="button-approved bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 mt-4">
+                                    Duyệt
+                                </button>
 
-                        <!-- Nút Reject -->
-                        <button data-id="{{ $taskResult->id }}" id="button-reject-{{ $taskResult->id }}"
-                        type="button"
-                            class="button-reject bg-red-400 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
-                            Từ chối
-                        </button>
+                                <!-- Nút Reject -->
+                                <button data-id="{{ $taskResult->id }}" id="button-reject-{{ $taskResult->id }}"
+                                type="button"
+                                    class="button-reject bg-red-400 text-white px-2 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300">
+                                    Từ chối
+                                </button>
+                            </div>
+                        @endif
                     </div>
-                    @endif
+                    
             </div>
             </form>
         </div>

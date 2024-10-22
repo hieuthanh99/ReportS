@@ -575,7 +575,8 @@ class DocumentController extends Controller
             $join->on('task_target.id', '=', 'task_approval_history.task_target_id')
                  ->on('task_result.id', '=', 'task_approval_history.task_result_id');
         })
-        ->select('history_change_document.*', 'task_target.status as task_target_status' , 'task_target.id as task_target_id', 'task_result.status as task_result_status', 'task_approval_history.remarks', 'task_result.id as task_result_id')
+        ->select('history_change_document.*', 'task_target.status as task_target_status', 'task_target.id as task_target_id', 'task_result.status as task_result_status',
+                'task_approval_history.remarks', 'task_result.id as task_result_id')
         ->orderBy('update_date', 'desc')
         ->get();
         $lstHistory = $lstHistory->map(function ($history) {

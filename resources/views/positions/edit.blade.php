@@ -36,7 +36,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->
                 <div class="mb-4">
-                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã chức danh <span class="text-red-500">*</span></label>
+                    <label for="code" class="block text-gray-700 text-sm font-medium mb-2">Mã chức vụ <span class="text-red-500">*</span></label>
                     <input type="text" id="code" name="code" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ old('code', $position->code) }}" required>
                     @error('code')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -44,14 +44,14 @@
                 </div>
                 <div class="mb-4"></div>
                 <div class="mb-4">
-                    <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên chức danh <span class="text-red-500">*</span></label>
+                    <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên chức vụ <span class="text-red-500">*</span></label>
                     <textarea id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('>name', $position->name) }}</textarea>
                     @error('name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-4">
-                    <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Chi tiết<span class="text-red-500">*</span></label>
+                    <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Chi tiết chức vụ<span class="text-red-500">*</span></label>
                     <textarea id="description" name="description" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('description', $position->description) }}</textarea>
                     @error('description')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>

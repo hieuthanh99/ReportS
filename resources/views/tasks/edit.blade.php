@@ -106,17 +106,7 @@
                    
                 </div>
                 @else
-                <div class="mb-4">
-                    
-                    <label for="task_type" class="block text-gray-700 text-sm font-medium mb-2">Loại chỉ tiêu<span class="text-red-500">*</span></label>
-                   
-                    <select id="target_type" name="target_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px" required
-                    oninvalid="this.setCustomValidity('Vui lòng chọn loại chỉ tiêu.')" oninput="this.setCustomValidity('')">
-                        <option value="single" {{ $taskTarget->target_type == 'single' ? 'selected' : '' }}>Đơn</option> "Đơn" -> "single"
-                        <option value="aggregate" {{ $taskTarget->target_type == 'aggregate' ? 'selected' : '' }}>Tổng hợp</option> <!-- "Tổng hợp" -> "aggregate" -->
-                    </select>
-                    
-                </div>
+                
                 @endif
                 @if($type == 'target')
                <div class="mb-4">
@@ -163,7 +153,7 @@
                     <input type="text" id="custom_unit" name="custom_unit" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập đơn vị khác...">
                 </div>
                 <div class="mb-4">
-                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Ngày kết thúc:</label>
+                    <label for="end_date" class="block text-gray-700 text-sm font-medium mb-2">Thời hạn hoàn thành:</label>
                     <input type="date" id="end_date" name="end_date" placeholder="dd-mm-yyyy"
                     min="1997-01-01" max="2100-12-31"
                   required
@@ -242,7 +232,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button"
-                                    class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                    class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                     onclick="confirmDelete({{ $item->id }})">
                                     <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                 </button>

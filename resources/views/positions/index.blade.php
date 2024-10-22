@@ -118,7 +118,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="button"
-                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                         onclick="confirmDelete({{ $index + $types->firstItem() }})">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>

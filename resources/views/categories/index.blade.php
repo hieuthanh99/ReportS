@@ -52,12 +52,12 @@
                                     onclick="window.location.href='{{ route('categories.edit', $category->CategoryID) }}'">
                                     <i class="fas fa-edit"></i> <!-- Biểu tượng cho "Cập nhật" -->
                                 </button>
-                                <form action="{{ route('categories.destroy', $category->CategoryID) }}"" method="POST"
+                                <form action="{{ route('categories.destroy', $category->CategoryID) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                    class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                    class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                         onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
 

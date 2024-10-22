@@ -107,7 +107,7 @@
                     <span class="text-red-500">*</span> Nếu không chọn tổ chức nào, nhiệm vụ/chỉ tiêu sẽ giao cho người tạo.
                 </p>
             </div> --}}
-            <div class="flex space-x-4 text-right">
+            <div class="mt-4 flex" style="justify-content: space-between">
                 <button type="button" onclick="window.history.back();"
                     class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Quay
                     lại</button>

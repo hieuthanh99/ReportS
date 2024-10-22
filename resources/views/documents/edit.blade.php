@@ -147,7 +147,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan:</label>
+                    <label for="organization_type_id" class="block text-gray-700 text-sm font-medium mb-2">Loại cơ quan ban hành:</label>
 
                     <select name="organization_type_id" id="organization_type_id" required
                             class="form-input w-full border border-gray-300 rounded-lg p-2 select2"
@@ -165,7 +165,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan:</label>
+                    <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban hành:</label>
                     <select id="parent_id" name="issuing_department" required
 
                             class="form-input w-full border border-gray-300 rounded-lg p-2 select2"

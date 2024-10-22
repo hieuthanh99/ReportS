@@ -49,7 +49,7 @@
                     @enderror
                 </div>
                 <div class="mb-4">
-                    <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Chi tiết<span class="text-red-500">*</span></label>
+                    <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Chi tiết loại cơ quan, tổ chức<span class="text-red-500">*</span></label>
                     <textarea id="description" name="description" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ old('description', $organizationType->description) }}</textarea>
                     @error('description')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>

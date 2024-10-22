@@ -298,12 +298,14 @@
 
                     </table>
                 </div>
-                <button type="button" id="assign-user"
-                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán
-                </button>
-                <button type="button" id="cancel-assign-user"
-                    class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy
-                </button>
+                <div class="mt-4 flex" style="justify-content: space-between">
+                    <button type="button" id="cancel-assign-user"
+                        class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600 transition duration-300">Hủy
+                    </button>
+                    <button type="button" id="assign-user"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">Gán
+                    </button>
+                </div>
             </div>
         </div>
         <!-- Modal for Assigning User -->

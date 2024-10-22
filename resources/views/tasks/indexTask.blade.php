@@ -131,7 +131,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
+                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
                                         onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
@@ -276,7 +276,9 @@
 
                         const resultCell = document.createElement('td');
                         resultCell.classList.add('py-2', 'px-4', 'border-b');
-                        resultCell.textContent =  text_result_cycle;
+                        if(history.number_cycle !== null ){
+                            resultCell.textContent = text_result_cycle;
+                        }
                         row.appendChild(resultCell);
 
 

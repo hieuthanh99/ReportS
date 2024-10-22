@@ -164,7 +164,7 @@
                                             <td class="px-4 py-2" style="width: 300px;">{{ $target->name }}</td>
                                             <td class="px-4 py-2 whitespace-nowrap">{{ $target->getStatusLabel() }}</td>
                                             @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
-                                                <td class="px-4 py-2">{{ $target->getStatusTaskTarget() ?? null }}</td>
+                                                <td class="px-4 py-2">{{ $target->taskResultsRelation->first()->getStatusLabelAttributeTaskTarget() ?? null }}</td>
                                             @endif
                                             <td>
                                                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')

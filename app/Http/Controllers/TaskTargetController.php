@@ -322,7 +322,9 @@ class TaskTargetController extends Controller
 
     public function indexViewApproved(Request $request, $type, $text = null)
     {
-        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereHas('documents', function($query) {
+            $query->where('isDelete', 0);
+        })->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();
@@ -407,7 +409,9 @@ class TaskTargetController extends Controller
 
     public function indexView(Request $request, $type, $text = null)
     {
-        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereHas('documents', function($query) {
+            $query->where('isDelete', 0);
+        })->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
         $documents = Document::where('isDelete', 0)->get();
         $categories = Category::where('isDelete', 0)->get();

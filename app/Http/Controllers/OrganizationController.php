@@ -263,22 +263,22 @@ class OrganizationController extends Controller
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
-        $organization = Organization::find($id)->whereNotNull('organization_type_id');
+        $organization = Organization::where('id', $id)->whereNotNull('organization_type_id')->first();
         try {
-            $request->validate([
+            $data = $request->validate([
                 'code' => [
                     'required',
-                    'max:5'
+                    'max:5',
                 ],
                  'name' => 'required', // Validation rule for textarea
              ], [
                  'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
-                 'code.unique' => 'Mã cơ quan, tổ chức đã tồn tại.',
                  'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
              ]);
+
              $exitItem = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->where('code', $request->code)->where('id','!=', $id)->first();
              if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
-            $organization->update($request->all());
+            $organization->update($data);
             DB::commit();
             session()->flash('success', 'Cơ quan, tổ chức đã được cập nhật thành công!');
         

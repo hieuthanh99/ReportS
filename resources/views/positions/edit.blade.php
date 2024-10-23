@@ -25,7 +25,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <form action="{{ route('positions.update', $position->id) }}" method="POST" enctype="multipart/form-data" class=" p-6" id="document-form">
+        <form action="{{ route('positions.update', $position->id) }}" method="POST" enctype="multipart/form-data" class=" p-6" id="document-form" onsubmit="confirmBeforeSave({ event })">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 {!! Breadcrumbs::render('UCV', $position) !!}

@@ -230,12 +230,12 @@
                         nhân viên</button>
                     <button type="button" id="update-button"
                         class="hidden bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mt-2">Cập nhật</button>
-                    <form id="delete-form" method="POST" style="display: none;">
+                    <form id="delete-form" method="POST"  onsubmit="confirmBeforeDelete({ event, text: 'Xóa tổ chức này?. Khi đã xóa sẽ không lấy lại thông tin được!' })">
                         @csrf
                         @method('DELETE')
+                        <button type="submit" id='delete-button'
+                        class="hidden bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
                     </form>
-                    <button type="button" id="delete-button"
-                    class="hidden bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
                 </div>
             </div>
         </div>
@@ -309,7 +309,7 @@
             </div>
         </div>
         <!-- Modal for Assigning User -->
-        <div id="assignUserModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div id="assignUserModal" class="fixed inset-0 items-center justify-center bg-black bg-opacity-50 hidden">
             <div class="bg-white rounded-lg p-6 w-1/3">
                 <h2 class="text-xl font-bold mb-4">Gán Người Dùng</h2>
                 <form id="assignUserForm">
@@ -400,35 +400,6 @@
             let orgs = document.getElementsByClassName('organizations')
             if(orgs) {
                 loadDetails(orgs[0].value)
-            }
-            document.getElementById('delete-button').addEventListener('click', function() {
-                const organizationId = document.getElementById('organization_id').value;
-                if (organizationId) {
-                    confirmDelete(organizationId);
-                } else {
-                    alert('Không tìm thấy mã tổ chức.');
-                }
-            });
-
-            function confirmDelete(organizationId) {
-                Swal.fire({
-                    title: 'Bạn có chắc chắn?',
-                    text: 'Xóa tổ chức này?. Khi đã xóa sẽ không lấy lại thông tin được!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Có, xóa!',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Tạo URL chuyển hướng đến route xóa với ID tổ chức
-                        const deleteUrl = `/organizations/${organizationId}`; // Điều chỉnh đường dẫn nếu cần
-                        const deleteForm = document.getElementById('delete-form');
-                        deleteForm.action = deleteUrl;
-                        deleteForm.submit();
-                    }
-                });
             }
             // Khi nút Cập nhật được nhấn
             document.getElementById('update-button').addEventListener('click', function() {
@@ -528,13 +499,12 @@
                         <td class="py-2 px-4 border-b">${user.phone ?? ''}</td>
                         <td class="py-2 px-4 border-b" style="display: none">${user.id}</td>
                         <td class="py-2 px-4 border-b">
-                            <form action="/users/${user.id}/destroyOrganization" method="POST"
+                            <form action="/users/${user.id}/destroyOrganization" method="POST" onsubmit="confirmBeforeDelete({ event, text: 'Bạn có chắc chắn rằng muốn xóa nhân viên khỏi tổ chức này?' })"
                                 style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="bg-blue-400 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300"
-                                    onclick="return confirm('Bạn có chắc chắn rằng muốn xóa nhân viên khỏi tổ chức này?');">
+                                    class="bg-blue-400 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                     Xóa
                                 </button>
                             </form>
@@ -545,10 +515,10 @@
             });
             document.getElementById('assign-user-button').classList.remove('hidden');
             document.getElementById('update-button').classList.remove('hidden');
+            const form =document.getElementById('delete-form')
+            form.action= `/organizations/${organizationId}`
+            console.log(document.getElementById('delete-form').action)
             document.getElementById('delete-button').classList.remove('hidden');
-
-            
-            
         });
 }
 
@@ -709,7 +679,20 @@
             }
 
             // Khi nhấn nút Gán, xử lý các đầu việc được chọn
-            document.getElementById('assign-user').addEventListener('click', function() {
+            document.getElementById('assign-user').addEventListener('click', async function() {
+               const { isConfirmed } = await Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: 'Gán nhân viên vào tổ chức này',
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Gán!",
+                    cancelButtonText: "Hủy",
+                });
+
+                if(!isConfirmed) return
+
                 const selectedCheckboxes = document.querySelectorAll(
                     '#existing-user input[type="checkbox"]:checked');
                 const assignedUsers = [];
@@ -749,6 +732,12 @@
                         loadDetails(data.organization_id);
                         // Đóng modal
                         document.getElementById('assign-user-modal').classList.add('hidden');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Gán thành công!',
+                            text: data.message,
+                            confirmButtonText: 'OK'
+                        });
                     })
                     .catch(error => {
                         console.error('Error:', error);

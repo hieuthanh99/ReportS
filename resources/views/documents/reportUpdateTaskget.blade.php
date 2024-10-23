@@ -721,8 +721,22 @@
 
             ///////////==================từ chối/duyệt================
             document.querySelectorAll('.button-approved').forEach(button => {
-                button.addEventListener('click', function(event) {
+                button.addEventListener('click', async function(event) {
                     event.preventDefault();
+
+                    const { isConfirmed } = await Swal.fire({
+                        title: 'Bạn có chắc chắn?',
+                        text: ' ',
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Duyệt!",
+                        cancelButtonText: "Hủy",
+                    });
+
+                    if(!isConfirmed) return
+                    
                     const taskId = this.getAttribute('data-id');
                     const remarksValue = document.getElementById('remarks').value;
 
@@ -774,7 +788,7 @@
                     event.preventDefault();
                     const taskId = this.getAttribute('data-id');
                     const remarksValue = document.getElementById('remarks').value;
-                    fetch('{{ route('tasks.updateRemarks') }}', {
+                    fetch("{{ route('tasks.updateRemarks') }}", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

@@ -29,7 +29,7 @@
                 {!! Breadcrumbs::render('ULVB', $documentCategory) !!}
             </ol>
         </nav>
-        <form action="{{ route('document_categories.update', $documentCategory->id) }}" method="POST" enctype="multipart/form-data" class="p-6" id="document-form">
+        <form action="{{ route('document_categories.update', $documentCategory->id) }}" method="POST" enctype="multipart/form-data" class="p-6" onsubmit="confirmBeforeSave({ event })">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

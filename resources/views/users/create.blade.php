@@ -37,7 +37,7 @@
         </div>
     @endif
 
-    <form action="{{ route('users.store') }}" method="POST" >
+    <form action="{{ route('users.store') }}" method="POST" onsubmit="confirmBeforeCreate({ event })">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>

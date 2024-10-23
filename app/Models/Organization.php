@@ -69,4 +69,9 @@ class Organization extends Model
     {
         return $this->hasMany(User::class, 'organization_id');
     }
+    
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'issuing_department');
+    }
 }

@@ -56,7 +56,7 @@ class TaskTargetController extends Controller
                 ]);
                 if ($status == 'rejected') {
                     $taskResult->status = 'reject';
-            
+
                 } else {
                     $taskResult->status = "sub_admin_complete";
                 }
@@ -89,7 +89,7 @@ class TaskTargetController extends Controller
             }
             $taskTarget->isDelete = 1;
             $taskTarget->save();
-    
+
         } catch (\Exception $e) {
             $check = false;
             \Log::error('Error deleting task target: ' . $e->getMessage());
@@ -100,10 +100,10 @@ class TaskTargetController extends Controller
             return redirect()->route('tasks.byType', ['type' => $type])->with('error', 'Đã xảy ra lỗi!');
         }
     }
-    
+
 
     public function getOrganizationsByTaskTargetId($idTaskTarget)
-    {   
+    {
         $organizationIds = TaskResult::where('id_task_criteria', $idTaskTarget)->select('organization_id')->where('isDelete', 0)->get();
 
         $organizations = Organization::whereIn('id', $organizationIds)->where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
@@ -121,7 +121,7 @@ class TaskTargetController extends Controller
         ]);
     }
 
-   
+
 
     public function editTaskTarget($id, $type)
     {
@@ -178,7 +178,7 @@ class TaskTargetController extends Controller
                     'type' => 'required|in:task,target',
                     'type_id' => 'required',
                     'unit' => 'required',   // Đơn vị
-                    'target_type' => 'required',
+                    // 'target_type' => 'required',
                     'target' => 'required',
                 ], [
                     'document_id.required' => 'Văn bản là bắt buộc.',
@@ -272,7 +272,7 @@ class TaskTargetController extends Controller
                 //update
                 if ($request->input("type") === 'target') {
                     $item->unit = $unit;
-                    $item->target_type = $request->target_type;
+                    // $item->target_type = $request->target_type;
                     $item->target = $request->target;
                 } else {
                     $item->task_type = $request->task_type;
@@ -309,11 +309,11 @@ class TaskTargetController extends Controller
             }
             $organizationTypes = OrganizationType::withCount(['organizations' => function ($query) use ($taskTarget) {
                 $query->whereHas('taskResults', function ($q) use ($taskTarget) {
-                    $q->where('id_task_criteria', $taskTarget->id); 
+                    $q->where('id_task_criteria', $taskTarget->id);
                 });
             }])->having('organizations_count', '>', 0) ->get();
 
-            return view('tasks.show', compact('taskTarget', 'taskResult', 'typeTask', 'workResultTypes', 'keyConstants', 'type', 'documents', 'organizationTypes'));    
+            return view('tasks.show', compact('taskTarget', 'taskResult', 'typeTask', 'workResultTypes', 'keyConstants', 'type', 'documents', 'organizationTypes'));
         }catch (\Exception $e) {
             \Log::error('Error creating task/target: ' . $e->getMessage());
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
@@ -402,7 +402,7 @@ class TaskTargetController extends Controller
         }
         $workResultTypes = MasterWorkResultTypeService::index();
         $taskTargets = $taskTargets->where('isDelete', 0)->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
-        
+
 
         return view('documents.indexApprovedReport', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes', 'statuses'));
     }
@@ -476,7 +476,7 @@ class TaskTargetController extends Controller
         if ($executionTimeFrom) {
             // Thêm ngày đầu tiên của tháng để tạo thành một chuỗi ngày đầy đủ
             $startOfMonth = $executionTimeFrom . '-01';
-            
+
             // Tính ngày cuối cùng của tháng
             $endOfMonth = date("Y-m-t", strtotime($startOfMonth)); // 'Y-m-t' trả về ngày cuối cùng của tháng
 
@@ -658,7 +658,7 @@ class TaskTargetController extends Controller
                     $unit = $request->unit;
                 }
             }
-       
+
             $exitItem = TaskTarget::where('isDelete', 0)->where('code', $request->code)->first();
             if ($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
             // Lấy tất cả các giá trị từ request
@@ -688,7 +688,7 @@ class TaskTargetController extends Controller
                     'error' => "Văn bản chưa phát hành. Bạn không thể tạo ". $typeRecord
                 ]);
             }
-            
+
             $result = $request->input("request_results");
             $type_id = $request->input('type_id');
             $result_type = $request->input('result_type');

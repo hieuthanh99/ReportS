@@ -46,28 +46,28 @@
                         <input type="text" id="code" name="code" readonly
                             value="{{ $taskTarget->code }}"
                             class="form-input w-full border border-gray-300 rounded-lg p-2">
-           
+
                 </div>
                 <div class="mb-4">
                     <label for="document_id" class="block text-gray-700 text-sm font-medium mb-2">Văn bản:</label>
                         <select name="document_id" id="document_id" required
                             class="form-input w-full border border-gray-300 rounded-lg p-2 select2"
-                            oninvalid="this.setCustomValidity('Vui lòng chọn văn bản.')" 
+                            oninvalid="this.setCustomValidity('Vui lòng chọn văn bản.')"
                     oninput="setCustomValidity('')">
                             @foreach ($documents as $item)
                                 <option value="{{ $item->id }}" data-code="{{ $item->document_code }}"
                                     {{ $item->id == $taskTarget->document_id? 'selected' : '' }}>
-                                    {{ $item->document_name }}
+                                    {{ $item->document_code }}
                                 </option>
                             @endforeach
                         </select>
-                  
+
                 </div>
                 <div class="mb-4">
                     <label for="type_id" class="block text-gray-700 text-sm font-medium mb-2">Nhóm {{ $text }} <span class="text-red-500">*</span></label>
-                 
-                    <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required 
-                    oninvalid="this.setCustomValidity('Vui lòng chọn nhóm.')" 
+
+                    <select name="type_id" id="type_id" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" required
+                    oninvalid="this.setCustomValidity('Vui lòng chọn nhóm.')"
                     oninput="setCustomValidity('')">
                         <option value="" data-code="">Chọn nhóm {{ $text }}</option>
                         @foreach ($typeTask as $item)
@@ -76,12 +76,12 @@
                             </option>
                         @endforeach
                     </select>
-          
+
                 </div>
                 <div class="mb-4">
                     <label for="cycle_type" class="block text-gray-700 text-sm font-medium mb-2">Chu kỳ báo cáo <span class="text-red-500">*</span></label>
                     <select id="cycle_type" name="cycle_type" class="form-select w-full border border-gray-300 rounded-lg p-2 select2" required
-                    oninvalid="this.setCustomValidity('Vui lòng chọn chu kỳ báo cáo.')" 
+                    oninvalid="this.setCustomValidity('Vui lòng chọn chu kỳ báo cáo.')"
                     oninput="setCustomValidity('')">
                         {{-- <option value="1" {{ $taskTarget->cycle_type == '1' ? 'selected' : '' }}>Tuần</option> --}}
                         <option value="2" {{ $taskTarget->cycle_type == '2' ? 'selected' : '' }}>Tháng</option>
@@ -96,17 +96,17 @@
                 </div>
                 @if($type == 'task')
                 <div class="mb-4">
-                    
+
                     <label for="issuing_department" class="block text-gray-700 text-sm font-medium mb-2">Loại nhiệm vụ<span class="text-red-500">*</span></label>
                     <select id="task_type" name="task_type" class="form-input w-full border border-gray-300 rounded-lg p-2 select2" style="margin-bottom: 10px" required
                     oninvalid="this.setCustomValidity('Vui lòng chọn loại nhiệm vụ.')" oninput="this.setCustomValidity('')">
                         <option value="timed" {{ $taskTarget->task_type == 'timed' ? 'selected' : '' }}>Có thời hạn</option>
                         <option value="regular" {{ $taskTarget->task_type == 'regular' ? 'selected' : '' }}>Thường xuyên</option>
                     </select>
-                   
+
                 </div>
                 @else
-                
+
                 @endif
                 @if($type == 'target')
                <div class="mb-4">
@@ -139,7 +139,7 @@
                             </option>
                         @endforeach
                     </select>
-    
+
                 </div>
                 <div class="mb-4">
                     <label for="request_results_task" class="block text-gray-700 text-sm font-medium mb-2">Kết quả yêu cầu <span class="text-red-500">*</span></label>
@@ -147,7 +147,7 @@
                     oninvalid="this.setCustomValidity('Vui lòng nhập kết quả yêu cầu.')" oninput="this.setCustomValidity('')">
                 </div>
                 @endif
-             
+
                 <div class="mb-4 hidden" id="custom-unit">
                     <label for="custom_unit" class="block text-gray-700 font-medium mb-2">Nhập đơn vị tùy chỉnh <span class="text-red-500">*</span></label>
                     <input type="text" id="custom_unit" name="custom_unit" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập đơn vị khác...">
@@ -174,7 +174,7 @@
                     </select>
                 </div>
             </div>
-             
+
             <div class="mt-4 flex" style="justify-content: space-between">
                 <button type="button"  id="back"  class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300 mt-4">Quay lại</button>
                 <div>
@@ -195,7 +195,7 @@
             <thead class="bg-gray-100 border-b border-gray-300" >
                 <tr>
                     <th colspan="8" class="border border-gray-300 py-3 px-6 text-left font-medium text-center">Cơ quan, tổ chức đã được giao</th>
-                    
+
                 </tr>
                 <tr>
                     <th class="border border-gray-300 py-3 px-6 text-left font-medium">Mã cơ quan, tổ chức</th>
@@ -217,7 +217,7 @@
             <tbody>
                 @foreach ($taskResult as $index => $item)
                     <tr class="border-b border-gray-200">
-                   
+
                         <td class="py-3 border border-gray-300 px-6">{{ $item->organization->code }}</td>
                         <td class="py-3 border border-gray-300 px-6">{{ $item->organization->name }}</td>
                         <td class="py-3 border border-gray-300 px-6">
@@ -310,9 +310,9 @@
         }
     }
 
-    document.getElementById('document_id').addEventListener('change', generateTaskCode);
+    document.getElementById('document_code').addEventListener('change', generateTaskCode);
         function generateTaskCode() {
-            const documentSelect = document.getElementById('document_id');
+            const documentSelect = document.getElementById('document_code');
             const selectedOption = documentSelect.options[documentSelect.selectedIndex];
             const documentCode = selectedOption.getAttribute('data-code');
             const selectType = document.getElementById("type").value;
@@ -324,7 +324,7 @@
                 s = "CT";
             }
             const taskCode = `${documentCode}-${s}-${randomNum}`;
-            
+
             // Gán mã nhiệm vụ vào input hidden
             document.getElementById('code').value = taskCode;
         }

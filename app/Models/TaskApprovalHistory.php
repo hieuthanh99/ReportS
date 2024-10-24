@@ -18,6 +18,7 @@ class TaskApprovalHistory extends Model
        'remarks',
        'type',
        'number_type',
-       'task_result_id'
+       'task_result_id',
+       'history_id'
    ];
 }

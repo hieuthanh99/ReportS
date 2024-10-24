@@ -41,6 +41,7 @@ class TaskTargetController extends Controller
             $remarks = $request->input("remarks");
             $type = $request->input("type");
             $taskResult = TaskResult::find($taskId);
+            $history = HistoryChangeDocument::where('mapping_id', $taskId)->orderBy('created_at', 'desc')->first();
             $status = 'rejected';
             if ($type == 'Approval') $status = 'approved';
             if ($taskResult) {
@@ -53,6 +54,7 @@ class TaskTargetController extends Controller
                     'type' => $taskResult->type,
                     'number_type' => $taskResult->number_type,
                     'task_result_id' => $taskResult->id,
+                    'history_id' => $history->id,
                 ]);
                 if ($status == 'rejected') {
                     $taskResult->status = 'reject';

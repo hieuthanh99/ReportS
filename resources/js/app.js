@@ -71,3 +71,19 @@ globalThis.confirmBeforeCreate = async ({
         event.target.submit();
     }
 };
+
+const getQueryParams = (url) => {
+    const query = new URLSearchParams(url.replace(/^.+\?/, "?"));
+    return Object.fromEntries(query.entries());
+};
+
+globalThis.goTo = (url) => {
+    const currentParams = getQueryParams(location.search);
+    const urlObject = new URL(url);
+
+    for (const key in currentParams) {
+        if (key === "page") continue;
+        urlObject.searchParams.set(key, currentParams[key]);
+    }
+    location.href = urlObject.toString();
+};

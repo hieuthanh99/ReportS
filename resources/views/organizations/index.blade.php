@@ -157,32 +157,23 @@
                     <p class="text-gray-500">Chưa có danh mục nào. Hãy thêm danh mục mới.</p>
                 @else
                 <ul>
-                    @php($displayInd = -1)
                     @foreach ($tree as $idx => $node)
                         <li class="mb-2">
                             @if (!empty($node['children']))
-                                @if($displayInd == -1)
-                                    @php($displayInd = $idx)
-                                @endif
                                 <!-- Level 1: Organization Type -->
                                     <div class="flex items-center">
                                         <button onclick="toggleChildren(this)" class="toggle-children text-gray-600 hover:text-gray-800 mr-2">
-                                            <i class="fas {{$displayInd == $idx ? 'fa-minus' : 'fa-plus'}}"></i> <!-- Icon + -->
+                                            <i class="fas {{$node['selected'] ? 'fa-minus' : 'fa-plus'}}"></i> <!-- Icon + -->
                                         </button>
                                         <strong class="text-blue-600 ml-2">{{ $node['name'] }} ({{count($node['children'])}})</strong>
                                     </div>
                                     @if (!empty($node['children']))
-                                    <ul class="ml-4 space-y-2 {{$displayInd == $idx ? '' : 'hidden'}}">
+                                    <ul class="ml-4 space-y-2 {{$node['selected'] ? '' : 'hidden'}}">
                                         @foreach ($node['children'] as $organization)
                                             @include('organizations.partials.node', ['node' => $organization])
                                         @endforeach
                                     </ul>
                                 @endif
-                                {{-- <ul class="ml-4 space-y-2 {{$displayInd == $idx ? '' : 'hidden'}}">
-                                    @foreach ($node['children'] as $organization)
-                                        @include('organizations.partials.node', ['node' => $organization])
-                                    @endforeach
-                                </ul> --}}
                             @else
                             <div class="flex items-center">
                      
@@ -199,13 +190,54 @@
         <!-- Details View -->
         <!-- Details View -->
         <div class="pl-4 " style="width: 60%">
-            <div class="bg-white p-6 border rounded-lg shadow-lg max-h-[70vh] overflow-y-auto sticky top-0 bg-white p-6 border rounded-lg shadow-lg h-screen overflow-y-auto">
+            <div class="max-h-[75vh] sticky top-0 bg-white p-6 border rounded-lg shadow-lg h-screen overflow-y-auto">
                 <h2 class="text-2xl font-bold mb-4">Thông Tin Danh Mục</h2>
+                @if(isset($selected))
+                <div id="organization-details">
+                    <div id="details-content">
+                  
+                        <h3 class="text-2xl font-bold">{{$selected['name']}}</h3>
+                        <p><strong>Mã phòng ban:</strong> {{$selected['code']}}</p>
+                        <p><strong>Email:</strong> {{$selected['email'] ?? ''}}</p>
+                        <p><strong>Số điện thoại:</strong> {{$selected['phone'] !== null ? $selected['phone'] : ''}}</p>
+                        <p><strong>Địa chỉ:</strong> {{$selected['address'] !== null ? $selected['address'] : ''}}</p>
+                        <p><strong>Website:</strong> {{$selected['website'] !== null ? $selected['website'] : ''}}</p>
+                      
+                        
+                       
+                    </div>
+                </div>
+
+                <div class="flex gap-3 justify-end">
+                    <button
+                        onclick="showFormAssignUsers()"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mt-2">
+                        Gán nhân viên
+                    </button>
+                    <a href="/organizations/{{$selected->id}}/edit">
+                        <button id="update-button"
+                            onclick="showAssignUserModal()"
+                            class=" bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 mt-2">
+                            Cập nhật
+                        </button>
+                    </a>
+                    <form method="POST" action="organizations/{{$selected->id}}"  onsubmit="confirmBeforeDelete({ event, text: 'Xóa tổ chức này?. Khi đã xóa sẽ không lấy lại thông tin được!' })">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                        class=" bg-red-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
+                    </form>
+                </div>
+                @else
                 <div id="organization-details">
                     <div id="details-content">
                         <p class="text-gray-500">Chọn một danh mục để xem chi tiết.</p>
                     </div>
                 </div>
+                @endif
+
+             
+
                 <!-- User List -->
                 <div class="mt-6">
                     <label class="block text-gray-700 text-sm font-medium mb-2">Danh sách nhân viên</label>
@@ -220,22 +252,40 @@
                                     <th class="py-2 px-4 text-left text-gray-600">Hành động</th>
                                 </tr>
                             </thead>
-                            <tbody id="assign-user-list">
+                            <tbody >
                                 <!-- Danh sách đầu việc sẽ được chèn vào đây -->
+                                @if(isset($users))
+                                @foreach($users->items() as $user)
+                                <tr>
+                                    <td class="py-2 px-4 border-b">{{$user->code}}</td>
+                                    <td class="py-2 px-4 border-b">{{$user->name}}</td>
+                                    <td class="py-2 px-4 border-b">{{$user->email ?? ''}}</td>
+                                    <td class="py-2 px-4 border-b">{{$user->phone ?? ''}}</td>
+                                    <td class="py-2 px-4 border-b" style="display: none">{{$user->id}}</td>
+                                    <td class="py-2 px-4 border-b">
+                                        <form action="/users/{{$user->id}}/destroyOrganization" method="POST" onsubmit="confirmBeforeDelete({ event, text: 'Bạn có chắc chắn rằng muốn xóa nhân viên khỏi tổ chức này?' })"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="bg-red-400 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 transition duration-300">
+                                                Xóa
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endif
                             </tbody>
+
                         </table>
+                        @if(isset($users))
+                        <div class="mt-3">
+                            {{  $users->links() }}
+                        </div>
+                        @endif
                     </div>
-                    <button type="button" id="assign-user-button"
-                        class="hidden bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mt-2">Gán
-                        nhân viên</button>
-                    <button type="button" id="update-button"
-                        class="hidden bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mt-2">Cập nhật</button>
-                    <form id="delete-form" method="POST"  onsubmit="confirmBeforeDelete({ event, text: 'Xóa tổ chức này?. Khi đã xóa sẽ không lấy lại thông tin được!' })">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" id='delete-button'
-                        class="hidden bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
-                    </form>
+                    
                 </div>
             </div>
         </div>
@@ -396,24 +446,9 @@
     
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let orgs = document.getElementsByClassName('organizations')
-            if(orgs) {
-                loadDetails(orgs[0].value)
-            }
-            // Khi nút Cập nhật được nhấn
-            document.getElementById('update-button').addEventListener('click', function() {
-                const organizationId = document.getElementById('organization_id').value;
-                if (organizationId) {
-                    // Tạo URL chuyển hướng đến route 'organization.edit' với ID tổ chức
-                    const editUrl = `/organizations/${organizationId}/edit`; // Điều chỉnh đường dẫn nếu cần
-                    window.location.href = editUrl;
-                } else {
-                    alert('Không tìm thấy mã tổ chức.');
-                }
-            });
-        });
-          document.getElementById('organization_type_id').addEventListener('change', function () {
+       
+
+        document.getElementById('organization_type_id').addEventListener('change', function () {
                 var organizationTypeId = this.value;
                 
                 // Gửi yêu cầu AJAX đến server để lấy danh sách organizations
@@ -464,68 +499,67 @@
                 });
         });
 
-        function loadDetails(organizationId) {
-    // Clear the user list before fetching new data
-    document.getElementById('assign-user-list').innerHTML = "";
-
-    console.log("organizationId");
-    console.log(organizationId);
-    fetch(`/organizations/${organizationId}`)
-        .then(response => response.json())
-        .then(data => {
-            // Clear the user list again before inserting new data (just in case)
+   /*      function loadDetails(organizationId) {
+            // Clear the user list before fetching new data
             document.getElementById('assign-user-list').innerHTML = "";
-            
-            const organization = data.organization;
-            const users = data.organization.users;
-            document.getElementById('organization-details').innerHTML = `
-                <h3 class="text-2xl font-bold">${organization.name}</h3>
-                <p><strong>Mã phòng ban:</strong> ${organization.code}</p>
-          
-                <p><strong>Email:</strong> ${organization.email ?? ''}</p>
-                <p><strong>Số điện thoại:</strong> ${organization.phone !== null ? organization.phone : ''}</p>
-                <p><strong>Địa chỉ:</strong> ${organization.address !== null ? organization.address : ''}</p>
-                <p><strong>Website:</strong> ${organization.website !== null ? organization.website : ''}</p>
-            `;
-            document.getElementById('organization_id').value = organization.id;
 
-            users.forEach(user => {
-                console.log(user);
-                const taskHTML = `
-                    <tr>
-                        <td class="py-2 px-4 border-b">${user.code}</td>
-                        <td class="py-2 px-4 border-b">${user.name}</td>
-                        <td class="py-2 px-4 border-b">${user.email ?? ''}</td>
-                        <td class="py-2 px-4 border-b">${user.phone ?? ''}</td>
-                        <td class="py-2 px-4 border-b" style="display: none">${user.id}</td>
-                        <td class="py-2 px-4 border-b">
-                            <form action="/users/${user.id}/destroyOrganization" method="POST" onsubmit="confirmBeforeDelete({ event, text: 'Bạn có chắc chắn rằng muốn xóa nhân viên khỏi tổ chức này?' })"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="bg-blue-400 text-white px-2 py-1 rounded-lg shadow hover:bg-blue-600 transition duration-300">
-                                    Xóa
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                `;
-                document.getElementById('assign-user-list').insertAdjacentHTML('beforeend', taskHTML);
-            });
-            document.getElementById('assign-user-button').classList.remove('hidden');
-            document.getElementById('update-button').classList.remove('hidden');
-            const form =document.getElementById('delete-form')
-            form.action= `/organizations/${organizationId}`
-            console.log(document.getElementById('delete-form').action)
-            document.getElementById('delete-button').classList.remove('hidden');
-        });
-}
+            
+            fetch(`/organizations/${organizationId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Clear the user list again before inserting new data (just in case)
+                    document.getElementById('assign-user-list').innerHTML = "";
+                    
+                    const organization = data.organization;
+                    const users = data.organization.users;
+                    document.getElementById('organization-details').innerHTML = `
+                        <h3 class="text-2xl font-bold">${organization.name}</h3>
+                        <p><strong>Mã phòng ban:</strong> ${organization.code}</p>
+                
+                        <p><strong>Email:</strong> ${organization.email ?? ''}</p>
+                        <p><strong>Số điện thoại:</strong> ${organization.phone !== null ? organization.phone : ''}</p>
+                        <p><strong>Địa chỉ:</strong> ${organization.address !== null ? organization.address : ''}</p>
+                        <p><strong>Website:</strong> ${organization.website !== null ? organization.website : ''}</p>
+                    `;
+                    document.getElementById('organization_id').value = organization.id;
+
+                    users.forEach(user => {
+                        const taskHTML = `
+                            <tr>
+                                <td class="py-2 px-4 border-b">${user.code}</td>
+                                <td class="py-2 px-4 border-b">${user.name}</td>
+                                <td class="py-2 px-4 border-b">${user.email ?? ''}</td>
+                                <td class="py-2 px-4 border-b">${user.phone ?? ''}</td>
+                                <td class="py-2 px-4 border-b" style="display: none">${user.id}</td>
+                                <td class="py-2 px-4 border-b">
+                                    <form action="/users/${user.id}/destroyOrganization" method="POST" onsubmit="confirmBeforeDelete({ event, text: 'Bạn có chắc chắn rằng muốn xóa nhân viên khỏi tổ chức này?' })"
+                                        style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="bg-red-400 text-white px-2 py-1 rounded-lg shadow hover:bg-red-600 transition duration-300">
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        `;
+                        document.getElementById('assign-user-list').insertAdjacentHTML('beforeend', taskHTML);
+                    });
+                    document.getElementById('assign-user-button').classList.remove('hidden');
+                    document.getElementById('update-button').classList.remove('hidden');
+                    const form =document.getElementById('delete-form')
+                    form.action= `/organizations/${organizationId}`
+                    console.log(document.getElementById('delete-form').action)
+                    document.getElementById('delete-button').classList.remove('hidden');
+                });
+        } */
 
 
         function toggleChildren(button) {
             if (button != null) {
                 const nextElement = button.parentElement.nextElementSibling;
+                if(!nextElement) return 
                 const icon = button.querySelector('i');
 
                 if (nextElement.classList.contains('hidden')) {
@@ -587,7 +621,109 @@
 
         let existingUserCodes = [];
         document.addEventListener('DOMContentLoaded', function() {
-            function fetchUser(query = '') {
+           
+            // Khi nhấn nút Gán, xử lý các đầu việc được chọn
+            document.getElementById('assign-user').addEventListener('click', async function() {
+               const { isConfirmed } = await Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: 'Gán nhân viên vào tổ chức này',
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Gán!",
+                    cancelButtonText: "Hủy",
+                });
+
+                if(!isConfirmed) return
+
+                const selectedCheckboxes = document.querySelectorAll(
+                    '#existing-user input[type="checkbox"]:checked');
+                const assignedUsers = [];
+                selectedCheckboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr'); // Lấy hàng chứa checkbox
+
+                    const userId = row.querySelector('.user-id-assign').textContent;
+                    const userCode = row.querySelector('.user-code-assign').textContent;
+                    const userName = row.querySelector('.user-name-assign').textContent;
+                    const userEmail = row.querySelector('.user-email-assign').textContent;
+                    const userPhone = row.querySelector('.user-phone-assign').textContent;
+                  
+                    assignedUsers.push({
+                        userId: userId.trim(),
+                        userCode: userCode.trim(),
+                        userName: userName.trim(),
+                        userEmail: userEmail.trim(),
+                        userPhone: userPhone.trim(),
+                        userOrganization: {!!$selected ? $selected->id : "''"!!}
+                    });
+                });
+
+                fetch('/assign-users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content') // CSRF token
+                        },
+                        body: JSON.stringify(assignedUsers)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        location.reload()
+                        // Đóng modal
+                        document.getElementById('assign-user-modal').classList.add('hidden');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Gán thành công!',
+                            text: data.message,
+                            confirmButtonText: 'OK'
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                // Đóng modal
+                document.getElementById('assign-user-modal').classList.add('hidden');
+            });
+
+            // Khi người dùng gõ vào ô tìm kiếm
+            document.getElementById('search-user').addEventListener('input', function(event) {
+                const query = event.target.value;
+                fetchUser(query);
+            });
+
+            // Khi checkbox "Chọn tất cả" thay đổi trạng thái
+            document.getElementById('check-all-user').addEventListener('change', function(event) {
+                const checked = event.target.checked;
+                document.querySelectorAll('#existing-user input.user-checkbox').forEach(checkbox => {
+                    checkbox.checked = checked;
+                });
+            });
+
+            document.getElementById('cancel-assign-user').addEventListener('click', function(event) {
+                event.preventDefault();
+                document.getElementById('assign-user-modal').classList.add('hidden');
+            });
+            document.getElementById('assign-user-list').addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-user')) {
+                    const row = e.target.closest('tr');
+                    const userCode = row.cells[1].innerText.trim();
+
+                    // Xóa mã công việc khỏi mảng
+                    existingUserCodes = existingUserCodes.filter(code => code !== userCode);
+
+                    // Xóa hàng công việc khỏi bảng
+                    row.remove();
+                }
+            });
+            // Hiển thị popup chọn đầu việc có sẵn
+          
+              
+
+        });
+
+        function fetchUser(query = '') {
                 fetch(`{{ route('users.search') }}?query=${encodeURIComponent(query)}`)
                     .then(response => response.json())
                     .then(data => {
@@ -653,8 +789,6 @@
                             inputField.style.display = 'none';
 
                             const inputOrganizationField = document.createElement('input');
-                            inputOrganizationField.textContent = document.getElementById(
-                                'organization_id').value;
                             inputOrganizationField.classList.add('organization_id_assign');
                             inputOrganizationField.name = 'organization_id_assign';
                             inputOrganizationField.value = document.getElementById('organization_id')
@@ -678,112 +812,12 @@
                     .catch(error => console.error('Error fetching user:', error));
             }
 
-            // Khi nhấn nút Gán, xử lý các đầu việc được chọn
-            document.getElementById('assign-user').addEventListener('click', async function() {
-               const { isConfirmed } = await Swal.fire({
-                    title: 'Bạn có chắc chắn?',
-                    text: 'Gán nhân viên vào tổ chức này',
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Gán!",
-                    cancelButtonText: "Hủy",
-                });
 
-                if(!isConfirmed) return
-
-                const selectedCheckboxes = document.querySelectorAll(
-                    '#existing-user input[type="checkbox"]:checked');
-                const assignedUsers = [];
-                selectedCheckboxes.forEach(checkbox => {
-                    const row = checkbox.closest('tr'); // Lấy hàng chứa checkbox
-
-                    const userId = row.querySelector('.user-id-assign').textContent;
-                    const userCode = row.querySelector('.user-code-assign').textContent;
-                    const userName = row.querySelector('.user-name-assign').textContent;
-                    const userEmail = row.querySelector('.user-email-assign').textContent;
-                    const userPhone = row.querySelector('.user-phone-assign').textContent;
-                    const userOrganization = row.querySelector('.organization_id_assign')
-                        .textContent;
-                    assignedUsers.push({
-                        userId: userId.trim(),
-                        userCode: userCode.trim(),
-                        userName: userName.trim(),
-                        userEmail: userEmail.trim(),
-                        userPhone: userPhone.trim(),
-                        userOrganization: userOrganization.trim()
-                    });
-                });
-
-                fetch('/assign-users', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content') // CSRF token
-                        },
-                        body: JSON.stringify(assignedUsers)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        // Xử lý phản hồi từ server
-                        loadDetails(data.organization_id);
-                        // Đóng modal
-                        document.getElementById('assign-user-modal').classList.add('hidden');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Gán thành công!',
-                            text: data.message,
-                            confirmButtonText: 'OK'
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                // Đóng modal
-                document.getElementById('assign-user-modal').classList.add('hidden');
-            });
-
-            // Khi người dùng gõ vào ô tìm kiếm
-            document.getElementById('search-user').addEventListener('input', function(event) {
-                const query = event.target.value;
-                fetchUser(query);
-            });
-
-            // Khi checkbox "Chọn tất cả" thay đổi trạng thái
-            document.getElementById('check-all-user').addEventListener('change', function(event) {
-                const checked = event.target.checked;
-                document.querySelectorAll('#existing-user input.user-checkbox').forEach(checkbox => {
-                    checkbox.checked = checked;
-                });
-            });
-
-            document.getElementById('cancel-assign-user').addEventListener('click', function(event) {
-                event.preventDefault();
-                document.getElementById('assign-user-modal').classList.add('hidden');
-            });
-            document.getElementById('assign-user-list').addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-user')) {
-                    const row = e.target.closest('tr');
-                    const userCode = row.cells[1].innerText.trim();
-
-                    // Xóa mã công việc khỏi mảng
-                    existingUserCodes = existingUserCodes.filter(code => code !== userCode);
-
-                    // Xóa hàng công việc khỏi bảng
-                    row.remove();
-                }
-            });
-            // Hiển thị popup chọn đầu việc có sẵn
-            document.getElementById('assign-user-button').addEventListener('click', function() {
+        function showFormAssignUsers () {
                 document.getElementById('check-all-user').checked = false;
                 fetchUser();
                 document.getElementById('assign-user-modal').classList.remove('hidden');
-            });
-
-        });
+            }
     </script>
 
 

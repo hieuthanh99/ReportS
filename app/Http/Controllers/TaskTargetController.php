@@ -95,9 +95,11 @@ class TaskTargetController extends Controller
             \Log::error('Error deleting task target: ' . $e->getMessage());
         }
         if ($check) {
-            return redirect()->route('tasks.byType', ['type' => $type])->with('success', 'Xóa thành công!');
+            // return redirect()->route('tasks.byType', ['type' => $type])->with('success', 'Xóa thành công!');
+            return redirect()->back()->with('success', 'Xóa thành công!');
         } else {
-            return redirect()->route('tasks.byType', ['type' => $type])->with('error', 'Đã xảy ra lỗi!');
+            // return redirect()->route('tasks.byType', ['type' => $type])->with('error', 'Đã xảy ra lỗi!');
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi!');
         }
     }
     

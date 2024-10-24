@@ -235,7 +235,7 @@
                         @method('DELETE')
                     </form>
                     <button type="button" id="delete-button"
-                    class="hidden bg-yellow-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
+                    class="hidden bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
                 </div>
             </div>
         </div>

@@ -242,11 +242,11 @@ class OrganizationController extends Controller
     public function show($id)
     {
         $organization = Organization::with('users')->whereNotNull('organization_type_id')->find($id);
-
+        // dd($organization);
         if ($organization) {
 
             return response()->json([
-                'organization' => $organization
+                'organization' => $organization,
             ]);
         }
 
@@ -263,7 +263,7 @@ class OrganizationController extends Controller
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
-        $organization = Organization::find($id)->whereNotNull('organization_type_id');
+        $organization = Organization::whereNull('organization_type_id')->find($id);
         try {
             $request->validate([
                 'code' => [

@@ -279,16 +279,16 @@
                                 @php
                                     $stt = 1;
                                 @endphp
-                                @foreach ($lstResult as $index => $item)
+                                @foreach ($lstHistory as $index => $item)
                                     <tr class="border-b border-gray-200">
-                                        <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabel() ?? '' }}</td>
+                                    <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->status_label }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->result }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $taskApproval->remarks }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getEndDate() ?? '' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->task_result_status_label }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->remarks }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->getEndDate() }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
-                                            {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>
+                                            {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_cycle }}</td>
                                         <!-- <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             @php

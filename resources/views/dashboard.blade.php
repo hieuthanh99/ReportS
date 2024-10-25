@@ -28,7 +28,7 @@
 
                 <div class="w-1/2 px-2">
                     <!-- Nội dung của cột 2 chia làm 2 row -->
-                    <div class="flex flex-col h-full">
+                    <div class="flex flex-col">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="taskChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
                             <div class="flex justify-between items-center text-sm mt-2">
@@ -113,7 +113,7 @@
                 </div>
                 <div class="w-1/2 px-2">
                     <!-- Nội dung của cột 3 chia làm 2 row -->
-                    <div class="flex flex-col h-full">
+                    <div class="flex flex-col">
                         <div class="flex-1 bg-gray-200 p-4 mb-2">
                             <canvas id="targetChart" style=" max-width: 600px; max-height: 600px; margin: 0 auto; width: 400px; height: 400px;"></canvas>
                             <div class="flex justify-between items-center text-sm mt-2">

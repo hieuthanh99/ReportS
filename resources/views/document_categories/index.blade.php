@@ -78,13 +78,13 @@
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form> --}}
-                                <form id="delete-form-{{ $item->id }}" action="{{ route('document_categories.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('document_categories.destroy', $item->id) }}" method="POST" style="display:inline;" onsubmit="confirmBeforeDelete({ event, text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!' })">
                                     @csrf
                                     @method('DELETE')
                                     
-                                    <button type="button"
+                                    <button type="submit"
                                         class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete({{ $item->id }})">
+                                        >
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>
@@ -99,22 +99,4 @@
             </div>
         </div>
     </div>
-    <script>
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Bạn có chắc chắn?',
-                text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Có, xóa!',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + id).submit();
-                }
-            });
-        }
-    </script>
 @endsection

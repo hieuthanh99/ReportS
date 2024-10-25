@@ -127,12 +127,11 @@
                             </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <form action="{{ route('tasks.destroy', $item->code) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('tasks.destroy', $item->code) }}" method="POST" style="display:inline;" onsubmit="confirmBeforeDelete({ event, text: 'Bạn có chắc chắn rằng muốn xóa văn bản này?' })">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="return confirm('Bạn có chắc chắn rằng muốn xóa văn bản này?');">
+                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>

@@ -172,12 +172,11 @@
                               </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <form id="delete-form-{{ $document->id }}" action="{{ route('documents.destroy', $document) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('documents.destroy', $document) }}" method="POST" style="display:inline;" onsubmit="confirmBeforeDelete({ event, text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!'})">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button"
-                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete({{ $document->id }})">
+                                    <button type="submit"
+                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>
@@ -387,22 +386,7 @@
         //         })
         //         .catch(error => console.error('Error:', error));
         // });
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Bạn có chắc chắn?',
-                text: 'Xóa văn bản này, có thể các mục tiêu, nhiệm vụ, kết quả liên quan cũng sẽ bị xóa. Khi đã xóa sẽ không lấy lại thông tin được!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Có, xóa!',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + id).submit();
-                }
-            });
-        }
+        
     </script>
     
 @endsection

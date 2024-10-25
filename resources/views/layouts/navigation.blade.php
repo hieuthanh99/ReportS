@@ -272,7 +272,6 @@
             return urlParams.get(param);
         }
         const currentUrl = window.location.pathname;
-        console.log(currentUrl);
 
         const searchInParam = getQueryParam('search_in');
 
@@ -280,9 +279,6 @@
 
         const firstSegment = pathSegments[1] || 'general'; // Phần đầu tiên, hoặc 'general' nếu không có
         const lastSegment = pathSegments[pathSegments.length - 1] || 'general'; // Phần cuối cùng, hoặc 'general' nếu không có
-        console.log(firstSegment);
-        console.log(pathSegments.length == 2);
-        console.log(pathSegments[0]== '');
         if (pathSegments.length == 2 && pathSegments[0] == '' && pathSegments[1] == '') {
             searchInField.value = 'dashboard';
         }

@@ -28,7 +28,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <form action="{{ route('users.update', $user->id) }}" method="POST">
+    <form action="{{ route('users.update', $user->id) }}" method="POST" onsubmit="confirmBeforeSave({ event })">
         @csrf
         @method('PUT')
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">

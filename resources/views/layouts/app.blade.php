@@ -29,7 +29,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css','resources/js/app.js'])
         <style>
- .select2-container--default .select2-selection--single {
+    .select2-container--default .select2-selection--single {
         border: 1px solid #D1D5DB; /* Border gray-300 */
         border-radius: 0.5rem; /* Rounded-lg */
         height: 42px; /* Chiều cao */

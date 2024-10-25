@@ -29,7 +29,7 @@
                 {!! Breadcrumbs::render('CLO') !!}
             </ol>
         </nav>
-        <form action="{{ route('organization_types.store') }}" method="POST" enctype="multipart/form-data" class="p-6" id="document-form">
+        <form action="{{ route('organization_types.store') }}" method="POST" enctype="multipart/form-data" class="p-6" onsubmit="confirmBeforeCreate({ event })">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->

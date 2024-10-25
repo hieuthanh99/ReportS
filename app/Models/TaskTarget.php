@@ -304,6 +304,14 @@ class TaskTarget extends Model
             ELSE 2
         END")->orderBy('status')->paginate(10);
     }
+
+    public function getListResultsForAdmin(){
+        return TaskResult::where('type_save', $this->type)->where('id_task_criteria', $this->id)->orderByRaw("
+        CASE 
+            WHEN status = 'sub_admin_complete' THEN 0
+            ELSE 1
+        END")->orderBy('status')->paginate(10);
+    }
     
     public function category()
     {

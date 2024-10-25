@@ -91,10 +91,11 @@
                         @endforeach
                     </select>
                 </div> -->
+                <a class="fa fa-filter" style="margin-top: 45px;cursor: pointer;" onclick="window.location.href='{{ route('tasks.byType.approved', $type) }}'"></a>
             </div>
 
         <div class="flex justify-end gap-4">
-            <a class="fa fa-filter" style="margin-top: 13px;cursor: pointer;" onclick="window.location.href='{{ route('tasks.byType.approved', $type) }}'"></a>
+            
             <button type="submit"
             class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
             Tìm kiếm

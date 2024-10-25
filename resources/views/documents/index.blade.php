@@ -112,15 +112,17 @@
                             <option value="" {{ old('organization_id') ? '' : 'selected' }}>Chọn cơ quan tổ chức</option>
                         </select>
                     </div> -->
+                    <a class="fa fa-filter" style="margin-top: 45px;cursor: pointer;" onclick="window.location.href='{{ route('documents.index') }}'"></a>
             </div>
 
         <div class="flex justify-end gap-4">
-            <a class="fa fa-filter" style="margin-top: 13px;cursor: pointer;" onclick="window.location.href='{{ route('documents.index') }}'"></a>
+            
             <button type="submit"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                 Tìm kiếm
             </button>
             <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới văn bản</a>
+            <a  onclick="window.location.href='{{ route('export.Documents') }}'" target="_blank" style="cursor: pointer;" class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mb-4">Xuất Excel</a>
         
         </div>
     </form>

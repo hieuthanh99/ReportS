@@ -59,7 +59,7 @@
                                     <tr class="border-b border-gray-300" style="background-color: #D3D4CF">
                                         <th style="width: 50px;" class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left" style="width: 300px;">Tên nhiệm vụ</th>
-                                        <th class="px-4 py-2 text-left">Tiến độ</th>
+                                        <th class="px-4 py-2 text-left whitespace-nowrap">Tiến độ</th>
                                         @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
                                             <th class="px-4 py-2 text-left whitespace-nowrap">Trạng thái báo cáo</th>
                                         @endif
@@ -143,9 +143,9 @@
                                     <tr class="border-b border-gray-300" style="background-color: #D3D4CF">
                                         <th style="width: 50px;" class="px-4 py-2 text-left">STT</th>
                                         <th class="px-4 py-2 text-left" style="width: 300px;">Tên chỉ tiêu</th>
-                                        <th class="px-4 py-2 text-left">Tiến độ</th>
+                                        <th class="px-4 py-2 text-left whitespace-nowrap">Tiến độ</th>
                                         @if (Auth::user()->role === 'sub_admin' || Auth::user()->role === 'staff')
-                                            <th class="px-4 py-2 text-left">Trạng thái báo cáo</th>
+                                            <th class="px-4 py-2 text-left whitespace-nowrap">Trạng thái báo cáo</th>
                                         @endif
                                         @if (Auth::user()->role === 'sub_admin' ||  Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')
                                         <th style="width: 120px;" class="px-4 py-2 text-left">Phê duyệt</th>

@@ -250,7 +250,7 @@
                     <hr class="mb-6"> -->
                     <div class="bg-white p-6 ">
                         @php
-                            $taskResults = $taskTarget->getListResults();
+                            $taskResults = $taskTarget->getListResultsForAdmin();
                         @endphp
                         <h5 class="text-xl font-semibold mb-4">Danh sách cơ quan thực hiện</h5>
                         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
@@ -322,7 +322,7 @@
                                             @if (($item->status == 'sub_admin_complete' || $item->status == 'admin_approves')  &&
                                                     (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
                                                 <button data-id="{{ $item->id }}" id="button-apprrover-{{ $item->id }}"
-                                                    style="margin:  10px 0" type="button"
+                                                    style="margin:  10px 0;" type="button"
                                                     class="button-complete bg-green-500 text-white px-2 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300">
                                                     Hoàn thành
                                                 </button>
@@ -335,7 +335,7 @@
                                             @if ($item->status == 'sub_admin_complete' &&
                                             (Auth::user()->role == 'admin' || Auth::user()->role == 'supper_admin'))
                                         <button data-id="{{ $item->id }}" id="button-apprrover-{{ $item->id }}"
-                                            style="margin:  10px 0" type="button"
+                                            style="margin:  10px 0; white-space: nowrap; width: 80px;" type="button"
                                             class="button-approved bg-blue-500 text-white px-2 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
                                            Ghi nhận
                                         </button>

@@ -443,8 +443,7 @@ class DocumentController extends Controller
         return view('documents.report', compact('documents', 'organizations', 'taskDocuments', 'organizationsType'));
     }
 
-    public function index(Request $request, $text = null)
-    {
+    public function dataIndex(Request $request, $text=null){
         $userId = Auth::id();
         $user = User::find($userId);
         $query = Document::query();
@@ -491,6 +490,12 @@ class DocumentController extends Controller
         if ($text) {
             $query->where('document_name', 'like', '%' . $text . '%');
         }
+        return $query;
+    }
+
+    public function index(Request $request, $text = null)
+    {
+        $query = $this->dataIndex($request, $text);
         $documents = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         $organizations = Organization::where('isDelete', 0)->whereHas('documents', function($query) {
             $query->where('isDelete', 0);
@@ -536,11 +541,8 @@ class DocumentController extends Controller
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::whereIn('mapping_id', $taskTargetIds)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
         ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
-        ->join('task_approval_history', function($join) {
-            $join->on('task_target.id', '=', 'task_approval_history.task_target_id')
-                 ->on('task_result.id', '=', 'task_approval_history.task_result_id');
-        })
-        ->select('history_change_document.*', 'task_target.status as task_target_status' , 'task_target.id as task_target_id', 'task_result.status as task_result_status', 'task_approval_history.remarks', 'task_result.id as task_result_id')
+        ->join('task_approval_history', 'history_change_document.id', '=', 'task_approval_history.history_id')
+        ->select('history_change_document.*', 'task_target.status as task_target_status' , 'task_target.id as task_target_id', 'task_result.status as task_result_status', 'task_approval_history.remarks', 'task_result.id as task_result_id', 'task_approval_history.status as history_status')
         ->orderBy('update_date', 'desc')
         ->get();
         
@@ -555,7 +557,12 @@ class DocumentController extends Controller
             // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
             // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
             $taskResult = TaskResult::find($history->task_result_id); // Thay đổi phương thức lấy đối tượng nếu cần
-            $history->task_result_status_label = $taskResult ? $taskResult->getStatusLabelAttributeTaskTarget() : null;
+            if($history->history_status == "approved"){
+                $history->task_result_status_label = $taskResult ? $taskResult->getStatusLabelAttributeTaskTarget() : null;
+            }
+            else{
+                $history->task_result_status_label = "Bị từ chối";
+            }
             return $history;
         });
         //dd($taskTargetIds);
@@ -573,12 +580,9 @@ class DocumentController extends Controller
         // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
         $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId->id)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
         ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
-        ->join('task_approval_history', function($join) {
-            $join->on('task_target.id', '=', 'task_approval_history.task_target_id')
-                 ->on('task_result.id', '=', 'task_approval_history.task_result_id');
-        })
+        ->join('task_approval_history', 'history_change_document.id', '=', 'task_approval_history.history_id')
         ->select('history_change_document.*', 'task_target.status as task_target_status', 'task_target.id as task_target_id', 'task_result.status as task_result_status',
-                'task_approval_history.remarks', 'task_result.id as task_result_id')
+                'task_approval_history.remarks', 'task_result.id as task_result_id', 'task_approval_history.status as history_status')
         ->orderBy('update_date', 'desc')
         ->get();
         $lstHistory = $lstHistory->map(function ($history) {
@@ -592,11 +596,52 @@ class DocumentController extends Controller
             // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
             // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
             $taskResult = TaskResult::find($history->task_result_id); // Thay đổi phương thức lấy đối tượng nếu cần
-            $history->task_result_status_label = $taskResult ? $taskResult->getStatusLabelAttributeTaskTarget() : null;
+            if($history->history_status == "approved"){
+                $history->task_result_status_label = $taskResult ? $taskResult->getStatusLabelAttributeTaskTarget() : null;
+            }
+            else{
+                $history->task_result_status_label = "Bị từ chối";
+            }
             return $history;
         });
         // return $lstHistory; // Trả về danh sách các bản ghi
         return response()->json(['histories' => $lstHistory]);
+    }
+
+    public function getHistoryByTaskId($id)
+    {
+        $taskTargetId = TaskResult::where('id', $id)->first();
+
+        // Lấy danh sách các bản ghi từ bảng HistoryChangeDocument dựa trên danh sách ID
+        $lstHistory = HistoryChangeDocument::where('mapping_id', $taskTargetId->id)->join('task_result', 'history_change_document.mapping_id', '=', 'task_result.id')
+        ->join('task_target', 'task_result.id_task_criteria', '=', 'task_target.id')
+        ->join('task_approval_history', 'history_change_document.id', '=', 'task_approval_history.history_id')
+        ->select('history_change_document.*', 'task_target.status as task_target_status', 'task_target.id as task_target_id', 'task_result.status as task_result_status',
+                'task_approval_history.remarks', 'task_result.id as task_result_id', 'task_approval_history.status as history_status')
+        ->orderBy('update_date', 'desc')
+        ->get();
+        $lstHistory = $lstHistory->map(function ($history) {
+            // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
+            // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
+            $taskTarget = TaskTarget::find($history->task_target_id); // Thay đổi phương thức lấy đối tượng nếu cần
+            $history->status_label = $taskTarget ? $taskTarget->getStatusLabel() : null;
+            return $history;
+        });
+        $lstHistory = $lstHistory->map(function ($history) {
+            // Giả sử bạn có một cách để tạo một đối tượng TaskTarget từ $history
+            // Nếu không, bạn có thể cần truy vấn lại để có đối tượng TaskTarget
+            $taskResult = TaskResult::find($history->task_result_id); // Thay đổi phương thức lấy đối tượng nếu cần
+            if($history->history_status == "approved"){
+                $history->task_result_status_label = $taskResult ? $taskResult->getStatusLabelAttributeTaskTarget() : null;
+            }
+            else{
+                $history->task_result_status_label = "Bị từ chối";
+            }
+            return $history;
+        });
+        
+        return $lstHistory; // Trả về danh sách các bản ghi
+        // return response()->json(['histories' => $lstHistory]);
     }
 
     /**
@@ -739,8 +784,9 @@ class DocumentController extends Controller
             $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
+            $lstHistory = $this->getHistoryByTaskId($id);
             $units = Unit::all();
-            return view('documents.reportUpdateTaskget', compact('taskResult','units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
+            return view('documents.reportUpdateTaskget', compact('taskResult','units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult', 'lstHistory'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
@@ -775,8 +821,9 @@ class DocumentController extends Controller
             $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
+            $lstHistory = $this->getHistoryByTaskId($id);
 
-            return view('documents.reportUpdate', compact('taskResult', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
+            return view('documents.reportUpdate', compact('taskResult', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult', 'lstHistory'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
@@ -832,8 +879,9 @@ class DocumentController extends Controller
             $workResultTypes = MasterWorkResultTypeService::index();
            // dd($taskTarget->getCurrentCycle());
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
+            $lstHistory = $this->getHistoryByTaskId($id);
 
-            return view('documents.viewDetailsReport', compact('taskResult', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult'));
+            return view('documents.viewDetailsReport', compact('taskResult', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTask', 'workResultTypes', 'lstResult', 'lstHistory'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
@@ -861,9 +909,10 @@ class DocumentController extends Controller
             $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
             $workResultTypes = MasterWorkResultTypeService::index();
             $lstResult = $this->getFullDataTaskResult($taskTarget->id, $taskTarget->cycle_type, $taskTarget->getCurrentCycle());
+            $lstHistory = $this->getHistoryByTaskId($id);
 
             $units = Unit::all();
-            return view('documents.viewDetailsReportTarget', compact('taskResult','units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult'));
+            return view('documents.viewDetailsReportTarget', compact('taskResult','units', 'document', 'taskDocuments', 'organizations', 'taskTarget', 'groupTarget', 'workResultTypes', 'lstResult', 'lstHistory'));
         } catch (\Exception $e) {
             \Log::error('Error reportViewUpdate: ' . $e->getMessage());
         }
@@ -1048,5 +1097,61 @@ class DocumentController extends Controller
         // Chuyển hướng về trang danh sách tài liệu
         // return redirect()->route('documents.index')->with('success', 'Xóa thành công văn bản.');
         return redirect()->back()->with('success', 'Xóa thành công văn bản.');
+    }
+
+    public function exportDocuments(Request $request, $text=null){
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $sheet->setCellValue('A1', 'DANH SÁCH VĂN BẢN');
+        $sheet->mergeCells('A1:F1');
+        $sheet->getStyle('A1:F1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        $sheet->setCellValue('A2', 'STT');
+        $sheet->setCellValue('B2', 'Số hiệu văn bản');
+        $sheet->setCellValue('C2', 'Loại văn bản');
+        $sheet->setCellValue('D2', 'Trích yếu văn bản');
+        $sheet->setCellValue('E2', 'Cơ quan ban hành');
+        $sheet->setCellValue('F2', 'Thời gian ban hành');
+
+        // Định dạng hàng tiêu đề
+        $sheet->getStyle('A2:F2')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+
     }
 }

@@ -394,16 +394,16 @@
                                 @php
                                     $stt = 1;
                                 @endphp
-                                @foreach ($lstResult as $index => $item)
+                                @foreach ($lstHistory as $index => $item)
                                     <tr class="border-b border-gray-200">
                                     <td class="py-3 border border-gray-300 px-6">{{ $stt++ }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabel() ?? '' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->status_label }}</td>
                                         <td class="py-3 border border-gray-300 px-6">{{ $item->result }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getStatusLabelAttributeTaskTarget() ?? '' }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $taskApproval->remarks }}</td>
-                                        <td class="py-3 border border-gray-300 px-6">{{ $item->taskTarget->getEndDate() ?? '' }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->task_result_status_label }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->remarks }}</td>
+                                        <td class="py-3 border border-gray-300 px-6">{{ $item->getEndDate() }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
-                                            {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_type }}</td>
+                                            {{ $item->getCycleTypeTextAttribute() }} {{ $item->number_cycle }}</td>
                                         <!-- <td class="py-3 border border-gray-300 px-6">{{ $item->result ?? '' }}</td>
                                         <td class="py-3 border border-gray-300 px-6">
                                             @php
@@ -433,14 +433,14 @@
                                 Quay lại
                             </button>
                             {{-- </div> --}}
-                            @if (
+                            <!-- @if (
                                 ($isEditable && Auth::user()->role === 'staff') ||
                                     ($taskTarget->status == 'sub_admin_complete' &&
                                         (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')))
                                 <button type="submit" id="save-button"
                                     class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 mt-4">Lưu
                                 </button>
-                            @endif
+                            @endif -->
                         </div>
                         <div class="mb-4 ">
                             @if (($isEditable && Auth::user()->role === 'staff') || ($taskTarget->status == 'sub_admin_complete' && (Auth::user()->role === 'admin' || Auth::user()->role === 'supper_admin')))

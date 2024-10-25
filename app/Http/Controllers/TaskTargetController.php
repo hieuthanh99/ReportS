@@ -41,6 +41,7 @@ class TaskTargetController extends Controller
             $remarks = $request->input("remarks");
             $type = $request->input("type");
             $taskResult = TaskResult::find($taskId);
+            $history = HistoryChangeDocument::where('mapping_id', $taskId)->orderBy('created_at', 'desc')->first();
             $status = 'rejected';
             if ($type == 'Approval') $status = 'approved';
             if ($taskResult) {
@@ -53,6 +54,7 @@ class TaskTargetController extends Controller
                     'type' => $taskResult->type,
                     'number_type' => $taskResult->number_type,
                     'task_result_id' => $taskResult->id,
+                    'history_id' => $history->id,
                 ]);
                 if ($status == 'rejected') {
                     $taskResult->status = 'reject';
@@ -95,9 +97,11 @@ class TaskTargetController extends Controller
             \Log::error('Error deleting task target: ' . $e->getMessage());
         }
         if ($check) {
-            return redirect()->route('tasks.byType', ['type' => $type])->with('success', 'Xóa thành công!');
+            // return redirect()->route('tasks.byType', ['type' => $type])->with('success', 'Xóa thành công!');
+            return redirect()->back()->with('success', 'Xóa thành công!');
         } else {
-            return redirect()->route('tasks.byType', ['type' => $type])->with('error', 'Đã xảy ra lỗi!');
+            // return redirect()->route('tasks.byType', ['type' => $type])->with('error', 'Đã xảy ra lỗi!');
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi!');
         }
     }
     

@@ -256,11 +256,11 @@ class OrganizationController extends Controller
     public function show($id)
     {
         $organization = Organization::with('users')->whereNotNull('organization_type_id')->find($id);
-
+        // dd($organization);
         if ($organization) {
 
             return response()->json([
-                'organization' => $organization
+                'organization' => $organization,
             ]);
         }
 

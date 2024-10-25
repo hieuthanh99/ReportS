@@ -112,7 +112,7 @@
                     <img src="{{ asset('logo/logo2.png') }}" alt="Logo" class="block w-auto" style="width: 70px;">
                 </a>
             </div>
-            <div class="flex-shrink-0 px-4 header-title">
+            <div class="px-4 header-title">
                 <h3>Nền tảng quản lý nhiệm vụ Ủy ban quốc gia về chuyển đổi số</h3>
             </div>
             <div class="search-container px-4">

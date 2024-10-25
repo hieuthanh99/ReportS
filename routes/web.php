@@ -93,6 +93,7 @@ Route::group(['middleware' => ['admin_or_supper_admin']], function () {
     Route::get('/export-Position', [PositionController::class, 'exportPosition'])->name('export.Position')->middleware('check.organization');
     Route::get('/export-User', [UserController::class, 'exportUser'])->name('export.User')->middleware('check.organization');
     Route::get('/export-TaskTarget/{type}', [TaskTargetController::class, 'exportTaskTarget'])->name('export.TaskTarget')->middleware('check.organization');
+    Route::get('/export-Detail-TaskTarget/{id}/{type}', [TaskTargetController::class, 'exportDetailTaskTarget'])->name('export.Detail.TaskTarget')->middleware('check.organization');
 
     Route::get('/search', [SearchController::class, 'search'])->name('search')->middleware('check.organization');
     Route::delete('/tasks/{id}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget')->middleware('check.organization');

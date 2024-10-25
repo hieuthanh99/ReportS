@@ -1026,7 +1026,293 @@ class TaskTargetController extends Controller
         exit;
     }
 
-    public function exportDetailTaskTarget(Request $request, $type, $text=nul){
+    public function exportDetailTaskTarget($id, $type){
+        $taskTarget = TaskTarget::where('id', $id)->where('isDelete', 0)->firstOrFail();
+        $taskResult = TaskResult::where('id_task_criteria', $id)->where('isDelete', 0)->get();
+        $organizationTypes = OrganizationType::withCount(['organizations' => function ($query) use ($taskTarget) {
+            $query->whereHas('taskResults', function ($q) use ($taskTarget) {
+                $q->where('id_task_criteria', $taskTarget->id); 
+            });
+        }])->having('organizations_count', '>', 0)->get();
+        $workResultTypes = MasterWorkResultTypeService::index();
+        $valueType = '';
+        foreach ($workResultTypes as $idx => $result_type) {
+            if ($type != 'task' && $idx == 4) {
+                continue;
+            }
+        
+            if ($taskTarget->result_type == $result_type->key) {
+                $valueType = $result_type->value;
+            }
+        }
 
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        if($type == "task"){
+            $sheet->setCellValue('A1', 'Tên nhiệm vụ: ');
+            $sheet->setCellValue('A2', 'Chu kỳ báo cáo: ');
+            $sheet->setCellValue('A3', 'Kiểu dữ liệu báo cáo: ');
+            $sheet->setCellValue('A4', 'Số liệu văn bản: ');
+            $sheet->setCellValue('A5', 'Ngày bắt đầu: ');
+            $sheet->getStyle('A1:A5')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+            ]);
+            $sheet->setCellValue('B1', $taskTarget->name);
+            $sheet->setCellValue('B2', $taskTarget->getCycleTypeTextAttribute());
+            $sheet->setCellValue('B3', $valueType);
+            $sheet->setCellValue('B4', $taskTarget->document->document_code);
+            $sheet->setCellValue('B5', $taskTarget->getStartDate());
+
+            $sheet->setCellValue('D1', 'Nhóm nhiệm vụ: ');
+            $sheet->setCellValue('D2', 'Kết quả yêu cầu: ');
+            $sheet->setCellValue('D3', 'Loại nhiệm vụ: ');
+            $sheet->setCellValue('D4', 'Văn bản giao việc: ');
+            $sheet->setCellValue('D5', 'Thời hạn hoàn thành: ');
+            $sheet->getStyle('D1:D5')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+            ]);
+            $sheet->setCellValue('E1', $taskTarget->getGroupTaskTarget()->name ?? '');
+            $sheet->setCellValue('E2', $taskTarget->request_results_task);
+            $sheet->setCellValue('E3', $taskTarget->getTypeTextAttributeTime());
+            $sheet->setCellValue('E4', $taskTarget->document->document_name);
+            $sheet->setCellValue('E5', $taskTarget->getEndDate());
+
+            $row = 6;
+            $totalRows = count($organizationTypes);
+            $half = ceil($totalRows / 2);
+
+            for ($i = 0; $i < $half; $i++) {
+                $sheet->setCellValue('A' . $row, $organizationTypes[$i]->type_name);
+                $sheet->setCellValue('B' . $row, $organizationTypes[$i]->organizations_count);
+                $row++;
+            }
+            $row = 6;
+            for ($i = $half; $i < $totalRows; $i++) {
+                $sheet->setCellValue('D' . $row, $organizationTypes[$i]->type_name);
+                $sheet->setCellValue('E' . $row, $organizationTypes[$i]->organizations_count);
+                $row++;
+            }
+            
+            $row = $row + 1;
+            $sheet->setCellValue('A' . $row, 'Cơ quan, tổ chức đã được giao');
+            $sheet->mergeCells('A' . $row . ':E' . $row);
+            $sheet->getStyle('A' . $row . ':E' . $row)->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            $rowH = $row + 1;
+            $sheet->setCellValue('A' . $rowH, 'Mã cơ quan, tổ chức');
+            $sheet->setCellValue('B' . $rowH, 'Tên cơ quan, tổ chức');
+            $sheet->setCellValue('C' . $rowH, 'Loại cơ quan, tổ chức');
+            $sheet->setCellValue('D' . $rowH, 'Chu kỳ');
+            $sheet->setCellValue('E' . $rowH, 'Kết quả');
+
+            // Định dạng hàng tiêu đề
+            $sheet->getStyle('A' . $rowH . ':E' . $rowH)->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            
+            $rowT = $rowH + 1;
+            foreach ($taskResult as $index => $item) {
+                $sheet->setCellValue('A' . $rowT, $item->organization->code ?? '');
+                $sheet->setCellValue('B' . $rowT, $item->organization->name ?? '');
+                $sheet->setCellValue('C' . $rowT, $item->organization->organizationType->type_name ?? '');
+                $sheet->setCellValue('D' . $rowT, $item->getCycleTypeTextAttribute() ?? '');
+                $sheet->setCellValue('E' . $rowT, $item->result ?? 'chưa có kết quả báo cáo');
+
+                $rowT++;
+            }
+            $sheet->getStyle('A' . $rowH . ':E' . ($rowT - 1))->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+
+            foreach (range('A'. $rowH, 'E' . $rowH) as $columnID) {
+                $sheet->getColumnDimension($columnID)->setAutoSize(true);
+            }
+        }
+        else{
+            $sheet->setCellValue('A1', 'Tên chỉ tiêu: ');
+            $sheet->setCellValue('A2', 'Chỉ tiêu: ');
+            $sheet->setCellValue('A3', 'Chu kỳ báo cáo: ');
+            $sheet->setCellValue('A4', 'Ngày bắt đầu: ');
+            $sheet->getStyle('A1:A4')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+            ]);
+            $sheet->setCellValue('B1', $taskTarget->name);
+            $sheet->setCellValue('B2', $taskTarget->target);
+            $sheet->setCellValue('B3', $taskTarget->getCycleTypeTextAttribute());
+            $sheet->setCellValue('B4', $taskTarget->getStartDate());
+
+            $sheet->setCellValue('D1', 'Đơn vị tính: ');
+            $sheet->setCellValue('D2', 'Nhóm chỉ tiêu: ');
+            $sheet->setCellValue('D3', 'Số liệu văn bản: ');
+            $sheet->setCellValue('D4', 'Thời hạn hoàn thành: ');
+            $sheet->getStyle('D1:D4')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+            ]);
+            $sheet->setCellValue('E1', $taskTarget->unit()->name ??'');
+            $sheet->setCellValue('E2', $taskTarget->getGroupTaskTarget()->name ?? '');
+            $sheet->setCellValue('E3', $taskTarget->document->document_code);
+            $sheet->setCellValue('E4', $taskTarget->getEndDate());
+
+            $row = 5;
+            $totalRows = count($organizationTypes);
+            $half = ceil($totalRows / 2);
+
+            for ($i = 0; $i < $half; $i++) {
+                $sheet->setCellValue('A' . $row, $organizationTypes[$i]->type_name);
+                $sheet->setCellValue('B' . $row, $organizationTypes[$i]->organizations_count);
+                $row++;
+            }
+            $row = 5;
+            for ($i = $half; $i < $totalRows; $i++) {
+                $sheet->setCellValue('D' . $row, $organizationTypes[$i]->type_name);
+                $sheet->setCellValue('E' . $row, $organizationTypes[$i]->organizations_count);
+                $row++;
+            }
+            
+            $row = $row + 1;
+            $sheet->setCellValue('A' . $row, 'Cơ quan, tổ chức đã được giao');
+            $sheet->mergeCells('A' . $row . ':E' . $row);
+            $sheet->getStyle('A' . $row . ':E' . $row)->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            $rowH = $row + 1;
+            $sheet->setCellValue('A' . $rowH, 'Mã cơ quan, tổ chức');
+            $sheet->setCellValue('B' . $rowH, 'Tên cơ quan, tổ chức');
+            $sheet->setCellValue('C' . $rowH, 'Loại cơ quan, tổ chức');
+            $sheet->setCellValue('D' . $rowH, 'Chu kỳ');
+            $sheet->setCellValue('E' . $rowH, 'Kết quả');
+
+            // Định dạng hàng tiêu đề
+            $sheet->getStyle('A' . $rowH . ':E' . $rowH)->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            
+            $rowT = $rowH + 1;
+            foreach ($taskResult as $index => $item) {
+                $sheet->setCellValue('A' . $rowT, $item->organization->code ?? '');
+                $sheet->setCellValue('B' . $rowT, $item->organization->name ?? '');
+                $sheet->setCellValue('C' . $rowT, $item->organization->organizationType->type_name ?? '');
+                $sheet->setCellValue('D' . $rowT, $item->getCycleTypeTextAttribute() ?? '');
+                $sheet->setCellValue('E' . $rowT, $item->result ?? 'chưa có kết quả báo cáo');
+
+                $rowT++;
+            }
+            $sheet->getStyle('A' . $rowH . ':E' . ($rowT - 1))->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+
+            foreach (range('A'. $rowH, 'E' . $rowH) as $columnID) {
+                $sheet->getColumnDimension($columnID)->setAutoSize(true);
+            }
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        if($type == "task"){
+            $filename = 'Nhiệm vụ ' . $taskTarget->code . '.xlsx';
+        }
+        else{
+            $filename = 'Chỉ tiêu ' . $taskTarget->code . '.xlsx';
+        }
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 }

@@ -133,6 +133,7 @@
                 <a href="{{ route('tasks.create.byType', ['type' => $type]) }}"
                     class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Thêm mới</a>
+                <a href="{{ route('export.TaskTarget', ['type' => $type]) }}" target="_blank" style="cursor: pointer;" class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mb-4">Xuất Excel</a>
             </div>
         </form>
 
@@ -266,13 +267,16 @@
                                     {{ $index + $taskTargets->firstItem() }}</td>
                                 <td style="width: 290px;" class="py-3 border border-gray-300 px-6">{{ $item->name }}
                                 </td>
-                                <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
+                                <!-- <td style="width: 100px;" class="py-3 border border-gray-300 px-6">
                                     @foreach ($workResultTypes as $idx => $result_type)
                                         @continue($type != 'task' && $idx == 4)
                                         @if ($item->result_type == $result_type->key)
                                             {{ $result_type->value }}
                                         @endif
                                     @endforeach
+                                </td> -->
+                                <td class="py-3 border border-gray-300 px-6">
+                                    {{ $item->request_results_task }}
                                 </td>
                                 <td class="py-3 border border-gray-300 px-6">
                                     {{ $item->getGroupName() }}

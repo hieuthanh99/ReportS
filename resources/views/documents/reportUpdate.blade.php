@@ -353,7 +353,7 @@
                                 @endif
                             </div>
 
-                            <!-- <div class="flex items-center mb-4">
+                            <div class="flex items-center mb-4">
 
                                 @if ($isEditable && Auth::user()->role === 'staff')
                                     <label for="files" class="text-gray-700 font-medium w-1/3"
@@ -388,7 +388,7 @@
                             
                                 @endif
 
-                            </div> -->
+                            </div>
                             
                             @if (Auth::user()->role === 'sub_admin')
                             <div class="flex items-center mb-4">

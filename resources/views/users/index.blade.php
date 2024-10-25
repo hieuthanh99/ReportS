@@ -32,9 +32,10 @@
     <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6 text-gray-800"></h1>
         <div class="mb-6 flex justify-end gap-4 mb-4">
-            <a href="{{ route('users.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300">
+            <a href="{{ route('users.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">
                     Tạo người dùng
             </a>
+            <a href="{{ route('export.User') }}" target="_blank" style="cursor: pointer;" class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mb-4">Xuất Excel</a>
         </div>
     </div>
     <div class="overflow-x-auto">

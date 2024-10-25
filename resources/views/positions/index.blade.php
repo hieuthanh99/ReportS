@@ -82,7 +82,8 @@
         </div>
     </form> --}}
     <div class="mb-6 flex justify-end gap-4 mb-4">
-        <a href="{{ route('positions.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"> Thêm mới</i></a>
+        <a href="{{ route('positions.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4"> Thêm mới</i></a>
+        <a href="{{ route('export.Position') }}" target="_blank" style="cursor: pointer;" class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mb-4">Xuất Excel</a>
     </div>
    
         <div class="overflow-x-auto">

@@ -220,7 +220,7 @@
                                 <span class="text-gray-900 w-2/3">{{ $taskResult->result }}</span>
 
                             </div>
-                            <!-- <div class="flex items-center mb-4">
+                            <div class="flex items-center mb-4">
 
 
                                 <label class="text-gray-700 font-medium w-1/3" style="width: 300px;">Tệp báo
@@ -234,7 +234,7 @@
                                         $fileType = file_exists($filePath) ? mime_content_type($filePath) : '';
                                     @endphp
                                 @endif
-                            </div> -->
+                            </div>
                             <div class="flex items-center mb-4">
                                 <span class="text-gray-700 font-medium w-1/3">Nhận xét:</span>
                                 <span class="text-gray-900 w-2/3">

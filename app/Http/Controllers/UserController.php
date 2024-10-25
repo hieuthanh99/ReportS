@@ -9,6 +9,12 @@ use App\Models\Organization;
 use App\Models\Position;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator; // Import Validator
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 class UserController extends Controller
 {
     public function destroyOrganization(string $id)
@@ -202,5 +208,109 @@ class UserController extends Controller
         $user->isDelete = 1;
         $user->save();
         return redirect()->route('users.index')->with('success', 'Xóa người dùng thành công.');
+    }
+
+    public function exportUser(Request $request, $text=null){
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $sheet->setCellValue('A1', 'DANH SÁCH NGƯỜI DÙNG');
+        $sheet->mergeCells('A1:H1');
+        $sheet->getStyle('A1:H1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        $sheet->setCellValue('A2', 'STT');
+        $sheet->setCellValue('B2', 'Mã danh mục');
+        $sheet->setCellValue('C2', 'Tên danh mục');
+        $sheet->setCellValue('D2', 'Tổ chức');
+        $sheet->setCellValue('E2', 'Chức vụ');
+        $sheet->setCellValue('F2', 'Email');
+        $sheet->setCellValue('G2', 'Số điện thoại');
+        $sheet->setCellValue('H2', 'Role');
+
+        // Định dạng hàng tiêu đề
+        $sheet->getStyle('A2:H2')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+        $users = User::with('organization')->orderBy('created_at', 'desc')->where('isDelete', 0)->get();
+        $row = 3;
+        foreach ($users as $index => $data) {
+            $roleValue = '';
+            if ($data->role === 'supper_admin') {
+                $roleValue = 'Supper Admin';
+            } elseif ($data->role === 'admin') {
+                $roleValue = 'Admin';
+            } elseif ($data->role === 'sub_admin') {
+                $roleValue = 'Sub-Admin';
+            } elseif ($data->role === 'staff') {
+                $roleValue = 'Nhân viên';
+            } else {
+                $roleValue = 'Không xác định';
+            }
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $data->code);
+            $sheet->setCellValue('C' . $row, $data->name);
+            $sheet->setCellValue('D' . $row, $data->organization->name ?? 'N/A');
+            $sheet->setCellValue('E' . $row, $data->position->name ?? 'N/A');
+            $sheet->setCellValue('F' . $row, $data->email);
+            $sheet->setCellValue('G' . $row, $data->phone);
+            $sheet->setCellValue('H' . $row, $roleValue);
+
+            $row++;
+        }
+        $sheet->getStyle('A3:H' . ($row - 1))->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        foreach (range('A', 'H') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Danh sách người dùng.xlsx';
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 }

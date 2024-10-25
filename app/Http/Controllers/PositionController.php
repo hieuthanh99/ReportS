@@ -3,6 +3,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Position;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class PositionController extends Controller
 {
@@ -74,5 +80,87 @@ class PositionController extends Controller
     {
         $position->delete();
         return redirect()->route('positions.index')->with('success', 'Xóa thành công chức danh');
+    }
+
+    public function exportPosition(Request $request, $text=null){
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $sheet->setCellValue('A1', 'DANH SÁCH CHỨC VỤ');
+        $sheet->mergeCells('A1:C1');
+        $sheet->getStyle('A1:C1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        $sheet->setCellValue('A2', 'STT');
+        $sheet->setCellValue('B2', 'Mã chức vụ');
+        $sheet->setCellValue('C2', 'Tên chức vụ');
+
+        // Định dạng hàng tiêu đề
+        $sheet->getStyle('A2:C2')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+        $types = Position::orderBy('created_at', 'desc')->where('isDelete', 0)->get();
+        $row = 3;
+        foreach ($types as $index => $data) {
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $data->code);
+            $sheet->setCellValue('C' . $row, $data->name);
+
+            $row++;
+        }
+        $sheet->getStyle('A3:C' . ($row - 1))->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        foreach (range('A', 'C') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Danh sách chức vụ.xlsx';
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 }

@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\DB;
 use App\Models\TaskTarget;
 use App\Models\Document;
 use App\Models\TaskResult;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class DocumentCategoryController extends Controller
 {
@@ -144,5 +149,89 @@ class DocumentCategoryController extends Controller
 
             return redirect()->back()->withErrors($e->getMessage());
         }
+    }
+
+    public function exportDocumentCategory(Request $request, $text=null){
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $sheet->setCellValue('A1', 'DANH SÁCH LOẠI VĂN BẢN');
+        $sheet->mergeCells('A1:D1');
+        $sheet->getStyle('A1:D1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        $sheet->setCellValue('A2', 'STT');
+        $sheet->setCellValue('B2', 'Mã loại văn bản');
+        $sheet->setCellValue('C2', 'Tên loại văn bản');
+        $sheet->setCellValue('D2', 'Chi tiết');
+
+        // Định dạng hàng tiêu đề
+        $sheet->getStyle('A2:D2')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => ['argb' => 'FFC2C2C2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+        $categories = DocumentCategory::orderBy('created_at', 'desc')->where('isDelete', 0)->get();
+        $row = 3;
+        foreach ($categories as $index => $data) {
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $data->code);
+            $sheet->setCellValue('C' . $row, $data->name);
+            $sheet->setCellValue('D' . $row, $data->description);
+
+            $row++;
+        }
+        $sheet->getStyle('A3:D' . ($row - 1))->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        foreach (range('A', 'D') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Danh sách loại văn bản.xlsx';
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 }

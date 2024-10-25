@@ -356,7 +356,9 @@ class DocumentController extends Controller
             $taskDocuments = $taskDocuments->whereIn('id_task_criteria', $taskTargetIds);
         }
         $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
-        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereHas('documents', function($query) {
+            $query->where('isDelete', 0);
+        })->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         // dd($taskDocuments);
@@ -442,7 +444,9 @@ class DocumentController extends Controller
             $taskDocuments = $taskDocuments->whereIn('id_task_criteria', $taskTargetIds);
         }
         $taskDocuments = $taskDocuments->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
-        $organizations = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
+        $organizations = Organization::where('isDelete', 0)->whereHas('documents', function($query) {
+            $query->where('isDelete', 0);
+        })->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
         $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
 
         // dd($taskDocuments);
@@ -1170,13 +1174,13 @@ class DocumentController extends Controller
 
             $row++;
         }
-        // $sheet->getStyle('A3:F' . ($row - 1))->applyFromArray([
-        //     'borders' => [
-        //         'allBorders' => [
-        //             'borderStyle' => Border::BORDER_THIN,
-        //         ],
-        //     ],
-        // ]);
+        $sheet->getStyle('A3:F' . ($row - 1))->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
 
         foreach (range('A', 'F') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);

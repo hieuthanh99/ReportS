@@ -30,6 +30,12 @@ use App\Models\IndicatorGroup;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use App\Enums\TaskTargetStatus;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class TaskTargetController extends Controller
 {
@@ -104,7 +110,6 @@ class TaskTargetController extends Controller
             return redirect()->back()->with('error', 'Đã xảy ra lỗi!');
         }
     }
-    
 
     public function getOrganizationsByTaskTargetId($idTaskTarget)
     {   
@@ -124,8 +129,6 @@ class TaskTargetController extends Controller
             'data' => $organizations
         ]);
     }
-
-   
 
     public function editTaskTarget($id, $type)
     {
@@ -182,7 +185,7 @@ class TaskTargetController extends Controller
                     'type' => 'required|in:task,target',
                     'type_id' => 'required',
                     'unit' => 'required',   // Đơn vị
-                    'target_type' => 'required',
+                    // 'target_type' => 'required',
                     'target' => 'required',
                 ], [
                     'document_id.required' => 'Văn bản là bắt buộc.',
@@ -276,7 +279,7 @@ class TaskTargetController extends Controller
                 //update
                 if ($request->input("type") === 'target') {
                     $item->unit = $unit;
-                    $item->target_type = $request->target_type;
+                    // $item->target_type = $request->target_type;
                     $item->target = $request->target;
                 } else {
                     $item->task_type = $request->task_type;
@@ -295,7 +298,6 @@ class TaskTargetController extends Controller
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
         }
     }
-
 
     public function showDetails($id, $type)
     {
@@ -413,15 +415,7 @@ class TaskTargetController extends Controller
         return view('documents.indexApprovedReport', compact('taskTargets', 'organizations', 'documents', 'categories', 'organizationsType', 'type', 'typeTask', 'workResultTypes', 'statuses'));
     }
 
-    public function indexView(Request $request, $type, $text = null)
-    {
-        $organizations = Organization::where('isDelete', 0)->whereHas('documents', function($query) {
-            $query->where('isDelete', 0);
-        })->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
-        $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
-        $documents = Document::where('isDelete', 0)->get();
-        $categories = Category::where('isDelete', 0)->get();
-
+    public function dataIndexView(Request $request, $type, $text = null){
         if ($type == 'task') {
             $taskTargets = TaskTarget::where('type', 'task')->where('isDelete', 0)->orderBy('id', 'desc');
         } else {
@@ -494,6 +488,20 @@ class TaskTargetController extends Controller
         if ($executionTimeTo) {
             $taskTargets->whereDate('end_date', '<=', $executionTimeTo);
         }
+        return $taskTargets;
+    }
+
+    public function indexView(Request $request, $type, $text = null)
+    {
+        $organizations = Organization::where('isDelete', 0)->whereHas('documents', function($query) {
+            $query->where('isDelete', 0);
+        })->whereNotNull('organization_type_id')->orderBy('name', 'asc')->get();
+        $organizationsType = OrganizationType::where('isDelete', 0)->orderBy('type_name', 'asc')->get();
+        $documents = Document::where('isDelete', 0)->get();
+        $categories = Category::where('isDelete', 0)->get();
+
+        $taskTargets = $this->dataIndexView($request, $type, $text);
+
         $typeTask = IndicatorGroup::where('isDelete', 0)->get();
         if ($type == 'task') {
             $typeTask =  TaskGroup::where('isDelete', 0)->get();
@@ -829,5 +837,196 @@ class TaskTargetController extends Controller
     {
         $organizationId = TaskTarget::where('code', $taskTargetCode)->select('organization_id')->where('isDelete', 0)->get();
         return response()->json($organizationId);
+    }
+
+    public function exportTaskTarget(Request $request, $type, $text=null){
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        if($type == "task"){
+            $sheet->setCellValue('A1', 'DANH SÁCH NHIỆM VỤ');
+            $sheet->mergeCells('A1:I1');
+            $sheet->getStyle('A1:I1')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'size' => 14,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+
+            $sheet->setCellValue('A2', 'STT');
+            $sheet->setCellValue('B2', 'Tên nhiệm vụ');
+            $sheet->setCellValue('C2', 'Kết quả yêu cầu');
+            $sheet->setCellValue('D2', 'Nhóm nhiệm vụ');
+            $sheet->setCellValue('E2', 'Loại nhiệm vụ');
+            $sheet->setCellValue('F2', 'Thời hạn hoàn thành');
+            $sheet->setCellValue('G2', 'Số hiệu văn bản');
+            $sheet->setCellValue('H2', 'Số đơn vị được giao');
+            $sheet->setCellValue('I2', 'Tiến độ');
+
+            // Định dạng hàng tiêu đề
+            $sheet->getStyle('A2:I2')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            $query = $this->dataIndexView($request, $type, $text);
+            $excelData = $query->where('isDelete', 0)->orderBy('created_at', 'desc')->get();
+            $row = 3;
+            foreach ($excelData as $index => $data) {
+                $sheet->setCellValue('A' . $row, $index + 1);
+                $sheet->setCellValue('B' . $row, $data->name);
+                $sheet->setCellValue('C' . $row, $data->request_results_task);
+                $sheet->setCellValue('D' . $row, $data->getGroupName());
+                $sheet->setCellValue('E' . $row, $data->getTypeTextAttributeTime());
+                $sheet->setCellValue('F' . $row, $data->getEndDate());
+                $sheet->setCellValue('G' . $row, $data->document->document_code ?? ''());
+                $sheet->setCellValue('H' . $row, $data->countOrganization());
+                $sheet->setCellValue('I' . $row, $data->getStatusLabel());
+
+                $row++;
+            }
+            $sheet->getStyle('A3:I' . ($row - 1))->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            $sheet->getStyle('B3:B' . ($row - 1))->getAlignment()->setWrapText(true);
+            $sheet->getColumnDimension('B')->setWidth(60);
+
+            foreach (range('A1', 'I1') as $columnID) {
+                if ($columnID !== 'B') {
+                    $sheet->getColumnDimension($columnID)->setAutoSize(true);
+                }
+            }
+        }
+        else{
+            $sheet->setCellValue('A1', 'DANH SÁCH CHỈ TIÊU');
+            $sheet->mergeCells('A1:H1');
+            $sheet->getStyle('A1:H1')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'size' => 14,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+
+            $sheet->setCellValue('A2', 'STT');
+            $sheet->setCellValue('B2', 'Tên chỉ tiêu');
+            $sheet->setCellValue('C2', 'Đơn vị tính');
+            $sheet->setCellValue('D2', 'Chỉ tiêu');
+            $sheet->setCellValue('E2', 'Thời hạn hoàn thành');
+            $sheet->setCellValue('F2', 'Số hiệu văn bản');
+            $sheet->setCellValue('G2', 'Số đơn vị được giao');
+            $sheet->setCellValue('H2', 'Tiến độ');
+
+            // Định dạng hàng tiêu đề
+            $sheet->getStyle('A2:H2')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'color' => ['argb' => 'FFC2C2C2'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            $query = $this->dataIndexView($request, $type, $text);
+            $excelData = $query->where('isDelete', 0)->orderBy('created_at', 'desc')->get();
+            $row = 3;
+            foreach ($excelData as $index => $data) {
+                $sheet->setCellValue('A' . $row, $index + 1);
+                $sheet->setCellValue('B' . $row, $data->name);
+                $sheet->setCellValue('C' . $row, $data->getUnitName());
+                $sheet->setCellValue('D' . $row, $data->target);
+                $sheet->setCellValue('E' . $row, $data->getEndDate());
+                $sheet->setCellValue('F' . $row, $data->document->document_code ?? ''());
+                $sheet->setCellValue('G' . $row, $data->countOrganization());
+                $sheet->setCellValue('H' . $row, $data->getStatusLabel());
+
+                $row++;
+            }
+            $sheet->getStyle('A3:H' . ($row - 1))->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+            $sheet->getStyle('B3:B' . ($row - 1))->getAlignment()->setWrapText(true);
+            $sheet->getColumnDimension('B')->setWidth(60);
+
+            foreach (range('A1', 'H1') as $columnID) {
+                if ($columnID !== 'B') {
+                    $sheet->getColumnDimension($columnID)->setAutoSize(true);
+                }
+            }
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        if($type == "task"){
+            $filename = 'Danh sách nhiệm vụ.xlsx';
+        }
+        else{
+            $filename = 'Danh sách chỉ tiêu.xlsx';
+        }
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
+    }
+
+    public function exportDetailTaskTarget(Request $request, $type, $text=nul){
+
     }
 }

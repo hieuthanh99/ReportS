@@ -79,10 +79,10 @@ const getQueryParams = (url) => {
 
 globalThis.goTo = (url) => {
     const currentParams = getQueryParams(location.search);
+    const targetParams = getQueryParams(url);
     const urlObject = new URL(url);
-
     for (const key in currentParams) {
-        if (key === "page") continue;
+        if (targetParams[key] !== undefined) continue;
         urlObject.searchParams.set(key, currentParams[key]);
     }
     location.href = urlObject.toString();

@@ -182,7 +182,7 @@ class TaskTargetController extends Controller
                     'type' => 'required|in:task,target',
                     'type_id' => 'required',
                     'unit' => 'required',   // Đơn vị
-                    'target_type' => 'required',
+                    // 'target_type' => 'required',
                     'target' => 'required',
                 ], [
                     'document_id.required' => 'Văn bản là bắt buộc.',

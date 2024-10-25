@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="flex-1 min-w-[200px]">
-                    <label for="organization_id" class="block text-gray-700 text-sm font-medium mb-2">Cơ quan ban
+                    <label for="organization_id" class="block text-gray-700 text-sm mb-2">Cơ quan ban
                         hành:</label>
                     <select id="organization_id" name="organization_id"
                         class="border border-gray-300 rounded-lg p-2 w-full select2">
@@ -73,7 +73,7 @@
                     </select>
                 </div>
                 <div class="flex-1 min-w-[200px]">
-                    <label for="typeid" class="block text-gray-700 font-medium mb-2">Nhóm {{ $text }}:</label>
+                    <label for="typeid" class="block text-gray-700 text-sm  mb-2">Nhóm {{ $text }}:</label>
                     <select id="typeid" name="typeid" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="" data-code="">Chọn loại {{ $text }}</option>
                         @foreach ($typeTask as $item)
@@ -88,12 +88,12 @@
             </div>
             <div class="flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
-                    <label for="completion_date" class="block text-gray-700 font-medium mb-2">Thời hạn hoàn thành:</label>
+                    <label for="completion_date" class="block text-gray-700 font-medium mb-2 text-sm ">Thời hạn hoàn thành:</label>
                     <input type="month" id="completion_date" name="completion_date" placeholder="Chọn tháng/năm"
                         class="border border-gray-300 rounded-lg p-2 w-full">
                 </div>
                 <div class="flex-1 min-w-[200px]">
-                    <label for="status" class="block text-gray-700 font-medium mb-2">Tiến độ:</label>
+                    <label for="status" class="block text-gray-700 text-sm  font-medium mb-2">Tiến độ:</label>
 
                     <select id="status" name="status" class="border border-gray-300 rounded-lg p-2 w-full select2">
                         <option value="">Chọn trạng thái</option>
@@ -107,7 +107,7 @@
                 </div>
                 @if ($type == 'task')
                     <div class="flex-1 min-w-[200px]">
-                        <label for="tasktype" class="block text-gray-700 font-medium mb-2">Loại nhiệm vụ:</label>
+                        <label for="tasktype" class="block text-gray-700 text-sm font-medium mb-2">Loại nhiệm vụ:</label>
                         <select id="tasktype" name="tasktype" class="border border-gray-300 rounded-lg p-2 w-full select2">
                             <option value="" disabled selected>Chọn loại nhiệm vụ</option>
                             <option value="timed">Có thời hạn</option> <!-- Giá trị tiếng Anh: "timed" -->
@@ -119,7 +119,8 @@
 
                     </div>
                 @endif
-
+                <a class="fa fa-filter opacity-0" style="margin-top: 45px;"
+               ></a>
             </div>
 
             <div class="flex justify-end gap-4">

@@ -35,6 +35,7 @@
 
         @endphp
         <form id="form-update" action="{{ route('tasks.update.taskTarget', ['code' => $taskTarget->code, 'type' => $taskTarget->type]) }}" method="POST" enctype="multipart/form-data"
+            onsubmit="confirmBeforeSave({ event })"
             class="bg-white p-6 rounded-lg">
             @csrf
             @method('PUT')
@@ -228,12 +229,11 @@
                         <td class="py-3 border border-gray-300 px-6"> {{ $item->organization->website }}</td>
                         <td class="py-3 border border-gray-300 px-6"> {{ $item->organization->address }}</td>
                         <td class="py-3 border border-gray-300 px-6 text-center">
-                            <form id="delete-form-{{ $item->id }}" action="{{ route('tasks.delete.organization', ['id_task_criteria' => $item->id_task_criteria, 'type' => $taskTarget->type, 'id' => $item->id ]) }}" method="POST">
+                            <form id="delete-form-{{ $item->id }}" action="{{ route('tasks.delete.organization', ['id_task_criteria' => $item->id_task_criteria, 'type' => $taskTarget->type, 'id' => $item->id ]) }}" method="POST" onsubmit="confirmBeforeDelete({ event })">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button"
-                                    class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                    onclick="confirmDelete({{ $item->id }})">
+                                <button type="submit"
+                                    class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2">
                                     <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                 </button>
                             </form>
@@ -337,26 +337,5 @@
             window.history.back();
         }
     });
-    function confirmDelete(itemId) {
-    Swal.fire({
-        title: 'Bạn có chắc chắn?',
-        text: 'Xác nhận xóa!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Có, xóa!',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = document.getElementById('delete-form-' + itemId);
-            if (form) {
-                form.submit();
-            } else {
-                console.error('Form not found');
-            }
-        }
-    });
-}
 </script>
 @endsection

@@ -1,0 +1,19 @@
+version: '3.9'  # Hoặc phiên bản Compose phù hợp
+
+services:
+  mariadb:
+    image: mariadb:10.5  # Image của MariaDB phiên bản 10.5
+    container_name: mariadb_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password  # Mật khẩu cho user root
+      MYSQL_DATABASE: my_database  # Cơ sở dữ liệu mặc định
+      MYSQL_USER: my_user  # Người dùng mới
+      MYSQL_PASSWORD: my_user_password  # Mật khẩu cho người dùng trên
+    ports:
+      - "3306:3306"  # Mở cổng 3306
+    volumes:
+      - mariadb_data:/var/lib/mysql  # Lưu trữ dữ liệu bền vững
+
+volumes:
+  mariadb_data:

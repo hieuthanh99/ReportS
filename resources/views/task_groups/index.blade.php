@@ -33,7 +33,7 @@
         @endphp
         <!-- Search Form -->
         {{-- <form method="GET" action="{{ route('tasks.index') }}" class="">
-            <div class="mb-6 flex flex-wrap gap-4 mb-4">
+            <div class="flex flex-wrap gap-4 mb-4">
                 <div class="flex-1 min-w-[200px]">
                     <label for="document_name" class="block text-gray-700 font-medium mb-2">Tên nhiệm vụ/Chỉ tiêu:</label>
                     <input type="text" id="document_name" name="document_name" value="{{ request('document_name') }}"  placeholder="Tên văn bản"
@@ -116,12 +116,11 @@
                                 </button>
                             </td>
                             <td class="py-3 border border-gray-300 px-6 text-center">
-                                <form id="delete-form-{{ $index + $taskGroups->firstItem() }}" action="{{ route('task_groups.destroy', $item) }}" method="POST" style="display:inline;">
+                                <form id="delete-form-{{ $index + $taskGroups->firstItem() }}" action="{{ route('task_groups.destroy', $item) }}" method="POST" style="display:inline;" onsubmit="confirmBeforeDelete({ event })">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button"
-                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2"
-                                        onclick="confirmDelete({{ $index + $taskGroups->firstItem() }})">
+                                    <button type="submit"
+                                        class="bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 ml-2">
                                         <i class="fas fa-trash"></i> <!-- Biểu tượng cho "Xóa" -->
                                     </button>
                                 </form>
@@ -136,22 +135,4 @@
             </div>
         </div>
     </div>
-    <script>
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Bạn có chắc chắn?',
-                text: 'Xác nhận xóa!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Có, xóa!',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + id).submit();
-                }
-            });
-        }
-    </script>
 @endsection

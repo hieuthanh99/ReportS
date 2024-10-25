@@ -25,7 +25,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <form action="{{ route('task_groups.update', $taskGroup->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" id="document-form">
+        <form action="{{ route('task_groups.update', $taskGroup->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg" onsubmit="confirmBeforeSave({ event })">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 {!! Breadcrumbs::render('ULNV', $taskGroup) !!}

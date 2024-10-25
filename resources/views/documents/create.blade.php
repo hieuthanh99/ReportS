@@ -59,7 +59,7 @@
                 {!! Breadcrumbs::render('CDMVB') !!}
             </ol>
         </nav>
-        <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data" class="p-6" id="document-form">
+        <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data" class="p-6" id="document-form" onsubmit="confirmBeforeCreate({ event })">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột trái -->

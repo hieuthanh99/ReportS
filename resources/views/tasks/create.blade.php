@@ -35,7 +35,7 @@
         @endphp
         {{-- <h1 class="text-3xl font-bold mb-6 text-gray-800">Thêm nhiệm vụ/chỉ tiêu</h1> --}}
 
-        <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="p-6" id="task-create-form">
+        <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="p-6" id="task-create-form" onsubmit="confirmBeforeCreate({ event })">
             @csrf
             <input type="hidden" id="type" name="type" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ $type }}">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4" >

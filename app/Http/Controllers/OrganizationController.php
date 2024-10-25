@@ -118,14 +118,22 @@ class OrganizationController extends Controller
         $organizationsCount = Organization::count();
 
         // Tạo cây tổ chức từ các tổ chức đã lấy
-        $tree = $this->buildTree($oranizationType, $organizations);
+        $tree = $this->buildTree($oranizationType, $organizations, request()->get('selected'));
     
         // Chuyển đổi mảng cây thành Collection
         $tree = collect($tree);
     
-        return view('organizations.index', compact('tree', 'oranizationType', 'organizations', 'organizationsCount'));
+        
+        $selected = null;
+        $users = null;
+        if(request()->has('selected')) {
+            $selected = Organization::with('users')->find(request()->get('selected'));
+            $users = User::where('organization_id', request()->get('selected'))->paginate(10);
+        }
+
+        return view('organizations.index', compact('tree', 'oranizationType', 'organizations', 'organizationsCount', 'selected', 'users'));
     }
-    private function buildTree($organizationTypes, $organizations)
+    private function buildTree($organizationTypes, $organizations, $selected)
     {
         $branch = [];
 
@@ -136,14 +144,20 @@ class OrganizationController extends Controller
                 'id' => $organizationType->id,
                 'name' => $organizationType->type_name,
                 'type' => 'organization_type',
-                'children' => []
+                'children' => [],
+                'selected' => false
             ];
 
             // Tìm tất cả các tổ chức có cùng `organization_type_id`
             $relatedOrganizations = $organizations->where('organization_type_id', $organizationType->id)->where('isDelete', 0);
-
+            foreach($relatedOrganizations as $org) {
+                if($org->id == $selected) {
+                    $typeNode['selected'] = true;
+                }
+            }
             // Sử dụng hàm buildTree để đệ quy qua các tổ chức này
             $typeNode['children'] = $this->buildOrganizationTree($relatedOrganizations, $organizations);
+
 
             // Thêm loại tổ chức vào cây
             $branch[] = $typeNode;
@@ -263,22 +277,22 @@ class OrganizationController extends Controller
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
-        $organization = Organization::whereNull('organization_type_id')->find($id);
+        $organization = Organization::where('id', $id)->whereNotNull('organization_type_id')->first();
         try {
-            $request->validate([
+            $data = $request->validate([
                 'code' => [
                     'required',
-                    'max:5'
+                    'max:5',
                 ],
                  'name' => 'required', // Validation rule for textarea
              ], [
                  'code.required' => 'Mã cơ quan, tổ chức là bắt buộc.',
-                 'code.unique' => 'Mã cơ quan, tổ chức đã tồn tại.',
                  'name.required' => 'Tên cơ quan, tổ chức là bắt buộc.',
              ]);
+
              $exitItem = Organization::where('isDelete', 0)->whereNotNull('organization_type_id')->where('code', $request->code)->where('id','!=', $id)->first();
              if($exitItem)  return redirect()->back()->with('error', 'Mã đã tồn tại!');
-            $organization->update($request->all());
+            $organization->update($data);
             DB::commit();
             session()->flash('success', 'Cơ quan, tổ chức đã được cập nhật thành công!');
         

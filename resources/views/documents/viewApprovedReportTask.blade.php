@@ -406,7 +406,20 @@
     document.addEventListener('DOMContentLoaded', function () {
     // Lắng nghe sự kiện click cho tất cả các nút hoàn thành
     document.querySelectorAll('.button-complete').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', async function () {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: ' ',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Duyệt!",
+                cancelButtonText: "Hủy",
+            });
+
+            if(!isConfirmed) return
+
             const itemId = this.getAttribute('data-id'); 
             const url = `/update-status/${itemId}`; 
             fetch(url, {
@@ -448,7 +461,20 @@
         });
     });
     document.querySelectorAll('.button-approved').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', async function () {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: ' ',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Duyệt!",
+                cancelButtonText: "Hủy",
+            });
+
+            if(!isConfirmed) return
+
             const itemId = this.getAttribute('data-id'); 
             const url = `/update-status-approved/${itemId}`; 
             fetch(url, {
@@ -490,7 +516,20 @@
         });
     });
     document.querySelectorAll('.button-approved-all').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', async function () {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: ' ',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Duyệt!",
+                cancelButtonText: "Hủy",
+            });
+
+            if(!isConfirmed) return
+            
             const itemId = this.getAttribute('data-id'); 
             const url = `/update-status-approved-all/${itemId}`; 
             fetch(url, {

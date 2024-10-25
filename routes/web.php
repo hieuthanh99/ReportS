@@ -87,6 +87,8 @@ Route::group(['middleware' => ['admin_or_supper_admin']], function () {
     Route::get('/export-Period', [ReportController::class, 'exportPeriod'])->middleware('check.organization');
     Route::get('/export-Unit', [ReportController::class, 'exportUnit'])->middleware('check.organization');
 
+    Route::get('/export-Documents', [DocumentController::class, 'exportDocuments'])->name('export.Documents')->middleware('check.organization');
+
     Route::get('/search', [SearchController::class, 'search'])->name('search')->middleware('check.organization');
     Route::delete('/tasks/{id}/{type}', [TaskTargetController::class, 'destroyTaskTarget'])->name('tasks.destroy.tasktarget')->middleware('check.organization');
     Route::get('/tasks/details/{id}/{type}', [TaskTargetController::class, 'showDetails'])->name('tasks.show-details')->middleware('check.organization');

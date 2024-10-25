@@ -122,7 +122,7 @@
                 Tìm kiếm
             </button>
             <a href="{{ route('documents.create') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-4">Thêm mới văn bản</a>
-            <a  onclick="window.location.href='{{ route('export.Documents') }}'" target="_blank" style="cursor: pointer;" class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mb-4">Xuất Excel</a>
+            <a onclick="exportExcel()" target="_blank" style="cursor: pointer;" class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition duration-300 mb-4">Xuất Excel</a>
         
         </div>
     </form>
@@ -388,7 +388,22 @@
         //         })
         //         .catch(error => console.error('Error:', error));
         // });
-        
+        function exportExcel() {
+            let params = new URLSearchParams(window.location.search);
+            let document_code = document.getElementById('document_code').value;
+            let document_name = document.getElementById('document_name').value;
+            let organization_id = document.getElementById('organization_id').value;
+
+            // Tạo URL cho xuất Excel kèm theo các tham số
+            var url = "{{ url('export-Documents') }}";
+            let urlQuery = url  + 
+            `?document_code=${document_code}` + 
+            `&document_name=${document_name}` + 
+            `&organization_id=${organization_id}`;
+
+        // Chuyển hướng đến URL xuất Excel
+        window.location.href = urlQuery;
+        }
     </script>
     
 @endsection

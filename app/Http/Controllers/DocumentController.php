@@ -25,6 +25,12 @@ use App\Models\OrganizationType;
 use App\Enums\TaskStatus;
 use App\Models\IndicatorGroup;
 use App\Models\TaskGroup;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 use App\Services\MasterWorkResultTypeService;
 
@@ -1151,7 +1157,40 @@ class DocumentController extends Controller
                 ],
             ],
         ]);
+        $query = $this->dataIndex($request, $text);
+        $excelData = $query->where('isDelete', 0)->with('issuingDepartment')->orderBy('created_at', 'desc')->get();
+        $row = 3;
+        foreach ($excelData as $index => $data) {
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $data->document_code);
+            $sheet->setCellValue('C' . $row, $data->category->name ?? "N/A");
+            $sheet->setCellValue('D' . $row, $data->document_name);
+            $sheet->setCellValue('E' . $row, $data->issuingDepartment->name ?? 'N/A');
+            $sheet->setCellValue('F' . $row, $data->release_date_formatted);
 
+            $row++;
+        }
+        // $sheet->getStyle('A3:F' . ($row - 1))->applyFromArray([
+        //     'borders' => [
+        //         'allBorders' => [
+        //             'borderStyle' => Border::BORDER_THIN,
+        //         ],
+        //     ],
+        // ]);
 
+        foreach (range('A', 'F') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Danh sách văn bản.xlsx';
+
+        // Gửi file Excel cho người dùng
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 }

@@ -216,7 +216,7 @@
                     </button>
                     <a href="/organizations/{{$selected->id}}/edit">
                         <button id="update-button"
-                            onclick="showAssignUserModal()"
+                            
                             class=" bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition duration-300 mt-2">
                             Cập nhật
                         </button>
@@ -225,7 +225,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                        class=" bg-red-300 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
+                        class=" bg-red-400 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition duration-300 mt-2">Xóa</button>
                     </form>
                 </div>
                 @else

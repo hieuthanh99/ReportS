@@ -91,9 +91,8 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên {{ $text }}:</label>
-                    <textarea required id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required
-                    oninvalid="this.setCustomValidity('Vui lòng nhập tên.')" oninput="this.setCustomValidity('')">{{ $taskTarget->name }}</textarea>
+                    <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Tên {{ $text }} <span class="text-red-500">*</span></label>
+                    <textarea required id="name" name="name" class="form-input w-full border border-gray-300 rounded-lg p-2 resize-none" rows="4" required>{{ $taskTarget->name }}</textarea>
                 </div>
                 @if($type == 'task')
                 <div class="mb-4">
@@ -124,8 +123,7 @@
                 <div class="mb-4">
                     <label for="target" class="block text-gray-700 text-sm font-medium mb-2">Chỉ tiêu <span class="text-red-500">*</span></label>
                     <input type="text"  placeholder="Nhập chỉ tiêu"
-                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ $taskTarget->target }}" require
-                     oninvalid="this.setCustomValidity('Vui lòng nhập chỉ tiêu.')" oninput="this.setCustomValidity('')">
+                     id="target" name="target" class="form-input w-full border border-gray-300 rounded-lg p-2" value="{{ $taskTarget->target }}" required>
                 </div>
                 @else
                 <div class="mb-4">

@@ -28,6 +28,7 @@
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
         <!-- Scripts -->
         @vite(['resources/css/app.css','resources/js/app.js'])
+        @vite(['resources/css/app.css','resources/js/custom.js'])
         <style>
     .select2-container--default .select2-selection--single {
         border: 1px solid #D1D5DB; /* Border gray-300 */

@@ -276,10 +276,14 @@ class OrganizationController extends Controller
 
     public function update(Request $request, $id)
     {
+
+      
         DB::beginTransaction();
+        
         $organization = Organization::where('id', $id)->whereNotNull('organization_type_id')->first();
         try {
             $data = $request->validate([
+                'website' => ['string'],
                 'code' => [
                     'required',
                     'max:5',

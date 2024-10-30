@@ -33,7 +33,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="mb-4">
                 <label for="organization_type_id" class="block text-gray-700">Loại cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                <select name="organization_type_id" id="organization_type_id" class="w-full border rounded-lg px-3 py-2 mt-1 select2" require
+                <select name="organization_type_id" id="organization_type_id" class="w-full border rounded-lg px-3 py-2 mt-1 select2" required
                 oninvalid="this.setCustomValidity('Vui lòng chọn loại cơ quan, tổ chức.')" 
                     oninput="setCustomValidity('')">
                     <option value="" {{ old('organization_type_id') ? '' : 'selected' }}>Chọn loại cơ quan</option>
@@ -47,13 +47,13 @@
          
             <div class="mb-4">
                 <label for="name" class="block text-gray-700">Tên cơ quan, tổ chức <span class="text-red-500">*</span></label>
-                <input type="text" name="name" id="name" class="w-full border rounded-lg px-3 py-2 mt-1"value="{{ old('name') }}" require
+                <input type="text" name="name" id="name" class="w-full border rounded-lg px-3 py-2 mt-1"value="{{ old('name') }}" required
                 oninvalid="this.setCustomValidity('Vui lòng nhập tên cơ quan, tổ chức.')" 
                     oninput="setCustomValidity('')">
             </div>
             <div class="mb-4">
                 <label for="code" class="block text-gray-700">Mã cơ quan, tổ chức(Tối đa 5 ký tự) <span class="text-red-500">*</span></label>
-                <input type="text" name="code" id="code" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('code') }}" require
+                <input type="text" name="code" id="code" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('code') }}" required
                 oninvalid="this.setCustomValidity('Vui lòng nhập mã cơ quan, tổ chức.')" 
                     oninput="setCustomValidity('')" maxlength="5">
             </div>
@@ -67,13 +67,13 @@
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-gray-700">Email <span class="text-red-500">*</span></label>
-                <input type="email" name="email" id="email" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('email') }}" require
+                <input type="email" name="email" id="email" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('email') }}" required
                 oninvalid="this.setCustomValidity('Vui lòng nhập địa chỉ email.')" 
-                oninput="setCustomValidity('')">
+                oninput="this.setCustomValidity('')">
             </div>
             <div class="mb-4">
                 <label for="phone" class="block text-gray-700">Số điện thoại <span class="text-red-500">*</span></label>
-                <input type="text" name="phone" id="phone" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('phone') }}" require
+                <input type="text" name="phone" id="phone" class="w-full border rounded-lg px-3 py-2 mt-1" value="{{ old('phone') }}" required
                 oninvalid="this.setCustomValidity('Vui lòng nhập số điện thoại.')" 
                 oninput="setCustomValidity('')">
             </div>

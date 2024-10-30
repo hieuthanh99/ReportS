@@ -95,7 +95,7 @@
                     <input type="hidden" id="document_id" name="document_id"
                     value="{{ $document->id }}"
                     class="form-input w-full border border-gray-300 rounded-lg p-2" >
-                    <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Số hiệu văn bản:</label>
+                    <label for="document_code" class="block text-gray-700 text-sm font-medium mb-2">Số hiệu văn bản <span class="text-red-500">*</span></label>
                   
                         <input type="text" id="document_code" name="document_code"
                             value="{{ $document->document_code }}"
@@ -124,7 +124,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Trích yếu văn bản:</label>
+                    <label for="document_name" class="block text-gray-700 text-sm font-medium mb-2">Trích yếu văn bản <span class="text-red-500">*</span></label>
 
                     {{--       <input type="text" id="document_name" name="document_name" value="{{ $document->document_name }}"
                           class="form-input w-full border border-gray-300 rounded-lg p-2" required> --}}
@@ -228,7 +228,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             var organizationTypeSelect = document.getElementById('organization_type_id');
            var organizationTypeId = organizationTypeSelect.value;
-           console.log(organizationTypeId);
            fetchOrganizations(organizationTypeId);
 
 
